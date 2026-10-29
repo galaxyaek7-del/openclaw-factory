@@ -5321,6 +5321,10 @@ async function runTick() {
     markStep('product_registry');
     const registryResult = await runOnceScript('registry_daily.py', { timeoutMs: 15 * 60 * 1000 });
     actions.push({ step: 'product_registry', ...registryResult });
+    // 2026-10-29: daily read-only exposure reading (Telegraph getViews, Gumroad
+    // sales). Eight experiments were RUNNING with no reading for 20 days.
+    markStep('distribution_metrics');
+    actions.push({ step: 'distribution_metrics', ...(await runOnceScript('distribution_metrics_daily.py', { timeoutMs: 5 * 60 * 1000 })) });
     // customer_site/catalog.json is the only catalog GitHub Pages serves, and
     // nothing regenerated it after the registry it is derived from -- a product
     // published after the last manual export stayed invisible on the storefront

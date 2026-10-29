@@ -1,29 +1,29 @@
 {
- "generated_at": "2026-10-24T07:04:11+00:00",
+ "generated_at": "2026-10-29T16:07:37+00:00",
  "operational": {
   "offers": {
-   "total": 173,
+   "total": 213,
    "by_arm": {
-    "digital_products": 114,
+    "digital_products": 154,
     "affiliate": 19,
     "education_content": 35,
     "services": 3,
     "video": 2
    },
    "by_type": {
-    "digital_product": 92,
-    "content_asset": 59,
+    "digital_product": 115,
+    "content_asset": 76,
     "service": 3,
     "affiliate_offer": 17,
     "media_asset": 2
    },
    "by_eligibility": {
-    "ELIGIBLE": 139,
-    "NEEDS_REVIEW": 5,
-    "NOT_ELIGIBLE": 29
+    "ELIGIBLE": 176,
+    "NOT_ELIGIBLE": 32,
+    "NEEDS_REVIEW": 5
    },
    "eligible_by_arm": {
-    "digital_products": 102,
+    "digital_products": 139,
     "affiliate": 2,
     "education_content": 35
    }
@@ -32,6 +32,8 @@
    "program approval is NOT_APPLIED; no approved affiliate link": 17,
    "product page for a product that is not on sale (page says (proposed))": 5,
    "page is not on origin/main, so it is not public": 4,
+   "listing state is READY_FOR_AUTHORIZATION, not PUBLIC_LISTING_VERIFIED": 3,
+   "no listing description available to draw facts from": 3,
    "listing state is UPLOAD_COMPLETED, not PUBLIC_LISTING_VERIFIED": 3,
    "service: delivery capacity and terms need founder confirmation before promotion": 3,
    "duplicate live title shared with ['GR-0fa92aeb1a', 'GR-ab323215ab']": 2,
@@ -87,23 +89,23 @@
    }
   },
   "jobs_by_state": {
-   "QA_PASSED": 16,
-   "QA_FAILED": 8
+   "QA_PASSED": 18,
+   "QA_FAILED": 10
   },
   "jobs_by_platform": {
-   "linkedin": 8,
-   "x": 8,
-   "instagram": 4,
-   "tiktok": 4
+   "linkedin": 9,
+   "x": 9,
+   "instagram": 5,
+   "tiktok": 5
   },
   "jobs_by_arm": {
-   "digital_products": 16,
+   "digital_products": 20,
    "affiliate": 4,
    "education_content": 4
   },
   "qa_failure_reasons": {
-   "Instagram needs rendered JPEG images; only slide text exists": 4,
-   "TikTok needs a rendered video; none exists for this offer": 2,
+   "Instagram needs rendered JPEG images; only slide text exists": 5,
+   "TikTok needs a rendered video; none exists for this offer": 3,
    "video rights UNRESOLVED": 2
   },
   "awaiting_approval": [
@@ -122,7 +124,9 @@
    "SJ-0c2b10bebca8",
    "SJ-9f96b996b6c6",
    "SJ-6a55bf152a2e",
-   "SJ-faee23e43fd4"
+   "SJ-faee23e43fd4",
+   "SJ-72586ec7a01c",
+   "SJ-b022d861eb3b"
   ],
   "stuck_or_retrying": [],
   "published_verified": [],
@@ -134,7 +138,7 @@
   "note": "Traffic to the public site is unmeasured (GitHub Pages has no beacon receiver). Gumroad sales carry their own referrer; no social-attributed sale exists."
  },
  "next_actions": [
-  "Founder: review 16 QA-passed drafts and approve the ones to post (manual hand-off).",
+  "Founder: review 18 QA-passed drafts and approve the ones to post (manual hand-off).",
   "LinkedIn: no app or credentials on this machine.",
   "TikTok: connected through Metricool; BLOCKED_NEEDS_BOARD: permission is now an ask rule (founder, 2026-10-23); two review-flow attempts on 2026-10-24 were rejected by validation before creating anything.",
   "Instagram: no app or credentials on this machine.",

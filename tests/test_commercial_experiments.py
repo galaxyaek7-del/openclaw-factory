@@ -29,6 +29,16 @@ class TestCreateExperiment(unittest.TestCase):
             record = ce.create_experiment("e1", "pricing", "h", "b", "c", "conversion_rate", experiments_path=path)
             self.assertEqual(record["status"], "RUNNING")
 
+    def test_prepared_experiment_can_wait_for_approval_without_claiming_exposure(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = os.path.join(tmp, "exp.jsonl")
+            record = ce.create_experiment("e2", "product_positioning", "h", "b", "c", "clicks",
+                                          experiments_path=path, status="PENDING_APPROVAL")
+            self.assertEqual(record["status"], "PENDING_APPROVAL")
+            ce.update_experiment_status("e2", "RUNNING", "APPROVED", "founder approved", experiments_path=path)
+            with self.assertRaises(ValueError):
+                ce.create_experiment("e3", "pricing", "h", "b", "c", "m", experiments_path=path, status="COMPLETED")
+
 
 class TestEvaluateExperiment(unittest.TestCase):
     def test_not_found_when_never_created(self):

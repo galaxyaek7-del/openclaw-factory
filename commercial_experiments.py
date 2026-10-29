@@ -42,6 +42,8 @@ VALID_EXPERIMENT_TYPES = (
 # data," not a claim of rigorous statistical power.
 MIN_SAMPLE_SIZE_FOR_DECISION = 30
 
+INITIAL_STATUSES = ("RUNNING", "PENDING_APPROVAL")
+
 
 class UnknownExperimentTypeError(ValueError):
     pass
@@ -77,11 +79,18 @@ def _append(record, path):
 
 
 def create_experiment(experiment_id, experiment_type, hypothesis, baseline, change, metric,
-                       planned_duration_days=None, experiments_path=None):
+                       planned_duration_days=None, experiments_path=None, status="RUNNING"):
     """The one real write path for a new experiment definition. Refuses
-    an unknown experiment_type rather than silently accepting a typo."""
+    an unknown experiment_type rather than silently accepting a typo.
+
+    status is RUNNING (the default, unchanged) or PENDING_APPROVAL for an
+    experiment whose assets are prepared but whose publication still needs
+    the founder: recording it as RUNNING would claim exposure that has not
+    happened."""
     if experiment_type not in VALID_EXPERIMENT_TYPES:
         raise UnknownExperimentTypeError(f"experiment_type must be one of {VALID_EXPERIMENT_TYPES}, got {experiment_type!r}")
+    if status not in INITIAL_STATUSES:
+        raise ValueError(f"status must be one of {INITIAL_STATUSES}, got {status!r}")
     record = {
         "record_type": "experiment_definition",
         "experiment_id": experiment_id,
@@ -91,7 +100,7 @@ def create_experiment(experiment_id, experiment_type, hypothesis, baseline, chan
         "change": change,
         "metric": metric,
         "planned_duration_days": planned_duration_days,
-        "status": "RUNNING",
+        "status": status,
         "created_at": _now_iso(),
     }
     return _append(record, experiments_path or DEFAULT_EXPERIMENTS_PATH)
@@ -179,7 +188,7 @@ def update_experiment_status(experiment_id, status, decision, reason, experiment
     abandoned. Decision is one of SCALE/ITERATE/WATCH/KILL (mapped from the
     evaluation) or the honest status string itself; reason always carries the
     real evidence behind it."""
-    valid_statuses = ("RUNNING", "COMPLETED", "SCALING", "ITERATING", "WATCHING", "KILLED")
+    valid_statuses = ("PENDING_APPROVAL", "RUNNING", "COMPLETED", "SCALING", "ITERATING", "WATCHING", "KILLED")
     if status not in valid_statuses:
         raise ValueError(f"status must be one of {valid_statuses}, got {status!r}")
     record = {

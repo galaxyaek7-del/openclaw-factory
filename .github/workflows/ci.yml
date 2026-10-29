@@ -217,7 +217,7 @@ jobs:
         run: node scripts/run_js_group.js tests/test_bkl002_pagevisit_receiver.js tests/test_brand_dna_preamble_consistency.js
 
       - name: JS batch 3 of 19
-        run: node scripts/run_js_group.js tests/test_ceo_command_center.js tests/test_check_jsonl_duplication.js tests/test_click_origin_fields.js tests/test_n8n_watchdog.js tests/test_low_disk_mode.js tests/test_customer_auth.js tests/test_customer_front_door.js tests/test_gf_pageview.js tests/test_public_catalog.js tests/test_hold_policy_catalog.js tests/test_site_reachability.js tests/test_customer_site_static_fallback.js tests/test_solutions_static_fallback.js
+        run: node scripts/run_js_group.js tests/test_ceo_command_center.js tests/test_commercial_funnel.js tests/test_check_jsonl_duplication.js tests/test_click_origin_fields.js tests/test_n8n_watchdog.js tests/test_low_disk_mode.js tests/test_customer_auth.js tests/test_customer_front_door.js tests/test_gf_pageview.js tests/test_public_catalog.js tests/test_hold_policy_catalog.js tests/test_site_reachability.js tests/test_customer_site_static_fallback.js tests/test_solutions_static_fallback.js
 
       - name: JS batch 4 of 19
         run: node scripts/run_js_group.js tests/test_department_events.js tests/test_deploy_production.js

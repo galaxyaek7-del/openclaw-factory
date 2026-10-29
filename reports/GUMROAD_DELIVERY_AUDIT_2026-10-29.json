@@ -1,0 +1,1798 @@
+{
+ "generated_at": "2026-10-29T16:14:19.200993+00:00",
+ "method": "GET /v2/products + /v2/products/:id",
+ "products": 112,
+ "published": 109,
+ "issue_counts": {
+  "ZIP_CONTENTS_UNVERIFIED": 39,
+  "THIN_DELIVERABLE": 21,
+  "PUBLISHED_WITHOUT_DELIVERABLE": 1,
+  "PROMISES_SPREADSHEET_NOT_ATTACHED": 3,
+  "PROMISES_MORE_FILES_THAN_ATTACHED": 1,
+  "PREVIEW_FILE_DELIVERED": 1
+ },
+ "rows": [
+  {
+   "slug": "xiimbr",
+   "name": "Freelance Project Profitability & Effective Hourly Rate Tracker",
+   "published": true,
+   "price_usd": 12.0,
+   "attached_types": [
+    "zip"
+   ],
+   "attached_bytes": 18002,
+   "promise_terms": [
+    "excel",
+    "google sheets",
+    "workbook",
+    "xlsx"
+   ],
+   "you_receive": "freelance_project_profitability_tracker",
+   "issues": [
+    "ZIP_CONTENTS_UNVERIFIED"
+   ]
+  },
+  {
+   "slug": "qhmtd",
+   "name": "Membership & Subscription MRR and Churn Forecaster",
+   "published": true,
+   "price_usd": 15.0,
+   "attached_types": [
+    "zip"
+   ],
+   "attached_bytes": 15216,
+   "promise_terms": [
+    "excel",
+    "google sheets",
+    "workbook",
+    "xlsx"
+   ],
+   "you_receive": "membership_subscription_mrr_churn_forecaster",
+   "issues": [
+    "ZIP_CONTENTS_UNVERIFIED"
+   ]
+  },
+  {
+   "slug": "jorsyy",
+   "name": "Event Budget & Ticket Break-Even Planner",
+   "published": true,
+   "price_usd": 12.0,
+   "attached_types": [
+    "zip"
+   ],
+   "attached_bytes": 15583,
+   "promise_terms": [
+    "excel",
+    "google sheets",
+    "workbook",
+    "xlsx"
+   ],
+   "you_receive": "event_budget_ticket_breakeven_planner",
+   "issues": [
+    "ZIP_CONTENTS_UNVERIFIED"
+   ]
+  },
+  {
+   "slug": "dhtppr",
+   "name": "PTO Accrual & Leave Balance Tracker for Small Teams",
+   "published": true,
+   "price_usd": 12.0,
+   "attached_types": [
+    "zip"
+   ],
+   "attached_bytes": 17858,
+   "promise_terms": [
+    "excel",
+    "google sheets",
+    "workbook",
+    "xlsx"
+   ],
+   "you_receive": "pto_accrual_leave_balance_tracker",
+   "issues": [
+    "ZIP_CONTENTS_UNVERIFIED"
+   ]
+  },
+  {
+   "slug": "gwwpri",
+   "name": "Rent vs Buy Home Calculator: Net Worth Year by Year",
+   "published": true,
+   "price_usd": 12.0,
+   "attached_types": [
+    "zip"
+   ],
+   "attached_bytes": 17339,
+   "promise_terms": [
+    "excel",
+    "google sheets",
+    "workbook",
+    "xlsx"
+   ],
+   "you_receive": "rent_vs_buy_home_calculator",
+   "issues": [
+    "ZIP_CONTENTS_UNVERIFIED"
+   ]
+  },
+  {
+   "slug": "zbvxmr",
+   "name": "Solar Panel Payback & 25-Year Savings Calculator",
+   "published": true,
+   "price_usd": 12.0,
+   "attached_types": [
+    "zip"
+   ],
+   "attached_bytes": 15764,
+   "promise_terms": [
+    "excel",
+    "google sheets",
+    "workbook",
+    "xlsx"
+   ],
+   "you_receive": "solar_panel_payback_savings_calculator",
+   "issues": [
+    "ZIP_CONTENTS_UNVERIFIED"
+   ]
+  },
+  {
+   "slug": "ffsehk",
+   "name": "SAFE Conversion & Dilution Calculator (Post-Money SAFEs)",
+   "published": true,
+   "price_usd": 19.0,
+   "attached_types": [
+    "zip"
+   ],
+   "attached_bytes": 15063,
+   "promise_terms": [
+    "excel",
+    "google sheets",
+    "workbook",
+    "xlsx"
+   ],
+   "you_receive": "safe_conversion_dilution_calculator",
+   "issues": [
+    "ZIP_CONTENTS_UNVERIFIED"
+   ]
+  },
+  {
+   "slug": "swscqu",
+   "name": "Caregiver Command Kit: Emergency, Medication, and Appointment Organizer",
+   "published": true,
+   "price_usd": 16.99,
+   "attached_types": [
+    "zip"
+   ],
+   "attached_bytes": 67613,
+   "promise_terms": [
+    "-sheet",
+    "excel",
+    "google sheets",
+    "workbook"
+   ],
+   "you_receive": null,
+   "issues": [
+    "ZIP_CONTENTS_UNVERIFIED"
+   ]
+  },
+  {
+   "slug": "plvoxx",
+   "name": "Grant Endgame: No-Cost Extension & Unspent Funds Kit",
+   "published": true,
+   "price_usd": 19.0,
+   "attached_types": [
+    "zip"
+   ],
+   "attached_bytes": 78578,
+   "promise_terms": [
+    "-sheet",
+    "excel",
+    "google sheets",
+    "workbook"
+   ],
+   "you_receive": null,
+   "issues": [
+    "ZIP_CONTENTS_UNVERIFIED"
+   ]
+  },
+  {
+   "slug": "wsfwvz",
+   "name": "Renovation Allowance & Change-Order Control",
+   "published": true,
+   "price_usd": 15.0,
+   "attached_types": [
+    "zip"
+   ],
+   "attached_bytes": 51564,
+   "promise_terms": [
+    "excel",
+    "google sheets",
+    "workbook"
+   ],
+   "you_receive": null,
+   "issues": [
+    "ZIP_CONTENTS_UNVERIFIED"
+   ]
+  },
+  {
+   "slug": "fdjqyp",
+   "name": "Employee True Cost Calculator (US Small Business)",
+   "published": true,
+   "price_usd": 15.0,
+   "attached_types": [
+    "zip"
+   ],
+   "attached_bytes": 16030,
+   "promise_terms": [
+    "excel",
+    "google sheets",
+    "workbook",
+    "xlsx"
+   ],
+   "you_receive": "employee_true_cost_calculator",
+   "issues": [
+    "ZIP_CONTENTS_UNVERIFIED"
+   ]
+  },
+  {
+   "slug": "krrtdf",
+   "name": "Sinking Funds & Emergency Fund Planner",
+   "published": true,
+   "price_usd": 9.0,
+   "attached_types": [
+    "zip"
+   ],
+   "attached_bytes": 14824,
+   "promise_terms": [
+    "excel",
+    "google sheets",
+    "workbook",
+    "xlsx"
+   ],
+   "you_receive": "sinking_funds_emergency_fund_planner",
+   "issues": [
+    "ZIP_CONTENTS_UNVERIFIED"
+   ]
+  },
+  {
+   "slug": "rlgdc",
+   "name": "Business Mileage Log & Deduction Tracker (US)",
+   "published": true,
+   "price_usd": 9.0,
+   "attached_types": [
+    "zip"
+   ],
+   "attached_bytes": 21108,
+   "promise_terms": [
+    "excel",
+    "google sheets",
+    "workbook",
+    "xlsx"
+   ],
+   "you_receive": "business_mileage_log_deduction_tracker",
+   "issues": [
+    "ZIP_CONTENTS_UNVERIFIED"
+   ]
+  },
+  {
+   "slug": "ucgjwf",
+   "name": "Shift Schedule & Labor Cost Planner",
+   "published": true,
+   "price_usd": 14.0,
+   "attached_types": [
+    "zip"
+   ],
+   "attached_bytes": 15816,
+   "promise_terms": [
+    "excel",
+    "google sheets",
+    "workbook",
+    "xlsx"
+   ],
+   "you_receive": "shift_schedule_labor_cost_planner",
+   "issues": [
+    "ZIP_CONTENTS_UNVERIFIED"
+   ]
+  },
+  {
+   "slug": "xmbbls",
+   "name": "Customer Lifetime Value & CAC Payback Calculator",
+   "published": true,
+   "price_usd": 15.0,
+   "attached_types": [
+    "zip"
+   ],
+   "attached_bytes": 15828,
+   "promise_terms": [
+    "excel",
+    "google sheets",
+    "workbook",
+    "xlsx"
+   ],
+   "you_receive": "customer_lifetime_value_cac_calculator",
+   "issues": [
+    "ZIP_CONTENTS_UNVERIFIED"
+   ]
+  },
+  {
+   "slug": "sfcpyb",
+   "name": "Price Increase Impact Calculator",
+   "published": true,
+   "price_usd": 12.0,
+   "attached_types": [
+    "zip"
+   ],
+   "attached_bytes": 13661,
+   "promise_terms": [
+    "excel",
+    "google sheets",
+    "workbook",
+    "xlsx"
+   ],
+   "you_receive": "price_increase_impact_calculator",
+   "issues": [
+    "ZIP_CONTENTS_UNVERIFIED"
+   ]
+  },
+  {
+   "slug": "ghszog",
+   "name": "Home Renovation Budget & Contractor Quote Comparison",
+   "published": true,
+   "price_usd": 14.0,
+   "attached_types": [
+    "zip"
+   ],
+   "attached_bytes": 16177,
+   "promise_terms": [
+    "excel",
+    "google sheets",
+    "workbook",
+    "xlsx"
+   ],
+   "you_receive": "renovation_budget_quote_comparison",
+   "issues": [
+    "ZIP_CONTENTS_UNVERIFIED"
+   ]
+  },
+  {
+   "slug": "kidohv",
+   "name": "Wedding Budget & Vendor Payment Planner",
+   "published": true,
+   "price_usd": 12.0,
+   "attached_types": [
+    "zip"
+   ],
+   "attached_bytes": 15778,
+   "promise_terms": [
+    "excel",
+    "google sheets",
+    "workbook",
+    "xlsx"
+   ],
+   "you_receive": "wedding_budget_vendor_payment_planner",
+   "issues": [
+    "ZIP_CONTENTS_UNVERIFIED"
+   ]
+  },
+  {
+   "slug": "bqnvfq",
+   "name": "Car Buy vs Lease Calculator: Total Cost Over the Same Period",
+   "published": true,
+   "price_usd": 12.0,
+   "attached_types": [
+    "zip"
+   ],
+   "attached_bytes": 14117,
+   "promise_terms": [
+    "excel",
+    "google sheets",
+    "workbook",
+    "xlsx"
+   ],
+   "you_receive": "car_buy_vs_lease_calculator",
+   "issues": [
+    "ZIP_CONTENTS_UNVERIFIED"
+   ]
+  },
+  {
+   "slug": "ckwqjc",
+   "name": "Refinance Break-Even & Loan Comparison Calculator",
+   "published": true,
+   "price_usd": 15.0,
+   "attached_types": [
+    "zip"
+   ],
+   "attached_bytes": 15876,
+   "promise_terms": [
+    "excel",
+    "google sheets",
+    "workbook",
+    "xlsx"
+   ],
+   "you_receive": "refinance_break_even_calculator",
+   "issues": [
+    "ZIP_CONTENTS_UNVERIFIED"
+   ]
+  },
+  {
+   "slug": "uubnbi",
+   "name": "Zero-Based Monthly Budget Planner",
+   "published": true,
+   "price_usd": 9.0,
+   "attached_types": [
+    "zip"
+   ],
+   "attached_bytes": 21463,
+   "promise_terms": [
+    "excel",
+    "google sheets",
+    "workbook",
+    "xlsx"
+   ],
+   "you_receive": "zero_based_monthly_budget_planner",
+   "issues": [
+    "ZIP_CONTENTS_UNVERIFIED"
+   ]
+  },
+  {
+   "slug": "mcwusn",
+   "name": "Startup Runway & Burn Planner",
+   "published": true,
+   "price_usd": 15.0,
+   "attached_types": [
+    "zip"
+   ],
+   "attached_bytes": 18586,
+   "promise_terms": [
+    "excel",
+    "google sheets",
+    "workbook",
+    "xlsx"
+   ],
+   "you_receive": "there in time",
+   "issues": [
+    "ZIP_CONTENTS_UNVERIFIED"
+   ]
+  },
+  {
+   "slug": "qevzns",
+   "name": "Client Pipeline & Proposal Tracker",
+   "published": true,
+   "price_usd": 14.0,
+   "attached_types": [
+    "zip"
+   ],
+   "attached_bytes": 24906,
+   "promise_terms": [
+    "excel",
+    "google sheets",
+    "workbook",
+    "xlsx"
+   ],
+   "you_receive": "client_pipeline_proposal_tracker",
+   "issues": [
+    "ZIP_CONTENTS_UNVERIFIED"
+   ]
+  },
+  {
+   "slug": "jydqg",
+   "name": "Inventory Reorder Point & Stock Tracker",
+   "published": true,
+   "price_usd": 15.0,
+   "attached_types": [
+    "zip"
+   ],
+   "attached_bytes": 23971,
+   "promise_terms": [
+    "excel",
+    "google sheets",
+    "workbook",
+    "xlsx"
+   ],
+   "you_receive": "inventory_reorder_point_tracker",
+   "issues": [
+    "ZIP_CONTENTS_UNVERIFIED"
+   ]
+  },
+  {
+   "slug": "czhxhu",
+   "name": "Service Business Pricing & Break-Even Calculator",
+   "published": true,
+   "price_usd": 15.0,
+   "attached_types": [
+    "zip"
+   ],
+   "attached_bytes": 18796,
+   "promise_terms": [
+    "excel",
+    "google sheets",
+    "workbook",
+    "xlsx"
+   ],
+   "you_receive": "service_pricing_break_even_calculator",
+   "issues": [
+    "ZIP_CONTENTS_UNVERIFIED"
+   ]
+  },
+  {
+   "slug": "ntbvq",
+   "name": "Etsy & Shopify Product Profit Calculator",
+   "published": true,
+   "price_usd": 12.0,
+   "attached_types": [
+    "zip"
+   ],
+   "attached_bytes": 22694,
+   "promise_terms": [
+    "excel",
+    "google sheets",
+    "xlsx"
+   ],
+   "you_receive": "etsy_shopify_product_profit_calculator",
+   "issues": [
+    "ZIP_CONTENTS_UNVERIFIED"
+   ]
+  },
+  {
+   "slug": "ydgbnh",
+   "name": "Self-Employed Quarterly Tax Set-Aside Planner (US, 2026)",
+   "published": true,
+   "price_usd": 12.0,
+   "attached_types": [
+    "zip"
+   ],
+   "attached_bytes": 25022,
+   "promise_terms": [
+    "excel",
+    "google sheets",
+    "workbook",
+    "xlsx"
+   ],
+   "you_receive": "and each business expense; the workbook assigns them to the IRS estimated-tax periods, and for each quarter calculates self-employment tax, an estimate of feder",
+   "issues": [
+    "ZIP_CONTENTS_UNVERIFIED"
+   ]
+  },
+  {
+   "slug": "ebuszz",
+   "name": "Debt Payoff Planner (Avalanche or Snowball)",
+   "published": true,
+   "price_usd": 12.0,
+   "attached_types": [
+    "zip"
+   ],
+   "attached_bytes": 34027,
+   "promise_terms": [
+    "excel",
+    "google sheets",
+    "workbook",
+    "xlsx"
+   ],
+   "you_receive": "debt_payoff_planner",
+   "issues": [
+    "ZIP_CONTENTS_UNVERIFIED"
+   ]
+  },
+  {
+   "slug": "mfpqin",
+   "name": "Rental Property Deal Analyzer",
+   "published": true,
+   "price_usd": 24.0,
+   "attached_types": [
+    "zip"
+   ],
+   "attached_bytes": 20308,
+   "promise_terms": [
+    "excel",
+    "google sheets",
+    "workbook",
+    "xlsx"
+   ],
+   "you_receive": "rental_property_deal_analyzer",
+   "issues": [
+    "ZIP_CONTENTS_UNVERIFIED"
+   ]
+  },
+  {
+   "slug": "dliccs",
+   "name": "13-Week Cash Flow Forecast for Small Business",
+   "published": true,
+   "price_usd": 19.0,
+   "attached_types": [
+    "zip"
+   ],
+   "attached_bytes": 17313,
+   "promise_terms": [
+    "excel",
+    "google sheets",
+    "workbook",
+    "xlsx"
+   ],
+   "you_receive": "13_week_cash_flow_forecast",
+   "issues": [
+    "ZIP_CONTENTS_UNVERIFIED"
+   ]
+  },
+  {
+   "slug": "svlky",
+   "name": "Founder Access Continuity Organizer",
+   "published": true,
+   "price_usd": 8.0,
+   "attached_types": [
+    "xlsx",
+    "pdf"
+   ],
+   "attached_bytes": 32689,
+   "promise_terms": [
+    "excel",
+    "google sheets",
+    "workbook",
+    "xlsx"
+   ],
+   "you_receive": null,
+   "issues": []
+  },
+  {
+   "slug": "ieashv",
+   "name": "Meeting Cost & ROI Calculator",
+   "published": true,
+   "price_usd": 11.99,
+   "attached_types": [
+    "xlsx",
+    "pdf"
+   ],
+   "attached_bytes": 22504,
+   "promise_terms": [
+    "excel",
+    "google sheets",
+    "workbook",
+    "xlsx"
+   ],
+   "you_receive": null,
+   "issues": []
+  },
+  {
+   "slug": "blayvb",
+   "name": "Freelancer Rate & Raise Calculator",
+   "published": true,
+   "price_usd": 14.99,
+   "attached_types": [
+    "xlsx"
+   ],
+   "attached_bytes": 8922,
+   "promise_terms": [
+    "excel",
+    "google sheets",
+    "spreadsheet",
+    "workbook",
+    "xlsx"
+   ],
+   "you_receive": null,
+   "issues": [
+    "THIN_DELIVERABLE"
+   ]
+  },
+  {
+   "slug": "bfhpzl",
+   "name": "Etsy Suspension: Triage + Appeal Bundle (Both Steps, 25+ Pages)",
+   "published": true,
+   "price_usd": 79.0,
+   "attached_types": [
+    "zip"
+   ],
+   "attached_bytes": 176766,
+   "promise_terms": [
+    "excel",
+    "spreadsheet",
+    "xlsx"
+   ],
+   "you_receive": null,
+   "issues": [
+    "ZIP_CONTENTS_UNVERIFIED"
+   ]
+  },
+  {
+   "slug": "sjrjxq",
+   "name": "Etsy Policy Triage: Find Your Exact Violation in 15 Minutes",
+   "published": true,
+   "price_usd": 49.0,
+   "attached_types": [
+    "pdf"
+   ],
+   "attached_bytes": 10065,
+   "promise_terms": [],
+   "you_receive": null,
+   "issues": []
+  },
+  {
+   "slug": "akxaae",
+   "name": "The 5-Minute Context Reset Playbook",
+   "published": true,
+   "price_usd": 15.0,
+   "attached_types": [
+    "pdf"
+   ],
+   "attached_bytes": 119824,
+   "promise_terms": [],
+   "you_receive": null,
+   "issues": []
+  },
+  {
+   "slug": "owtmpe",
+   "name": "[Unavailable] AI Workflow QA & Stress Test - one agent, reviewed before you demo it to a client",
+   "published": true,
+   "price_usd": 0.0,
+   "attached_types": [],
+   "attached_bytes": 0,
+   "promise_terms": [],
+   "you_receive": null,
+   "issues": [
+    "PUBLISHED_WITHOUT_DELIVERABLE"
+   ]
+  },
+  {
+   "slug": "drtaj",
+   "name": "Verified B2B Lead Lists (200-lead batch)",
+   "published": false,
+   "price_usd": 99.0,
+   "attached_types": [
+    "pdf"
+   ],
+   "attached_bytes": 2008,
+   "promise_terms": [
+    "csv",
+    "google sheets"
+   ],
+   "you_receive": "- 200 leads matched to the criteria you provide (titles, industries, geography, company size) - Verified business emails per lead, checked before delivery - Ded",
+   "issues": [
+    "PROMISES_SPREADSHEET_NOT_ATTACHED",
+    "THIN_DELIVERABLE"
+   ]
+  },
+  {
+   "slug": "gzbdaz",
+   "name": "Landlord Move-In Inspection Pack",
+   "published": true,
+   "price_usd": 49.0,
+   "attached_types": [
+    "zip"
+   ],
+   "attached_bytes": 132834,
+   "promise_terms": [],
+   "you_receive": null,
+   "issues": []
+  },
+  {
+   "slug": "ursxh",
+   "name": "Cottage Food Compliance Kit",
+   "published": true,
+   "price_usd": 49.0,
+   "attached_types": [
+    "zip"
+   ],
+   "attached_bytes": 135984,
+   "promise_terms": [],
+   "you_receive": null,
+   "issues": []
+  },
+  {
+   "slug": "volqjv",
+   "name": "Homebuyer Inspection Action Kit",
+   "published": true,
+   "price_usd": 29.0,
+   "attached_types": [
+    "zip"
+   ],
+   "attached_bytes": 132410,
+   "promise_terms": [],
+   "you_receive": null,
+   "issues": []
+  },
+  {
+   "slug": "diboaf",
+   "name": "Dental Insurance Verification Kit",
+   "published": true,
+   "price_usd": 59.0,
+   "attached_types": [
+    "zip"
+   ],
+   "attached_bytes": 166141,
+   "promise_terms": [],
+   "you_receive": null,
+   "issues": []
+  },
+  {
+   "slug": "vwlmeo",
+   "name": "Real Estate Transaction Deadline Kit",
+   "published": true,
+   "price_usd": 29.0,
+   "attached_types": [
+    "zip"
+   ],
+   "attached_bytes": 155012,
+   "promise_terms": [],
+   "you_receive": null,
+   "issues": []
+  },
+  {
+   "slug": "oerot",
+   "name": "Fleet Maintenance and Damage Documentation Bundle",
+   "published": true,
+   "price_usd": 49.0,
+   "attached_types": [
+    "zip"
+   ],
+   "attached_bytes": 141990,
+   "promise_terms": [
+    "spreadsheet"
+   ],
+   "you_receive": null,
+   "issues": [
+    "ZIP_CONTENTS_UNVERIFIED"
+   ]
+  },
+  {
+   "slug": "xwacbo",
+   "name": "Salon Commission Pay Kit",
+   "published": true,
+   "price_usd": 39.0,
+   "attached_types": [
+    "zip"
+   ],
+   "attached_bytes": 133144,
+   "promise_terms": [],
+   "you_receive": null,
+   "issues": []
+  },
+  {
+   "slug": "swkgd",
+   "name": "Restaurant Food Cost Control Kit",
+   "published": true,
+   "price_usd": 49.0,
+   "attached_types": [
+    "zip"
+   ],
+   "attached_bytes": 138350,
+   "promise_terms": [
+    "spreadsheet",
+    "workbook"
+   ],
+   "you_receive": null,
+   "issues": [
+    "ZIP_CONTENTS_UNVERIFIED"
+   ]
+  },
+  {
+   "slug": "uyzuu",
+   "name": "EU Green Claims Review Kit",
+   "published": true,
+   "price_usd": 69.0,
+   "attached_types": [
+    "zip"
+   ],
+   "attached_bytes": 131594,
+   "promise_terms": [],
+   "you_receive": null,
+   "issues": []
+  },
+  {
+   "slug": "brwrta",
+   "name": "EUDR Due Diligence Starter",
+   "published": true,
+   "price_usd": 69.0,
+   "attached_types": [
+    "zip"
+   ],
+   "attached_bytes": 136267,
+   "promise_terms": [],
+   "you_receive": null,
+   "issues": []
+  },
+  {
+   "slug": "cdfdcy",
+   "name": "Food Truck Permit Navigator",
+   "published": true,
+   "price_usd": 59.0,
+   "attached_types": [
+    "zip"
+   ],
+   "attached_bytes": 167645,
+   "promise_terms": [],
+   "you_receive": null,
+   "issues": []
+  },
+  {
+   "slug": "fydjid",
+   "name": "Handbook Acknowledgment Tracker",
+   "published": true,
+   "price_usd": 49.0,
+   "attached_types": [
+    "zip"
+   ],
+   "attached_bytes": 169145,
+   "promise_terms": [],
+   "you_receive": null,
+   "issues": []
+  },
+  {
+   "slug": "mrecoe",
+   "name": "DTC Returns Abuse Playbook: Fair Tiered Policy with Graduated Responses",
+   "published": true,
+   "price_usd": 59.0,
+   "attached_types": [
+    "zip"
+   ],
+   "attached_bytes": 167072,
+   "promise_terms": [],
+   "you_receive": null,
+   "issues": []
+  },
+  {
+   "slug": "odqlk",
+   "name": "Landlord Rent Ledger: Court-Ready Records for Self-Managing Owners",
+   "published": true,
+   "price_usd": 49.0,
+   "attached_types": [
+    "zip"
+   ],
+   "attached_bytes": 135392,
+   "promise_terms": [],
+   "you_receive": null,
+   "issues": []
+  },
+  {
+   "slug": "uqmqnu",
+   "name": "DSAR Response Kit ($59)",
+   "published": true,
+   "price_usd": 59.0,
+   "attached_types": [
+    "zip"
+   ],
+   "attached_bytes": 198866,
+   "promise_terms": [
+    "workbook"
+   ],
+   "you_receive": null,
+   "issues": [
+    "ZIP_CONTENTS_UNVERIFIED"
+   ]
+  },
+  {
+   "slug": "ziiur",
+   "name": "Freelancer Scope Control Kit",
+   "published": true,
+   "price_usd": 19.0,
+   "attached_types": [
+    "zip"
+   ],
+   "attached_bytes": 179216,
+   "promise_terms": [
+    "excel",
+    "workbook",
+    "xlsx"
+   ],
+   "you_receive": null,
+   "issues": [
+    "ZIP_CONTENTS_UNVERIFIED"
+   ]
+  },
+  {
+   "slug": "eiztlg",
+   "name": "Clinic No-Show Reduction Kit",
+   "published": true,
+   "price_usd": 59.0,
+   "attached_types": [
+    "zip"
+   ],
+   "attached_bytes": 199056,
+   "promise_terms": [],
+   "you_receive": null,
+   "issues": []
+  },
+  {
+   "slug": "qezxe",
+   "name": "PCI SAQ Readiness Kit for Small Merchants",
+   "published": true,
+   "price_usd": 59.0,
+   "attached_types": [
+    "zip"
+   ],
+   "attached_bytes": 133862,
+   "promise_terms": [],
+   "you_receive": null,
+   "issues": []
+  },
+  {
+   "slug": "uucxer",
+   "name": "Sales Tax Nexus Tracker",
+   "published": true,
+   "price_usd": 79.0,
+   "attached_types": [
+    "zip"
+   ],
+   "attached_bytes": 133775,
+   "promise_terms": [],
+   "you_receive": null,
+   "issues": []
+  },
+  {
+   "slug": "xouyjy",
+   "name": "Subscription Renewal Compliance Kit",
+   "published": true,
+   "price_usd": 69.0,
+   "attached_types": [
+    "zip"
+   ],
+   "attached_bytes": 138784,
+   "promise_terms": [],
+   "you_receive": null,
+   "issues": []
+  },
+  {
+   "slug": "iwbcmi",
+   "name": "Newsletter Deliverability & Inbox Placement System",
+   "published": true,
+   "price_usd": 49.0,
+   "attached_types": [
+    "zip"
+   ],
+   "attached_bytes": 138154,
+   "promise_terms": [],
+   "you_receive": "a full guideil sequence with full copy, sunset-flow copy with a worked case, incident triage runbook with a complete worked incident) â€” every template shipped",
+   "issues": []
+  },
+  {
+   "slug": "tjbly",
+   "name": "Employee Offboarding & Access-Revocation System",
+   "published": true,
+   "price_usd": 49.0,
+   "attached_types": [
+    "zip"
+   ],
+   "attached_bytes": 138482,
+   "promise_terms": [],
+   "you_receive": "a full guidedover memo, post-exit verification audit) â€” each shipped with a filled worked example so nothing starts blank",
+   "issues": []
+  },
+  {
+   "slug": "ykwdfc",
+   "name": "Vendor Onboarding & 1099-Readiness Pack for US Small Business",
+   "published": true,
+   "price_usd": 49.0,
+   "attached_types": [
+    "zip"
+   ],
+   "attached_bytes": 138718,
+   "promise_terms": [],
+   "you_receive": "a 28+ page operating guidequest email with two-step follow-up, new-vendor intake form, January CPA letter) â€” each with a filled worked example using realistic",
+   "issues": []
+  },
+  {
+   "slug": "wsbqr",
+   "name": "B2B Late-Payment Collections Operating System",
+   "published": true,
+   "price_usd": 59.0,
+   "attached_types": [
+    "zip"
+   ],
+   "attached_bytes": 172282,
+   "promise_terms": [],
+   "you_receive": "a 28+ page operating guidee dunning email sequence, call script with call record, payment-plan agreement marked educational, agency-handoff brief) â€” each with",
+   "issues": []
+  },
+  {
+   "slug": "pahxdv",
+   "name": "SaaS Spend & Renewal Audit System for Small Teams",
+   "published": true,
+   "price_usd": 49.0,
+   "attached_types": [
+    "zip"
+   ],
+   "attached_bytes": 137925,
+   "promise_terms": [],
+   "you_receive": "a 28+ page operating guidegotiation brief, app-approval intake form), each with a filled worked example",
+   "issues": []
+  },
+  {
+   "slug": "vzmswo",
+   "name": "Creator Brand-Deal Management System",
+   "published": true,
+   "price_usd": 49.0,
+   "attached_types": [
+    "zip"
+   ],
+   "attached_bytes": 187656,
+   "promise_terms": [
+    "excel",
+    "workbook"
+   ],
+   "you_receive": null,
+   "issues": [
+    "ZIP_CONTENTS_UNVERIFIED"
+   ]
+  },
+  {
+   "slug": "qpuagh",
+   "name": "Tech Job Offer Evaluation & Negotiation System",
+   "published": true,
+   "price_usd": 49.0,
+   "attached_types": [
+    "zip"
+   ],
+   "attached_bytes": 169645,
+   "promise_terms": [],
+   "you_receive": null,
+   "issues": []
+  },
+  {
+   "slug": "xmbxpz",
+   "name": "Commercial Lease CAM & Operating-Expense Audit Kit",
+   "published": true,
+   "price_usd": 59.0,
+   "attached_types": [
+    "zip"
+   ],
+   "attached_bytes": 170069,
+   "promise_terms": [],
+   "you_receive": null,
+   "issues": []
+  },
+  {
+   "slug": "behmhy",
+   "name": "Home-Service Quoting & Deposit Protection System",
+   "published": true,
+   "price_usd": 49.0,
+   "attached_types": [
+    "zip"
+   ],
+   "attached_bytes": 171180,
+   "promise_terms": [],
+   "you_receive": null,
+   "issues": []
+  },
+  {
+   "slug": "xwbbb",
+   "name": "Short-Term Rental Damage Claim Evidence Kit (Airbnb & VRBO)",
+   "published": true,
+   "price_usd": 49.0,
+   "attached_types": [
+    "zip"
+   ],
+   "attached_bytes": 171558,
+   "promise_terms": [],
+   "you_receive": "a full guidekout inspection routine, guest damage message, Resolution Center submission narrative, cleaner incident-report form) â€” each shipped with a filled",
+   "issues": []
+  },
+  {
+   "slug": "fwxmms",
+   "name": "EU AI Act Audit Logging Kit",
+   "published": true,
+   "price_usd": 29.0,
+   "attached_types": [
+    "pdf"
+   ],
+   "attached_bytes": 109570,
+   "promise_terms": [],
+   "you_receive": "- A single, focused file you download and use immediately - Step-by-step process, so you work in the right order - Checklists and prompts for the parts people u",
+   "issues": []
+  },
+  {
+   "slug": "uldlwa",
+   "name": "Legal Case Research Automation for Solo Attorneys",
+   "published": true,
+   "price_usd": 29.0,
+   "attached_types": [
+    "pdf"
+   ],
+   "attached_bytes": 105317,
+   "promise_terms": [],
+   "you_receive": null,
+   "issues": []
+  },
+  {
+   "slug": "sjmbrp",
+   "name": "SOC 2 Compliance Automation Guide for Startups",
+   "published": true,
+   "price_usd": 29.0,
+   "attached_types": [
+    "pdf"
+   ],
+   "attached_bytes": 121365,
+   "promise_terms": [],
+   "you_receive": null,
+   "issues": []
+  },
+  {
+   "slug": "esnpki",
+   "name": "AI Agent Blueprint for Small SaaS CloudOps Automation",
+   "published": true,
+   "price_usd": 29.0,
+   "attached_types": [
+    "pdf"
+   ],
+   "attached_bytes": 93996,
+   "promise_terms": [],
+   "you_receive": null,
+   "issues": []
+  },
+  {
+   "slug": "vunrqm",
+   "name": "Severance Agreement Review Checklist",
+   "published": true,
+   "price_usd": 29.0,
+   "attached_types": [
+    "pdf"
+   ],
+   "attached_bytes": 118143,
+   "promise_terms": [],
+   "you_receive": "- A single, focused file you download and use immediately - Step-by-step process, so you work in the right order - Checklists and prompts for the parts people u",
+   "issues": []
+  },
+  {
+   "slug": "yiqba",
+   "name": "Security Deposit Demand Kit for Tenants",
+   "published": true,
+   "price_usd": 29.0,
+   "attached_types": [
+    "pdf"
+   ],
+   "attached_bytes": 115393,
+   "promise_terms": [],
+   "you_receive": "- A single, focused file you download and use immediately - Step-by-step process, so you work in the right order - Checklists and prompts for the parts people u",
+   "issues": []
+  },
+  {
+   "slug": "jibnyt",
+   "name": "Mechanics Lien Filing Kit for Contractors",
+   "published": true,
+   "price_usd": 29.0,
+   "attached_types": [
+    "pdf"
+   ],
+   "attached_bytes": 126790,
+   "promise_terms": [],
+   "you_receive": "- A single, focused file you download and use immediately - Step-by-step process, so you work in the right order - Checklists and prompts for the parts people u",
+   "issues": []
+  },
+  {
+   "slug": "ceiwk",
+   "name": "Stripe Chargeback Defense Kit for Digital Sellers",
+   "published": true,
+   "price_usd": 29.0,
+   "attached_types": [
+    "pdf"
+   ],
+   "attached_bytes": 114918,
+   "promise_terms": [],
+   "you_receive": null,
+   "issues": []
+  },
+  {
+   "slug": "fgruzn",
+   "name": "Etsy Suspension Appeal Kit",
+   "published": true,
+   "price_usd": 29.0,
+   "attached_types": [
+    "zip"
+   ],
+   "attached_bytes": 170027,
+   "promise_terms": [
+    "xlsx"
+   ],
+   "you_receive": null,
+   "issues": [
+    "ZIP_CONTENTS_UNVERIFIED"
+   ]
+  },
+  {
+   "slug": "kaooj",
+   "name": "CCPA Compliance Action Kit for Small Business",
+   "published": true,
+   "price_usd": 29.0,
+   "attached_types": [
+    "pdf"
+   ],
+   "attached_bytes": 121663,
+   "promise_terms": [],
+   "you_receive": null,
+   "issues": []
+  },
+  {
+   "slug": "yhnyn",
+   "name": "Digital-Product Refund Policy Pack",
+   "published": true,
+   "price_usd": 29.0,
+   "attached_types": [
+    "pdf"
+   ],
+   "attached_bytes": 3123,
+   "promise_terms": [],
+   "you_receive": "- A single, focused file you download and use immediately - Step-by-step process, so you work in the right order - Checklists and prompts for the parts people u",
+   "issues": [
+    "THIN_DELIVERABLE"
+   ]
+  },
+  {
+   "slug": "roxdbe",
+   "name": "SaaS Churn Email Pack",
+   "published": true,
+   "price_usd": 39.0,
+   "attached_types": [
+    "pdf"
+   ],
+   "attached_bytes": 3061,
+   "promise_terms": [],
+   "you_receive": "- A single, focused file you download and use immediately - Step-by-step process, so you work in the right order - Checklists and prompts for the parts people u",
+   "issues": [
+    "THIN_DELIVERABLE"
+   ]
+  },
+  {
+   "slug": "zjwpx",
+   "name": "Freelancer Scope-Creep Contract Kit",
+   "published": true,
+   "price_usd": 29.0,
+   "attached_types": [
+    "pdf"
+   ],
+   "attached_bytes": 3055,
+   "promise_terms": [],
+   "you_receive": "- A single, focused file you download and use immediately - Step-by-step process, so you work in the right order - Checklists and prompts for the parts people u",
+   "issues": [
+    "THIN_DELIVERABLE"
+   ]
+  },
+  {
+   "slug": "eiebdt",
+   "name": "Battery & WEEE Mini-Guide for Sellers",
+   "published": true,
+   "price_usd": 29.0,
+   "attached_types": [
+    "pdf"
+   ],
+   "attached_bytes": 3061,
+   "promise_terms": [],
+   "you_receive": "- A single, focused file you download and use immediately - Step-by-step process, so you work in the right order - Checklists and prompts for the parts people u",
+   "issues": [
+    "THIN_DELIVERABLE"
+   ]
+  },
+  {
+   "slug": "ldrdm",
+   "name": "Food-Contact Materials Starter",
+   "published": true,
+   "price_usd": 39.0,
+   "attached_types": [
+    "pdf"
+   ],
+   "attached_bytes": 3112,
+   "promise_terms": [],
+   "you_receive": "- A single, focused file you download and use immediately - Step-by-step process, so you work in the right order - Checklists and prompts for the parts people u",
+   "issues": [
+    "THIN_DELIVERABLE"
+   ]
+  },
+  {
+   "slug": "vyitxf",
+   "name": "Toy Safety File Starter (EN 71 Lens)",
+   "published": true,
+   "price_usd": 29.0,
+   "attached_types": [
+    "pdf"
+   ],
+   "attached_bytes": 3906,
+   "promise_terms": [],
+   "you_receive": null,
+   "issues": [
+    "THIN_DELIVERABLE"
+   ]
+  },
+  {
+   "slug": "bfdgx",
+   "name": "EU Cosmetics Responsible Person Guide",
+   "published": true,
+   "price_usd": 69.0,
+   "attached_types": [
+    "pdf"
+   ],
+   "attached_bytes": 4637,
+   "promise_terms": [],
+   "you_receive": "- A single, focused file you download and use immediately - Step-by-step process, so you work in the right order - Checklists and prompts for the parts people u",
+   "issues": [
+    "THIN_DELIVERABLE"
+   ]
+  },
+  {
+   "slug": "hasjmp",
+   "name": "Etsy Ads ROI Playbook + Calculator",
+   "published": true,
+   "price_usd": 39.0,
+   "attached_types": [
+    "pdf"
+   ],
+   "attached_bytes": 3480,
+   "promise_terms": [],
+   "you_receive": "- A single, focused file you download and use immediately - Step-by-step process, so you work in the right order - Checklists and prompts for the parts people u",
+   "issues": [
+    "THIN_DELIVERABLE"
+   ]
+  },
+  {
+   "slug": "wteork",
+   "name": "Amazon FBA Reconciliation Workbook",
+   "published": true,
+   "price_usd": 0.0,
+   "attached_types": [
+    "pdf"
+   ],
+   "attached_bytes": 3726,
+   "promise_terms": [
+    "workbook"
+   ],
+   "you_receive": null,
+   "issues": [
+    "PROMISES_SPREADSHEET_NOT_ATTACHED"
+   ]
+  },
+  {
+   "slug": "ciowwm",
+   "name": "EU Late Payment Recovery Kit",
+   "published": true,
+   "price_usd": 59.0,
+   "attached_types": [
+    "pdf"
+   ],
+   "attached_bytes": 3863,
+   "promise_terms": [],
+   "you_receive": "- A single, focused file you download and use immediately - Step-by-step process, so you work in the right order - Checklists and prompts for the parts people u",
+   "issues": [
+    "THIN_DELIVERABLE"
+   ]
+  },
+  {
+   "slug": "palmdr",
+   "name": "ADA Demand-Letter Response & Triage Kit",
+   "published": true,
+   "price_usd": 69.0,
+   "attached_types": [
+    "pdf"
+   ],
+   "attached_bytes": 9588,
+   "promise_terms": [],
+   "you_receive": null,
+   "issues": [
+    "THIN_DELIVERABLE"
+   ]
+  },
+  {
+   "slug": "dyjavs",
+   "name": "Diminished Value Claim Kit",
+   "published": true,
+   "price_usd": 59.0,
+   "attached_types": [
+    "pdf"
+   ],
+   "attached_bytes": 9630,
+   "promise_terms": [],
+   "you_receive": null,
+   "issues": [
+    "THIN_DELIVERABLE"
+   ]
+  },
+  {
+   "slug": "gfsvu",
+   "name": "EU Packaging EPR Action Kit",
+   "published": true,
+   "price_usd": 69.0,
+   "attached_types": [
+    "pdf"
+   ],
+   "attached_bytes": 11401,
+   "promise_terms": [],
+   "you_receive": null,
+   "issues": []
+  },
+  {
+   "slug": "pyzqa",
+   "name": "Vendor Questionnaire Response Kit",
+   "published": true,
+   "price_usd": 89.0,
+   "attached_types": [
+    "pdf"
+   ],
+   "attached_bytes": 12020,
+   "promise_terms": [],
+   "you_receive": null,
+   "issues": []
+  },
+  {
+   "slug": "ppsluq",
+   "name": "STR Direct Booking Revenue Kit",
+   "published": true,
+   "price_usd": 59.0,
+   "attached_types": [
+    "pdf"
+   ],
+   "attached_bytes": 10074,
+   "promise_terms": [],
+   "you_receive": null,
+   "issues": []
+  },
+  {
+   "slug": "vkqogv",
+   "name": "Trademark DIY Filing Action Kit",
+   "published": true,
+   "price_usd": 69.0,
+   "attached_types": [
+    "pdf"
+   ],
+   "attached_bytes": 12383,
+   "promise_terms": [
+    "four-sheet"
+   ],
+   "you_receive": null,
+   "issues": [
+    "PROMISES_SPREADSHEET_NOT_ATTACHED"
+   ]
+  },
+  {
+   "slug": "ekhza",
+   "name": "FTC Consumer Review Rule Compliance Kit",
+   "published": true,
+   "price_usd": 69.0,
+   "attached_types": [
+    "pdf"
+   ],
+   "attached_bytes": 13105,
+   "promise_terms": [],
+   "you_receive": null,
+   "issues": []
+  },
+  {
+   "slug": "dvfvm",
+   "name": "Restaurant Health Inspection Readiness Kit",
+   "published": true,
+   "price_usd": 49.0,
+   "attached_types": [
+    "pdf"
+   ],
+   "attached_bytes": 10850,
+   "promise_terms": [],
+   "you_receive": null,
+   "issues": []
+  },
+  {
+   "slug": "adyvd",
+   "name": "Turo Guest Dispute Toolkit",
+   "published": true,
+   "price_usd": 29.0,
+   "attached_types": [
+    "pdf"
+   ],
+   "attached_bytes": 17909,
+   "promise_terms": [],
+   "you_receive": null,
+   "issues": []
+  },
+  {
+   "slug": "fetmu",
+   "name": "GPSR EU Seller Action Kit",
+   "published": true,
+   "price_usd": 79.0,
+   "attached_types": [
+    "pdf"
+   ],
+   "attached_bytes": 18208,
+   "promise_terms": [],
+   "you_receive": "PDF guide + PDF cost planner (Cost planner / SKU tracker / Listing fields / Enforcement log)",
+   "issues": [
+    "PROMISES_MORE_FILES_THAN_ATTACHED"
+   ]
+  },
+  {
+   "slug": "edgiq",
+   "name": "UK Deposit Recovery Action Pack",
+   "published": true,
+   "price_usd": 29.0,
+   "attached_types": [
+    "zip"
+   ],
+   "attached_bytes": 9198,
+   "promise_terms": [
+    "excel"
+   ],
+   "you_receive": null,
+   "issues": [
+    "ZIP_CONTENTS_UNVERIFIED",
+    "THIN_DELIVERABLE"
+   ]
+  },
+  {
+   "slug": "nmasnb",
+   "name": "Section 8 Notice Validity System (England)",
+   "published": true,
+   "price_usd": 59.0,
+   "attached_types": [
+    "zip"
+   ],
+   "attached_bytes": 13669,
+   "promise_terms": [],
+   "you_receive": null,
+   "issues": []
+  },
+  {
+   "slug": "zfnagp",
+   "name": "Suspended Seller First-Appeal POA System",
+   "published": true,
+   "price_usd": 39.0,
+   "attached_types": [
+    "pdf"
+   ],
+   "attached_bytes": 5533,
+   "promise_terms": [],
+   "you_receive": null,
+   "issues": [
+    "THIN_DELIVERABLE"
+   ]
+  },
+  {
+   "slug": "fccqk",
+   "name": "Gulf Job-Landing ATS CV System",
+   "published": true,
+   "price_usd": 29.0,
+   "attached_types": [
+    "pdf"
+   ],
+   "attached_bytes": 5147,
+   "promise_terms": [],
+   "you_receive": null,
+   "issues": [
+    "THIN_DELIVERABLE"
+   ]
+  },
+  {
+   "slug": "jlxmez",
+   "name": "GCC Contractor Payment Command System (V2 Bundle)",
+   "published": true,
+   "price_usd": 399.0,
+   "attached_types": [
+    "zip"
+   ],
+   "attached_bytes": 17106,
+   "promise_terms": [
+    "excel"
+   ],
+   "you_receive": "- A single, focused file you download and use immediately - Step-by-step process, so you work in the right order - Checklists and prompts for the parts people u",
+   "issues": [
+    "ZIP_CONTENTS_UNVERIFIED"
+   ]
+  },
+  {
+   "slug": "uwyfje",
+   "name": "GCC Contractor Payment Command System",
+   "published": true,
+   "price_usd": 49.0,
+   "attached_types": [
+    "pdf"
+   ],
+   "attached_bytes": 7166,
+   "promise_terms": [],
+   "you_receive": null,
+   "issues": [
+    "THIN_DELIVERABLE"
+   ]
+  },
+  {
+   "slug": "fwrjot",
+   "name": "Freelancer Payment Protection & Scope-Control Toolkit",
+   "published": true,
+   "price_usd": 49.0,
+   "attached_types": [
+    "pdf"
+   ],
+   "attached_bytes": 6626,
+   "promise_terms": [],
+   "you_receive": null,
+   "issues": [
+    "THIN_DELIVERABLE"
+   ]
+  },
+  {
+   "slug": "engiwk",
+   "name": "EU AI Act Compliance Quickstart Checklist",
+   "published": true,
+   "price_usd": 19.0,
+   "attached_types": [
+    "pdf"
+   ],
+   "attached_bytes": 3773,
+   "promise_terms": [],
+   "you_receive": null,
+   "issues": [
+    "THIN_DELIVERABLE"
+   ]
+  },
+  {
+   "slug": "tmhlb",
+   "name": "EU AI Act Transparency & AI Literacy Quickstart Checklist",
+   "published": true,
+   "price_usd": 9.0,
+   "attached_types": [
+    "pdf"
+   ],
+   "attached_bytes": 3657,
+   "promise_terms": [],
+   "you_receive": null,
+   "issues": [
+    "THIN_DELIVERABLE"
+   ]
+  },
+  {
+   "slug": "dxfwlu",
+   "name": "GALAXY FORGE API TEST — DO NOT BUY — DELETE ME",
+   "published": false,
+   "price_usd": 1.0,
+   "attached_types": [
+    "txt"
+   ],
+   "attached_bytes": 102,
+   "promise_terms": [],
+   "you_receive": null,
+   "issues": [
+    "THIN_DELIVERABLE"
+   ]
+  },
+  {
+   "slug": "jvuelq",
+   "name": "Mindfulness Journal for Stress Relief",
+   "published": true,
+   "price_usd": 7.0,
+   "attached_types": [
+    "pdf"
+   ],
+   "attached_bytes": 134567,
+   "promise_terms": [],
+   "you_receive": null,
+   "issues": []
+  },
+  {
+   "slug": "vhofn",
+   "name": "The 5-Minute Context Reset Playbook",
+   "published": true,
+   "price_usd": 15.0,
+   "attached_types": [
+    "pdf"
+   ],
+   "attached_bytes": 172023,
+   "promise_terms": [],
+   "you_receive": "- A single, focused file you download and use immediately - Step-by-step process, so you work in the right order - Checklists and prompts for the parts people u",
+   "issues": []
+  },
+  {
+   "slug": "lrmgml",
+   "name": "Automated Contract Review System for Legal Departments",
+   "published": false,
+   "price_usd": 327.0,
+   "attached_types": [
+    "pdf"
+   ],
+   "attached_bytes": 118012,
+   "promise_terms": [],
+   "you_receive": "- A single, focused file you download and use immediately - Step-by-step process, so you work in the right order - Checklists and prompts for the parts people u",
+   "issues": []
+  },
+  {
+   "slug": "iaiyt",
+   "name": "EU AI Act Compliance Toolkit — Practical Templates & Implementation Guide for SMEs",
+   "published": true,
+   "price_usd": 0.0,
+   "attached_types": [
+    "pdf",
+    "pdf"
+   ],
+   "attached_bytes": 245715,
+   "promise_terms": [],
+   "you_receive": null,
+   "issues": [
+    "PREVIEW_FILE_DELIVERED"
+   ]
+  }
+ ]
+}
