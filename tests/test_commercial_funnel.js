@@ -189,6 +189,19 @@ test('intake: counts only, never names or addresses, and the receiver is reporte
   assert.doesNotMatch(JSON.stringify(out), /@example\.com/);
 });
 
+test('intake: site-form signals are counted as unassigned, reviews close them, addresses never appear', () => {
+  const sig = [
+    { signal_id: 'int_a', classification: 'CUSTOMER', email: 'c@example.com' },
+    { signal_id: 'int_b', classification: 'CUSTOMER', email: 'd@example.com' },
+    { reason: 'duplicate', dedup_hash: 'x' },
+  ].map(r => JSON.stringify(r)).join('\n') + '\n';
+  const rev = JSON.stringify({ record: 'review', inquiry_id: 'int_a', outcome: 'REPLIED' }) + '\n';
+  const out = cf.intake(factory({ 'data/customer_interest.jsonl': sig, 'data/inquiries.jsonl': rev }));
+  assert.equal(out.site_form_signals, 2);
+  assert.deepEqual(out.by_arm, { unassigned: { total: 2, pending: 1 } });
+  assert.doesNotMatch(JSON.stringify(out), /@example\.com/);
+});
+
 test('experiments: latest status wins and pending ones are not counted as running', () => {
   const rows = [
     { record_type: 'experiment_definition', experiment_id: 'E1', experiment_type: 'product_positioning', status: 'PENDING_APPROVAL', hypothesis: 'h' },

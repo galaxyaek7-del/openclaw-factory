@@ -25,6 +25,11 @@ from typing import Any, Dict, List, Optional
 
 ROOT = Path(__file__).resolve().parent
 LEDGER = ROOT / "data" / "inquiries.jsonl"
+# The existing site form (POST /api/customer/interest) records through
+# lib/customer_evidence.py into its own ledger. That ledger stays the
+# authoritative record of those signals; this module only reads it, so both
+# kinds of inquiry share one review queue without a second copy of the data.
+INTEREST_LEDGER = ROOT / "data" / "customer_interest.jsonl"
 
 ARMS = ("digital_products", "micro_b2b", "research_data_services", "affiliate_intelligence",
         "content_distribution", "ai_operations", "productized_ai_services", "childrens_media_studio")
@@ -132,11 +137,27 @@ def submit(payload: Dict[str, Any], ledger=None, now: Optional[datetime] = None)
     return {"stored": True, "inquiry_id": rec["inquiry_id"], "status": rec["status"]}
 
 
-def review(inquiry_id: str, outcome: str, note: str = "", ledger=None, now: Optional[datetime] = None) -> Dict[str, Any]:
+def _interest_signals(path):
+    """Site-form signals from lib/customer_evidence.py, in this module's shape.
+    The form does not say which arm an offer belongs to, so arm is
+    'unassigned' until a person reviews it."""
+    out = []
+    for r in _read(path):
+        if not r.get("signal_id") or r.get("classification") != "CUSTOMER":
+            continue
+        out.append({"record": "inquiry", "inquiry_id": r["signal_id"], "arm": "unassigned",
+                    "offer_id": r.get("product_interest"), "received_at": r.get("received_at") or "",
+                    "status": "RECEIVED", "source": "customer_evidence"})
+    return out
+
+
+def review(inquiry_id: str, outcome: str, note: str = "", ledger=None, now: Optional[datetime] = None,
+           interest_ledger=None) -> Dict[str, Any]:
     ledger = ledger or LEDGER
     if outcome not in OUTCOMES:
         raise ValueError("outcome must be one of %s" % (OUTCOMES,))
-    if not any(r.get("record") == "inquiry" and r.get("inquiry_id") == inquiry_id for r in _read(ledger)):
+    known = _read(ledger) + _interest_signals(interest_ledger or INTEREST_LEDGER)
+    if not any(r.get("record") == "inquiry" and r.get("inquiry_id") == inquiry_id for r in known):
         raise KeyError(inquiry_id)
     ev = {"record": "review", "inquiry_id": inquiry_id, "outcome": outcome, "note": _clean(note)[:500],
           "at": (now or _now()).isoformat(timespec="seconds")}
@@ -144,11 +165,12 @@ def review(inquiry_id: str, outcome: str, note: str = "", ledger=None, now: Opti
     return ev
 
 
-def queue(ledger=None) -> Dict[str, Any]:
+def queue(ledger=None, interest_ledger=None) -> Dict[str, Any]:
     """Inquiries awaiting a person, newest first, with counts per arm. No e-mail
-    addresses in the summary (the dashboard shows it)."""
+    addresses in the summary (the dashboard shows it). Includes the site form's
+    signals (read-only, see INTEREST_LEDGER)."""
     ledger = ledger or LEDGER
-    rows = _read(ledger)
+    rows = _read(ledger) + _interest_signals(interest_ledger or INTEREST_LEDGER)
     reviewed = {}
     for r in rows:
         if r.get("record") == "review":
@@ -175,6 +197,7 @@ def readiness() -> Dict[str, Any]:
     """Whether a public visitor's inquiry can reach this queue today."""
     return {
         "schema_and_queue": "IMPLEMENTED (inquiry_intake.py, tests/test_inquiry_intake.py)",
+        "site_form_ingestion": "IMPLEMENTED, LOCAL ONLY: POST /api/customer/interest -> lib/customer_evidence.py -> data/customer_interest.jsonl (git-ignored); its signals appear in this queue",
         "public_receiver": "NOT CONNECTED: GitHub Pages answers 405 to a POST; the factory server listens on 127.0.0.1 only",
         "email_fallback": "contact.html relays to the founder's inbox via formsubmit.co; whether that relay was activated is UNKNOWN; it bypasses this queue",
         "notification": "NOT CONNECTED: Telegram has no chat id; pending inquiries are shown on the dashboard",

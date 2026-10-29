@@ -63,6 +63,7 @@ class Queue(unittest.TestCase):
     def setUp(self):
         self.dir = tempfile.TemporaryDirectory()
         self.ledger = Path(self.dir.name) / "inquiries.jsonl"
+        self.interest = Path(self.dir.name) / "customer_interest.jsonl"
 
     def tearDown(self):
         self.dir.cleanup()
@@ -71,10 +72,10 @@ class Queue(unittest.TestCase):
         a = ii.submit(good(), self.ledger, NOW)
         ii.submit(good(email="b@example.com", arm="research_data_services"), self.ledger, NOW)
         self.assertTrue(a["stored"])
-        q = ii.queue(self.ledger)
+        q = ii.queue(self.ledger, self.interest)
         self.assertEqual((q["total"], q["pending"]), (2, 2))
-        ii.review(a["inquiry_id"], "QUALIFIED", "in scope", self.ledger, NOW)
-        q = ii.queue(self.ledger)
+        ii.review(a["inquiry_id"], "QUALIFIED", "in scope", self.ledger, NOW, self.interest)
+        q = ii.queue(self.ledger, self.interest)
         self.assertEqual(q["pending"], 1)
         self.assertEqual(q["by_arm"]["micro_b2b"]["qualified"], 1)
         self.assertNotIn("email", str(q["pending_items"]))
@@ -89,15 +90,38 @@ class Queue(unittest.TestCase):
     def test_review_needs_a_known_inquiry_and_outcome(self):
         a = ii.submit(good(), self.ledger, NOW)
         with self.assertRaises(ValueError):
-            ii.review(a["inquiry_id"], "MAYBE", ledger=self.ledger)
+            ii.review(a["inquiry_id"], "MAYBE", ledger=self.ledger, interest_ledger=self.interest)
         with self.assertRaises(KeyError):
-            ii.review("INQ-000000000000", "REPLIED", ledger=self.ledger)
+            ii.review("INQ-000000000000", "REPLIED", ledger=self.ledger, interest_ledger=self.interest)
+
+    def test_site_form_signals_join_the_queue_without_copying_them(self):
+        import json
+        sig = {"signal_id": "int_0123456789abcdef", "received_at": "2026-10-29T10:00:00+00:00",
+               "classification": "CUSTOMER", "email": "buyer@example.org", "message": "Do you clean Shopify exports?",
+               "product_interest": "catalogue-cleanup", "dedup_hash": "x"}
+        self.interest.write_text(json.dumps(sig) + "\n" + json.dumps({"reason": "duplicate"}) + "\n", encoding="utf-8")
+        q = ii.queue(self.ledger, self.interest)
+        self.assertEqual((q["total"], q["pending"]), (1, 1))
+        self.assertEqual(q["by_arm"]["unassigned"]["pending"], 1)
+        self.assertNotIn("buyer@example.org", json.dumps(q))
+        ii.review("int_0123456789abcdef", "REPLIED", ledger=self.ledger, now=NOW, interest_ledger=self.interest)
+        self.assertEqual(ii.queue(self.ledger, self.interest)["pending"], 0)
+        # the interest ledger itself is never written by this module
+        self.assertEqual(self.interest.read_text(encoding="utf-8").count("\n"), 2)
+        self.assertNotIn("buyer@example.org", self.ledger.read_text(encoding="utf-8"))
 
 
 class Privacy(unittest.TestCase):
     def test_the_inquiry_ledger_is_git_ignored(self):
         r = subprocess.run(["git", "check-ignore", "-q", "data/inquiries.jsonl"], cwd=ROOT)
         self.assertEqual(r.returncode, 0, "data/inquiries.jsonl holds personal data and must stay out of the public repo")
+
+    def test_the_site_form_ledgers_are_git_ignored_and_untracked(self):
+        for f in ("data/customer_interest.jsonl", "data/customer_interest_rejected.jsonl"):
+            r = subprocess.run(["git", "check-ignore", "-q", "--no-index", f], cwd=ROOT)
+            self.assertEqual(r.returncode, 0, f + " holds e-mail addresses and must stay out of the public repo")
+            tracked = subprocess.run(["git", "ls-files", "--error-unmatch", f], cwd=ROOT, capture_output=True)
+            self.assertNotEqual(tracked.returncode, 0, f + " is still tracked")
 
     def test_readiness_does_not_claim_a_public_channel(self):
         r = ii.readiness()

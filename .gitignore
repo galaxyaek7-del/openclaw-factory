@@ -180,6 +180,10 @@ data/registry_daily_state.json
 data/tool_pages_daily_state.json
 # customer inquiries: names and e-mail addresses (inquiry_intake.py)
 data/inquiries.jsonl
+# inbound interest signals (lib/customer_evidence.py): e-mail addresses and messages
+data/customer_interest.jsonl
+data/customer_interest_rejected.jsonl
+data/*.jsonl.lock
 
 # 2026-10-23 founder decision: paid product files leave the public repository.
 # They stay on the factory machine; tests that read them skip on CI when absent.
