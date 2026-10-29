@@ -135,6 +135,8 @@ class TestCoverageInventory(unittest.TestCase):
                        r"Request\([^)]*data=|urlopen\([^)]*data=|_api_post\(|authed\(")
     EXEMPT = {
         "scripts/run_campaign_review.py": "Telegraph getPage/getViews only (POST is the API's read transport)",
+        "scripts/poll_distribution_metrics.py": "Telegraph getViews only (POST is the API's read transport); "
+                                                "Gumroad sales via gumroad_publisher --sales (a GET)",
         "channels/gumroad_publisher.py": "gated by write_gate.check_write_authorization (stronger Gumroad check)",
         "scripts/integrated_platform_test.py": "writes only to localhost:3000; external calls are GET reads",
         "freelancer_resume.py": "explicit founder order 2026-10-01: one scoped bid on project 40742370 once the "

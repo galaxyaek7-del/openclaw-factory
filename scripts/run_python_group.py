@@ -94,7 +94,9 @@ def main():
             here = [(f, n) for f, n in frames if os.path.abspath(f).startswith(REPO_ROOT)
                     and os.path.basename(f) not in ("write_guard.py", "network_guard.py")]
             where = ("%s:%s" % (os.path.relpath(here[-1][0], REPO_ROOT), here[-1][1])) if here else "?"
-            key = (kind, re.sub(r"/tmp/[^\s'\"]+|tmp[a-z0-9_]{6,}", "<tmp>", assertion)[:300], where)
+            # temp paths differ per test; [/] keeps the literal temp-dir text out
+            # of tracked source (tests/test_no_temp_dependencies.py)
+            key = (kind, re.sub(r"[/]tmp[/][^\s'\"]+|tmp[a-z0-9_]{6,}", "<tmp>", assertion)[:300], where)
             groups.setdefault(key, []).append(tid)
     for (kind, assertion, where), tids in groups.items():
         more = " (+%d more)" % (len(tids) - 1) if len(tids) > 1 else ""

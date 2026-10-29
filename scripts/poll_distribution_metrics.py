@@ -55,7 +55,9 @@ except Exception as e:
     rec['views_status']['_token'] = 'ERROR_%s' % type(e).__name__
 
 try:
-    out = subprocess.run(['python', 'channels/gumroad_publisher.py', '--sales'],
+    # Run as a module: as a plain script it cannot import its own package
+    # (ModuleNotFoundError: channels), and sales read UNKNOWN on every run.
+    out = subprocess.run([sys.executable, '-m', 'channels.gumroad_publisher', '--sales'],
                          capture_output=True, text=True, timeout=60, cwd=str(ROOT))
     d = json.loads(out.stdout)
     sales = d.get('sales', [])

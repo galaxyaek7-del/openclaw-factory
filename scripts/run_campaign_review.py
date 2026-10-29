@@ -158,7 +158,8 @@ def read_sales():
         return "UNKNOWN(no Gumroad credential in this environment)"
     try:
         import subprocess
-        out = subprocess.run([sys.executable, "channels/gumroad_publisher.py", "--sales"],
+        # As a module: run as a script it cannot import its own package.
+        out = subprocess.run([sys.executable, "-m", "channels.gumroad_publisher", "--sales"],
                              capture_output=True, text=True, timeout=60, cwd=str(ROOT))
         sales = json.loads(out.stdout).get("sales", None)
         return {"count": len(sales)} if isinstance(sales, list) else "UNKNOWN(unparseable)"
