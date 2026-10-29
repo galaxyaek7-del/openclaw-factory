@@ -19,6 +19,7 @@ exit-code semantics (0 = all green).
 import argparse
 import io
 import os
+import re
 import sys
 import unittest
 
@@ -78,13 +79,26 @@ def main():
     print("::group::failure details (%d failed, %d errored)"
           % (len(result.failures), len(result.errors)))
 
+    # GitHub keeps only the first 10 error annotations of a step, so one
+    # failure class repeated across many tests can hide every other class.
+    # Group by the error itself and emit each distinct one first, with the
+    # innermost repository frame that raised it and how many tests hit it.
+    groups = {}
     for kind, entries in (("FAIL", result.failures), ("ERROR", result.errors)):
         for test, tb in entries:
             # unittest's str() for a TestCase carries the docstring; use the id.
             tid = test.id() if hasattr(test, "id") else str(test)
             last = [l for l in tb.strip().splitlines() if l.strip()]
             assertion = last[-1] if last else "(no detail)"
-            _annotation("%s %s :: %s" % (kind, tid, assertion[:600]))
+            frames = re.findall(r'File "([^"]+)", line (\d+)', tb)
+            here = [(f, n) for f, n in frames if os.path.abspath(f).startswith(REPO_ROOT)
+                    and os.path.basename(f) not in ("write_guard.py", "network_guard.py")]
+            where = ("%s:%s" % (os.path.relpath(here[-1][0], REPO_ROOT), here[-1][1])) if here else "?"
+            key = (kind, re.sub(r"/tmp/[^\s'\"]+|tmp[a-z0-9_]{6,}", "<tmp>", assertion)[:300], where)
+            groups.setdefault(key, []).append(tid)
+    for (kind, assertion, where), tids in groups.items():
+        more = " (+%d more)" % (len(tids) - 1) if len(tids) > 1 else ""
+        _annotation("%s %s%s :: %s @ %s" % (kind, tids[0], more, assertion[:600], where))
 
     print("::endgroup::")
 

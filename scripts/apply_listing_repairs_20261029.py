@@ -1,0 +1,162 @@
+#!/usr/bin/env python3
+"""Listing repairs found on 2026-10-29 (risk R13, backlog B41/B42).
+
+  vkqogv  Trademark DIY Filing Action Kit ($69): the listing promises a
+          four-sheet XLSX tracker that was never attached, and the guide
+          quoted two USPTO fees wrongly. Deliverable becomes a bundle of the
+          guide v2 (original pages + a dated fee-correction page) and the
+          repaired tracker (fee sheet rebuilt on the USPTO schedule).
+  fetmu   GPSR EU Seller Action Kit ($79): the listing promises a cost
+          planner that was never attached. Deliverable becomes a bundle of
+          the guide and the repaired cost-planner workbook.
+  27 listings (batches 14-16) say "... and this guide." on the listing page,
+          where no guide is in view: "and a PDF guide." instead.
+
+Default is a dry run: bundles are built and file-tested locally, live state
+is read with GET only, and every planned change is printed. Nothing is
+written to Gumroad.
+
+    python scripts/apply_listing_repairs_20261029.py            # dry run
+    python scripts/apply_listing_repairs_20261029.py --live     # apply
+
+With --live each write gets its own single-use scope (channels/write_scope)
+and is verified by re-read inside channels/gumroad_publisher; the central
+write gate (FACTORY_LIVE_PUBLISH, fresh VERIFIED auth state) still applies,
+and FACTORY_LIVE_PUBLISH is set back to false when the run ends.
+Results: data/listing_repairs_20261029.json.
+"""
+import argparse
+import hashlib
+import json
+import os
+import sys
+import zipfile
+from datetime import datetime, timezone
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT))
+
+OUT = ROOT / "books" / "repairs_20261029"
+REPORT = ROOT / "data" / "listing_repairs_20261029.json"
+OLD_PHRASE, NEW_PHRASE = " and this guide.", " and a PDF guide."
+BUNDLES = {
+    "vkqogv": ("trademark_diy_filing_kit_bundle.zip",
+               ["books/trademark_diy_filing_kit_v2.pdf", "books/trademark_filing_tracker.xlsx"]),
+    "fetmu": ("gpsr_eu_seller_action_kit_bundle.zip",
+              ["books/gpsr_eu_seller_action_kit.pdf", "books/gpsr_eu_seller_cost_planner.xlsx"]),
+}
+# fetmu's listing calls the planner a PDF; it is a workbook.
+DESCRIPTION_EDITS = {"fetmu": [("PDF cost planner", "XLSX cost planner workbook")]}
+
+
+def sha256(p):
+    return hashlib.sha256(Path(p).read_bytes()).hexdigest()
+
+
+def build_bundle(slug):
+    import file_testing_engine as fte
+    name, members = BUNDLES[slug]
+    OUT.mkdir(parents=True, exist_ok=True)
+    dst = OUT / name
+    tmp = dst.with_suffix(".zip.tmp")
+    with zipfile.ZipFile(tmp, "w", zipfile.ZIP_DEFLATED) as z:
+        for m in members:
+            src = ROOT / m
+            arc = Path(m).name.replace("_v2.pdf", ".pdf")
+            z.write(src, arc)
+    os.replace(tmp, dst)
+    results = {m: fte.test_file(ROOT / m).status for m in members}
+    return {"path": str(dst.relative_to(ROOT)), "bytes": dst.stat().st_size, "sha256": sha256(dst),
+            "members": [Path(m).name.replace("_v2.pdf", ".pdf") for m in members], "member_file_tests": results,
+            "ok": all(s == "PASS" for s in results.values())}
+
+
+def plan(token, gp):
+    products = gp.list_products(token)
+    by_slug = {}
+    for p in products:
+        slug = (p.get("short_url") or "").rstrip("/").rsplit("/", 1)[-1]
+        by_slug[slug] = p
+    actions = []
+    for slug in BUNDLES:
+        p = by_slug.get(slug)
+        if not p:
+            actions.append({"slug": slug, "kind": "attach_bundle", "error": "listing not found"})
+            continue
+        b = build_bundle(slug)
+        actions.append({"slug": slug, "kind": "attach_bundle", "product_id": p["id"], "name": p.get("name"),
+                        "bundle": b})
+    for slug, p in sorted(by_slug.items()):
+        desc = p.get("description") or ""
+        new = desc.replace(OLD_PHRASE, NEW_PHRASE)
+        for old, rep in DESCRIPTION_EDITS.get(slug, []):
+            new = new.replace(old, rep)
+        if new != desc:
+            actions.append({"slug": slug, "kind": "update_description", "product_id": p["id"],
+                            "name": p.get("name"), "published": bool(p.get("published")),
+                            "old_sha256": hashlib.sha256(desc.encode()).hexdigest(),
+                            "new_description": new,
+                            "changes": [c for c in ([(OLD_PHRASE, NEW_PHRASE)] + DESCRIPTION_EDITS.get(slug, []))
+                                        if c[0] in desc]})
+    return actions
+
+
+def apply(token, gp, ws, actions):
+    done = []
+    for a in actions:
+        if a.get("error") or (a["kind"] == "attach_bundle" and not a["bundle"]["ok"]):
+            done.append({**a, "result": "SKIPPED", "reason": a.get("error") or "bundle member failed its file test"})
+            continue
+        try:
+            if a["kind"] == "attach_bundle":
+                path = str(ROOT / a["bundle"]["path"])
+                scope = ws.issue_scope(product_id=a["product_id"], slug=a["slug"], payload={"file_path": path},
+                                       operation="upload_file", note="2026-10-29 listing repair (founder authority)")
+                gp.update_product_file(token, a["product_id"], path, upload_scope_id=scope.scope_id)
+            else:
+                scope = ws.issue_scope(product_id=a["product_id"], slug=a["slug"],
+                                       payload={"description": a["new_description"]},
+                                       operation="update_description", note="2026-10-29 listing repair")
+                gp.update_product_description_scoped(token, a["product_id"], a["new_description"],
+                                                     scope_id=scope.scope_id)
+            done.append({**a, "result": "PASS"})
+        except Exception as e:  # each action stands alone; one failure never hides the rest
+            done.append({**a, "result": "FAILED", "reason": f"{type(e).__name__}: {str(e)[:300]}"})
+    return done
+
+
+def main(argv=None):
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--live", action="store_true")
+    args = ap.parse_args(argv)
+    from channels import gumroad_publisher as gp
+    token = gp.load_token()
+    actions = plan(token, gp)
+    report = {"generated_at": datetime.now(timezone.utc).isoformat(), "mode": "LIVE" if args.live else "DRY_RUN"}
+    if args.live:
+        import gumroad_auth_watch as auth
+        from channels import publication_authorization as pa
+        from channels import write_scope as ws
+        state = auth.poll()
+        pa.assert_session_fresh(state, max_age_seconds=3600)
+        os.environ["FACTORY_LIVE_PUBLISH"] = "true"
+        try:
+            report["actions"] = apply(token, gp, ws, actions)
+        finally:
+            os.environ["FACTORY_LIVE_PUBLISH"] = "false"
+    else:
+        report["actions"] = [{**a, "result": "PLANNED"} for a in actions]
+    tmp = REPORT.with_suffix(".json.tmp")
+    tmp.write_text(json.dumps(report, indent=1, ensure_ascii=False), encoding="utf-8")
+    os.replace(tmp, REPORT)
+    summary = {}
+    for a in report["actions"]:
+        summary.setdefault(f"{a['kind']}:{a['result']}", 0)
+        summary[f"{a['kind']}:{a['result']}"] += 1
+    print(json.dumps({"mode": report["mode"], "summary": summary, "report": str(REPORT.relative_to(ROOT))}))
+    return 0 if all(a["result"] in ("PASS", "PLANNED") for a in report["actions"]) else 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())
