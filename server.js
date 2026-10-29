@@ -2113,6 +2113,23 @@ const SERVICE_REGISTRY = [
     health: pythonHealthCheck('commercial_alerts_status'),
   },
   {
+    // 2026-10-29 (B10): these two endpoints existed with no caller -- the only
+    // unreferenced ones of 296 -- while the loop records a readiness snapshot
+    // every day (44 so far). Read-only over data/commercial_readiness_snapshots.jsonl.
+    name: 'commercial-readiness-history',
+    description: 'Every recorded daily commercial-readiness snapshot, oldest first (written by the factory loop step commercial_readiness_snapshot). Empty until a snapshot exists.',
+    reused: 'commercial_readiness.py::commercial_readiness_history(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('commercial_readiness_history', [], req),
+    health: pythonHealthCheck('commercial_readiness_history'),
+  },
+  {
+    name: 'commercial-readiness-trend',
+    description: 'Direction of the overall commercial-readiness score across the recorded snapshots (first vs latest); NOT_ENOUGH_DATA below two snapshots, never a slope from one point.',
+    reused: 'commercial_readiness.py::commercial_readiness_trend(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('commercial_readiness_trend', [], req),
+    health: pythonHealthCheck('commercial_readiness_trend'),
+  },
+  {
     name: 'commercial-acquisition-and-funnel',
     description: "Customer Acquisition (9 named channels) + Commercial Funnel (11 named stages) -- top-of-funnel and per-channel CAC/LTV/ROI honestly report INSUFFICIENT_DATA/NO_REAL_SOURCE (no web analytics, lead-capture, or per-channel attribution exists yet); bottom-funnel stages real-cite customer_pipeline.py's own STAGE_ORDER and business_development.py's real partnership pipeline.",
     reused: 'commercial_acquisition.py::customer_acquisition_report()/commercial_funnel(), via mission_control_api.py.',

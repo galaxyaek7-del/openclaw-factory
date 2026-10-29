@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-29T10:59:42.484632+00:00",
+ "generated_at": "2026-10-29T11:29:51.989976+00:00",
  "source": "docs/factory/FACTORY_ENGINEERING_BACKLOG.md (rows parsed verbatim; the Markdown is the edited copy)",
  "items": [
   {
@@ -98,8 +98,8 @@
    "why": "R7",
    "acceptance": "services with no caller listed and removed in reviewed batches",
    "verify": "`enterprise_validation.detect_unused_services()` before/after",
-   "status": "TODO",
-   "status_detail": "TODO",
+   "status": "DONE",
+   "status_detail": "DONE 2026-10-29: detector found 2 of 296 endpoints with no caller (commercial_readiness_history/trend) -- connected as Mission Control services rather than retired (the loop records a snapshot daily); detector now reports 0",
    "founder_authorization_required": false
   },
   {
@@ -348,8 +348,8 @@
    "why": "design_audit (2,761 rows), design_candidates (801), design_approvals (1,062) have no non-test caller (17 days of bursts); recovery_actions keeps \"regression test\" and \"Simulated Groq API failure\" rows",
    "acceptance": "each signature traced to a named test, then quarantined with the B27 tool; design ledgers only after confirming no manual real use",
    "verify": "per-signature counts in the manifest",
-   "status": "PARTIAL",
-   "status_detail": "PARTIAL: `tests/test_restore_file_from_git.js` no longer restores the real CLAUDE.md/requirements.txt or writes the live ledger (temp git repo + GF_RESTORE_REPO_ROOT / GF_RECOVERY_LOG_PATH / GF_DEPARTMENT_EVENTS_PATH); its 120 rows quarantined (`data/quarantine/B36_restore_test_20261029/`). Open: design ledgers; JS tests are not covered by the Python write guard",
+   "status": "DONE",
+   "status_detail": "DONE except JS tests: restore test isolated (120 rows quarantined); design ledgers verified test-only (every row names a fixture product from tests/test_canva_*.py; no non-test caller; no reference to data/design_output) -> 4,624 rows + 792 images quarantined (`data/quarantine/B36_design_ledgers_20261029/`). Python subprocesses now inherit the write guard. Open: node subprocesses",
    "founder_authorization_required": false
   },
   {
