@@ -38,7 +38,7 @@ test('decision: at most one restart per hour', () => {
 });
 
 test('step: starts the scheduled task on the third down tick, persists state', async (t) => {
-  if (process.platform !== 'win32') t.skip('scheduled task path is Windows-only');
+  if (process.platform !== 'win32') { t.skip('scheduled task path is Windows-only'); return; }
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'gf-n8n-wd-'));
   const statePath = path.join(dir, 'state.json');
   const started = [];
@@ -58,7 +58,7 @@ test('step: starts the scheduled task on the third down tick, persists state', a
 });
 
 test('step: a failed start is reported as failed and reaches NEEDS_ATTENTION reasons', async (t) => {
-  if (process.platform !== 'win32') t.skip('scheduled task path is Windows-only');
+  if (process.platform !== 'win32') { t.skip('scheduled task path is Windows-only'); return; }
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'gf-n8n-wd-'));
   const statePath = path.join(dir, 'state.json');
   fs.writeFileSync(statePath, JSON.stringify({ failures: 2, last_restart_at: null }));
