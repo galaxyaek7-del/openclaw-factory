@@ -177,3 +177,99 @@ test('served over a plain static file host, the real snapshot renders', async ()
     await new Promise((resolve) => server.close(resolve));
   }
 });
+
+// ---------------------------------------------------------------------------
+// Render test: run the page's own inline script the way a browser would, with
+// /api answering 404, and count the cards a real visitor would see. The lesson
+// this file exists for is that nothing tested the render -- only the loader's
+// branches -- so this closes that gap for the page that already ranks.
+// ---------------------------------------------------------------------------
+
+function makeDom() {
+  const nodes = new Map();
+  function mk(tag) {
+    const node = {
+      tagName: String(tag).toUpperCase(),
+      children: [],
+      attrs: {},
+      _text: '',
+      classList: { add() {}, remove() {} },
+      setAttribute(k, v) { this.attrs[k] = v; },
+      appendChild(c) { this.children.push(c); return c; },
+    };
+    Object.defineProperty(node, 'textContent', {
+      get() { return this._text || this.children.map((c) => c.textContent || '').join(''); },
+      set(v) { this._text = String(v); this.children = []; },
+    });
+    return node;
+  }
+  const doc = {
+    createElement: mk,
+    createTextNode: (t) => ({ textContent: String(t), children: [] }),
+    getElementById(id) { if (!nodes.has(id)) nodes.set(id, mk('div')); return nodes.get(id); },
+    querySelectorAll() { return []; },
+    addEventListener() {},
+  };
+  return { doc, nodes };
+}
+
+function inlineScripts(html) {
+  return [...html.matchAll(/<script(?![^>]*\bsrc=)(?![^>]*application\/ld\+json)[^>]*>([\s\S]*?)<\/script>/gi)]
+    .map((m) => m[1]);
+}
+
+test('recommended.html renders real cards with no backend at all', async () => {
+  const http = require('http');
+  const server = http.createServer((req, res) => {
+    if (decodeURIComponent(req.url.split('?')[0]).startsWith('/api/')) {
+      res.writeHead(404, { 'content-type': 'text/plain' });
+      return res.end('Not Found');
+    }
+    // The deployment serves customer_site/ at /customer_site/, so a relative
+    // "solutions.json" from recommended.html arrives as
+    // /customer_site/solutions.json.
+    const rel = decodeURIComponent(req.url.split('?')[0]).replace(/^\/customer_site\//, '');
+    const file = path.join(SITE, rel.replace(/^\/+/, ''));
+    if (!file.startsWith(SITE) || !fs.existsSync(file) || fs.statSync(file).isDirectory()) {
+      res.writeHead(404, { 'content-type': 'text/plain' });
+      return res.end('Not Found');
+    }
+    res.writeHead(200, { 'content-type': 'text/html; charset=utf-8' });
+    res.end(fs.readFileSync(file));
+  });
+  await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
+  const base = `http://127.0.0.1:${server.address().port}/customer_site/`;
+
+  try {
+    const { doc, nodes } = makeDom();
+    const sandbox = {
+      document: doc,
+      fetch: (url, init) => global.fetch(new URL(url, base), init),
+      console,
+      alert() {},
+    };
+    // A browser makes `window.foo = ...` a global; a vm context does not, so
+    // window has to be the sandbox itself for the page's bare gfLoadSolutions()
+    // call to resolve.
+    sandbox.window = sandbox;
+    vm.createContext(sandbox);
+    vm.runInContext(fs.readFileSync(LOADER, 'utf8'), sandbox);
+
+    const html = fs.readFileSync(path.join(SITE, 'recommended.html'), 'utf8');
+    const scripts = inlineScripts(html);
+    assert.ok(scripts.length >= 1, 'recommended.html has an inline script');
+    for (const code of scripts) vm.runInContext(code, sandbox);
+
+    await new Promise((r) => setTimeout(r, 400));
+
+    const expected = readJson(SNAPSHOT).solutions.filter((s) => s.verification_status === 'VERIFIED').length;
+    const cards = nodes.get('pickList').children.length;
+    assert.equal(cards, expected, `rendered ${cards} cards, expected ${expected} verified solutions`);
+    assert.ok(cards > 0, 'a visitor must see at least one real recommendation');
+    const status = nodes.get('status').textContent;
+    assert.match(status, /Static snapshot/, 'the page must say the data came from the snapshot');
+    assert.doesNotMatch(status, /Temporarily unavailable/);
+  } finally {
+    await new Promise((resolve) => server.close(resolve));
+  }
+});
