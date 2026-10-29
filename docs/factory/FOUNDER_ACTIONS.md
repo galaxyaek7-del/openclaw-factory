@@ -5,7 +5,7 @@ to an external account, creates an account, or touches data only you may
 decide on. Run the commands from `C:\openclaw-dasgboard` (in Claude Code,
 prefix with `!`).
 
-## 1. Publish the last three batch-16 products (approvals expire 2026-10-29 23:58 UTC)
+## 1. Publish the last three batch-16 products (approvals renewed, valid until 2026-11-01 20:56 UTC)
 
 ```
 python scripts/publish_batch14.py --batch batch16 --live --approvals data/publication_approvals.json --only B16-008 B16-009 B16-010
