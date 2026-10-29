@@ -7,7 +7,8 @@ that public URLs exist or changed; nothing is created on any platform. It is
 gated by channels/write_gate.py with search_ping=True, which
 GF_ALLOW_SEARCH_PING=true (or FACTORY_LIVE_PUBLISH) allows.
 
-Which URLs: customer_site/*.html and sitemap.xml as they are on origin/main
+Which URLs: customer_site/*.html, every page sitemap.xml advertises, and
+sitemap.xml itself, as they are on origin/main
 (what GitHub Pages actually serves), whose blob changed since the last
 submission recorded in data/indexnow_auto.json. Pages carrying a robots
 noindex meta are skipped. Each URL must answer 200 live before it is sent.
@@ -42,23 +43,53 @@ STATE = ROOT / "data" / "indexnow_auto.json"
 LEDGER = ROOT / "data" / "indexnow_submissions.jsonl"
 MAX_URLS = 500
 NOINDEX = re.compile(rb'<meta[^>]+name=["\']robots["\'][^>]+noindex', re.I)
+SITEMAP_LOC = re.compile(r"<loc>\s*(.*?)\s*</loc>", re.I | re.S)
 
 
 def git(*args):
     return subprocess.run(["git", *args], cwd=ROOT, capture_output=True, check=True).stdout
 
 
-def published_pages(ref="origin/main"):
-    """{path: blob_sha} for indexable pages in the published tree."""
-    out = {}
-    for line in git("ls-tree", "-r", ref, "--", "customer_site", "sitemap.xml").decode().splitlines():
-        meta, path = line.split("\t", 1)
-        blob = meta.split()[2]
-        if not (path.endswith(".html") or path.endswith("sitemap.xml")):
+def sitemap_paths(text):
+    """Repo-relative .html paths advertised by a sitemap, for URLs on this site."""
+    out = set()
+    for url in SITEMAP_LOC.findall(text):
+        url = url.strip()
+        if not url.startswith(BASE):
             continue
-        if path.endswith(".html") and NOINDEX.search(git("cat-file", "-p", blob)[:20000]):
+        path = url[len(BASE):].split("?")[0].split("#")[0]
+        if path.endswith(".html"):
+            out.add(path)
+    return out
+
+
+def published_pages(ref="origin/main"):
+    """{path: blob_sha} for indexable pages in the published tree.
+
+    customer_site/ pages are announced as before, and so is every page the
+    sitemap advertises wherever it lives. public_site/market-validation.html
+    was listed in the sitemap for weeks and never announced, because this
+    function only ever walked customer_site/ -- search engines could learn
+    about it from the sitemap alone, which is the weakest signal there is.
+    """
+    out = {}
+    tree = {}
+    for line in git("ls-tree", "-r", ref, "--", "customer_site", "public_site", "sitemap.xml").decode().splitlines():
+        meta, path = line.split("\t", 1)
+        tree[path] = meta.split()[2]
+    advertised = set()
+    if "sitemap.xml" in tree:
+        advertised = sitemap_paths(git("cat-file", "-p", tree["sitemap.xml"]).decode())
+    for path, blob in tree.items():
+        if not path.endswith(".html"):
+            continue
+        if not path.startswith("customer_site/") and path not in advertised:
+            continue
+        if NOINDEX.search(git("cat-file", "-p", blob)[:20000]):
             continue
         out[path] = blob
+    if "sitemap.xml" in tree:
+        out["sitemap.xml"] = tree["sitemap.xml"]
     return out
 
 

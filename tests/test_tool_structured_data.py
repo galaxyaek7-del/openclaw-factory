@@ -116,14 +116,18 @@ def _check_product(product, repo_root, catalog, paddle):
     offers = product.get("offers") or {}
     if isinstance(offers, list):
         offers = offers[0] if offers else {}
-    for field in ("price", "priceCurrency", "availability"):
-        if offers.get(field) in (None, ""):
-            problems.append("Product offer is missing %r" % field)
-    # A buyable offer has to say where to buy it. An unavailable one must not
-    # invent a purchase url -- the honest state is "no checkout yet".
+    if not offers.get("availability"):
+        problems.append("Product offer is missing 'availability'")
+    # A buyable offer has to state a price and where to buy it. An unavailable
+    # one must not invent either: the honest state for a held product is "no
+    # price claim, no checkout url", not a number nobody can act on.
     in_stock = str(offers.get("availability") or "").endswith("InStock")
-    if in_stock and not offers.get("url"):
-        problems.append("in-stock Product offer is missing 'url'")
+    if in_stock:
+        for field in ("price", "priceCurrency", "url"):
+            if offers.get(field) in (None, ""):
+                problems.append("in-stock Product offer is missing %r" % field)
+    elif offers.get("price") not in (None, "") and not offers.get("priceCurrency"):
+        problems.append("Product offer states a price but no 'priceCurrency'")
 
     offer_url = normalize_url(str(offers.get("url") or ""))
     known = catalog.get(offer_url)

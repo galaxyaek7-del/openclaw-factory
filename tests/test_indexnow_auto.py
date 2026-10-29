@@ -62,6 +62,24 @@ class TestIndexNowAuto(unittest.TestCase):
         self.assertEqual(self.sent, [])
         self.assertFalse(self.state.exists())
 
+    def test_sitemap_paths_keeps_only_this_site_pages(self):
+        text = ("<urlset>"
+                "<url><loc>%scustomer_site/a.html</loc></url>"
+                "<url><loc>%spublic_site/b.html</loc></url>"
+                "<url><loc>https://example.test/other.html</loc></url>"
+                "<url><loc>%scustomer_site/c.png</loc></url>"
+                "</urlset>" % (ia.BASE, ia.BASE, ia.BASE))
+        self.assertEqual(ia.sitemap_paths(text),
+                         {"customer_site/a.html", "public_site/b.html"})
+
+    def test_every_advertised_page_is_announced(self):
+        # public_site/market-validation.html sat in the sitemap for weeks while
+        # published_pages() only walked customer_site/, so it was never sent.
+        advertised = ia.sitemap_paths(
+            (ROOT / "sitemap.xml").read_text(encoding="utf-8"))
+        announced = ia.published_pages("HEAD")
+        self.assertEqual(sorted(advertised - set(announced)), [])
+
     def test_real_submit_is_refused_without_authorization(self):
         env = {"FACTORY_LIVE_PUBLISH": "", wg.SEARCH_PING_ENV: ""}
         with patch.dict(os.environ, env), patch("urllib.request.urlopen", side_effect=AssertionError("network")):
