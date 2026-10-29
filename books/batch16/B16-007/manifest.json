@@ -1,0 +1,103 @@
+{
+ "id": "B16-007",
+ "slug": "freelance-project-profitability-tracker",
+ "title": "Freelance Project Profitability & Effective Hourly Rate Tracker",
+ "price_cents": 1200,
+ "files": {
+  "workbook": {
+   "path": "books/batch16/B16-007/freelance_project_profitability_tracker.xlsx",
+   "bytes": 15717,
+   "sha256": "2ca73b656df72ed502535948a49a8da196456155477e4317710a1ad7ad71e0e4"
+  },
+  "guide": {
+   "path": "books/batch16/B16-007/freelance_project_profitability_tracker_guide.pdf",
+   "bytes": 7832,
+   "sha256": "ce339ba2fbc85fb3fc60a50445934ce34da6790117aeb6cf13470ebd3e34dce8"
+  },
+  "cover": {
+   "path": "books/covers/B16-007.png",
+   "bytes": 48225,
+   "sha256": "85d608c15619d40d709201bd027fe60f73f3f6a02eabe483c4fc269a3b888a93"
+  },
+  "bundle": {
+   "path": "books/batch16/B16-007/freelance_project_profitability_tracker_bundle.zip",
+   "bytes": 18002,
+   "sha256": "889298065ed5465e0cae1117f40a9267ef0266b841713b7ee011ff2156a90e08"
+  }
+ },
+ "qa": {
+  "file_test": {
+   "status": "PASS",
+   "problems": []
+  },
+  "recalc": {
+   "engine": "lib/xlsx_eval.py vs independent Python model",
+   "checked": 34,
+   "failed": []
+  },
+  "guide": {
+   "pages": 4,
+   "title_found": true,
+   "disclaimer_found": true
+  },
+  "cover": {
+   "size": [
+    1280,
+    720
+   ]
+  },
+  "brand": {
+   "passed": true,
+   "failed_checks": [],
+   "listing_chars": 1424
+  },
+  "bundle": {
+   "files": [
+    "freelance-project-profitability-tracker/README.txt",
+    "freelance-project-profitability-tracker/freelance_project_profitability_tracker.xlsx",
+    "freelance-project-profitability-tracker/freelance_project_profitability_tracker_guide.pdf"
+   ],
+   "corrupt_member": null
+  },
+  "ok": true,
+  "listing": {
+   "description_html": "<p>Log each fixed-fee project&#x27;s fee, estimated and actual hours and direct costs, and see the hourly rate you really earned, hour overruns, and how far each project fell short of your target rate.</p><p>This tracker turns every project into an effective hourly rate (fee minus direct costs, divided by actual hours), compares it with your target rate, and shows the hour overrun and the money left on the table against that target. Projects below target are flagged, and the summary gives your overall effective rate, best and worst project, and how many projects fell short.</p><p><strong>What's included</strong></p><ul><li>Effective hourly rate for every fixed-fee project</li><li>Hour overrun against your estimate</li><li>Money left on the table against your target rate</li><li>BELOW TARGET flags for underpriced projects</li><li>Overall effective rate, best and worst project, estimate accuracy</li><li>PDF guide with the formulas, a worked example and quoting tips</li></ul><p><strong>Who it's for</strong></p><ul><li>Freelance designers, developers and writers</li><li>Consultants working on fixed fees</li><li>Small agencies pricing client projects</li><li>Anyone moving from hourly to project pricing</li></ul><p><strong>You get:</strong> freelance_project_profitability_tracker.xlsx (Settings, Projects, Summary) and this guide.</p><p>Works in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.</p><p><em>This workbook is a tracking tool, not financial, tax or legal advice. It does not calculate income tax or self-employment tax.</em></p>"
+  }
+ },
+ "category": "Business & Finance",
+ "tags": [
+  "freelance",
+  "project tracker",
+  "hourly rate",
+  "profitability",
+  "freelancer",
+  "excel template"
+ ],
+ "currency": "USD",
+ "pricing_evidence": {
+  "basis": "External listings read on 2026-10-29 through a web-search index plus internal Gumroad comparables.",
+  "external_observations": [
+   {
+    "url": "https://www.etsy.com/listing/4360973845",
+    "price_usd": 9.64,
+    "note": "freelance project profit tracker spreadsheet"
+   },
+   {
+    "url": "https://wealthcreator99.gumroad.com/",
+    "price_usd": 5.0,
+    "note": "freelancer income tracker"
+   }
+  ],
+  "internal_comparables": [
+   {
+    "id": "B14-005",
+    "price_cents": 1200
+   },
+   {
+    "id": "B15-006",
+    "price_cents": 1200
+   }
+  ],
+  "rationale": "$12: above the $5-$10 trackers because it adds target-rate shortfall, estimate accuracy and flags; same price as our product profit and price increase calculators."
+ }
+}

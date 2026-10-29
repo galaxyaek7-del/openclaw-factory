@@ -1,0 +1,103 @@
+{
+ "id": "B16-002",
+ "slug": "solar-panel-payback-savings-calculator",
+ "title": "Solar Panel Payback & 25-Year Savings Calculator",
+ "price_cents": 1200,
+ "files": {
+  "workbook": {
+   "path": "books/batch16/B16-002/solar_panel_payback_savings_calculator.xlsx",
+   "bytes": 10379,
+   "sha256": "49d6eaf4267e95ecf804751bb99696ab203fad08c7536f6017ed830d5e981e32"
+  },
+  "guide": {
+   "path": "books/batch16/B16-002/solar_panel_payback_savings_calculator_guide.pdf",
+   "bytes": 7797,
+   "sha256": "abeac81077166f3f0a1a7cfa98d0566a93ef53dd148f9fb4275bb8b15528e337"
+  },
+  "cover": {
+   "path": "books/covers/B16-002.png",
+   "bytes": 49700,
+   "sha256": "a998d21a334fe713df4b7bac5d54b600f8539cdde68ef78c7995990aa39bc34b"
+  },
+  "bundle": {
+   "path": "books/batch16/B16-002/solar_panel_payback_savings_calculator_bundle.zip",
+   "bytes": 15764,
+   "sha256": "44edb66ecfb955b0307dd49c2f4c7870e481d34fef10f58681b7515944ab7d14"
+  }
+ },
+ "qa": {
+  "file_test": {
+   "status": "PASS",
+   "problems": []
+  },
+  "recalc": {
+   "engine": "lib/xlsx_eval.py vs independent Python model",
+   "checked": 208,
+   "failed": []
+  },
+  "guide": {
+   "pages": 4,
+   "title_found": true,
+   "disclaimer_found": true
+  },
+  "cover": {
+   "size": [
+    1280,
+    720
+   ]
+  },
+  "brand": {
+   "passed": true,
+   "failed_checks": [],
+   "listing_chars": 1558
+  },
+  "bundle": {
+   "files": [
+    "solar-panel-payback-savings-calculator/README.txt",
+    "solar-panel-payback-savings-calculator/solar_panel_payback_savings_calculator.xlsx",
+    "solar-panel-payback-savings-calculator/solar_panel_payback_savings_calculator_guide.pdf"
+   ],
+   "corrupt_member": null
+  },
+  "ok": true,
+  "listing": {
+   "description_html": "<p>Net system cost, year-by-year production with panel ageing, rising electricity prices, maintenance, and the year your panels pay for themselves.</p><p>This calculator makes each assumption an input and runs 25 years: production falling with panel ageing, the value of that output at an electricity price that rises each year, maintenance, cumulative savings, and your net position against the net cost of the system. It reports the payback year, the 25-year savings and the return on the net cost.</p><p><strong>What's included</strong></p><ul><li>25-year table: production with panel ageing, rising electricity prices, upkeep</li><li>Payback year, simple payback and 25-year net gain</li><li>Return on the net cost after the incentives you enter</li><li>Share of output at the retail price for lower export credits</li><li>No assumed federal credit (ended for expenditures after 2025)</li><li>PDF guide with formulas, a worked example and how to read a solar quote</li></ul><p><strong>Who it's for</strong></p><ul><li>Homeowners comparing solar quotes</li><li>Small business owners considering panels on their building</li><li>Installers who want to show customers a transparent payback</li><li>Anyone checking a salesperson&#x27;s payback claim</li></ul><p><strong>You get:</strong> solar_panel_payback_savings_calculator.xlsx (Settings, 25 Years, Summary) and this guide.</p><p>Works in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.</p><p><em>This workbook is an estimating tool, not financial or tax advice. Production, prices and incentives vary by location, roof and contract; check every input with your installer, your utility and a tax professional before you sign.</em></p>"
+  }
+ },
+ "category": "Business & Finance",
+ "tags": [
+  "solar calculator",
+  "solar payback",
+  "solar roi",
+  "home energy",
+  "homeowner tools",
+  "excel template"
+ ],
+ "currency": "USD",
+ "pricing_evidence": {
+  "basis": "External price observations read on 2026-10-29 through a web-search index plus internal Gumroad comparables.",
+  "external_observations": [
+   {
+    "url": "https://payhip.com/b/J2Reo",
+    "price_usd": 9.99,
+    "note": "Solar Panel Payback Calculator Pack (spreadsheet)"
+   },
+   {
+    "url": "https://www.portlandiaelectric.supply/pages/solar-panel-roi-calculator",
+    "price_usd": 0,
+    "note": "free online calculator (still assumes a 30% federal credit)"
+   }
+  ],
+  "internal_comparables": [
+   {
+    "id": "B15-003",
+    "price_cents": 1200
+   },
+   {
+    "id": "B15-001",
+    "price_cents": 1500
+   }
+  ],
+  "rationale": "$12: close to the one paid spreadsheet observed ($9.99), same as our car buy-vs-lease calculator; free web calculators exist but several still assume the expired federal credit."
+ }
+}

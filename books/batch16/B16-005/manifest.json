@@ -1,0 +1,103 @@
+{
+ "id": "B16-005",
+ "slug": "event-budget-ticket-breakeven-planner",
+ "title": "Event Budget & Ticket Break-Even Planner",
+ "price_cents": 1200,
+ "files": {
+  "workbook": {
+   "path": "books/batch16/B16-005/event_budget_ticket_breakeven_planner.xlsx",
+   "bytes": 10741,
+   "sha256": "c1f41e1435e1cfc8405aff9d8b1619ba023f01472bf32aa538f9623ff71a4444"
+  },
+  "guide": {
+   "path": "books/batch16/B16-005/event_budget_ticket_breakeven_planner_guide.pdf",
+   "bytes": 7494,
+   "sha256": "f69939649af39fd5204cda392fc8f09033d1914bd1eb389f3bd0cd33e4ccf56b"
+  },
+  "cover": {
+   "path": "books/covers/B16-005.png",
+   "bytes": 42924,
+   "sha256": "169b91fbf2f66389cf4c7a001d3c9e49bd9f81e2a4882eab4906a9fcd908d885"
+  },
+  "bundle": {
+   "path": "books/batch16/B16-005/event_budget_ticket_breakeven_planner_bundle.zip",
+   "bytes": 15583,
+   "sha256": "fb89e6db6477e45a711e27a9a6b8de2792575dd35c0b296330235ba1ea2a3c7c"
+  }
+ },
+ "qa": {
+  "file_test": {
+   "status": "PASS",
+   "problems": []
+  },
+  "recalc": {
+   "engine": "lib/xlsx_eval.py vs independent Python model",
+   "checked": 38,
+   "failed": []
+  },
+  "guide": {
+   "pages": 4,
+   "title_found": true,
+   "disclaimer_found": true
+  },
+  "cover": {
+   "size": [
+    1280,
+    720
+   ]
+  },
+  "brand": {
+   "passed": true,
+   "failed_checks": [],
+   "listing_chars": 1621
+  },
+  "bundle": {
+   "files": [
+    "event-budget-ticket-breakeven-planner/README.txt",
+    "event-budget-ticket-breakeven-planner/event_budget_ticket_breakeven_planner.xlsx",
+    "event-budget-ticket-breakeven-planner/event_budget_ticket_breakeven_planner_guide.pdf"
+   ],
+   "corrupt_member": null
+  },
+  "ok": true,
+  "listing": {
+   "description_html": "<p>List fixed and per-attendee costs, set the ticket price and fees, and see the break-even attendance, the break-even ticket price, and profit or loss at every attendance level up to capacity.</p><p>This planner separates fixed costs (venue, speakers, insurance) from per-attendee costs (catering, badges, swag), takes sponsorship off the fixed costs, and works out net revenue per ticket after percentage and per-ticket fees. It shows the contribution each attendee makes, the break-even attendance, the ticket price that breaks even at your expected attendance, and profit at ten attendance levels up to capacity.</p><p><strong>What's included</strong></p><ul><li>Fixed and per-attendee costs, with sponsorship deducted</li><li>Net revenue per ticket after percentage and per-ticket fees</li><li>Break-even attendance and break-even ticket price</li><li>Profit or loss at ten attendance levels up to capacity</li><li>Flags cost lines with an unrecognised type instead of ignoring them silently</li><li>PDF guide with the formulas, a worked example and pricing tips</li></ul><p><strong>Who it's for</strong></p><ul><li>Meetup, workshop and conference organisers</li><li>Event planners pricing tickets for clients</li><li>Community groups and nonprofits running paid events</li><li>Venue owners hosting their own ticketed nights</li></ul><p><strong>You get:</strong> event_budget_ticket_breakeven_planner.xlsx (Settings, Costs, Attendance, Summary) and this guide.</p><p>Works in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.</p><p><em>This workbook is a planning tool, not financial, tax or legal advice. Ticketing fees, taxes and venue terms vary; check them with your ticketing provider, venue and accountant before you set prices.</em></p>"
+  }
+ },
+ "category": "Business & Finance",
+ "tags": [
+  "event budget",
+  "event planning",
+  "ticket pricing",
+  "break even",
+  "event planner",
+  "excel template"
+ ],
+ "currency": "USD",
+ "pricing_evidence": {
+  "basis": "External observations read on 2026-10-29 through a web-search index plus internal Gumroad comparables.",
+  "external_observations": [
+   {
+    "url": "https://payhip.com/b/nObA8",
+    "price_usd": 8.0,
+    "note": "Event Budget & Ticket Break-Even Calculator (on sale at $6.40)"
+   },
+   {
+    "url": "https://university.posh.vip/university/post/the-ultimate-p-l-template-to-keep-your-event-profitable",
+    "price_usd": 0,
+    "note": "free event P&L template"
+   }
+  ],
+  "internal_comparables": [
+   {
+    "id": "B15-004",
+    "price_cents": 1200
+   },
+   {
+    "id": "B15-006",
+    "price_cents": 1200
+   }
+  ],
+  "rationale": "$12: the closest paid competitor lists at $8; ours adds the break-even price, sponsorship and a ten-level attendance table; same price as our wedding budget planner."
+ }
+}

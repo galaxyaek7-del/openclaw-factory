@@ -175,6 +175,7 @@ drafts/agent_packages/
 books/**/*.zip
 books/_batch14_src/
 books/_batch15_src/
+books/_batch16_src/
 data/registry_daily_state.json
 
 # 2026-10-23 founder decision: paid product files leave the public repository.

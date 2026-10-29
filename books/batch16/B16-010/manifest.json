@@ -1,0 +1,103 @@
+{
+ "id": "B16-010",
+ "slug": "tiered-sales-commission-calculator",
+ "title": "Tiered Sales Commission Calculator for Small Sales Teams",
+ "price_cents": 1200,
+ "files": {
+  "workbook": {
+   "path": "books/batch16/B16-010/tiered_sales_commission_calculator.xlsx",
+   "bytes": 13519,
+   "sha256": "28cbe214284d0e89fa966e2fa0ac705435e478bd86ac93d4cb3d88492403717a"
+  },
+  "guide": {
+   "path": "books/batch16/B16-010/tiered_sales_commission_calculator_guide.pdf",
+   "bytes": 7544,
+   "sha256": "9a1157556079fca9e7bbb812084853ae1ed610adf20fd821b875fde171a5b08d"
+  },
+  "cover": {
+   "path": "books/covers/B16-010.png",
+   "bytes": 45201,
+   "sha256": "0b39cf7b50e349246295b467eb2833ee900238317bf42b3458458810c3dae183"
+  },
+  "bundle": {
+   "path": "books/batch16/B16-010/tiered_sales_commission_calculator_bundle.zip",
+   "bytes": 17137,
+   "sha256": "666f3c90b9d6ef27fe2fd0ec6650a6d37addba8d2e67dd49407c316cf95ee187"
+  }
+ },
+ "qa": {
+  "file_test": {
+   "status": "PASS",
+   "problems": []
+  },
+  "recalc": {
+   "engine": "lib/xlsx_eval.py vs independent Python model",
+   "checked": 37,
+   "failed": []
+  },
+  "guide": {
+   "pages": 4,
+   "title_found": true,
+   "disclaimer_found": true
+  },
+  "cover": {
+   "size": [
+    1280,
+    720
+   ]
+  },
+  "brand": {
+   "passed": true,
+   "failed_checks": [],
+   "listing_chars": 1584
+  },
+  "bundle": {
+   "files": [
+    "tiered-sales-commission-calculator/README.txt",
+    "tiered-sales-commission-calculator/tiered_sales_commission_calculator.xlsx",
+    "tiered-sales-commission-calculator/tiered_sales_commission_calculator_guide.pdf"
+   ],
+   "corrupt_member": null
+  },
+  "ok": true,
+  "listing": {
+   "description_html": "<p>Set up to four commission tiers and a quota bonus, enter each rep&#x27;s base pay, quota and sales, and see commission paid band by band, quota attainment, total pay and what the plan costs as a share of sales.</p><p>This calculator applies each rate only to the sales inside its band, then adds an optional flat bonus for reps who reach quota. For every rep it shows quota attainment, commission, bonus, total pay, the effective commission rate and total pay as a share of their sales. The summary shows team totals, how many reps hit quota and what the whole plan costs as a percentage of sales.</p><p><strong>What's included</strong></p><ul><li>Graduated commission: each rate applies only to its own band of sales</li><li>Up to four tiers plus an optional quota bonus</li><li>Quota attainment, commission, bonus and total pay per rep</li><li>Effective commission rate and pay as a share of each rep&#x27;s sales</li><li>Team totals, reps at quota and total plan cost as % of sales</li><li>PDF guide with the formula, a worked example and plan-design tips</li></ul><p><strong>Who it's for</strong></p><ul><li>Small business owners paying sales staff</li><li>Sales managers designing or checking a commission plan</li><li>Agencies paying account managers on revenue</li><li>Sales reps checking their own commission statement</li></ul><p><strong>You get:</strong> tiered_sales_commission_calculator.xlsx (Plan, Reps, Summary) and this guide.</p><p>Works in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.</p><p><em>This workbook is a calculation tool, not legal, tax, payroll or employment advice. Commission plans are governed by your written agreements and local employment law; check both before paying.</em></p>"
+  }
+ },
+ "category": "Business & Finance",
+ "tags": [
+  "sales commission",
+  "commission plan",
+  "sales team",
+  "quota",
+  "payroll",
+  "excel template"
+ ],
+ "currency": "USD",
+ "pricing_evidence": {
+  "basis": "External listings read on 2026-10-29 through a web-search index (paid prices not visible in the index) plus internal Gumroad comparables.",
+  "external_observations": [
+   {
+    "url": "https://247finance.gumroad.com/l/mzjor",
+    "price_usd": null,
+    "note": "paid Gumroad commission calculator with a tiered sheet; price not shown in the index"
+   },
+   {
+    "url": "https://www.xappex.com/templates/sales-commission-calculator-excel-template/",
+    "price_usd": 0,
+    "note": "free commission template with tiers (lead magnet)"
+   }
+  ],
+  "internal_comparables": [
+   {
+    "id": "B15-006",
+    "price_cents": 1200
+   },
+   {
+    "id": "B14-005",
+    "price_cents": 1200
+   }
+  ],
+  "rationale": "$12: free tiered templates exist, so priced like our other single-purpose business calculators; justified by per-rep attainment, quota bonus and plan cost in one workbook."
+ }
+}

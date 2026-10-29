@@ -1,0 +1,108 @@
+{
+ "id": "B16-003",
+ "slug": "rent-vs-buy-home-calculator",
+ "title": "Rent vs Buy Home Calculator: Net Worth Year by Year",
+ "price_cents": 1200,
+ "files": {
+  "workbook": {
+   "path": "books/batch16/B16-003/rent_vs_buy_home_calculator.xlsx",
+   "bytes": 12237,
+   "sha256": "75b41f2fad249a9ed73583fd3858d02ddf182156700062b3df295a425f7f30e0"
+  },
+  "guide": {
+   "path": "books/batch16/B16-003/rent_vs_buy_home_calculator_guide.pdf",
+   "bytes": 8068,
+   "sha256": "9df723b188faea531895445686e68ac41b339776b97087edc8abdac422269b26"
+  },
+  "cover": {
+   "path": "books/covers/B16-003.png",
+   "bytes": 49930,
+   "sha256": "f64787ddd8aa509987b14ac9c29def19bcdaba97cefa54e8a8a73c199ded4d5f"
+  },
+  "bundle": {
+   "path": "books/batch16/B16-003/rent_vs_buy_home_calculator_bundle.zip",
+   "bytes": 17339,
+   "sha256": "7c776a1fb903d6b7e1e69c092d78565571beb1d96b7a83c203bbe843fdeabd1b"
+  }
+ },
+ "qa": {
+  "file_test": {
+   "status": "PASS",
+   "problems": []
+  },
+  "recalc": {
+   "engine": "lib/xlsx_eval.py vs independent Python model",
+   "checked": 308,
+   "failed": []
+  },
+  "guide": {
+   "pages": 4,
+   "title_found": true,
+   "disclaimer_found": true
+  },
+  "cover": {
+   "size": [
+    1280,
+    720
+   ]
+  },
+  "brand": {
+   "passed": true,
+   "failed_checks": [],
+   "listing_chars": 1706
+  },
+  "bundle": {
+   "files": [
+    "rent-vs-buy-home-calculator/README.txt",
+    "rent-vs-buy-home-calculator/rent_vs_buy_home_calculator.xlsx",
+    "rent-vs-buy-home-calculator/rent_vs_buy_home_calculator_guide.pdf"
+   ],
+   "corrupt_member": null
+  },
+  "ok": true,
+  "listing": {
+   "description_html": "<p>Compare buying a home with renting and investing the difference: net worth under each choice for every year up to 30, the break-even year, and the answer for the number of years you plan to stay.</p><p>This calculator puts both choices on the same footing. For every year up to 30 it computes the home&#x27;s value, the remaining loan, the full cost of owning, the rent, and a renter&#x27;s investment account that starts with the down payment and closing costs and receives the difference in yearly costs. It compares the net worth of each choice if you sold or stopped at the end of that year.</p><p><strong>What's included</strong></p><ul><li>Net worth of buying vs renting-and-investing for every year up to 30</li><li>Full cost of owning: mortgage, property tax, insurance, upkeep, HOA, closing and selling costs</li><li>Renter&#x27;s investment account built from the down payment and the cost difference</li><li>Answer for the number of years you plan to stay, plus the break-even year</li><li>Loan balance computed with the standard amortisation formula</li><li>PDF guide with the formulas, a worked example and the limits stated plainly</li></ul><p><strong>Who it's for</strong></p><ul><li>First-time buyers deciding whether to buy now or keep renting</li><li>Renters weighing a move to a more expensive area</li><li>Couples planning how long they will stay in a city</li><li>Financial coaches who want a transparent rent-vs-buy model</li></ul><p><strong>You get:</strong> rent_vs_buy_home_calculator.xlsx (Settings, Years, Summary) and this guide.</p><p>Works in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.</p><p><em>This workbook is a comparison tool, not financial, tax or mortgage advice. Taxes, mortgage terms, prices and returns vary; check your figures with a lender and a financial professional before you decide.</em></p>"
+  }
+ },
+ "category": "Business & Finance",
+ "tags": [
+  "rent vs buy",
+  "home buying",
+  "mortgage calculator",
+  "first time buyer",
+  "personal finance",
+  "excel template"
+ ],
+ "currency": "USD",
+ "pricing_evidence": {
+  "basis": "External price observations read on 2026-10-29 through a web-search index plus internal Gumroad comparables.",
+  "external_observations": [
+   {
+    "url": "https://payhip.com/b/Lt41q",
+    "price_usd": 5,
+    "note": "rent vs buy spreadsheet with video tutorial"
+   },
+   {
+    "url": "https://themeasureofaplan.com/rent-versus-buy-calculator/amp/",
+    "price_usd": 0,
+    "note": "free downloadable Excel calculator"
+   },
+   {
+    "url": "https://www.etsy.com/listing/4531899933",
+    "price_usd": 29.25,
+    "note": "real estate deal analyzer (related, not rent vs buy)"
+   }
+  ],
+  "internal_comparables": [
+   {
+    "id": "B15-001",
+    "price_cents": 1500
+   },
+   {
+    "id": "B15-003",
+    "price_cents": 1200
+   }
+  ],
+  "rationale": "$12: above the $5 basic template because it runs 30 years with full owner costs, selling costs and an invested-difference renter account; same as our car buy-vs-lease comparison. Free calculators exist."
+ }
+}

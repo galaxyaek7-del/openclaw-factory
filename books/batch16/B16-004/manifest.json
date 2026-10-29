@@ -1,0 +1,103 @@
+{
+ "id": "B16-004",
+ "slug": "pto-accrual-leave-balance-tracker",
+ "title": "PTO Accrual & Leave Balance Tracker for Small Teams",
+ "price_cents": 1200,
+ "files": {
+  "workbook": {
+   "path": "books/batch16/B16-004/pto_accrual_leave_balance_tracker.xlsx",
+   "bytes": 14029,
+   "sha256": "c14ab24f8588d7fd8c82d69d98b803a0b34a691bae0241501f475ca88112b7f4"
+  },
+  "guide": {
+   "path": "books/batch16/B16-004/pto_accrual_leave_balance_tracker_guide.pdf",
+   "bytes": 7825,
+   "sha256": "b9e501062cd7c469ec6e5b4e4794211ea1cc2a4ccfef59c62b4b82508cedaf86"
+  },
+  "cover": {
+   "path": "books/covers/B16-004.png",
+   "bytes": 46213,
+   "sha256": "8e11cdc94852ceeeb83c7c415a0a334c6e0855b91d1485af64a814adc81a741e"
+  },
+  "bundle": {
+   "path": "books/batch16/B16-004/pto_accrual_leave_balance_tracker_bundle.zip",
+   "bytes": 17858,
+   "sha256": "a5f1097a1f42769210cc4bbed06ce3981d8ae85370b99cc457f5a3e687109695"
+  }
+ },
+ "qa": {
+  "file_test": {
+   "status": "PASS",
+   "problems": []
+  },
+  "recalc": {
+   "engine": "lib/xlsx_eval.py vs independent Python model",
+   "checked": 60,
+   "failed": []
+  },
+  "guide": {
+   "pages": 4,
+   "title_found": true,
+   "disclaimer_found": true
+  },
+  "cover": {
+   "size": [
+    1280,
+    720
+   ]
+  },
+  "brand": {
+   "passed": true,
+   "failed_checks": [],
+   "listing_chars": 1600
+  },
+  "bundle": {
+   "files": [
+    "pto-accrual-leave-balance-tracker/README.txt",
+    "pto-accrual-leave-balance-tracker/pto_accrual_leave_balance_tracker.xlsx",
+    "pto-accrual-leave-balance-tracker/pto_accrual_leave_balance_tracker_guide.pdf"
+   ],
+   "corrupt_member": null
+  },
+  "ok": true,
+  "listing": {
+   "description_html": "<p>Hours accrued each pay period, hours used and booked, balances held at your policy cap, hours lost to the cap, over-booked leave flagged, and the dollar value of the leave you owe.</p><p>This tracker holds one row per employee: the balance carried in, hours accrued per pay period, pay periods so far, hours used and hours already booked. It applies your policy cap, shows the hours lost because a balance reached the cap, flags anyone whose booked leave exceeds the balance, and values each balance at the employee&#x27;s hourly rate.</p><p><strong>What's included</strong></p><ul><li>Accrual per pay period, hours used and booked, for up to 50 employees</li><li>Balances held at your policy cap, with hours lost to the cap shown</li><li>Over-booked leave flagged before it happens</li><li>Leave liability in dollars and days, per person and in total</li><li>Works for weekly, biweekly, semimonthly or monthly payroll</li><li>PDF guide with the formulas, a worked example and setup tips</li></ul><p><strong>Who it's for</strong></p><ul><li>Small business owners who run payroll themselves</li><li>Office managers and bookkeepers tracking leave for a team</li><li>Nonprofits and clinics with hourly and salaried staff</li><li>Founders preparing leave balances for an accountant or a payroll switch</li></ul><p><strong>You get:</strong> pto_accrual_leave_balance_tracker.xlsx (Policy, Employees, Summary) and this guide.</p><p>Works in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.</p><p><em>This workbook is a record-keeping tool, not legal or payroll advice. Paid leave, accrual caps and payout of unused leave are regulated differently by state and country; confirm your policy against the law that applies to you.</em></p>"
+  }
+ },
+ "category": "Business & Finance",
+ "tags": [
+  "pto tracker",
+  "leave tracker",
+  "pto accrual",
+  "small business hr",
+  "employee leave",
+  "excel template"
+ ],
+ "currency": "USD",
+ "pricing_evidence": {
+  "basis": "External observations read on 2026-10-29 through a web-search index plus internal Gumroad comparables.",
+  "external_observations": [
+   {
+    "url": "https://indzara.com/?p=2502",
+    "price_usd": 0,
+    "note": "free Excel PTO tracker (tenure-based accrual)"
+   },
+   {
+    "url": "https://www.etsy.com/search?q=pto+calculator+tracker",
+    "price_usd": null,
+    "note": "Etsy 'PTO Calculator & Tracker' listing seen without a price"
+   }
+  ],
+  "internal_comparables": [
+   {
+    "id": "B15-008",
+    "price_cents": 1400
+   },
+   {
+    "id": "GR-36a9097179",
+    "price_cents": 4900
+   }
+  ],
+  "rationale": "$12: free single-purpose PTO templates exist, so priced below our shift and labor planner ($14); justified by the cap, booked-leave check and liability in dollars, which the free templates observed do not combine."
+ }
+}

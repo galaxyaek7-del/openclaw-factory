@@ -76,6 +76,16 @@ class TestSemantics(unittest.TestCase):
         self.assertEqual(w.evaluate("Summary!B1"), 2)
         self.assertEqual(w.evaluate("Summary!B2"), 1)
 
+    def test_numeric_criterion_from_a_cell(self):
+        # 2026-10-29: an int criterion read from a cell matched nothing (compared as text).
+        w = book({"A1": 1, "A2": 2, "A3": "=1+2", "B1": 10, "B2": 20, "B3": 30, "C1": 3, "C2": 2},
+                 {"Summary": {"B1": "=SUMIF(Data!A1:A3,Data!C1,Data!B1:B3)",
+                              "B2": "=COUNTIF(Data!A1:A3,Data!C2)",
+                              "B3": "=SUMIF(Data!A1:A3,\">=2\",Data!B1:B3)"}})
+        self.assertEqual(w.evaluate("Summary!B1"), 30)
+        self.assertEqual(w.evaluate("Summary!B2"), 1)
+        self.assertEqual(w.evaluate("Summary!B3"), 50)
+
     def test_and_or_not(self):
         w = book({"A1": 1, "B1": "=AND(A1>0,A1<2)", "B2": "=OR(A1>5,A1=1)", "B3": "=NOT(A1=1)"})
         self.assertIs(w.evaluate("Data!B1"), True)

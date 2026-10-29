@@ -64,10 +64,12 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent
 REGISTRY = ROOT / "data" / "product_registry.json"
 CATALOG = ROOT / "data" / "catalog.json"
-MANIFEST_GLOBS = ["books/batch13/B13-*.manifest.json", "books/batch14/*/manifest.json", "books/batch15/*/manifest.json"]
+MANIFEST_GLOBS = ["books/batch13/B13-*.manifest.json", "books/batch14/*/manifest.json", "books/batch15/*/manifest.json",
+                  "books/batch16/*/manifest.json"]
 PUBLISH_RESULTS = [ROOT / "data" / "batch13_publish_results.json",
                    ROOT / "data" / "batch14_publish_results.json",
-                   ROOT / "data" / "batch15_publish_results.json"]
+                   ROOT / "data" / "batch15_publish_results.json",
+                   ROOT / "data" / "batch16_publish_results.json"]
 PAGE_CHECKS = ROOT / "data" / "listing_page_checks.json"
 PAGE_CHECK_MAX_AGE_DAYS = 7
 SALES_LEDGER = ROOT / "data" / "sales_ledger.jsonl"

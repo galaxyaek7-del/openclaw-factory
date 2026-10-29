@@ -225,7 +225,10 @@ def _criterion(crit):
     if isinstance(crit, XLError):
         raise Unsupported("criterion is an error value")
     if isinstance(crit, bool) or isinstance(crit, (int, float)):
-        op, operand = "=", crit
+        # 2026-10-29: a numeric criterion read from a cell can arrive as an int;
+        # it was then compared as text below and matched nothing, while Excel
+        # matches it numerically (SUMIF(A:A, Settings!B19, ...) returned 0).
+        op, operand = "=", (crit if isinstance(crit, bool) else float(crit))
     else:
         op, operand = _CRIT_OP.match(str(crit)).groups()
         op = op or "="

@@ -1,0 +1,103 @@
+{
+ "id": "B16-006",
+ "slug": "membership-subscription-mrr-churn-forecaster",
+ "title": "Membership & Subscription MRR and Churn Forecaster",
+ "price_cents": 1500,
+ "files": {
+  "workbook": {
+   "path": "books/batch16/B16-006/membership_subscription_mrr_churn_forecaster.xlsx",
+   "bytes": 9963,
+   "sha256": "9d7e620ee53f61c5f5d69c863db8945223fe5ad0202a9e94a17b05008589de6c"
+  },
+  "guide": {
+   "path": "books/batch16/B16-006/membership_subscription_mrr_churn_forecaster_guide.pdf",
+   "bytes": 7600,
+   "sha256": "4106dd737cc6cf7fd3278834e80d5439bbf794eb154b6364a22900845b84efc4"
+  },
+  "cover": {
+   "path": "books/covers/B16-006.png",
+   "bytes": 46595,
+   "sha256": "8826e313874072e3aa909ad4e9721991f01d0e6bfa10000845b2fd7ab187d0ae"
+  },
+  "bundle": {
+   "path": "books/batch16/B16-006/membership_subscription_mrr_churn_forecaster_bundle.zip",
+   "bytes": 15216,
+   "sha256": "5e4443e81ba0532b8cbf757d186674599ae86dace078977caae1660bfdaac595"
+  }
+ },
+ "qa": {
+  "file_test": {
+   "status": "PASS",
+   "problems": []
+  },
+  "recalc": {
+   "engine": "lib/xlsx_eval.py vs independent Python model",
+   "checked": 203,
+   "failed": []
+  },
+  "guide": {
+   "pages": 4,
+   "title_found": true,
+   "disclaimer_found": true
+  },
+  "cover": {
+   "size": [
+    1280,
+    720
+   ]
+  },
+  "brand": {
+   "passed": true,
+   "failed_checks": [],
+   "listing_chars": 1517
+  },
+  "bundle": {
+   "files": [
+    "membership-subscription-mrr-churn-forecaster/README.txt",
+    "membership-subscription-mrr-churn-forecaster/membership_subscription_mrr_churn_forecaster.xlsx",
+    "membership-subscription-mrr-churn-forecaster/membership_subscription_mrr_churn_forecaster_guide.pdf"
+   ],
+   "corrupt_member": null
+  },
+  "ok": true,
+  "listing": {
+   "description_html": "<p>Project members, monthly recurring revenue and net revenue after fees for 24 months from your price, sign-ups, growth and churn, with the steady-state member count and customer lifetime value.</p><p>This forecaster takes your starting members, price, monthly sign-ups, sign-up growth, churn and payment fees, and builds a 24-month projection of members, MRR, net revenue and cumulative revenue. It also shows the member count the business settles at if sign-ups stay flat (sign-ups divided by churn), the average member lifetime, and lifetime value per member.</p><p><strong>What's included</strong></p><ul><li>24-month projection of members, MRR, net revenue and cumulative revenue</li><li>Sign-up growth and monthly churn as separate inputs</li><li>Steady-state member count: where joins equal cancellations</li><li>Average member lifetime and lifetime value after fees</li><li>Month 12 and month 24 members, MRR and ARR on one summary</li><li>PDF guide with the formulas, a worked example and churn-measurement tips</li></ul><p><strong>Who it's for</strong></p><ul><li>Paid community and membership site owners</li><li>Newsletter and Patreon-style creators</li><li>Small SaaS and subscription box founders</li><li>Coaches selling monthly programs</li></ul><p><strong>You get:</strong> membership_subscription_mrr_churn_forecaster.xlsx (Settings, Forecast, Summary) and this guide.</p><p>Works in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.</p><p><em>This workbook is a forecasting tool, not financial, tax or investment advice. It projects from the assumptions you enter; real sign-ups and churn will differ month to month.</em></p>"
+  }
+ },
+ "category": "Business & Finance",
+ "tags": [
+  "membership",
+  "subscription",
+  "mrr",
+  "churn",
+  "saas metrics",
+  "revenue forecast"
+ ],
+ "currency": "USD",
+ "pricing_evidence": {
+  "basis": "External listings read on 2026-10-29 through a web-search index (prices not visible in the index) plus internal Gumroad comparables.",
+  "external_observations": [
+   {
+    "url": "https://www.efinancialmodels.com/",
+    "price_usd": null,
+    "note": "subscription and SaaS financial models sold as paid templates; price not shown in the index"
+   },
+   {
+    "url": "https://gumroad.com/",
+    "price_usd": null,
+    "note": "Gumroad subscription MRR trackers exist; individual prices not shown in the index"
+   }
+  ],
+  "internal_comparables": [
+   {
+    "id": "B15-007",
+    "price_cents": 1500
+   },
+   {
+    "id": "B14-009",
+    "price_cents": 1500
+   }
+  ],
+  "rationale": "$15: same as our customer lifetime value and runway workbooks; below typical paid SaaS-model templates, which are full three-statement models."
+ }
+}

@@ -1,0 +1,109 @@
+{
+ "id": "B16-001",
+ "slug": "safe-conversion-dilution-calculator",
+ "title": "SAFE Conversion & Dilution Calculator (Post-Money SAFEs)",
+ "price_cents": 1900,
+ "files": {
+  "workbook": {
+   "path": "books/batch16/B16-001/safe_conversion_dilution_calculator.xlsx",
+   "bytes": 9472,
+   "sha256": "3d80fa697eedbe6128e9eaae426fdafcef32b7f71c1d149b980240d27cf8919f"
+  },
+  "guide": {
+   "path": "books/batch16/B16-001/safe_conversion_dilution_calculator_guide.pdf",
+   "bytes": 7967,
+   "sha256": "7db6a9a61b4979b122632837234c6198ee29b3a76154fed4c6aa692ee61d5b52"
+  },
+  "cover": {
+   "path": "books/covers/B16-001.png",
+   "bytes": 53823,
+   "sha256": "2f5c1a0db2f2946b21e74217fd91fb16d51bcfdd3d8a3a2088b8b677d76e2758"
+  },
+  "bundle": {
+   "path": "books/batch16/B16-001/safe_conversion_dilution_calculator_bundle.zip",
+   "bytes": 15063,
+   "sha256": "7bf29b909626f4e560ae8e8431cb8de66ad5cf772d8f009d0c3378edad565504"
+  }
+ },
+ "qa": {
+  "file_test": {
+   "status": "PASS",
+   "problems": []
+  },
+  "recalc": {
+   "engine": "lib/xlsx_eval.py vs independent Python model",
+   "checked": 23,
+   "failed": []
+  },
+  "guide": {
+   "pages": 4,
+   "title_found": true,
+   "disclaimer_found": true
+  },
+  "cover": {
+   "size": [
+    1280,
+    720
+   ]
+  },
+  "brand": {
+   "passed": true,
+   "failed_checks": [],
+   "listing_chars": 1622
+  },
+  "bundle": {
+   "files": [
+    "safe-conversion-dilution-calculator/README.txt",
+    "safe-conversion-dilution-calculator/safe_conversion_dilution_calculator.xlsx",
+    "safe-conversion-dilution-calculator/safe_conversion_dilution_calculator_guide.pdf"
+   ],
+   "corrupt_member": null
+  },
+  "ok": true,
+  "listing": {
+   "description_html": "<p>Enter your post-money SAFEs and the terms of the priced round; see how many shares each SAFE converts into, the round price per share, and who owns what afterwards.</p><p>This calculator takes the shares and options you have, each post-money SAFE (amount and valuation cap) and the priced round (pre-money valuation and new money). It shows each SAFE&#x27;s ownership at conversion, the shares each one receives, the round&#x27;s price per share, the new investors&#x27; shares and everyone&#x27;s ownership after the round.</p><p><strong>What's included</strong></p><ul><li>Each post-money SAFE&#x27;s ownership at conversion (amount / valuation cap)</li><li>Shares issued to every SAFE holder, without circular formulas</li><li>Priced round: price per share and new investor shares</li><li>Ownership after the round for founders, option pool, SAFE holders and new investors</li><li>Founder dilution in percentage points, plus a CHECK flag when SAFEs reach 100%</li><li>PDF guide with the formulas, a worked example and the limits stated plainly</li></ul><p><strong>Who it's for</strong></p><ul><li>Founders raising or about to convert SAFEs</li><li>Startup operators preparing for a seed or Series A priced round</li><li>Angel investors checking what a SAFE converts into</li><li>Accelerator and incubator teams teaching cap table basics</li></ul><p><strong>You get:</strong> safe_conversion_dilution_calculator.xlsx (Settings, SAFEs, Summary) and this guide.</p><p>Works in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.</p><p><em>This workbook is a modelling tool, not legal, tax or investment advice. Conversion depends on the exact wording of your SAFE documents and the priced round; confirm every figure with your lawyer before you sign or rely on it.</em></p>"
+  }
+ },
+ "category": "Business & Finance",
+ "tags": [
+  "safe calculator",
+  "cap table",
+  "startup dilution",
+  "founder equity",
+  "seed round",
+  "fundraising",
+  "excel template"
+ ],
+ "currency": "USD",
+ "pricing_evidence": {
+  "basis": "External price observations read on 2026-10-29 through a web-search index (not page visits) plus internal Gumroad comparables.",
+  "external_observations": [
+   {
+    "url": "https://flevy.com/browse/marketplace/cap-table-safe-and-convertible-note-dilution-waterfall-13267",
+    "price_usd": 49,
+    "note": "Cap table, SAFE and convertible note dilution workbook"
+   },
+   {
+    "url": "https://seedlegals.com/us/resources/startup-equity-dilution-calculator.md",
+    "price_usd": 0,
+    "note": "free online calculator"
+   },
+   {
+    "url": "https://ryanoconnellfinance.com/product/safe-conversion-calculator-excel/",
+    "price_usd": null,
+    "note": "pre-money SAFE template; price not shown in the index"
+   }
+  ],
+  "internal_comparables": [
+   {
+    "id": "B14-002",
+    "price_cents": 2400
+   },
+   {
+    "id": "B14-001",
+    "price_cents": 1900
+   }
+  ],
+  "rationale": "$19: well below the $49 paid workbook, above simple calculators; free online tools exist, so the price reflects a downloadable, checkable workbook rather than the calculation itself."
+ }
+}

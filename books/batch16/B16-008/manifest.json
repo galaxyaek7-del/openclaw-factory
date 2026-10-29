@@ -1,0 +1,99 @@
+{
+ "id": "B16-008",
+ "slug": "restaurant-menu-engineering-worksheet",
+ "title": "Restaurant Menu Engineering Worksheet (Stars, Plowhorses, Puzzles, Dogs)",
+ "price_cents": 1900,
+ "files": {
+  "workbook": {
+   "path": "books/batch16/B16-008/restaurant_menu_engineering_worksheet.xlsx",
+   "bytes": 13126,
+   "sha256": "ee52881a734140052467ab8862103bb4e5c4e44dd662d1b82f0429714028b389"
+  },
+  "guide": {
+   "path": "books/batch16/B16-008/restaurant_menu_engineering_worksheet_guide.pdf",
+   "bytes": 7542,
+   "sha256": "1aa1bb78c1e5a32071f987576d4d83546a1a7c783e315c735ca140f90e282cfb"
+  },
+  "cover": {
+   "path": "books/covers/B16-008.png",
+   "bytes": 56036,
+   "sha256": "f96bb9b9c6b20e083baa8db63c62e2de7dfb966cdd367d48328a8be288ea5479"
+  },
+  "bundle": {
+   "path": "books/batch16/B16-008/restaurant_menu_engineering_worksheet_bundle.zip",
+   "bytes": 16577,
+   "sha256": "d79fae899693ae7dedfe00412c4fc2fec435e4fd996ef48d12b399ac23200d4f"
+  }
+ },
+ "qa": {
+  "file_test": {
+   "status": "PASS",
+   "problems": []
+  },
+  "recalc": {
+   "engine": "lib/xlsx_eval.py vs independent Python model",
+   "checked": 50,
+   "failed": []
+  },
+  "guide": {
+   "pages": 4,
+   "title_found": true,
+   "disclaimer_found": true
+  },
+  "cover": {
+   "size": [
+    1280,
+    720
+   ]
+  },
+  "brand": {
+   "passed": true,
+   "failed_checks": [],
+   "listing_chars": 1493
+  },
+  "bundle": {
+   "files": [
+    "restaurant-menu-engineering-worksheet/README.txt",
+    "restaurant-menu-engineering-worksheet/restaurant_menu_engineering_worksheet.xlsx",
+    "restaurant-menu-engineering-worksheet/restaurant_menu_engineering_worksheet_guide.pdf"
+   ],
+   "corrupt_member": null
+  },
+  "ok": true,
+  "listing": {
+   "description_html": "<p>Enter each dish&#x27;s price, plate cost and units sold, and the worksheet classifies every item by contribution margin and popularity using the standard menu-engineering method, with food cost % and menu mix.</p><p>This worksheet applies the standard Kasavana and Smith approach. An item is popular when its share of the menu mix reaches 70% of an equal share (with 20 items, 70% of 5% = 3.5%), and profitable when its contribution margin is at or above the menu&#x27;s weighted average. That gives four classes: Stars (popular and profitable), Plowhorses (popular, low margin), Puzzles (profitable, unpopular) and Dogs (neither).</p><p><strong>What's included</strong></p><ul><li>Classifies every dish as Star, Plowhorse, Puzzle or Dog</li><li>Standard 70% popularity rule and weighted-average contribution margin</li><li>Food cost % and total contribution per item</li><li>Menu mix % from your point-of-sale counts</li><li>Count of items in each class for the whole section</li><li>PDF guide with the method, a worked example and what to do with each class</li></ul><p><strong>Who it's for</strong></p><ul><li>Restaurant and cafe owners</li><li>Chefs and kitchen managers reviewing a menu</li><li>Food truck and catering operators</li><li>Hospitality students and consultants</li></ul><p><strong>You get:</strong> restaurant_menu_engineering_worksheet.xlsx (Menu, Summary) and this guide.</p><p>Works in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.</p><p><em>This workbook is an analysis tool, not financial or business advice. Its results depend on accurate plate costs and sales counts from your own records.</em></p>"
+  }
+ },
+ "category": "Business & Finance",
+ "tags": [
+  "menu engineering",
+  "restaurant",
+  "food cost",
+  "menu pricing",
+  "cafe owner",
+  "excel template"
+ ],
+ "currency": "USD",
+ "pricing_evidence": {
+  "basis": "External listings read on 2026-10-29 through a web-search index plus internal Gumroad comparables.",
+  "external_observations": [
+   {
+    "url": "https://payhip.com/b/ID83G",
+    "price_usd": 34.0,
+    "note": "menu engineering spreadsheet"
+   },
+   {
+    "url": "https://pos.toasttab.com/resources/menu-engineering-worksheet",
+    "price_usd": 0,
+    "note": "free menu engineering worksheet (lead magnet)"
+   }
+  ],
+  "internal_comparables": [
+   {
+    "id": "B14-001",
+    "price_cents": 1900
+   }
+  ],
+  "rationale": "$19: between free lead-magnet worksheets and the $34 paid spreadsheet; ours adds class counts, food cost % and a full method guide."
+ }
+}

@@ -1,0 +1,103 @@
+{
+ "id": "B16-009",
+ "slug": "roommate-shared-bill-splitter",
+ "title": "Roommate & Shared House Bill Splitter (Equal, Income or Room Size)",
+ "price_cents": 700,
+ "files": {
+  "workbook": {
+   "path": "books/batch16/B16-009/roommate_shared_bill_splitter.xlsx",
+   "bytes": 15842,
+   "sha256": "1c787d471b7cc3dc1d57ae943564a8aa6a3ae6cdbc14319c030c2edb306d3e5c"
+  },
+  "guide": {
+   "path": "books/batch16/B16-009/roommate_shared_bill_splitter_guide.pdf",
+   "bytes": 7329,
+   "sha256": "6d829f9af3098751ed73c1a4f2ed1b0337be9da106f248dec5b3b2403115235a"
+  },
+  "cover": {
+   "path": "books/covers/B16-009.png",
+   "bytes": 39915,
+   "sha256": "cc89017d5551a8ec54a3df0c79a2936523c7cf754e15c18b52c23f50a02bf087"
+  },
+  "bundle": {
+   "path": "books/batch16/B16-009/roommate_shared_bill_splitter_bundle.zip",
+   "bytes": 16982,
+   "sha256": "00a018a12e2ed38c53e51388aa0b324f6b26e3547f186ad1d5ac33ff01ff5742"
+  }
+ },
+ "qa": {
+  "file_test": {
+   "status": "PASS",
+   "problems": []
+  },
+  "recalc": {
+   "engine": "lib/xlsx_eval.py vs independent Python model",
+   "checked": 55,
+   "failed": []
+  },
+  "guide": {
+   "pages": 4,
+   "title_found": true,
+   "disclaimer_found": true
+  },
+  "cover": {
+   "size": [
+    1280,
+    720
+   ]
+  },
+  "brand": {
+   "passed": true,
+   "failed_checks": [],
+   "listing_chars": 1414
+  },
+  "bundle": {
+   "files": [
+    "roommate-shared-bill-splitter/README.txt",
+    "roommate-shared-bill-splitter/roommate_shared_bill_splitter.xlsx",
+    "roommate-shared-bill-splitter/roommate_shared_bill_splitter_guide.pdf"
+   ],
+   "corrupt_member": null
+  },
+  "ok": true,
+  "listing": {
+   "description_html": "<p>Split rent, utilities and shared costs between up to five housemates, choosing for each bill whether it is shared equally, by income or by room size, and see who owes whom at the end of the month.</p><p>This splitter lets you set a split method for each bill: Equal, Income (in proportion to each housemate&#x27;s income) or Room size (in proportion to each room&#x27;s floor area). It records who actually paid each bill, then works out what each housemate owed, what they paid, and the net balance: positive means they are owed money, negative means they owe.</p><p><strong>What's included</strong></p><ul><li>Split each bill Equal, by Income or by Room size</li><li>Up to five housemates and 60 bills</li><li>Records who paid each bill and works out net balances</li><li>Positive balance = owed money, negative = owes money; nets add to zero</li><li>Flags misspelled payer names and unknown split methods</li><li>PDF guide with the formulas, a worked example and a settle-up tip</li></ul><p><strong>Who it's for</strong></p><ul><li>Students and young professionals in shared houses</li><li>Couples splitting costs by income</li><li>Co-living and house-share organisers</li><li>Anyone tired of settle-up arguments</li></ul><p><strong>You get:</strong> roommate_shared_bill_splitter.xlsx (Housemates, Bills, Balances) and this guide.</p><p>Works in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.</p><p><em>This workbook is a budgeting tool, not legal or financial advice. It does not replace a written tenancy or house-share agreement.</em></p>"
+  }
+ },
+ "category": "Personal Finance",
+ "tags": [
+  "roommate",
+  "bill splitter",
+  "shared expenses",
+  "house share",
+  "budget",
+  "excel template"
+ ],
+ "currency": "USD",
+ "pricing_evidence": {
+  "basis": "External listings read on 2026-10-29 through a web-search index plus internal Gumroad comparables.",
+  "external_observations": [
+   {
+    "url": "https://www.etsy.com/listing/4599195343",
+    "price_usd": 7.8,
+    "note": "roommate bill split spreadsheet"
+   },
+   {
+    "url": "https://payhip.com/b/pyDAT",
+    "price_usd": 10.0,
+    "note": "shared expenses tracker, listed at GBP 7.99"
+   }
+  ],
+  "internal_comparables": [
+   {
+    "id": "B14-010",
+    "price_cents": 900
+   },
+   {
+    "id": "B15-010",
+    "price_cents": 900
+   }
+  ],
+  "rationale": "$7: in line with the $5-$10 market for bill-split sheets; ours adds per-bill split methods and payer-name validation; priced below our $9 budget planners because the job is narrower."
+ }
+}
