@@ -74,6 +74,17 @@ class SiteAuditTest(unittest.TestCase):
         r = self.run_site({"a.html": page("a.html"), "d.html": page("d.html", extra=extra)}, sitemap_names=["a.html"])
         self.assertEqual(r["findings"], [])
 
+    def test_noindex_page_listed_in_sitemap_is_flagged(self):
+        # A sitemap <loc> for a page that says noindex is contradictory: the
+        # sitemap asks to index it while the page asks not to. Real instance
+        # found 2026-10-29: guide-systemeio-affiliate.html and saas-portal.html
+        # were listed in sitemap.xml while carrying noindex.
+        extra = '<meta name="robots" content="noindex">'
+        r = self.run_site({"a.html": page("a.html"), "d.html": page("d.html", extra=extra)},
+                          sitemap_names=["a.html", "d.html"])
+        self.assertEqual(self.kinds(r), ["SITEMAP_NOINDEX"])
+        self.assertEqual(r["findings"][0]["page"], "d.html")
+
     def test_draft_page_with_buy_link_and_unlisted_link(self):
         body = 'DRAFT — not yet listed <a href="https://shop.gumroad.com/l/abc">Buy</a>'
         r = self.run_site({"a.html": page("a.html", body=body)}, unlisted={"abc"})
@@ -89,6 +100,31 @@ class SiteAuditTest(unittest.TestCase):
                           raw={"c.html": b"\xff\xfe" + page("c.html").encode("utf-16-le")})
         self.assertIn("CANONICAL_DUP", self.kinds(r))
         self.assertIn("ENCODING", self.kinds(r))
+
+    def test_subdirectory_pages_are_audited_and_sibling_links_resolve_in_place(self):
+        """Pages under a subdirectory must be audited, and a link to a sibling
+        (bare filename) must resolve against the page's own directory -- not the
+        site root, which used to report every such link as BROKEN_LINK."""
+        d = tempfile.mkdtemp()
+        site = os.path.join(d, "site")
+        os.makedirs(os.path.join(site, "trust"))
+        for name, body in (("a.html", '<a href="b.html">sibling</a>'), ("b.html", "Hello")):
+            with open(os.path.join(site, "trust", name), "w", encoding="utf-8") as fh:
+                fh.write(page("trust/" + name, body=body))
+        sm = os.path.join(d, "sitemap.xml")
+        names = ("trust/a.html", "trust/b.html")
+        with open(sm, "w", encoding="utf-8") as fh:
+            fh.write("<urlset>" + "".join(f"<url><loc>{BASE}{n}</loc></url>" for n in names) + "</urlset>")
+        r = audit.audit_site(site, sm, BASE, set())
+        self.assertEqual(r["pages"], 2)
+        self.assertEqual(r["findings"], [])
+
+    def test_root_absolute_link_is_still_broken(self):
+        """A root-absolute href does not resolve inside a subdirectory site, so it
+        must still be reported (this is the live /trust/... 404 on GitHub Pages)."""
+        r = self.run_site({"a.html": page("a.html", body='<a href="/trust/index.html">t</a>')})
+        self.assertEqual([(f["kind"], f["detail"]) for f in r["findings"]],
+                         [("BROKEN_LINK", "/trust/index.html")])
 
 
 if __name__ == "__main__":

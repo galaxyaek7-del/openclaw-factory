@@ -17,6 +17,9 @@ customer_site/*.html it checks:
   BROKEN_LINK     a relative href/src to a file that does not exist
   SITEMAP_MISSING an indexable page absent from sitemap.xml
   SITEMAP_DEAD    a sitemap <loc> whose file does not exist
+  SITEMAP_NOINDEX a sitemap <loc> whose own page says noindex (a
+                  contradictory signal: the sitemap asks for the page to be
+                  indexed while the page asks not to be)
   DRAFT_BUY_LINK  a page that calls itself DRAFT/planned/coming soon but
                   carries a Gumroad buy link
 
@@ -89,7 +92,8 @@ def _is_relative(url: str) -> bool:
 
 
 def audit_page(path: str, site_dir: str, base_url: str, unlisted: set[str]) -> tuple[list[dict], dict]:
-    name = os.path.basename(path)
+    name = os.path.relpath(path, site_dir).replace(os.sep, "/")
+    page_dir = os.path.dirname(path)
     findings: list[dict] = []
 
     def add(kind, detail):
@@ -133,7 +137,7 @@ def audit_page(path: str, site_dir: str, base_url: str, unlisted: set[str]) -> t
         if not _is_relative(link):
             continue
         target = link.split("#", 1)[0].split("?", 1)[0]
-        if target and not os.path.exists(os.path.normpath(os.path.join(site_dir, target))):
+        if target and not os.path.exists(os.path.normpath(os.path.join(page_dir, target))):
             add("BROKEN_LINK", link)
     ids = set(_GUMROAD_ID_RE.findall(text))
     visible = re.sub(r"<(script|style)\b.*?</\1>", " ", text, flags=re.S | re.I)
@@ -149,17 +153,25 @@ def audit_page(path: str, site_dir: str, base_url: str, unlisted: set[str]) -> t
 def audit_site(site_dir: str = SITE_DIR, sitemap: str = SITEMAP, base_url: str = BASE_URL,
                unlisted: set[str] | None = None) -> dict:
     unlisted = unlisted or set()
-    pages = sorted(f for f in os.listdir(site_dir) if f.endswith(".html"))
+    pages: list[str] = []
+    for dirpath, _dirnames, filenames in os.walk(site_dir):
+        for f in filenames:
+            if f.endswith(".html"):
+                pages.append(os.path.relpath(os.path.join(dirpath, f), site_dir).replace(os.sep, "/"))
+    pages.sort()
     findings: list[dict] = []
     canon_pages: dict[str, list[str]] = defaultdict(list)
     indexable: set[str] = set()
+    noindex_pages: set[str] = set()
     for name in pages:
-        f, meta = audit_page(os.path.join(site_dir, name), site_dir, base_url, unlisted)
+        f, meta = audit_page(os.path.join(site_dir, *name.split("/")), site_dir, base_url, unlisted)
         findings += f
         if meta["canonical"]:
             canon_pages[meta["canonical"]].append(name)
         if not meta["noindex"]:
             indexable.add(name)
+        else:
+            noindex_pages.add(name)
     for url, names in canon_pages.items():
         if len(names) > 1:
             findings.append({"page": ", ".join(names), "kind": "CANONICAL_DUP", "detail": url})
@@ -171,6 +183,9 @@ def audit_site(site_dir: str = SITE_DIR, sitemap: str = SITEMAP, base_url: str =
                 findings.append({"page": name, "kind": "SITEMAP_DEAD", "detail": "listed but missing"})
         for name in sorted(indexable - in_map):
             findings.append({"page": name, "kind": "SITEMAP_MISSING", "detail": "indexable page not in sitemap"})
+        for name in sorted(in_map & noindex_pages):
+            findings.append({"page": name, "kind": "SITEMAP_NOINDEX",
+                             "detail": "listed in sitemap but the page itself says noindex"})
     return {
         "pages": len(pages),
         "findings": findings,
