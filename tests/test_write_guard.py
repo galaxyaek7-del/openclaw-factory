@@ -32,6 +32,11 @@ def run_case(repo, body):
         "\nprint(json.dumps(out))\n"
     env = dict(os.environ)
     env.pop("GF_WRITE_GUARD_REPORT", None)
+    # Isolate from the guard this test suite itself runs under.
+    for k in ("GF_WRITE_GUARD_OVERLAY", "GF_WRITE_GUARD_ROOT"):
+        env.pop(k, None)
+    site = str(TESTS / "_guard_site")
+    env["PYTHONPATH"] = os.pathsep.join(p for p in env.get("PYTHONPATH", "").split(os.pathsep) if p and p != site)
     r = subprocess.run([sys.executable, "-c", code], capture_output=True, text=True, env=env, timeout=60)
     if r.returncode != 0:
         raise AssertionError(r.stderr)
@@ -177,6 +182,19 @@ class WriteGuard(unittest.TestCase):
         self.assertEqual("raised", out["missing"])
         self.assertFalse(os.path.exists(os.path.join(self.repo, "niche_reports")))
         self.assertEqual(["ledger.jsonl"], os.listdir(os.path.join(self.repo, "data")))
+
+    def test_python_subprocess_shares_the_overlay(self):
+        # 2026-10-29: tests that start python subprocesses still wrote live files
+        # (generation log, QUARANTINE.md). Children now inherit the guard.
+        out, _ = run_case(self.repo, """
+            import subprocess
+            p = os.path.join(R, "data", "ledger.jsonl")
+            child = "open(r'%s', 'a', encoding='utf-8').write('child-row')" % p
+            subprocess.run([sys.executable, "-c", child], check=True)
+            out["seen"] = open(p, encoding="utf-8").read()
+        """)
+        self.assertIn("child-row", out["seen"])
+        self.assertNotIn("child-row", self.live())
 
     def test_paths_outside_repo_are_untouched(self):
         outside = tempfile.mkdtemp()

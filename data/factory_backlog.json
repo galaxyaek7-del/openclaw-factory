@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-29T11:29:51.989976+00:00",
+ "generated_at": "2026-10-29T11:38:14.035162+00:00",
  "source": "docs/factory/FACTORY_ENGINEERING_BACKLOG.md (rows parsed verbatim; the Markdown is the edited copy)",
  "items": [
   {
@@ -48,8 +48,8 @@
    "why": "R9",
    "acceptance": "full suite on a clean checkout leaves `git status` clean. Writers found: `inspectors.QUARANTINE_FILE`, `profit_oracle.GOLDEN_MD_FILE`/`REJECTED_NICHES_FILE`, `market_hunter.REJECTED_NICHES_FILE`, `book_generator` (rejected niches, `books/_generation_log.jsonl`), `autonomous_commerce_ops` (`data/recovery_actions.jsonl`). Plan: one `GF_RECORDS_DIR` override set by `scripts/run_python_group.py`, seeded with copies so readers see the same data",
    "verify": "run suite, check status",
-   "status": "TODO",
-   "status_detail": "TODO",
+   "status": "DONE",
+   "status_detail": "DONE 2026-10-29: `tests/write_guard.py` (overlay, inherited by Python subprocesses via `tests/_guard_site/sitecustomize.py`). Measured on clean worktrees over the 8 CI groups: identical results; live files changed by the suite 28 -> 0. Node subprocesses are not covered",
    "founder_authorization_required": false
   },
   {

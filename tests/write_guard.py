@@ -20,8 +20,12 @@ tests/conftest.py (ad-hoc pytest) call install(). redirected() lists the live
 paths a run tried to write, which is the per-run evidence of which modules still
 default to live files.
 
+Python subprocesses a test starts inherit the guard (tests/_guard_site/
+sitecustomize.py) and share the parent's overlay, so the test still reads what
+they wrote.
+
 Not covered, and stated rather than hidden:
-  * subprocesses a test starts (python scripts, node) write directly;
+  * node subprocesses a test starts write directly;
   * os.listdir and os.scandir (and so glob and Path.iterdir) merge the live
     directory with the overlay; os.walk's top-down recursion uses the same
     calls. Lower-level directory APIs (nt.listdir via file descriptors) do not;
@@ -35,7 +39,11 @@ import shutil
 import tempfile
 import threading
 
-REPO_ROOT = os.path.normcase(os.path.realpath(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+OVERLAY_ENV = "GF_WRITE_GUARD_OVERLAY"
+ROOT_ENV = "GF_WRITE_GUARD_ROOT"   # set by the owning process so children guard the same root
+REPO_ROOT = os.path.normcase(os.path.realpath(
+    os.environ.get(ROOT_ENV) or os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+SITE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "_guard_site")
 _SKIP_PARTS = ("__pycache__", ".pytest_cache", ".git")
 
 _real = {
@@ -357,7 +365,21 @@ def install():
     with _lock:
         if _state["installed"]:
             return _state["overlay"]
-        _state["overlay"] = os.path.realpath(tempfile.mkdtemp(prefix="gf_write_guard_"))
+        # Child processes (python subprocesses a test starts) inherit the overlay
+        # through GF_WRITE_GUARD_OVERLAY and install the same guard from
+        # tests/_guard_site/sitecustomize.py, so what a child writes lands in the
+        # same overlay the test reads. Only the owning process deletes it.
+        shared = os.environ.get(OVERLAY_ENV)
+        if shared and _real["isdir"](shared):
+            _state["overlay"], _state["owner"] = os.path.realpath(shared), False
+        else:
+            _state["overlay"] = os.path.realpath(tempfile.mkdtemp(prefix="gf_write_guard_"))
+            _state["owner"] = True
+            os.environ[OVERLAY_ENV] = _state["overlay"]
+            os.environ[ROOT_ENV] = REPO_ROOT
+            existing = os.environ.get("PYTHONPATH", "")
+            if SITE_DIR not in existing.split(os.pathsep):
+                os.environ["PYTHONPATH"] = SITE_DIR + (os.pathsep + existing if existing else "")
         builtins.open = _guarded_open
         io.open = _guarded_open
         os.open = _guarded_os_open
@@ -401,6 +423,14 @@ def uninstall():
         os.path.isfile = _real["isfile"]
         os.path.isdir = _real["isdir"]
         os.path.lexists = _real["lexists"]
+        if _state.get("owner"):
+            os.environ.pop(OVERLAY_ENV, None)
+            os.environ.pop(ROOT_ENV, None)
+            parts = [p for p in os.environ.get("PYTHONPATH", "").split(os.pathsep) if p and p != SITE_DIR]
+            if parts:
+                os.environ["PYTHONPATH"] = os.pathsep.join(parts)
+            else:
+                os.environ.pop("PYTHONPATH", None)
         _state["installed"] = False
 
 
@@ -423,4 +453,5 @@ def _report():
     if paths:
         import sys
         sys.stderr.write(f"write_guard: {len(paths)} live path(s) redirected to the test overlay\n")
-    shutil.rmtree(_state["overlay"] or "", ignore_errors=True)
+    if _state.get("owner", True):
+        shutil.rmtree(_state["overlay"] or "", ignore_errors=True)
