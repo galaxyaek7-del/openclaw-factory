@@ -523,7 +523,12 @@ async function fetchWithTimeout(url, options, ms, label) {
 // ── DIAGNOSE ──
 async function diagnose() {
   try {
-    const res = await fetchWithTimeout(`${DASHBOARD_URL}/health`, {}, 5000, 'health');
+    // 15 s, not 5 s (2026-10-29): the first /health after a server start is cold
+    // (7.3 s measured: PowerShell disk check + network probes). Later calls are
+    // served from cache in ~0.03 s, so the longer limit costs nothing normally;
+    // with 5 s the loop marked the server unreachable 6 times in one day and
+    // skipped that tick's heal/hunt/publish steps.
+    const res = await fetchWithTimeout(`${DASHBOARD_URL}/health`, {}, 15000, 'health');
     const health = await res.json();
     return { reachable: true, health };
   } catch (err) {

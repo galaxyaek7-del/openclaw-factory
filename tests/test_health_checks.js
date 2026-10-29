@@ -255,3 +255,36 @@ test('n8n evidence: an expired result is served at once while one background ref
   hc._resetN8nEvidenceCache();
 });
 
+
+// 2026-10-29: /health took 4.7 s cold and the loop's 5 s timeout marked the server
+// unreachable 6 times in a day. Disk and network checks now answer from cache.
+test('stale-while-revalidate: first call waits, then cached, then stale served while refreshing', async () => {
+  hc._resetHealthCache();
+  let t = 0, calls = 0, release;
+  const now = () => t;
+  const fn = () => { calls++; return calls === 1 ? Promise.resolve('v1') : new Promise((r) => { release = () => r('v2'); }); };
+  assert.equal(await hc._staleWhileRevalidate('k', fn, 1000, now), 'v1');
+  t = 500;
+  assert.equal(await hc._staleWhileRevalidate('k', fn, 1000, now), 'v1');
+  assert.equal(calls, 1, 'fresh cache: no new call');
+  t = 2000;
+  assert.equal(await hc._staleWhileRevalidate('k', fn, 1000, now), 'v1', 'expired: old value at once');
+  assert.equal(await hc._staleWhileRevalidate('k', fn, 1000, now), 'v1');
+  assert.equal(calls, 2, 'one refresh in flight only');
+  release();
+  await new Promise((r) => setImmediate(r));
+  assert.equal(await hc._staleWhileRevalidate('k', fn, 1000, now), 'v2');
+  hc._resetHealthCache();
+});
+
+test('injected runners bypass the cache (fresh result every time)', async () => {
+  hc._resetHealthCache();
+  let n = 0;
+  const run = (cmd, args, opts, cb) => { n++; cb(null, JSON.stringify({ Used: 100 * 2 ** 30, Free: (n === 1 ? 50 : 1) * 2 ** 30 })); };
+  if (process.platform !== 'win32') return;
+  const drive = path.parse(process.cwd()).root;
+  const a = await hc.checkDiskSpace(drive, { run });
+  const b = await hc.checkDiskSpace(drive, { run });
+  assert.equal(n, 2);
+  assert.notEqual(a.free_gb, b.free_gb);
+});
