@@ -34,8 +34,14 @@ def _read_json(path):
 
 def link_spec_to_product(spec_id, internal_id, relation="BUILT_FROM_SPEC", note=None,
                          base_dir=None, registry=None):
-    """Record that a registry product was built from (or already covers) a spec."""
-    if relation not in ("BUILT_FROM_SPEC", "EXISTING_PRODUCT_COVERS"):
+    """Record how a registry product relates to a spec.
+
+    BUILT_FROM_SPEC          the product was produced from this spec (counts for calibration)
+    EXISTING_PRODUCT_COVERS  founder decided an existing product already serves the spec
+    OVERLAPS_EXISTING        the spec's own duplication check listed this product; allowed
+                             only when it did, so the link is evidence, not an opinion
+    """
+    if relation not in ("BUILT_FROM_SPEC", "EXISTING_PRODUCT_COVERS", "OVERLAPS_EXISTING"):
         raise records.RecordError(f"unknown relation {relation!r}")
     specs = ideation.latest_specs(base_dir)
     if spec_id not in specs:
@@ -44,6 +50,10 @@ def link_spec_to_product(spec_id, internal_id, relation="BUILT_FROM_SPEC", note=
                                                    else ideation.load_registry())}
     if internal_id not in products:
         raise records.RecordError(f"{internal_id} is not in the product registry")
+    if relation == "OVERLAPS_EXISTING":
+        listed = [m["internal_id"] for m in specs[spec_id].get("duplication", {}).get("matches", [])]
+        if internal_id not in listed:
+            raise records.RecordError(f"{internal_id} was not found by {spec_id}'s duplication check")
     rec = {"link_id": records._id("LNK", spec_id, internal_id, relation), "spec_id": spec_id,
            "opportunity_id": specs[spec_id]["opportunity_id"], "internal_id": internal_id,
            "relation": relation, "note": note, "recorded_at": records._now()}
@@ -65,14 +75,35 @@ def _qa_of(product, root):
             "checks": parts, "manifest": m}
 
 
-def _approval_of(internal_id, approvals_path):
+def _batch_authorization(internal_id, root):
+    """Batch-level authorisation recorded with a publish run
+    (data/batch*_publish_results.json: [{at, authorization | approval_source, results: [{id}]}]).
+    Batches 13-14 were authorised per batch, before per-product approvals existed."""
+    import glob
+    for path in sorted(glob.glob(os.path.join(root, "data", "batch*_publish_results.json"))):
+        runs = _read_json(path)
+        if not isinstance(runs, list):
+            continue
+        for run in runs:
+            if not isinstance(run, dict):
+                continue
+            if any(isinstance(r, dict) and r.get("id") == internal_id for r in run.get("results") or []):
+                text = run.get("authorization") or run.get("approval_source")
+                if text:
+                    return {"status": "BATCH_AUTHORIZATION", "authorization": text, "at": run.get("at"),
+                            "source": os.path.relpath(path, root).replace(os.sep, "/")}
+    return None
+
+
+def _approval_of(internal_id, approvals_path, root=None):
     doc = _read_json(approvals_path) or {}
     rows = [a for a in doc.get("approvals", []) if a.get("product_id") == internal_id]
-    if not rows:
-        return {"status": "NONE", "reason": "no publication approval record"}
-    a = rows[-1]
-    return {"status": a.get("status"), "approval_id": a.get("approval_id"),
-            "approved_at": a.get("approved_at")}
+    if rows:
+        a = rows[-1]
+        return {"status": a.get("status"), "approval_id": a.get("approval_id"),
+                "approved_at": a.get("approved_at")}
+    batch = _batch_authorization(internal_id, root or records.ROOT)
+    return batch or {"status": "NONE", "reason": "no per-product approval and no batch authorization recorded"}
 
 
 def trace(opportunity_id, base_dir=None, registry=None, root=None, approvals_path=None):
@@ -95,7 +126,7 @@ def trace(opportunity_id, base_dir=None, registry=None, root=None, approvals_pat
             "link": l,
             "product": {"internal_id": p["internal_id"], "title": p.get("title")},
             "qa": _qa_of(p, root),
-            "approval": _approval_of(p["internal_id"], approvals_path or APPROVALS_PATH),
+            "approval": _approval_of(p["internal_id"], approvals_path or APPROVALS_PATH, root),
             "listing": {"published": p.get("published"), "url": p.get("url"),
                         "first_published_at": p.get("first_published_at")},
             "outcome": {"label": "OBSERVED", "source": "data/product_registry.json",

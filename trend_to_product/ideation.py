@@ -242,8 +242,13 @@ def latest_specs(base_dir=None):
     return out
 
 
-def listing_draft(spec, description, tags, contents, support):
-    """Draft listing copy for founder review. Never published from here."""
+def listing_draft(spec, description, tags, contents, support, previews=None, mockups_labelled=False,
+                  root=None):
+    """Draft listing copy for founder review. Never published from here.
+
+    previews: records from previews.record_preview(). When given, each must still
+    match its deliverable and at least one must be a render of it; when omitted,
+    the draft says no preview exists yet."""
     text = " ".join([spec["title"], description, " ".join(contents)])
     urgency = None
     try:
@@ -256,14 +261,47 @@ def listing_draft(spec, description, tags, contents, support):
         problems.append("fake urgency wording: " + ", ".join(urgency.get("evidence") or []))
     if len(tags) > 13:
         problems.append("more than 13 tags")
+    from . import previews as _previews
+    problems += _previews.check_listing_previews(previews or [], mockups_labelled, root)
     return {
         "spec_id": spec["spec_id"], "title": spec["title"][:100], "description": description,
         "keywords_tags": list(tags)[:13], "contents": list(contents), "support": support,
         "proposed_price_usd": spec.get("proposed_price_usd"),
         "pricing_evidence": spec["price_range"],
+        "previews": [p["preview_id"] for p in previews or []],
         "status": "DRAFT_NOT_PUBLISHED", "publish_allowed": False,
         "requires": ["product built from this spec and passing its acceptance tests",
                      "rights check PASS", "founder publication approval",
                      "platform write gate"],
         "problems": problems,
     }
+
+
+SPEC_DECISIONS = ("PROCEED", "DROP", "MERGE_INTO_EXISTING")
+
+
+def record_spec_decision(spec_id, decision, reason, decided_by, target_product=None, base_dir=None):
+    """A decision on a spec, appended as a newer record of that spec (history kept).
+
+    MERGE_INTO_EXISTING names the registry product that should absorb the idea; it
+    only records the intent -- changing a live listing still needs the founder's
+    publication approval and the platform write gate."""
+    if decision not in SPEC_DECISIONS:
+        raise records.RecordError(f"decision must be one of {SPEC_DECISIONS}")
+    if not (reason or "").strip() or not (decided_by or "").strip():
+        raise records.RecordError("a decision needs a reason and who decided")
+    specs = latest_specs(base_dir)
+    if spec_id not in specs:
+        raise records.RecordError(f"unknown spec {spec_id}")
+    spec = dict(specs[spec_id])
+    if decision == "MERGE_INTO_EXISTING":
+        listed = [m["internal_id"] for m in spec.get("duplication", {}).get("matches", [])]
+        if target_product not in listed:
+            raise records.RecordError("merge target must be a product the duplication check found")
+    spec["decision"] = {"decision": decision, "reason": reason.strip(), "decided_by": decided_by.strip(),
+                        "target_product": target_product, "decided_at": records._now()}
+    spec["status"] = {"PROCEED": spec["status"], "DROP": "SPEC_DROPPED",
+                      "MERGE_INTO_EXISTING": "SPEC_MERGED"}[decision]
+    spec["recorded_at"] = records._now()
+    records._append("specs.jsonl", spec, base_dir)
+    return spec

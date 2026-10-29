@@ -1,0 +1,1 @@
+{"wall_s": 1.34, "peak_mb": 3.4, "qa": {"input_rows": 5250, "output_rows": 4995, "duplicates_removed": 255, "rows_with_missing": 2637, "columns": ["sku", "price", "date", "qty"], "ran_at": "2026-09-23T19:22:21.822663+00:00", "elapsed_s": 1.332}}

@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-29T06:37:39.523026+00:00",
+ "generated_at": "2026-10-29T07:47:03.893699+00:00",
  "source": "docs/factory/FACTORY_ENGINEERING_BACKLOG.md (rows parsed verbatim; the Markdown is the edited copy)",
  "items": [
   {
@@ -160,7 +160,7 @@
    "verify": "`tests/test_seo_guide_quality.py` (8); 17 guides regenerated: 0 residue, 17/17 one canonical",
    "status": "DONE",
    "status_detail": "DONE locally; publishing BLOCKED (founder: commit/push)",
-   "founder_authorization_required": true
+   "founder_authorization_required": false
   },
   {
    "id": "B17",
@@ -188,8 +188,8 @@
    "why": "mission arm 4",
    "acceptance": "a written recurring-service spec with inputs/outputs/acceptance and a validation rule, based on an existing engine",
    "verify": "spec review",
-   "status": "TODO",
-   "status_detail": "TODO",
+   "status": "DONE",
+   "status_detail": "DONE (spec, uncommitted): `docs/factory/SERVICE_SPECS_B19_B21.md` -- monthly marketplace-export clean-up on `services/spreadsheet_normalization`; code gaps in B34; offer not activated",
    "founder_authorization_required": false
   },
   {
@@ -198,8 +198,8 @@
    "why": "mission arm 8",
    "acceptance": "data-card schema + provenance checks for one lawful dataset",
    "verify": "unit tests",
-   "status": "TODO",
-   "status_detail": "TODO",
+   "status": "DONE",
+   "status_detail": "DONE (uncommitted): `data_products/datacard.py` (licence, hash, rows, columns, personal-data scan, freshness), `scripts/build_catalog_dataset.py`; first release `gf-public-catalog/2026-10-29` (100 rows, own content) PASS; `tests/test_datacard.py` (11)",
    "founder_authorization_required": false
   },
   {
@@ -208,8 +208,8 @@
    "why": "mission arms 2/6",
    "acceptance": "one scoped service spec each, reusing existing engines; no offer activated",
    "verify": "spec review",
-   "status": "TODO",
-   "status_detail": "TODO",
+   "status": "DONE",
+   "status_detail": "DONE (specs, uncommitted): listing claim audit on `product_claim_integrity.py`; automation health audit on `scripts/n8n_workflow_health.py` (needs B35 before any buyer data); no offer activated",
    "founder_authorization_required": false
   },
   {
@@ -218,8 +218,8 @@
    "why": "REVENUE_VERIFIED unreachable",
    "acceptance": "affiliate commissions (REAL, CONFIRMED/PAID) attributed to `affiliate_intelligence`",
    "verify": "unit tests",
-   "status": "TODO",
-   "status_detail": "TODO",
+   "status": "DONE",
+   "status_detail": "DONE (uncommitted): `business_arms._affiliate_cfg` + `_commission_evidence`; only REAL PAID commissions promote the arm; `tests/test_affiliate_arm_revenue.py` (6). Live: 0 REAL commissions (1 TEST row excluded)",
    "founder_authorization_required": false
   },
   {
@@ -238,8 +238,8 @@
    "why": "human traffic unverifiable",
    "acceptance": "each click carries a classification (internal/test/bot/unknown) and the dashboard counts only verified human clicks",
    "verify": "unit tests",
-   "status": "TODO",
-   "status_detail": "TODO",
+   "status": "DONE",
+   "status_detail": "DONE (uncommitted): `affiliate_commerce/click_classification.py`; click routes now record `ua_category` + `origin` (no raw UA/IP); live: 38/38 INTERNAL (server bound to 127.0.0.1 since 63f7af8), 0 possible human; `tests/test_click_classification.py` (12), `tests/test_click_origin_fields.js` (3)",
    "founder_authorization_required": false
   },
   {
@@ -258,9 +258,9 @@
    "why": "R9 repeated (B5 not yet fixed): live data now mixes fixture rows such as `\"error\": \"e\"`, `\"source\": \"src\"`",
    "acceptance": "rows in the window identified per file (evidence_ledger 70, design_audit 31, design_approvals 12, design_candidates 9, distribution_events 5, recovery_actions 1, arm5_attribution 1; single rows in daily-report ledgers are the loop's own); quarantined only with a backup and founder approval, never deleted silently; then B5 isolation lands so it cannot recur",
    "verify": "per-file row list",
-   "status": "BLOCKED",
-   "status_detail": "BLOCKED (founder: approve quarantine); B5 is the fix",
-   "founder_authorization_required": true
+   "status": "DONE",
+   "status_detail": "DONE (founder authority 2026-10-29): `scripts/quarantine_test_rows_b27.py`; 59 rows from the 00:16-00:46Z run + 314 historical rows with test-traced signatures (recovery 55, arm5 29, distribution 230) and 9 design images moved to `data/quarantine/B27_*/` with full backups and a manifest; nothing deleted. evidence_ledger rows kept: they are real reality_audit records",
+   "founder_authorization_required": false
   },
   {
    "id": "B28",
@@ -288,9 +288,9 @@
    "why": "cannibalisation",
    "acceptance": "founder decides: differentiate (overhead + shipping), bundle with B14-005, or drop",
    "verify": "spec status updated",
-   "status": "BLOCKED",
-   "status_detail": "BLOCKED (founder decision)",
-   "founder_authorization_required": true
+   "status": "DONE",
+   "status_detail": "DONE (decision under founder delegation): spec merged into B14-005 (`record_spec_decision`, MERGE_INTO_EXISTING); proposed B14-005 revision adds overhead + shipping; no live listing changed",
+   "founder_authorization_required": false
   },
   {
    "id": "B31",
@@ -318,8 +318,38 @@
    "why": "traceability unproven on a real product",
    "acceptance": "first product built from a SPEC_DRAFT, linked with `link_spec_to_product`, trace shows its QA/approval",
    "verify": "`python -m trend_to_product` shows product_links >= 1",
+   "status": "PARTIAL",
+   "status_detail": "PARTIAL (uncommitted): real trace on live data via `OVERLAPS_EXISTING` (spec -> B14-005: QA PASS, batch authorization, listing, 0 sales); a product BUILT from a spec still requires B29/B30",
+   "founder_authorization_required": false
+  },
+  {
+   "id": "B34",
+   "task": "RaaS clean-up engine gaps",
+   "why": "B19 spec cannot be delivered as specified",
+   "acceptance": "month-over-month change report; stored column-role profile per buyer; `scan_secrets` enforced inside the pipeline",
+   "verify": "fixture tests: two monthly files, totals reconcile; flagged file refused",
+   "status": "DONE",
+   "status_detail": "DONE (uncommitted): `services/spreadsheet_normalization/recurring.py` -- buyer column profile, enforced secret scan, month-over-month change report with totals reconciliation; `tests/test_spreadsheet_recurring.py` (6)",
+   "founder_authorization_required": false
+  },
+  {
+   "id": "B35",
+   "task": "Automation health audit reads an n8n database copy, which holds credentials",
+   "why": "security",
+   "acceptance": "executions-API reader that never reads the credentials table",
+   "verify": "fixture tests; no secret in any report",
    "status": "TODO",
-   "status_detail": "TODO (after B29/B30)",
+   "status_detail": "TODO (founder decides whether to accept buyer data at all)",
+   "founder_authorization_required": false
+  },
+  {
+   "id": "B36",
+   "task": "Historical test output still in live ledgers",
+   "why": "design_audit (2,761 rows), design_candidates (801), design_approvals (1,062) have no non-test caller (17 days of bursts); recovery_actions keeps \"regression test\" and \"Simulated Groq API failure\" rows",
+   "acceptance": "each signature traced to a named test, then quarantined with the B27 tool; design ledgers only after confirming no manual real use",
+   "verify": "per-signature counts in the manifest",
+   "status": "PARTIAL",
+   "status_detail": "PARTIAL: `tests/test_restore_file_from_git.js` no longer restores the real CLAUDE.md/requirements.txt or writes the live ledger (temp git repo + GF_RESTORE_REPO_ROOT / GF_RECOVERY_LOG_PATH / GF_DEPARTMENT_EVENTS_PATH); its 120 rows quarantined (`data/quarantine/B36_restore_test_20261029/`). Open: design ledgers; JS tests are not covered by the Python write guard",
    "founder_authorization_required": false
   },
   {

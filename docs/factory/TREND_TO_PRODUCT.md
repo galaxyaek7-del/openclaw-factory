@@ -113,6 +113,25 @@ replace a Pinterest Trends or marketplace-search reading (B29).
 | Original crochet patterns | WEAK | 2.01 / 87% |
 | Pricing calculator, reading journal, Notion content system | INSUFFICIENT_EVIDENCE | - |
 
+## Gaps closed after the acceptance review (same day)
+
+- **Link to real production/QA records, on live data.** New relation `OVERLAPS_EXISTING`,
+  accepted only when the spec's own duplication check listed that product. Recorded:
+  "Handmade Order Costing & Pricing Workbook" -> B14-005. Its trace reads B14-005's manifest
+  QA (PASS), its approval, its listing and its observed outcome (0 sales; traffic, refunds
+  and net revenue UNKNOWN because no source records them).
+- **Approval lookup was incomplete.** The first trace said B14-005 had no approval: it read
+  only `data/publication_approvals.json`, which starts at batch 15. Batches 13-14 were
+  authorised per batch in `data/batch*_publish_results.json`; the trace now reports
+  `BATCH_AUTHORIZATION` with the founder's recorded text and source.
+- **Previews from the actual deliverable** (`trend_to_product/previews.py`): each preview is
+  recorded with the sha256 of the deliverable it was rendered from and of the image; a
+  preview from an older file version or an edited image fails; a listing draft needs at
+  least one RENDER, and a MOCKUP only passes when the listing labels it an illustration.
+- **Mission Control:** service `trend-to-product-status` (`/api/v1/trend-to-product-status`,
+  login required; 401 without, verified) and a panel in `mission_control_executive_v1.html`.
+  It returns the stored state plus the trace of every linked spec.
+
 ## Not implemented / not verified
 
 - No automated collection from Pinterest or Etsy; no API credential exists or is assumed.

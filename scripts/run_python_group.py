@@ -48,6 +48,11 @@ def main():
     sys.path.insert(0, os.path.join(REPO_ROOT, "tests"))
     import network_guard
     network_guard.block()
+    # Backlog B5 (2026-10-29): writes inside the repository go to a per-process
+    # overlay, so a test that forgets a path override cannot append fixture rows
+    # to a live ledger (tests/write_guard.py).
+    import write_guard
+    write_guard.install()
 
     if args.targets:
         loader = unittest.TestLoader()

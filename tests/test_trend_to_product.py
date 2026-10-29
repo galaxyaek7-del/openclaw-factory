@@ -354,3 +354,112 @@ class AuthorizationBoundary(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class OverlapAndApprovals(Base):
+    def setUp(self):
+        super().setUp()
+        s = self.src()
+        sig = records.record_signal("CUSTOMER_PROBLEM", "pricing", "p", [s["source_id"]], "2026-10-29",
+                                    base_dir=self.d)
+        self.opp = scoring.record_opportunity("x", "pricing", "excel_tool", [sig["signal_id"]], base_dir=self.d)
+        self.spec = ideation.build_spec(self.opp, "excel_tool", "Etsy Seller Pricing Profit Calculator",
+                                        "makers", "p", "v", "d", ["xlsx"], ["t"], registry=REGISTRY,
+                                        base_dir=self.d)
+
+    def test_overlap_link_only_for_products_the_check_found(self):
+        linkage.link_spec_to_product(self.spec["spec_id"], "P-1", "OVERLAPS_EXISTING",
+                                     base_dir=self.d, registry=REGISTRY)
+        with self.assertRaises(RecordError):
+            linkage.link_spec_to_product(self.spec["spec_id"], "P-2", "OVERLAPS_EXISTING",
+                                         base_dir=self.d, registry=REGISTRY)
+
+    def test_batch_authorization_is_found_when_no_per_product_approval(self):
+        root = tempfile.mkdtemp()
+        try:
+            os.makedirs(os.path.join(root, "data"))
+            Path(root, "data", "batch14_publish_results.json").write_text(json.dumps([
+                {"at": "2026-10-23T13:22:42Z", "authorization": "founder 2026-10-23: publish batch 14",
+                 "results": [{"id": "P-1"}]}]))
+            a = linkage._approval_of("P-1", os.path.join(root, "none.json"), root)
+            self.assertEqual("BATCH_AUTHORIZATION", a["status"])
+            self.assertEqual("data/batch14_publish_results.json", a["source"])
+            self.assertEqual("NONE", linkage._approval_of("P-9", os.path.join(root, "none.json"), root)["status"])
+        finally:
+            shutil.rmtree(root, ignore_errors=True)
+
+
+class Previews(Base):
+    def setUp(self):
+        super().setUp()
+        self.root = tempfile.mkdtemp()
+        Path(self.root, "deliv.xlsx").write_bytes(b"workbook v1")
+        Path(self.root, "render.png").write_bytes(b"png of sheet 1")
+        Path(self.root, "mock.png").write_bytes(b"device frame")
+
+    def tearDown(self):
+        super().tearDown()
+        shutil.rmtree(self.root, ignore_errors=True)
+
+    def rec(self, preview="render.png", kind="RENDER"):
+        from trend_to_product import previews
+        return previews.record_preview("SPEC-1", "deliv.xlsx", preview, kind, "scripts/render_sheet.py",
+                                       root=self.root, base_dir=self.d)
+
+    def test_render_verifies_until_the_deliverable_changes(self):
+        from trend_to_product import previews
+        r = self.rec()
+        self.assertEqual("VERIFIED", previews.verify_preview(r, self.root)["status"])
+        Path(self.root, "deliv.xlsx").write_bytes(b"workbook v2")
+        v = previews.verify_preview(r, self.root)
+        self.assertEqual("FAILED", v["status"])
+        self.assertIn("deliverable changed", v["problems"][0])
+
+    def test_listing_needs_a_render_and_labelled_mockups(self):
+        from trend_to_product import previews
+        mock = self.rec("mock.png", "MOCKUP")
+        self.assertTrue(any("only mockups" in p for p in previews.check_listing_previews([mock], True, self.root)))
+        render = self.rec()
+        problems = previews.check_listing_previews([render, mock], False, self.root)
+        self.assertEqual(1, len(problems))
+        self.assertIn("labelled as an illustration", problems[0])
+        self.assertEqual([], previews.check_listing_previews([render, mock], True, self.root))
+        self.assertTrue(previews.check_listing_previews([], False, self.root))
+
+    def test_record_requires_files_kind_and_generator(self):
+        from trend_to_product import previews
+        with self.assertRaises(RecordError):
+            previews.record_preview("S", "nope.xlsx", "render.png", "RENDER", "g", root=self.root, base_dir=self.d)
+        with self.assertRaises(RecordError):
+            previews.record_preview("S", "deliv.xlsx", "render.png", "PHOTO", "g", root=self.root, base_dir=self.d)
+        with self.assertRaises(RecordError):
+            previews.record_preview("S", "deliv.xlsx", "render.png", "RENDER", " ", root=self.root, base_dir=self.d)
+
+
+class SpecDecisions(Base):
+    def setUp(self):
+        super().setUp()
+        s = self.src()
+        sig = records.record_signal("CUSTOMER_PROBLEM", "pricing", "p", [s["source_id"]], "2026-10-29",
+                                    base_dir=self.d)
+        opp = scoring.record_opportunity("x", "pricing", "excel_tool", [sig["signal_id"]], base_dir=self.d)
+        self.spec = ideation.build_spec(opp, "excel_tool", "Etsy Seller Pricing Profit Calculator",
+                                        "makers", "p", "v", "d", ["xlsx"], ["t"], registry=REGISTRY,
+                                        base_dir=self.d)
+
+    def test_merge_needs_a_found_target_and_a_reason(self):
+        with self.assertRaises(RecordError):
+            ideation.record_spec_decision(self.spec["spec_id"], "MERGE_INTO_EXISTING", "r", "founder",
+                                          target_product="P-2", base_dir=self.d)
+        with self.assertRaises(RecordError):
+            ideation.record_spec_decision(self.spec["spec_id"], "DROP", " ", "founder", base_dir=self.d)
+        r = ideation.record_spec_decision(self.spec["spec_id"], "MERGE_INTO_EXISTING", "overlaps P-1",
+                                          "founder", target_product="P-1", base_dir=self.d)
+        self.assertEqual("SPEC_MERGED", r["status"])
+        latest = ideation.latest_specs(self.d)[self.spec["spec_id"]]
+        self.assertEqual("P-1", latest["decision"]["target_product"])
+        self.assertEqual(2, len(records.read_jsonl("specs.jsonl", self.d)))   # history kept
+
+    def test_unknown_decision_refused(self):
+        with self.assertRaises(RecordError):
+            ideation.record_spec_decision(self.spec["spec_id"], "PUBLISH", "r", "founder", base_dir=self.d)

@@ -1385,8 +1385,22 @@ function checkPendingAiCeoDecision(logPath = MARKET_INTELLIGENCE_ANALYSES_FILE) 
   );
 }
 
-function checkNeedsAttention(tickActions, logPath = GOLDEN_HUNTER_EVENTS_FILE) {
-  const reasons = [];
+// 2026-10-29: a failing health check of severity "critical" (e.g. disk at 1.4%
+// free) was logged every tick but never reached NEEDS_ATTENTION.md or the
+// desktop notification -- the only alert paths that work while Telegram is not
+// configured. Pure, so it is unit-tested without a live /health.
+function criticalHealthReasons(checks) {
+  const out = [];
+  for (const [name, c] of Object.entries(checks || {})) {
+    if (c && c.ok === false && c.severity === 'critical') {
+      out.push(`فحص صحة حرج فاشل: ${name} — ${c.detail || 'بلا تفاصيل'}`);
+    }
+  }
+  return out;
+}
+
+function checkNeedsAttention(tickActions, logPath = GOLDEN_HUNTER_EVENTS_FILE, healthChecks = null) {
+  const reasons = criticalHealthReasons(healthChecks);
 
   for (const a of tickActions || []) {
     if ((a.step === 'golden_hunter_bridge' || a.step === 'distribute') && a.action === 'failed') {
@@ -5525,7 +5539,8 @@ async function runTick() {
   });
 
   const attentionWasActive = fs.existsSync(NEEDS_ATTENTION_FILE);
-  const attentionReasons = checkNeedsAttention(actions);
+  const attentionReasons = checkNeedsAttention(actions, GOLDEN_HUNTER_EVENTS_FILE,
+    diagnosis.reachable && diagnosis.health ? diagnosis.health.checks : null);
   if (attentionReasons.length) {
     writeNeedsAttention(attentionReasons);
     if (!attentionWasActive) {
@@ -5746,7 +5761,7 @@ module.exports = {
   appendGoldenHunterEvent, readGoldenHunterEvents, goldenNicheAlreadyAttempted,
   evaluateGoldenOpportunities, getButterPrice, getOpportunityScore, getLadderOpportunityScore,
   checkProductionEngineHealth,
-  checkNeedsAttention, writeNeedsAttention, clearNeedsAttention, checkGoldenStagnation,
+  checkNeedsAttention, criticalHealthReasons, writeNeedsAttention, clearNeedsAttention, checkGoldenStagnation,
   checkPendingAiCeoDecision,
   checkPendingReview, countPendingReviewDrafts, writeNeedsReview, clearNeedsReview,
   acquireLock, releaseLock, isPidAlive, isPidAliveWithIdentity, LOCK_FILE,

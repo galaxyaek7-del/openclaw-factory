@@ -90,3 +90,28 @@ REVENUE_VERIFIED 0. Mapping of the ten activities: `docs/factory/ARM_TAXONOMY.md
    a site-only commit for the regenerated guides and pin images.
 2. Founder: create the Pinterest board "Small Business Finance Tools"; reissue the Paddle key.
 3. Engineering: B24 (click classification), then B22 (affiliate attribution), then B19-B21 specs.
+
+## 6. Later the same day: phases 2-4 (founder delegation)
+
+Committed earlier: `5210eb4` (this reconstruction) and `b061a93` (Trend-to-Product engine,
+`docs/factory/TREND_TO_PRODUCT.md`). `main` is ahead of `origin`; the push was refused by the
+session's permission classifier and is the founder's to run (`git push origin main`). While
+unpushed, `scripts/auto_publish_site.py` holds site commits (it pushes only site-only ranges).
+
+| Item | What changed | Evidence |
+|---|---|---|
+| B5 | `tests/write_guard.py`: writes inside the repo go to a per-process overlay (copy-on-write; reads, stat, rename, delete, listdir/scandir see it). Wired into `scripts/run_python_group.py` and `tests/conftest.py` | `tests/test_write_guard.py` (10); A/B run of the 8 CI groups on clean worktrees; live: the three tests that leaked rows ran with 3 writes redirected and ledger counts unchanged |
+| B24 | `affiliate_commerce/click_classification.py`; click routes record `ua_category` + `origin` only (no raw UA/IP) | all 38 recorded clicks INTERNAL: server binds 127.0.0.1 since `63f7af8`; 0 possible human |
+| B22 | affiliate arm revenue only from REAL, PAID commissions (`business_arms._affiliate_cfg`) | `tests/test_affiliate_arm_revenue.py`; live: 0 REAL commissions, 1 TEST row excluded |
+| B20 | `data_products/datacard.py`, first release `gf-public-catalog/2026-10-29` (own content, 100 rows) PASS | `tests/test_datacard.py` (11) |
+| B19/B21 | `docs/factory/SERVICE_SPECS_B19_B21.md` (three specs on existing engines; no offer opened) | spec text checked against the code (one claim corrected) |
+| B34 | `services/spreadsheet_normalization/recurring.py` | `tests/test_spreadsheet_recurring.py` (6) |
+| B27 | 373 test rows + 9 images moved to `data/quarantine/` with full backups and manifests | `scripts/quarantine_test_rows_b27.py` |
+| B30 | pricing-workbook spec merged into B14-005 (proposal only) | `trend_to_product.ideation.record_spec_decision` |
+
+Corrections made during this work: the 70 evidence_ledger rows counted as pollution in section
+3a are real `reality_audit` records and were kept; the first trace said B14-005 had no approval
+(batch 13-14 authorisations live in `data/batch*_publish_results.json`, now read).
+
+Still blocked: B29 (Pinterest Trends needs a signed-in session; the Chrome extension was not
+connected), B6 (traffic receiver), B26 (channels), B25 (kids studio voices/font).

@@ -1772,6 +1772,17 @@ const SERVICE_REGISTRY = [
     health: pythonHealthCheck('brand_dna_report'),
   },
   {
+    // Trend-to-Product engine (2026-10-29): research sources, advisory
+    // opportunity bands, specs and their duplication/rights blockers, and the
+    // trace of specs linked to real products. Read-only over
+    // data/trend_to_product/*.jsonl.
+    name: 'trend-to-product-status',
+    description: "Trend-to-Product research state: evidence freshness and quality, opportunities with advisory band, score and evidence coverage (INSUFFICIENT_EVIDENCE when demand evidence is missing), rights status, specs with duplication against the product registry, and for each spec linked to a real product its QA, approval, listing and observed outcome. Advisory only; nothing here publishes.",
+    reused: 'trend_to_product/ (records, scoring, ideation, rights, linkage) + data/product_registry.json + product manifests + publication approvals, via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('trend_to_product_status', [], req),
+    health: pythonHealthCheck('trend_to_product_status'),
+  },
+  {
     // Enterprise Growth Engine (ADR-158, 2026-07-31): "automatic
     // fallback" (the directive's Objective 3) is implemented as
     // non-cached, non-sticky recomputation, not a triggered action --
@@ -7054,11 +7065,21 @@ function utmFromQuery(query) {
   return out;
 }
 
+// Backlog B24 (2026-10-29): each click records only a coarse user-agent class
+// and whether the request came from this machine, so the click ledger can tell
+// internal checks from outside visitors. No raw user agent or IP is stored.
+function clickOriginFields(req) {
+  const ip = String(req.ip || (req.socket && req.socket.remoteAddress) || '');
+  const loopback = ip === '::1' || /^(::ffff:)?127\./.test(ip);
+  return { ua_category: classifyVisitorAgent(req.get('user-agent')), origin: loopback ? 'loopback' : 'external' };
+}
+
 app.get('/api/affiliate/click/:product_id', async (req, res) => {
   try {
     if (ingestionRateLimited(req, res)) return;
     const payload = Object.assign(
       { product_id: req.params.product_id, referrer: req.get('referer') || null },
+      clickOriginFields(req),
       utmFromQuery(req.query)
     );
     const result = await runPythonService('affiliate_click', [JSON.stringify(payload)]);
@@ -7129,6 +7150,7 @@ app.get('/api/solutions/click/:opportunity_id', async (req, res) => {
   try {
     const payload = Object.assign(
       { opportunity_id: req.params.opportunity_id, referrer: req.get('referer') || null },
+      clickOriginFields(req),
       utmFromQuery(req.query)
     );
     const result = await runPythonService('solutions_click', [JSON.stringify(payload)]);

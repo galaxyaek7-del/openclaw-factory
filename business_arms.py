@@ -64,7 +64,8 @@ ARMS: Dict[str, Dict[str, Any]] = {
     "research_data_services": {
         "name": "Research and Data Services",
         "implementation": ["market_intelligence_core", "multi_source_intelligence",
-                           "competitor_discovery.py", "reports/B12-010/GATE_CANDIDATES_2026-10-19.json"],
+                           "competitor_discovery.py", "reports/B12-010/GATE_CANDIDATES_2026-10-19.json",
+                           "data_products/datacard.py"],
         "acceptance": ["repeatable research output", "a written offer", "a paying engagement"],
         "commercial_path": [],
         "gap": "research infrastructure exists but no customer-facing offer exists",
@@ -200,10 +201,15 @@ def evaluate_arm(key: str, cfg: Dict[str, Any], revenue: Dict[str, Any]) -> Dict
         status = "PARTIAL"
 
     # A real external transaction attributed to this arm is the only thing that
-    # can promote it. No such attribution exists today, so this branch is
-    # unreachable by design until arm-level transaction evidence is added.
-    if revenue.get("status") == "PASS" and (revenue.get("gross_usd") or 0) > 0 \
-            and cfg.get("arm_revenue_attributable"):
+    # can promote it. An arm with its own revenue record (affiliate: REAL, PAID
+    # commissions in commission_ledger, B22) is judged on that record; the
+    # others need the company-wide reconciled finance record.
+    own = cfg.get("arm_revenue_evidence")
+    if own is not None:
+        verified = own.get("status") == "PASS" and (own.get("usd") or 0) > 0
+    else:
+        verified = revenue.get("status") == "PASS" and (revenue.get("gross_usd") or 0) > 0
+    if verified and cfg.get("arm_revenue_attributable"):
         status = "REVENUE_VERIFIED"
 
     if status in ("PARTIAL", "BLOCKED", "READY", "REVENUE_VERIFIED") and not present:
@@ -269,11 +275,65 @@ def _digital_products_cfg(cfg: Dict[str, Any], evidence: Dict[str, Any]) -> Dict
     return out
 
 
+def _click_evidence(ledger_path=None) -> Dict[str, Any]:
+    """Recorded affiliate clicks by class (affiliate_commerce/click_classification.py)."""
+    try:
+        from affiliate_commerce import click_classification as cc
+        s = cc.summarize(ledger_path=ledger_path)
+    except Exception:  # pragma: no cover - the arm keeps its fixed text
+        return {}
+    return {"total": s["total_recorded"], "counts": s["counts"], "possible_human": s["possible_human"]}
+
+
+def _commission_evidence(ledger_path=None) -> Dict[str, Any]:
+    """REAL commissions from commission_ledger (B22). TEST/SIMULATION/PROVISIONAL
+    rows are never counted (commission_ledger.real_commission_summary)."""
+    try:
+        import commission_ledger
+        s = commission_ledger.real_commission_summary(ledger_path)
+    except Exception:  # pragma: no cover
+        return {}
+    return {"real_records": s["real_commission_records"],
+            "paid_usd": s["real_paid_commission_usd"],
+            "confirmed_or_paid_usd": s["real_confirmed_or_paid_commission_usd"],
+            "test_records": s["test_records"]}
+
+
+def _affiliate_cfg(cfg: Dict[str, Any], clicks: Dict[str, Any],
+                   commissions: Dict[str, Any] = None) -> Dict[str, Any]:
+    """Affiliate Intelligence restated from its own ledgers: clicks by class (B24)
+    and REAL commissions (B22). Only a REAL, PAID commission is revenue for this
+    arm; a CONFIRMED one is reported but promotes nothing."""
+    commissions = commissions or {}
+    if not (clicks and clicks.get("total")) and not commissions:
+        return cfg
+    out = dict(cfg)
+    notes = []
+    if clicks and clicks.get("total"):
+        parts = ", ".join("%d %s" % (n, k) for k, n in clicks["counts"].items() if n)
+        notes.append("%d click(s) recorded (%s); %d could be from an outside person"
+                     % (clicks["total"], parts, clicks["possible_human"]))
+    if commissions:
+        paid = commissions.get("paid_usd") or 0
+        conf = commissions.get("confirmed_or_paid_usd") or 0
+        notes.append("REAL commissions: %d record(s), $%.2f paid, $%.2f confirmed or paid "
+                     "(TEST rows excluded: %d)" % (commissions.get("real_records", 0), paid, conf,
+                                                   commissions.get("test_records", 0)))
+        out["arm_revenue_evidence"] = {"status": "PASS", "usd": paid, "source": "commission_ledger (REAL, PAID)"}
+        if paid > 0:
+            out["arm_revenue_attributable"] = True
+    out["gap"] = "; ".join(notes)
+    out["blocker"] = "AMAZON_ASSOCIATE_TAG is unset and no real affiliate account exists; " + out["gap"]
+    return out
+
+
 def arm_status() -> Dict[str, Any]:
     revenue = _revenue_state()
     evidence = _registry_evidence()
     cfgs = dict(ARMS)
     cfgs["digital_products"] = _digital_products_cfg(ARMS["digital_products"], evidence)
+    cfgs["affiliate_intelligence"] = _affiliate_cfg(ARMS["affiliate_intelligence"], _click_evidence(),
+                                                    _commission_evidence())
     arms = {key: evaluate_arm(key, cfg, revenue) for key, cfg in cfgs.items()}
     arms["digital_products"]["registry_evidence"] = evidence or None
     counts: Dict[str, int] = {s: 0 for s in STATUSES}

@@ -1,0 +1,68 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""Spreadsheet engine tests (offline; synthetic data only)."""
+
+import sys
+import unittest
+from pathlib import Path
+
+_FACTORY_ROOT = Path(__file__).resolve().parent.parent
+if str(_FACTORY_ROOT) not in sys.path:
+    sys.path.insert(0, str(_FACTORY_ROOT))
+sys.path.insert(0, str(_FACTORY_ROOT / "services" / "spreadsheet_normalization"))
+
+from engine import normalize, norm_currency, norm_date
+
+
+class TestEngine(unittest.TestCase):
+    def test_duplicate_caught(self):
+        rows = [{"sku": "a-1", "price": "5"}, {"sku": "A-1 ", "price": "5.00"}]
+        r = normalize(rows, currency_cols=("price",))
+        self.assertEqual(r["qa"]["output_rows"], 1)
+        self.assertEqual(r["qa"]["duplicates_removed"], 1)
+
+    def test_currency_locales(self):
+        self.assertEqual(norm_currency("€99,99"), 99.99)
+        self.assertEqual(norm_currency("1,234.56"), 1234.56)
+        self.assertEqual(norm_currency("1.234,56"), 1234.56)
+
+    def test_dates_iso(self):
+        self.assertEqual(norm_date("03/15/2026"), "2026-03-15")
+        self.assertEqual(norm_date("15-03-2026"), "2026-03-15")
+
+    def test_empty_input(self):
+        r = normalize([])
+        self.assertEqual(r["qa"]["output_rows"], 0)
+
+    def test_no_silent_loss(self):
+        rows = [{"sku": "a", "price": "1"}, {"sku": "b", "price": "bad!!"}]
+        r = normalize(rows, currency_cols=("price",))
+        qa = r["qa"]
+        self.assertEqual(qa["input_rows"], qa["output_rows"] + qa["duplicates_removed"])
+
+    def test_stress_scale(self):
+        import random
+        random.seed(7)
+        rows = [{"sku": "X-%03d" % (i % 200), "price": "$%d.99" % (i % 50),
+                 "date": "2026-03-%02d" % ((i % 28) + 1)} for i in range(500)]
+        r = normalize(rows, currency_cols=("price",), date_cols=("date",))
+        self.assertEqual(r["qa"]["input_rows"], 500)
+        self.assertEqual(r["qa"]["output_rows"] + r["qa"]["duplicates_removed"], 500)
+
+    def test_secrets_rejected(self):
+        from engine import scan_secrets
+        bad = [{"password": "x", "sku": "a"}, {"sku": "b"}]
+        r = scan_secrets(bad)
+        self.assertFalse(r["clean"])
+        good = [{"sku": "a", "price": "5"}]
+        self.assertTrue(scan_secrets(good)["clean"])
+
+    def test_package_files(self):
+        base = _FACTORY_ROOT / "services" / "spreadsheet_normalization"
+        for f in ("engine.py", "README.md", "offer.md", "runbook.md",
+                  "sample_before.csv", "sample_after.csv"):
+            self.assertTrue((base / f).exists(), f)
+
+
+if __name__ == "__main__":
+    unittest.main(verbosity=2)

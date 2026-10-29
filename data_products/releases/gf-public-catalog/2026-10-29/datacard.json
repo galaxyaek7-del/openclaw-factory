@@ -1,0 +1,88 @@
+{
+ "dataset_id": "gf-public-catalog",
+ "title": "Galaxy Forge public product catalog",
+ "version": "2026-10-29",
+ "description": "100 digital products as listed on the Galaxy Forge storefront: id, title, list price, link, format and summary.",
+ "intended_use": "Internal reference format for the Data Products arm; a machine-readable copy of the public catalog.",
+ "out_of_scope_use": "Not a sales or demand dataset: it contains no sales, traffic or customer data.",
+ "sources": [
+  {
+   "name": "storefront catalog snapshot",
+   "origin": "customer_site/catalog.json",
+   "generated_at": "2026-10-29T00:07:12.798Z",
+   "accessed_on": "2026-10-29",
+   "access_method": "FACTORY_INTERNAL",
+   "licence": {
+    "name": "Galaxy Forge own content",
+    "commercial_use": true,
+    "attribution_required": false,
+    "share_alike": false
+   }
+  }
+ ],
+ "collection_method": "Copied from the factory's own catalog file, which is generated from data/product_registry.json (read-only Gumroad catalog reads).",
+ "processing_steps": [
+  "select listed fields",
+  "price_cents -> price_usd_cents (no conversion)",
+  "featured -> true/false"
+ ],
+ "columns": [
+  {
+   "name": "id",
+   "type": "string",
+   "description": "Factory product id (registry internal_id)"
+  },
+  {
+   "name": "title",
+   "type": "string",
+   "description": "Product title as listed"
+  },
+  {
+   "name": "price_usd_cents",
+   "type": "integer",
+   "description": "Recorded list price in US cents, before taxes"
+  },
+  {
+   "name": "url",
+   "type": "string",
+   "description": "Product page on the factory's own Gumroad storefront"
+  },
+  {
+   "name": "format",
+   "type": "string",
+   "description": "Delivery format"
+  },
+  {
+   "name": "featured",
+   "type": "boolean",
+   "description": "Shown in the storefront's featured section"
+  },
+  {
+   "name": "summary",
+   "type": "string",
+   "description": "Factory-written product summary (may be truncated with '...')"
+  }
+ ],
+ "files": [
+  {
+   "path": "data_products/releases/gf-public-catalog/2026-10-29/catalog.csv",
+   "format": "csv",
+   "sha256": "9c663adc5c10d563ace59958f59808e7a355a7bd11f94a558adc091e112212c6",
+   "rows": 100
+  }
+ ],
+ "personal_data": {
+  "contains": false
+ },
+ "licence_out": {
+  "name": "Galaxy Forge proprietary",
+  "note": "not licensed to third parties"
+ },
+ "refresh_days": 30,
+ "last_refreshed": "2026-10-29",
+ "known_limitations": [
+  "summaries are truncated as on the storefront",
+  "prices are list prices; checkout totals may differ (taxes)",
+  "a snapshot: the live catalog changes after this date"
+ ]
+}

@@ -83,7 +83,7 @@ def read_clicks(ledger_path=None):
 
 def record_attributed_click(product_id, channel=None, campaign=None, content=None,
                             referrer=None, utm_medium=None, utm_source=None,
-                            ledger_path=None, source=None):
+                            ledger_path=None, source=None, ua_category=None, origin=None):
     """Records one real click with full attribution context (directive
     section 7: affiliate_program/product/channel/campaign/content + UTM).
 
@@ -107,6 +107,13 @@ def record_attributed_click(product_id, channel=None, campaign=None, content=Non
         record["utm_medium"] = utm_medium
     if utm_source:
         record["utm_source"] = utm_source
+    # Backlog B24 (2026-10-29): coarse user-agent class and request origin, as
+    # decided by server.js (classifyVisitorAgent, req.ip loopback test). Only the
+    # fixed vocabulary is kept, so no raw user agent or IP is ever stored.
+    if ua_category in ("browser", "bot", "unknown"):
+        record["ua_category"] = ua_category
+    if origin in ("loopback", "external"):
+        record["origin"] = origin
     _with_source(record, source)
     path = Path(ledger_path) if ledger_path else DEFAULT_LEDGER_PATH
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -147,8 +154,18 @@ def click_summary(ledger_path=None):
         pid = c.get("product_id")
         if pid:
             by_product[pid] = by_product.get(pid, 0) + 1
+    try:
+        from affiliate_commerce import click_classification as cc
+        classified = cc.summarize(ledger_path=ledger_path)
+        by_class, possible_human = classified["counts"], classified["possible_human"]
+    except Exception:  # classification is additive; its absence is reported
+        by_class, possible_human = None, None
     return {
         "total_real_clicks": len(clicks),
+        # B24: recorded clicks are not all people. Only external browser
+        # clicks can be human; see affiliate_commerce/click_classification.py.
+        "by_classification": by_class,
+        "possible_human_clicks": possible_human,
         "clicks_by_product": by_product,
         "note": "عدد نقرات حقيقية فقط -- لا معدل تحويل، لا إيراد عمولة مُختلَق؛ كلاهما يحتاج postback حقيقي من شبكة Amazon Associates غير متاح بعد.",
     }

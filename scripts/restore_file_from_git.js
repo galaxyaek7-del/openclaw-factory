@@ -23,7 +23,9 @@ const os = require('os');
 const path = require('path');
 const { recordRecoveryAction } = require('../lib/recovery_log.js');
 
-const REPO_ROOT = path.join(__dirname, '..');
+// GF_RESTORE_REPO_ROOT (2026-10-29): the regression test points this at a temporary
+// git repository so it never restores files in the real working tree. Unset in use.
+const REPO_ROOT = process.env.GF_RESTORE_REPO_ROOT || path.join(__dirname, '..');
 const [, , targetPath, ref] = process.argv;
 const apply = process.argv.includes('--apply');
 const reasonIdx = process.argv.indexOf('--reason');

@@ -397,6 +397,27 @@ async function main() {
     assert.ok(reasons[0].includes('distribute'));
   });
 
+  await test('criticalHealthReasons: only failing checks of severity "critical" (2026-10-29: disk at 1.4% was never surfaced)', () => {
+    const checks = {
+      disk: { ok: false, severity: 'critical', detail: '3.6GB free of 254.9GB (1.4%)' },
+      sensing_engine: { ok: false, severity: 'degraded', detail: 'n8n down' },
+      network: { ok: true, severity: 'critical', detail: 'fine' },
+      database: { ok: null, severity: 'not_applicable' },
+    };
+    const r = fl.criticalHealthReasons(checks);
+    assert.strictEqual(r.length, 1);
+    assert.ok(r[0].includes('disk') && r[0].includes('1.4%'));
+    assert.deepStrictEqual(fl.criticalHealthReasons(null), []);
+    assert.deepStrictEqual(fl.criticalHealthReasons(undefined), []);
+  });
+
+  await test('checkNeedsAttention: a failing critical health check is flagged; older callers are unchanged', () => {
+    const p = path.join(tmpDir, 'attn_health.jsonl');
+    const flagged = fl.checkNeedsAttention([], p, { disk: { ok: false, severity: 'critical', detail: 'full' } });
+    assert.strictEqual(flagged.filter(x => x.includes('disk')).length, 1);
+    assert.strictEqual(fl.checkNeedsAttention([], p).filter(x => x.includes('disk')).length, 0);
+  });
+
   await test('checkNeedsAttention: 2 consecutive stale skips -> NOT flagged yet (threshold is 3)', () => {
     const p = path.join(tmpDir, 'attn_stale2.jsonl');
     fl.appendGoldenHunterEvent({ action: 'skipped', reason: 'stale' }, p, DEP_EVENTS_PATH);

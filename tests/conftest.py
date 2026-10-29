@@ -38,6 +38,9 @@ import pytest
 
 def pytest_configure(config):
     network_guard.block()
+    # Backlog B5: same write overlay as scripts/run_python_group.py.
+    import write_guard
+    write_guard.install()
 
 
 def _write_state(state_file) -> str:

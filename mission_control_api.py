@@ -991,6 +991,8 @@ def _affiliate_click():
         utm_source=utm.get("utm_source"),
         referrer=payload.get("referrer"),
         source=payload.get("source"),
+        ua_category=payload.get("ua_category"),
+        origin=payload.get("origin"),
     )
     url = networks.build_amazon_url(product["asin"])
     return {"success": True, "found": True, "url": url, "tag_configured": networks.amazon_associate_tag_configured()}
@@ -2043,6 +2045,8 @@ def _solutions_click():
         utm_source=utm.get("utm_source"),
         referrer=payload.get("referrer"),
         source=payload.get("source"),
+        ua_category=payload.get("ua_category"),
+        origin=payload.get("origin"),
     )
     # Real, found gap: only CO-amazon-affiliate has a real terms_url
     # populated in this factory's own portfolio -- the other 12 real
@@ -2511,6 +2515,19 @@ def _brand_dna_report():
     or already-computed."""
     import brand_dna
     return brand_dna.brand_dna_report()
+
+
+def _trend_to_product_status():
+    """Trend-to-Product engine (2026-10-29): stored research evidence, advisory
+    opportunity bands, specs with duplication/rights blockers, and the trace of
+    every spec linked to a real registry product (QA, approval, listing,
+    observed outcome). Read-only: rebuilt from data/trend_to_product/*.jsonl,
+    nothing written, nothing fetched."""
+    from trend_to_product import linkage
+    state = linkage.build_state()
+    linked = sorted({l["opportunity_id"] for l in linkage.records.read_jsonl("links.jsonl")})
+    state["traces"] = [linkage.trace(o) for o in linked]
+    return state
 
 
 def _truth_registry_report():
@@ -4397,6 +4414,7 @@ _ENDPOINTS = {
     "capital_decisions_report": _capital_decisions_report,
     "truth_registry_report": _truth_registry_report,
     "brand_dna_report": _brand_dna_report,
+    "trend_to_product_status": _trend_to_product_status,
     "goos_evaluate_opportunity": _goos_evaluate_opportunity,
     "strategic_intelligence_engine_report": _strategic_intelligence_engine_report,
     "prioritized_evidence_summary": _prioritized_evidence_summary,
