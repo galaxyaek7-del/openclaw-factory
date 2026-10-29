@@ -113,6 +113,42 @@ def _esc(v) -> str:
     return html.escape(str(v), quote=True)
 
 
+_SITE_URL = "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/"
+_OG_IMAGE = _SITE_URL + "assets/og-default.png"
+
+
+def _known(v) -> str:
+    """The value as text, or "" when the record only says it is unknown.
+
+    The opportunity records keep "UNKNOWN -- ..." / "COMMISSION_UNKNOWN" as
+    honest internal markers. Printed on a public page they read as a broken
+    template ("a guide for UNKNOWN -- not captured..."), so an unknown field
+    is left off the page rather than shown or guessed."""
+    s = str(v or "").strip()
+    if not s or re.match(r"^[A-Z_]*UNKNOWN\b", s):
+        return ""
+    return s
+
+
+def _share_block(title: str, description: str, filename: str) -> str:
+    """Canonical + Open Graph tags, the same block scripts/add_share_cards.py
+    adds to hand-made pages. Emitted here so a regenerated guide keeps them
+    (regeneration used to drop them, 2026-10-24)."""
+    url = _SITE_URL + filename
+    return (
+        f'<meta property="og:image" content="{_OG_IMAGE}">\n'
+        '<meta property="og:image:width" content="1200">\n'
+        '<meta property="og:image:height" content="630">\n'
+        '<meta name="twitter:card" content="summary_large_image">\n'
+        f'<meta name="twitter:image" content="{_OG_IMAGE}">\n'
+        f'<meta property="og:title" content="{_esc(title)}">\n'
+        f'<meta property="og:description" content="{_esc(description)}">\n'
+        '<meta property="og:site_name" content="Galaxy Forge">\n'
+        f'<link rel="canonical" href="{url}">\n'
+        f'<meta property="og:url" content="{url}">\n'
+    )
+
+
 def _load_opportunities() -> List[Dict[str, object]]:
     if not _COMMISSION_OPPORTUNITIES.exists():
         return []
@@ -147,16 +183,17 @@ def _save_registry(entries: List[Dict[str, object]]) -> None:
 
 def _page_html(opp: Dict[str, object], slug: str = "") -> str:
     program = str(opp.get("program_name") or opp.get("partner_name") or "Program")
-    problem = str(opp.get("customer_problem") or "")
-    audience = str(opp.get("target_customer") or "")
-    product = str(opp.get("product_or_service") or program)
-    commission = str(opp.get("commission_value") or "")
+    problem = _known(opp.get("customer_problem"))
+    audience = _known(opp.get("target_customer"))
+    product = _known(opp.get("product_or_service")) or program
+    commission = _known(opp.get("commission_value"))
     recurring = "Yes" if opp.get("recurring_commission") else "No"
-    commission_duration = str(opp.get("commission_duration") or "")
-    payout = str(opp.get("payout_terms") or "")
-    eligibility = str(opp.get("eligibility") or "")
-    geography = str(opp.get("geography") or "")
-    min_conditions = str(opp.get("minimum_conditions") or "")
+    commission_duration = _known(opp.get("commission_duration"))
+    payout = _known(opp.get("payout_terms"))
+    eligibility = _known(opp.get("eligibility"))
+    geography = _known(opp.get("geography"))
+    min_conditions = _known(opp.get("minimum_conditions"))
+    terms_url = str(opp.get("terms_url") or "")
     founder_action = str(opp.get("founder_action") or "")
     verification = str(opp.get("verification") or "DISCOVERED")
 
@@ -168,7 +205,10 @@ def _page_html(opp: Dict[str, object], slug: str = "") -> str:
                 break
 
     title = f"{program}: what to know before choosing"
-    description = f"A real, evidence-based guide to {program} for {audience}. Verified program details, honest pricing, and clear steps."
+    if audience:
+        description = f"A real, evidence-based guide to {program} for {audience}. Verified program details, honest pricing, and clear steps."
+    else:
+        description = f"A real, evidence-based guide to {program}: verified program details, honest pricing, and clear steps."
 
     rows = []
     for label, val in (
@@ -187,7 +227,11 @@ def _page_html(opp: Dict[str, object], slug: str = "") -> str:
         if val:
             rows.append(f'<div class="row"><span class="k">{_esc(label)}</span><span>{_esc(val)}</span></div>')
 
+    if re.match(r"^https?://", terms_url):
+        rows.append(f'<div class="row"><span class="k">Official terms</span><span><a href="{_esc(terms_url)}" rel="nofollow noopener">{_esc(terms_url)}</a></span></div>')
+
     facts = "".join(rows) if rows else '<div class="row"><span class="k">Verification</span><span>DISCOVERED — official program details pending real confirmation.</span></div>'
+    facts += '<div class="row"><span class="k">Not listed</span><span>Any term we have not verified is left out rather than guessed; check the official terms.</span></div>'
 
     steps_html = ""
     if problem and audience:
@@ -219,6 +263,7 @@ def _page_html(opp: Dict[str, object], slug: str = "") -> str:
 
     body = (
         _SITE_HEAD.replace("__TITLE__", _esc(title)).replace("__DESCRIPTION__", _esc(description))
+                  .replace("</head>", _share_block(title, description, f"guide-{slug}.html") + "</head>", 1)
         + f'<span class="eyebrow">Honest guide</span>'
         + f'<h1>{_esc(title)}</h1>'
         + f'<div class="sub">{_esc(audience) if audience else "An evidence-based overview."}</div>'

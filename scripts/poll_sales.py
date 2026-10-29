@@ -18,8 +18,10 @@ CLI mirrors distributor.py's stdin-JSON-in / stdout-JSON-out pattern:
 
 import argparse
 import json
+import os
 import sys
 import time
+from datetime import datetime, timezone
 from pathlib import Path
 
 _FACTORY_ROOT = Path(__file__).resolve().parent.parent
@@ -168,7 +170,43 @@ def poll_sales(arm_names=None, ledger_path=None, now=None):
 
     if backoff_dirty:
         _write_backoff(backoff, backoff_path)
+    _write_check_state(outcomes, now, ledger_path)
     return outcomes, new_sale_details
+
+
+def _check_state_path(ledger_path):
+    if ledger_path:
+        return Path(str(ledger_path) + ".last_check.json")
+    return _FACTORY_ROOT / "data" / "sales_poll_last_check.json"
+
+
+def _write_check_state(outcomes, now, ledger_path=None):
+    """Record which arms were read successfully and when.
+
+    finance_data.json is only rewritten when a sale arrives, so with zero sales
+    its age says nothing about whether anyone looked. revenue_truth reads this
+    record to tell "checked recently, still zero" apart from "nobody checked".
+    Arms that errored or were skipped are listed as not checked, never as ok."""
+    path = _check_state_path(ledger_path)
+    try:
+        state = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        state = {}
+    at = datetime.fromtimestamp(now, timezone.utc).isoformat()
+    arms = state.get("arms") or {}
+    for o in outcomes:
+        if o.get("checked") and not o.get("error"):
+            arms[o["arm"]] = {"last_ok_at": at}
+    state["arms"] = arms
+    state["last_poll_at"] = at
+    state["not_checked_last_poll"] = sorted(o["arm"] for o in outcomes if not o.get("checked") or o.get("error"))
+    try:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        tmp = path.with_suffix(path.suffix + ".tmp")
+        tmp.write_text(json.dumps(state, ensure_ascii=False, indent=1), encoding="utf-8")
+        os.replace(tmp, path)
+    except OSError:
+        pass  # a missing freshness record only makes revenue_truth stricter
 
 
 def emit(obj):

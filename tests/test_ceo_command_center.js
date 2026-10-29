@@ -140,3 +140,35 @@ test('an empty factory renders honest empties instead of throwing', () => {
   assert.equal(d.revenue.verified_revenue_cents, 0);
   assert.deepEqual(d.risks, []);
 });
+
+test('business arms: shown only from the Python-written state file, with freshness', () => {
+  const state = {
+    generated_at: '2026-10-29T00:00:00Z',
+    counts: { PARTIAL: 1, PLANNED: 1 },
+    arms: { digital_products: { arm: 'digital_products', name: 'Digital Products', status: 'PARTIAL',
+      gap: '102 listings live on Gumroad; no sale recorded', implementation_present: ['product_registry.py'] } },
+    portfolio: { activities: [
+      { activity: 'digital_products', name: 'Digital Products', arm: 'digital_products', status: 'PARTIAL' },
+      { activity: 'raas', name: 'RaaS', arm: null, nearest_arm: 'micro_b2b', status: 'PLANNED', gap: 'no recurring service' }] },
+    controls: { treasury_control: { name: 'Treasury Control', status: 'PRESENT', rule: 'visibility only',
+      authoritative_present: { 'revenue_truth.py': true } } },
+    problems: [],
+  };
+  const root = factory({ 'data/business_arms_state.json': state });
+  const fresh = ccc.compute({ root, env: {}, now: new Date('2026-10-29T10:00:00Z') }).business_arms;
+  assert.equal(fresh.state, 'FRESH');
+  assert.equal(fresh.activities.length, 2);
+  assert.equal(fresh.activities[1].arm, null);
+  assert.equal(fresh.activities[1].nearest_arm, 'micro_b2b');
+  assert.equal(fresh.controls[0].authoritative[0].present, true);
+  const old = ccc.compute({ root, env: {}, now: new Date('2026-10-31T10:00:00Z') }).business_arms;
+  assert.equal(old.state, 'STALE');
+  assert.equal(old.age_hours, 58);
+});
+
+test('business arms: a missing state file is reported, never filled in', () => {
+  const a = ccc.compute({ root: factory({}), env: {} }).business_arms;
+  assert.equal(a.available, false);
+  assert.equal(a.state, 'MISSING');
+  assert.equal(a.arms, undefined);
+});

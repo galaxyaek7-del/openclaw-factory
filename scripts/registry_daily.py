@@ -19,7 +19,12 @@ sys.path.insert(0, str(ROOT))
 STATE = ROOT / "data" / "registry_daily_state.json"
 
 
-def run_once(today=None, state_path=STATE, runner=None):
+def _write_arms():
+    import business_arms
+    return business_arms.write_state()
+
+
+def run_once(today=None, state_path=STATE, runner=None, arms_writer=None):
     import product_registry
     today = today or datetime.now(timezone.utc).date().isoformat()
     try:
@@ -32,10 +37,25 @@ def run_once(today=None, state_path=STATE, runner=None):
     tmp = Path(str(state_path) + ".tmp")
     tmp.write_text(json.dumps({"last_day": today, "summary": summary}), encoding="utf-8")
     os.replace(tmp, state_path)
+    # Arm statuses are derived from the registry just rebuilt, so restate them
+    # now (data/business_arms_state.json, read by the CEO dashboard). A failure
+    # here is reported in the detail, never allowed to hide the registry result.
+    arms_note = ""
+    if arms_writer is None:
+        # Only the real rebuild restates the live arm file; a caller that
+        # injects its own runner (tests, tools) must inject a writer too.
+        arms_writer = _write_arms if runner is None else (lambda: None)
+    try:
+        doc = arms_writer()
+        if doc and doc.get("problems"):
+            arms_note = f"; arm state problems: {len(doc['problems'])}"
+    except Exception as e:  # pragma: no cover - reported, not raised
+        arms_note = f"; arm state not written ({type(e).__name__})"
     dc = summary["drift_counts"]
     issues = {k: v for k, v in dc.items() if v}
     detail = (f"{summary['products']} products {summary['states']}, sales {summary['sales_total']}; "
-              + ("drift: " + ", ".join(f"{k}={v}" for k, v in issues.items()) if issues else "no drift"))
+              + ("drift: " + ", ".join(f"{k}={v}" for k, v in issues.items()) if issues else "no drift")
+              + arms_note)
     return {"action": "drift" if issues else "ok", "detail": detail}
 
 

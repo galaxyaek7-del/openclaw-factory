@@ -51,6 +51,10 @@ STALE = "STALE"
 UNKNOWN = "UNKNOWN"
 
 DEFAULT_FINANCE_PATH = Path(__file__).resolve().parent / "finance_data.json"
+# Written by scripts/poll_sales.py after every poll: which sales arms were read
+# without error, and when. finance_data.json itself is only rewritten when a
+# sale arrives, so with zero sales its own age cannot show a recent check.
+DEFAULT_POLL_STATE_PATH = Path(__file__).resolve().parent / "data" / "sales_poll_last_check.json"
 
 # Older than this and the number is reported as STALE even though it parsed.
 # 24h, not 1h: commercial_truth uses 1h for a live monitoring cycle, which is
@@ -84,7 +88,7 @@ def _parse_ts(value):
 
 def read_revenue_state(finance_path=None, now=None,
                        stale_after_seconds=DEFAULT_STALE_AFTER_SECONDS,
-                       exclude_products_with=None):
+                       exclude_products_with=None, poll_state_path=None):
     """Read the local finance record and classify what it actually tells us.
 
     exclude_products_with : str | None
@@ -166,11 +170,21 @@ def read_revenue_state(finance_path=None, now=None,
 
     status = PASS
     note = "readable local finance record"
+    confirmed = None
     if age is not None and age > stale_after_seconds:
-        status = STALE
-        note = (f"record was last written {int(age)}s ago, past the "
-                f"{stale_after_seconds}s staleness budget; the figure is "
-                f"real but may no longer reflect the platform")
+        confirmed = _recent_poll_confirmation(poll_state_path, checked_at, stale_after_seconds)
+        if confirmed:
+            note = (f"record last written {int(age)}s ago, but a sales poll read "
+                    f"{', '.join(confirmed['arms_ok'])} without error {int(confirmed['age_seconds'])}s ago "
+                    f"and the poll reconciles new sales into this record, so the figure is current "
+                    f"for those arms")
+            if confirmed["not_checked"]:
+                note += f"; not checked on the last poll: {', '.join(confirmed['not_checked'])}"
+        else:
+            status = STALE
+            note = (f"record was last written {int(age)}s ago, past the "
+                    f"{stale_after_seconds}s staleness budget; the figure is "
+                    f"real but may no longer reflect the platform")
     if unpriced:
         note += (f"; {unpriced} sale row(s) had no usable amount and were "
                  f"excluded from the total")
@@ -179,4 +193,32 @@ def read_revenue_state(finance_path=None, now=None,
 
     return {**base, "status": status, "gross_usd": round(total, 2),
             "sales_count": len(sales) - excluded, "excluded_count": excluded,
-            "basis": "OBSERVED", "age_seconds": age, "note": note}
+            "basis": "OBSERVED", "age_seconds": age, "note": note,
+            "confirmed_by_poll": confirmed}
+
+def _recent_poll_confirmation(poll_state_path, checked_at, budget_seconds):
+    """The arms a recent sales poll read without error, or None.
+
+    Only an arm with its own successful read inside the budget counts; an arm
+    that errored or sat in auth backoff never confirms anything."""
+    path = Path(poll_state_path) if poll_state_path else DEFAULT_POLL_STATE_PATH
+    try:
+        state = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return None
+    if not isinstance(state, dict):
+        return None
+    ok, newest = [], None
+    for arm, rec in (state.get("arms") or {}).items():
+        at = _parse_ts((rec or {}).get("last_ok_at"))
+        if at is None:
+            continue
+        age = (checked_at - at).total_seconds()
+        if 0 <= age <= budget_seconds:
+            ok.append(arm)
+            newest = age if newest is None else min(newest, age)
+    if not ok:
+        return None
+    return {"arms_ok": sorted(ok), "age_seconds": newest,
+            "not_checked": list(state.get("not_checked_last_poll") or []),
+            "source": str(path)}
