@@ -42,6 +42,9 @@ python scripts/apply_listing_repairs_20261029.py --live   # applies them
   (fee sheet rebuilt on the USPTO schedule) and the guide with a dated fee-correction
   page (statement of use $150 and extension $125 per class; the guide said $200-250 and $225).
 - GPSR EU Seller Action Kit ($79, fetmu): attaches the promised cost-planner workbook.
+- EU Late Payment Recovery Kit ($59), Etsy Ads ROI Playbook + Calculator ($39), Diminished
+  Value Claim Kit ($59): each guide refers to its tracker/workbook, which exists and recalculates
+  with 0 errors but was never attached. Bundled with the exact PDF buyers get today.
 - 27 listings say "... and this guide." on the listing page; fixed to "and a PDF guide."
 
 Result per listing: `data/listing_repairs_20261029.json` (PASS / FAILED with the reason).

@@ -9,6 +9,9 @@
   fetmu   GPSR EU Seller Action Kit ($79): the listing promises a cost
           planner that was never attached. Deliverable becomes a bundle of
           the guide and the repaired cost-planner workbook.
+  ciowwm, hasjmp, dyjavs ($59, $39, $59): each guide refers to a tracker or
+          workbook that exists locally but was never attached; bundled with
+          the exact live PDF, descriptions say what the buyer now receives.
   27 listings (batches 14-16) say "... and this guide." on the listing page,
           where no guide is in view: "and a PDF guide." instead.
 
@@ -45,13 +48,36 @@ BUNDLES = {
                ["books/trademark_diy_filing_kit_v2.pdf", "books/trademark_filing_tracker.xlsx"]),
     "fetmu": ("gpsr_eu_seller_action_kit_bundle.zip",
               ["books/gpsr_eu_seller_action_kit.pdf", "books/gpsr_eu_seller_cost_planner.xlsx"]),
+    # Each guide below points at its workbook ("tracker", "workbook sheet 1") but
+    # only the PDF was ever attached. The PDFs are the exact live files (byte
+    # sizes match the delivery audit); the workbooks recalculate with 0 errors
+    # (lib/xlsx_eval: 1,224 / 1,427 / 209+2 COUNTIFS formulas).
+    "ciowwm": ("eu_late_payment_recovery_kit_bundle.zip",
+               ["factory_workspace/sprint14/eu_late_payment_recovery_kit.pdf", "books/eu_late_payment_calculator.xlsx"]),
+    "hasjmp": ("etsy_ads_roi_playbook_bundle.zip",
+               ["factory_workspace/sprint14/etsy_ads_roi_playbook.pdf", "books/etsy_ads_roi_calculator.xlsx"]),
+    "dyjavs": ("diminished_value_claim_kit_bundle.zip",
+               ["backups/catalog_audit_2026-10-14/f542PZ92SUPOjV9F5GJh-Q_0.pdf", "books/diminished_value_claim_pack.xlsx"]),
 }
-# fetmu's listing calls the planner a PDF; it is a workbook.
-DESCRIPTION_EDITS = {"fetmu": [("PDF cost planner", "XLSX cost planner workbook")]}
+ARCHIVE_NAMES = {  # the backup copy carries a Gumroad file id as its name
+    "backups/catalog_audit_2026-10-14/f542PZ92SUPOjV9F5GJh-Q_0.pdf": "diminished_value_claim_kit.pdf",
+}
+SINGLE_FILE = "A single, focused file you download and use immediately"
+DESCRIPTION_EDITS = {
+    # fetmu's listing calls the planner a PDF; it is a workbook.
+    "fetmu": [("PDF cost planner", "XLSX cost planner workbook")],
+    "ciowwm": [(SINGLE_FILE, "A short PDF guide plus a working XLSX calculator workbook (invoice tracker, notice ladder)")],
+    "hasjmp": [(SINGLE_FILE, "A short PDF playbook plus the XLSX calculator workbook (per-listing tracker, readiness check)")],
+    "dyjavs": [("3-page PDF guide covering", "3-page PDF guide plus a six-sheet XLSX claim workbook, covering")],
+}
 
 
 def sha256(p):
     return hashlib.sha256(Path(p).read_bytes()).hexdigest()
+
+
+def archive_name(member):
+    return ARCHIVE_NAMES.get(member, Path(member).name.replace("_v2.pdf", ".pdf"))
 
 
 def build_bundle(slug):
@@ -63,12 +89,11 @@ def build_bundle(slug):
     with zipfile.ZipFile(tmp, "w", zipfile.ZIP_DEFLATED) as z:
         for m in members:
             src = ROOT / m
-            arc = Path(m).name.replace("_v2.pdf", ".pdf")
-            z.write(src, arc)
+            z.write(src, archive_name(m))
     os.replace(tmp, dst)
     results = {m: fte.test_file(ROOT / m).status for m in members}
     return {"path": str(dst.relative_to(ROOT)), "bytes": dst.stat().st_size, "sha256": sha256(dst),
-            "members": [Path(m).name.replace("_v2.pdf", ".pdf") for m in members], "member_file_tests": results,
+            "members": [archive_name(m) for m in members], "member_file_tests": results,
             "ok": all(s == "PASS" for s in results.values())}
 
 
