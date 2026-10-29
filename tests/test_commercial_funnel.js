@@ -95,6 +95,24 @@ test('delivery truth: buyer-facing issues are listed, archive opacity is counted
   assert.equal(d.stale, false);
 });
 
+test('an archive whose attached size equals its built bundle is verified; a size mismatch is not', () => {
+  const root = factory({
+    'books/b/M1.json': { files: { bundle: { bytes: 18002 } } },
+    'books/b/M2.json': { files: { bundle: { bytes: 5000 } } },
+    'reports/GUMROAD_DELIVERY_AUDIT_2026-10-29.json': { generated_at: '2026-10-29T16:00:00Z', rows: [
+      { slug: 'xiimbr', published: true, price_usd: 12, attached_bytes: 18002, issues: ['ZIP_CONTENTS_UNVERIFIED'] },
+      { slug: 'other', published: true, price_usd: 12, attached_bytes: 4999, issues: ['ZIP_CONTENTS_UNVERIFIED'] },
+      { slug: 'legacy', published: true, price_usd: 29, attached_bytes: 900, issues: ['ZIP_CONTENTS_UNVERIFIED'] }] },
+  });
+  const registry = { products: [
+    { internal_id: 'B16-007', url: 'https://x/l/xiimbr', manifest: 'books/b/M1.json' },
+    { internal_id: 'B16-099', url: 'https://x/l/other', manifest: 'books/b/M2.json' },
+    { internal_id: 'GR-1', url: 'https://x/l/legacy' }] };
+  const d = cf.delivery(root, NOW, registry);
+  assert.equal(d.archive_contents_verified_by_manifest, 1);
+  assert.equal(d.archive_contents_unverified, 2);
+});
+
 test('no delivery audit is UNKNOWN, not a clean bill', () => {
   const d = cf.delivery(factory(), NOW);
   assert.equal(d.kind, 'UNKNOWN');
