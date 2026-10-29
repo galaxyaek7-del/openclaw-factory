@@ -59,7 +59,14 @@ _state = {"installed": False, "overlay": None, "redirected": set(), "deleted": s
 _WRITE_FLAGS = os.O_WRONLY | os.O_RDWR | os.O_CREAT | os.O_APPEND | os.O_TRUNC
 
 
-def _abs(path):
+def _abs(path, dir_fd=None):
+    """Absolute, case-normalised path, or None when it cannot be known.
+
+    A relative path given with dir_fd is relative to that open directory, not
+    to the working directory: shutil.rmtree on Linux deletes by name inside
+    the directory it opened. Resolving it against the working directory would
+    map a temp file to a live repo path and leave the temp file undeleted.
+    """
     if isinstance(path, int):
         return None
     try:
@@ -68,7 +75,18 @@ def _abs(path):
         return None
     if isinstance(p, bytes):
         p = os.fsdecode(p)
+    if dir_fd is not None and not os.path.isabs(p):
+        try:
+            base = os.readlink(f"/proc/self/fd/{dir_fd}")
+        except OSError:
+            return None          # unresolvable: not treated as a live path
+        p = os.path.join(base, p)
     return os.path.normcase(os.path.abspath(p))
+
+
+def _no_dir_fd(kwargs):
+    """kwargs for a call redirected to an absolute overlay path."""
+    return {k: v for k, v in kwargs.items() if k != "dir_fd"}
 
 
 def _is_live(ap):
@@ -132,26 +150,26 @@ def _guarded_open(file, mode="r", *args, **kwargs):
 
 
 def _guarded_os_open(path, flags, mode=0o777, *args, **kwargs):
-    ap = _abs(path)
+    ap = _abs(path, kwargs.get("dir_fd"))
     if _is_live(ap):
         if flags & _WRITE_FLAGS:
             ov = _prepare_write(ap, copy_existing=not (flags & os.O_TRUNC))
-            return _real["os_open"](ov, flags, mode, *args, **kwargs)
+            return _real["os_open"](ov, flags, mode, *args, **_no_dir_fd(kwargs))
         target = _read_target(ap)
         if target is None:
             raise FileNotFoundError(2, "No such file or directory (deleted in test overlay)", str(path))
-        return _real["os_open"](target, flags, mode, *args, **kwargs)
+        return _real["os_open"](target, flags, mode, *args, **_no_dir_fd(kwargs))
     return _real["os_open"](path, flags, mode, *args, **kwargs)
 
 
 def _guarded_stat(path, *args, **kwargs):
-    ap = _abs(path)
+    ap = _abs(path, kwargs.get("dir_fd"))
     if _is_live(ap):
         if ap in _state["deleted"]:
             raise FileNotFoundError(2, "No such file or directory (deleted in test overlay)", str(path))
         ov = _overlay_path(ap)
         if _has_overlay(ap):
-            return _real["stat"](ov, *args, **kwargs)
+            return _real["stat"](ov, *args, **_no_dir_fd(kwargs))
     return _real["stat"](path, *args, **kwargs)
 
 
@@ -208,7 +226,7 @@ def _guarded_remove(kind):
     real = _real[kind]
 
     def remove(path, *args, **kwargs):
-        ap = _abs(path)
+        ap = _abs(path, kwargs.get("dir_fd"))
         if _is_live(ap):
             if ap in _state["deleted"]:
                 raise FileNotFoundError(2, "No such file or directory (deleted in test overlay)", str(path))
@@ -226,14 +244,14 @@ def _guarded_remove(kind):
 
 
 def _guarded_mkdir(path, *args, **kwargs):
-    ap = _abs(path)
+    ap = _abs(path, kwargs.get("dir_fd"))
     if _is_live(ap) and not _real["exists"](ap):
         ov = _overlay_path(ap)
         if _real["exists"](ov):
             raise FileExistsError(17, "File exists", str(path))
         _real["makedirs"](os.path.dirname(ov), exist_ok=True)
         _state["dirs"].add(ap)
-        return _real["mkdir"](ov, *args, **kwargs)
+        return _real["mkdir"](ov, *args, **_no_dir_fd(kwargs))
     return _real["mkdir"](path, *args, **kwargs)
 
 
@@ -351,11 +369,11 @@ def _guarded_scandir(path="."):
 
 
 def _guarded_rmdir(path, *args, **kwargs):
-    ap = _abs(path)
+    ap = _abs(path, kwargs.get("dir_fd"))
     if _is_live(ap):
         ov = _overlay_path(ap)
         if _real["exists"](ov) and not _real["exists"](ap):
-            return _real["rmdir"](ov, *args, **kwargs)
+            return _real["rmdir"](ov, *args, **_no_dir_fd(kwargs))
         return None              # never remove a live directory
     return _real["rmdir"](path, *args, **kwargs)
 

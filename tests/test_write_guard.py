@@ -217,6 +217,37 @@ class WriteGuard(unittest.TestCase):
         self.assertEqual('{"row": "live"}\n', out["live"])
         self.assertEqual([], out["r"])
 
+    def test_rmtree_of_a_temp_dir_works_with_cwd_in_the_repo(self):
+        # On Linux shutil.rmtree deletes by name relative to an open directory
+        # (unlink(name, dir_fd=fd)). With the working directory at the repo
+        # root, those bare names must not be mistaken for live repo paths:
+        # CI failed with "Directory not empty" on every temp-dir cleanup.
+        outside = tempfile.mkdtemp()
+        os.makedirs(os.path.join(outside, "sub"))
+        for name in ("ledger.jsonl", os.path.join("sub", "x.json")):
+            with open(os.path.join(outside, name), "w") as f:
+                f.write("tmp")
+        out, _ = run_case(self.repo, f"""
+            import shutil
+            os.chdir(R)
+            shutil.rmtree({outside!r})
+            out["gone"] = not os.path.exists({outside!r})
+            out["r"] = wg.redirected()
+        """)
+        shutil.rmtree(outside, ignore_errors=True)
+        self.assertTrue(out["gone"])
+        self.assertEqual([], out["r"])
+        self.assertEqual('{"row": "live"}\n', self.live())
+
+    def test_rmtree_of_a_live_dir_stays_virtual(self):
+        out, _ = run_case(self.repo, """
+            import shutil
+            shutil.rmtree(os.path.join(R, "data"), ignore_errors=True)
+            out["visible"] = os.path.exists(os.path.join(R, "data", "ledger.jsonl"))
+        """)
+        self.assertFalse(out["visible"])
+        self.assertEqual('{"row": "live"}\n', self.live())
+
 
 if __name__ == "__main__":
     unittest.main()
