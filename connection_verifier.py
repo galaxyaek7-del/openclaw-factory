@@ -189,6 +189,8 @@ def n8n(run=subprocess.run):
         rows.append(_row(f"n8n:{name}", "workflow", mapping.get(w.get("verdict"), UNKNOWN),
                          f"verdict={w.get('verdict')} last={w.get('last_status')}@{w.get('last_started_at')} "
                          f"runs={w.get('runs_total')} errors={w.get('errors_total')}"
+                         + ("; manual-only workflow (no trigger), never run" if w.get("freshness") == "MANUAL_ONLY"
+                            and not w.get("runs_total") else "")
                          + (f"; error: {str(w.get('last_error'))[:80]}" if w.get("last_error") else ""), "runtime_record"))
     return rows
 
