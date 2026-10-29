@@ -110,6 +110,46 @@ def restore_test_rules():
         "tests/test_restore_file_from_git.js (before 2026-10-29 it wrote to the live ledger)")}
 
 
+DESIGN_QDIR = os.path.join(ROOT, "data", "quarantine", "B36_design_ledgers_20261029")
+DESIGN_FIXTURE_PRODUCTS = {"EU AI Act Compliance Toolkit", "Failure Test Product", "Test Product", "Test", "T"}
+
+
+def design_ledger_rules():
+    """Pass 4 (B36): the three design ledgers hold only test output. Verified
+    2026-10-29: canva_autodesign/DesignPipeline has no non-test caller; every
+    SPEC_STRUCTURED row names one of the fixture products defined in
+    tests/test_canva_e2e.py / tests/test_canva_failures.py; 90 of 92 write-minutes
+    are bursts of 10+ rows; no site page, product or script references
+    data/design_output. Every row of the three files is moved."""
+    why = ("test output of tests/test_canva_e2e.py and tests/test_canva_failures.py "
+           "(DesignPipeline has no non-test caller; only fixture products appear)")
+    return {name: (lambda r: True, why)
+            for name in ("design_audit.jsonl", "design_candidates.jsonl", "design_approvals.jsonl")}
+
+
+def design_fixture_check(root=ROOT):
+    """Refuse the pass if any row names a product that is not a test fixture."""
+    path = os.path.join(root, "data", "design_audit.jsonl")
+    if not os.path.exists(path):
+        return []
+    foreign = set()
+    with open(path, encoding="utf-8") as f:
+        for line in f:
+            try:
+                r = json.loads(line)
+            except ValueError:
+                continue
+            p = (r.get("details") or {}).get("product")
+            if p and p not in DESIGN_FIXTURE_PRODUCTS:
+                foreign.add(p)
+    return sorted(foreign)
+
+
+def all_design_images(root=ROOT):
+    d = os.path.join(root, "data", "design_output")
+    return sorted(os.path.join(d, n) for n in os.listdir(d)) if os.path.isdir(d) else []
+
+
 def sha(path):
     h = hashlib.sha256()
     with open(path, "rb") as f:
@@ -172,7 +212,8 @@ def apply(root=ROOT, qdir=QDIR, rules=None, images=True):
         manifest["files"][name] = {"status": "MOVED", "rows_before": len(lines), "rows_moved": len(info["moved"]),
                                    "rows_after": len(keep), "sha256_before": before, "sha256_after": sha(path)}
     imgdir = os.path.join(qdir, "design_output")
-    for img in (design_images(root) if images else []):
+    image_list = (all_design_images(root) if images == "all" else design_images(root)) if images else []
+    for img in image_list:
         os.makedirs(imgdir, exist_ok=True)
         dst = os.path.join(imgdir, os.path.basename(img))
         shutil.move(img, dst)
@@ -184,6 +225,20 @@ def apply(root=ROOT, qdir=QDIR, rules=None, images=True):
 
 
 if __name__ == "__main__":
+    if "--design-ledgers" in sys.argv:
+        foreign = design_fixture_check()
+        if foreign:
+            print(json.dumps({"refused": "non-fixture products present", "products": foreign}, indent=1))
+            sys.exit(1)
+        rules = design_ledger_rules()
+        if "--apply" in sys.argv:
+            m = apply(qdir=DESIGN_QDIR, rules=rules, images="all")
+            print(json.dumps({k: v.get("rows_moved", v.get("status")) for k, v in m["files"].items()}
+                             | {"images_moved": len(m["images"])}, indent=1))
+        else:
+            print(json.dumps({k: len(v["moved"]) for k, v in plan(rules=rules).items()}
+                             | {"images": len(all_design_images())}, indent=1))
+        sys.exit(0)
     if "--restore-test" in sys.argv:
         rules = restore_test_rules()
         if "--apply" in sys.argv:
