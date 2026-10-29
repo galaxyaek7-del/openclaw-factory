@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-29T07:54:23.738929+00:00",
+ "generated_at": "2026-10-29T10:59:42.484632+00:00",
  "source": "docs/factory/FACTORY_ENGINEERING_BACKLOG.md (rows parsed verbatim; the Markdown is the edited copy)",
  "items": [
   {
@@ -368,8 +368,8 @@
    "why": "a full disk can corrupt ledgers mid-write",
    "acceptance": "loop skips heavy writers below 2 GB free, keeps ledgers and monitoring",
    "verify": "unit test + live check",
-   "status": "TODO",
-   "status_detail": "TODO",
+   "status": "DONE",
+   "status_detail": "DONE (uncommitted): `factory_loop.js` lowDiskState/setLowDiskState; below 2 GB free `triggerGenerateBook` (all PDF/cover generation) is refused and a `low_disk_mode` action is logged; `tests/test_low_disk_mode.js` (3)",
    "founder_authorization_required": false
   },
   {

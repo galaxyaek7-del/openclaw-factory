@@ -651,7 +651,27 @@ async function pollSales(reachable) {
   }
 }
 
+// B38 low-disk mode (2026-10-29): C: reached 1.3% free (opencode.db, 127 GB).
+// A full disk can cut a JSONL append in half and corrupt a ledger. Below
+// LOW_DISK_GB free, the loop stops the heaviest writer -- PDF/cover generation,
+// which all goes through triggerGenerateBook() -- and keeps ledgers, monitoring
+// and alerts running. Refreshed at the start of every tick from the disk check.
+const LOW_DISK_GB = 2;
+let lowDisk = { active: false, free_gb: null };
+
+function lowDiskState(checks) {
+  const d = checks && checks.disk;
+  const free = d && typeof d.free_gb === 'number' ? d.free_gb : null;
+  return { active: free != null && free < LOW_DISK_GB, free_gb: free };
+}
+
+function setLowDiskState(state) { lowDisk = state || { active: false, free_gb: null }; }
+
 async function triggerGenerateBook(brief) {
+  if (lowDisk.active) {
+    return { ok: false, low_disk: true,
+      detail: `وضع القرص المنخفض: ${lowDisk.free_gb}GB حرة (< ${LOW_DISK_GB}GB) — توليد الكتب/الأغلفة موقوف مؤقتاً` };
+  }
   try {
     const res = await fetchWithTimeout(`${DASHBOARD_URL}/generate-book`, {
       method: 'POST',
@@ -5251,6 +5271,11 @@ async function runTick() {
   markStep('diagnose');
   const diagnosis = await diagnose();
   const actions = [];
+  setLowDiskState(lowDiskState(diagnosis.reachable && diagnosis.health ? diagnosis.health.checks : null));
+  if (lowDisk.active) {
+    actions.push({ step: 'low_disk_mode', action: 'active',
+      detail: `${lowDisk.free_gb}GB حرة — توليد الكتب/الأغلفة موقوف، السجلات والمراقبة مستمرة` });
+  }
 
   if (diagnosis.reachable) {
     // Global Trust & Resilience Layer, Round 1 (2026-07-29): a real
@@ -5805,7 +5830,7 @@ if (require.main === module) {
 }
 
 module.exports = {
-  runTick, healFinance, healEmptyBooks, healN8n, n8nWatchdogDecision, runN8nWatchdog, hunt, diagnose,
+  runTick, healFinance, healEmptyBooks, healN8n, n8nWatchdogDecision, runN8nWatchdog, lowDiskState, setLowDiskState, hunt, diagnose,
   generateWeeklyReport, maybeGenerateWeeklyReport, weekReportPath, runExportExecutiveReport,
   runEvolutionReport, evolutionReportPath, maybeGenerateDailyEvolutionReport,
   runGalaxyEvolutionReport, galaxyEvolutionReportPath, maybeGenerateMonthlyGalaxyEvolutionReport,
