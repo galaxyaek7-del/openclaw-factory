@@ -1,0 +1,16 @@
+{
+ "generated_by": "hold_policy.py --export",
+ "source": "hold_policy.HOLD_PRODUCTS (edit that, never this file)",
+ "products": {
+  "iaiyt": {
+   "product_id": "pzTmMb4v8cih3nbWTj5TeA==",
+   "reason": "internal quality audit recorded 11 critical content-accuracy findings, including Annex III categories that do not appear in the Act and an incorrect prohibition on high-risk GPAI models. Recorded as an internal finding, not a legal ruling.",
+   "found_by": "product_content_integrity / source_grounding"
+  },
+  "wteork": {
+   "product_id": "ylqF8rzW698iKeOuKFWQkw==",
+   "reason": "listed as a workbook; the delivered file is a one-page, 331-word PDF with empty tables and outcome claims the content does not support.",
+   "found_by": "file_testing_engine / product_scorecard"
+  }
+ }
+}

@@ -1,0 +1,44 @@
+{
+  "iaiyt": {
+    "product_id": "pzTmMb4v8cih3nbWTj5TeA==",
+    "name": "EU AI Act Compliance Toolkit — Practical Templates & Implementation Guide for SMEs",
+    "description": "**The EU AI Act's transparency rules are already enforced. The high-risk deadline just moved to December 2027 — which means you have real runway, if you start now.**\n\nAs of August 2, 2026, EU AI Act transparency obligations (chatbot disclosure, deepfake labeling) are actively enforced. The bigger obligations — risk classification, technical documentation, conformity assessment for high-risk systems — were deferred by the 2026 Digital Omnibus on AI to December 2, 2027. That's real, genuine runway. It's also the exact reason to start now instead of month fourteen of sixteen: penalties for getting classification wrong once the deadline hits reach €35 million or 7% of global annual turnover, and most compliance consultancies charge five figures for a scoping engagement most SMEs can't afford or don't have time for.\n\nThis 31-page toolkit gives you the practical, plain-English path through it — built for compliance officers, DPOs, and founders who need to move now, not after a two-week consulting sprint.\n\n**What's inside:**\n• Risk classification decision-tree (prohibited / high-risk / limited-risk / minimal-risk)\n• Technical documentation requirements mapped to Annex IV\n• Step-by-step conformity assessment procedure\n• Human oversight design requirements\n• Data governance and quality management obligations\n• Transparency and disclosure requirements for limited-risk systems\n• Post-market monitoring and serious-incident reporting procedure\n• General-purpose AI model obligations\n• Full audit-readiness checklist mapped to Annex III high-risk categories\n• Governance/policy, technical-documentation, and risk-assessment template outlines\n• Roles &amp; responsibilities guide (AI officer, DPO coordination)\n• Vendor/third-party AI due-diligence checklist\n• A 90-day implementation roadmap built specifically for SME resourcing\n• Common compliance mistakes — and how classification errors expose you to the largest penalties\n• How to prepare for a notified body engagement\n\n**Who this is for:** compliance officers, DPOs, and founders at SMEs that have deployed or are deploying an AI system in the EU and need a real starting point — not a $15,000 consulting retainer.\n\n**Why this toolkit and not another PDF:** the December 2, 2027 deadline above is real and current — most guides you'll find (including some paid ones) still cite the original August 2026 date, which was pushed back by the 2026 Digital Omnibus on AI. This one is built on the current timeline and names its sources in the text (Regulation (EU) 2024/1689 and the Digital Omnibus deferral), rather than asserting the date without reference.\n\n**Important note:** this toolkit is a practical implementation guide, not legal advice. It's built to get you 80% of the way to audit-ready and to make your eventual legal/consulting spend far more targeted and efficient — the same positioning every real competitor in this category uses, because a template kit legitimately isn't a law firm.\n\nInstant digital download. 31 pages, PDF.\n\n---\n\nWHAT THIS IS NOT\n- Not professional, financial, or legal advice. This is a practical implementation guide; consult a qualified professional for your specific obligations.\n- Not a compliance certificate and not a guarantee that any regulator, customer or procurement process will accept your documentation.\n- Not a substitute for the official text of the AI Act and your national implementing rules, which are the only authority. Check them directly - this landscape is still moving.\n- Templates are a starting point you must adapt to your own systems and record-keeping, not drop in unchanged.\n\nSTRAIGHT WITH YOU\nSmall independent seller. We have sold 0 of these and have no reviews, so there is no track record - you are buying on the contents, and you can read every page before you decide.\nIf it is not useful, tell us why; that is worth more to us than a sale.\nMore Galaxy Forge toolkits: https://galaxyaek7-del.github.io/openclaw-factory/customer_site/products.html\nWould rather not spend $155 on an unknown seller? Email galaxyaek7@gmail.com and ask for a free copy.",
+    "price": 15500,
+    "currency": "usd",
+    "customizable_price": false,
+    "published": true,
+    "short_url": "https://aekraft.gumroad.com/l/iaiyt",
+    "files": [
+      {
+        "name": "eu_ai_act_compliance_toolkit_preview",
+        "size": 106314
+      },
+      {
+        "name": null,
+        "size": 139401
+      }
+    ],
+    "sales_count": 0,
+    "captured_at": "2026-10-28",
+    "why": "pre-mitigation snapshot before setting price to $0 and writing a hold notice; restore from here if the hold is lifted"
+  },
+  "wteork": {
+    "product_id": "ylqF8rzW698iKeOuKFWQkw==",
+    "name": "Amazon FBA Reconciliation Workbook",
+    "description": "Amazon FBA Reconciliation Workbook - $49.\n\nBuilt for people who need to get this right quickly, with the actual steps in order rather than a general overview.\n\nWhat you get:\n- A single, focused file you download and use immediately\n- Step-by-step process, so you work in the right order\n- Checklists and prompts for the parts people usually get wrong\n- Plain language, no padding\n\nWhat this is NOT:\n- Not professional, legal, financial or tax advice\n- No result, outcome or saving is guaranteed\n- Not a substitute for the official rules in your jurisdiction - verify anything specific with the relevant authority\n\nBuy once. No subscription, no account, no upsell.\n\nMore Galaxy Forge toolkits: https://galaxyaek7-del.github.io/openclaw-factory/customer_site/products.html\n\n---\n\nMonthly FBA reconciliation routine: refunds without credits, removal mismatches, fee-tier outliers, case-filing discipline. Finds leakage, documents claims.",
+    "price": 4900,
+    "currency": "usd",
+    "customizable_price": false,
+    "published": true,
+    "short_url": "https://aekraft.gumroad.com/l/wteork",
+    "files": [
+      {
+        "name": null,
+        "size": 3726
+      }
+    ],
+    "sales_count": 0,
+    "captured_at": "2026-10-28",
+    "why": "pre-mitigation snapshot before setting price to $0 and writing a hold notice; restore from here if the hold is lifted"
+  }
+}
