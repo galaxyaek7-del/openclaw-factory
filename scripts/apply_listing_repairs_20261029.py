@@ -46,8 +46,10 @@ OLD_PHRASE, NEW_PHRASE = " and this guide.", " and a PDF guide."
 BUNDLES = {
     "vkqogv": ("trademark_diy_filing_kit_bundle.zip",
                ["books/trademark_diy_filing_kit_v2.pdf", "books/trademark_filing_tracker.xlsx"]),
+    # The exact live PDF (18,208 B, matches the delivery audit); the 21 Sep
+    # local build in books/ has the same text but different bytes.
     "fetmu": ("gpsr_eu_seller_action_kit_bundle.zip",
-              ["books/gpsr_eu_seller_action_kit.pdf", "books/gpsr_eu_seller_cost_planner.xlsx"]),
+              ["backups/catalog_audit_2026-10-14/VPYaNkAdv7Yocko-lIJsZQ_0.pdf", "books/gpsr_eu_seller_cost_planner.xlsx"]),
     # Each guide below points at its workbook ("tracker", "workbook sheet 1") but
     # only the PDF was ever attached. The PDFs are the exact live files (byte
     # sizes match the delivery audit); the workbooks recalculate with 0 errors
@@ -59,13 +61,17 @@ BUNDLES = {
     "dyjavs": ("diminished_value_claim_kit_bundle.zip",
                ["backups/catalog_audit_2026-10-14/f542PZ92SUPOjV9F5GJh-Q_0.pdf", "books/diminished_value_claim_pack.xlsx"]),
 }
-ARCHIVE_NAMES = {  # the backup copy carries a Gumroad file id as its name
+ARCHIVE_NAMES = {  # backup copies carry a Gumroad product id as their name
     "backups/catalog_audit_2026-10-14/f542PZ92SUPOjV9F5GJh-Q_0.pdf": "diminished_value_claim_kit.pdf",
+    "backups/catalog_audit_2026-10-14/VPYaNkAdv7Yocko-lIJsZQ_0.pdf": "gpsr_eu_seller_action_kit.pdf",
 }
 SINGLE_FILE = "A single, focused file you download and use immediately"
 DESCRIPTION_EDITS = {
     # fetmu's listing calls the planner a PDF; it is a workbook.
     "fetmu": [("PDF cost planner", "XLSX cost planner workbook")],
+    # The delivery line must name what the bundle now contains.
+    "vkqogv": [("Instant digital download. PDF guide.",
+                "Instant digital download: PDF guide (with a dated USPTO fee-correction page) and the four-sheet XLSX docket tracker.")],
     "ciowwm": [(SINGLE_FILE, "A short PDF guide plus a working XLSX calculator workbook (invoice tracker, notice ladder)")],
     "hasjmp": [(SINGLE_FILE, "A short PDF playbook plus the XLSX calculator workbook (per-listing tracker, readiness check)")],
     "dyjavs": [("3-page PDF guide covering", "3-page PDF guide plus a six-sheet XLSX claim workbook, covering")],
@@ -110,8 +116,12 @@ def plan(token, gp):
             actions.append({"slug": slug, "kind": "attach_bundle", "error": "listing not found"})
             continue
         b = build_bundle(slug)
+        # Idempotent: a listing whose attachment already has exactly the
+        # bundle's size is the repaired state; it is not uploaded again.
+        live_sizes = [f.get("size") for f in (gp.get_product(token, p["id"]).get("files") or [])]
         actions.append({"slug": slug, "kind": "attach_bundle", "product_id": p["id"], "name": p.get("name"),
-                        "bundle": b})
+                        "bundle": b, "live_file_sizes": live_sizes,
+                        "already_applied": b["bytes"] in live_sizes})
     for slug, p in sorted(by_slug.items()):
         desc = p.get("description") or ""
         new = desc.replace(OLD_PHRASE, NEW_PHRASE)
@@ -132,6 +142,9 @@ def apply(token, gp, ws, actions):
     for a in actions:
         if a.get("error") or (a["kind"] == "attach_bundle" and not a["bundle"]["ok"]):
             done.append({**a, "result": "SKIPPED", "reason": a.get("error") or "bundle member failed its file test"})
+            continue
+        if a.get("already_applied"):
+            done.append({**a, "result": "ALREADY_APPLIED"})
             continue
         try:
             if a["kind"] == "attach_bundle":
@@ -171,7 +184,8 @@ def main(argv=None):
         finally:
             os.environ["FACTORY_LIVE_PUBLISH"] = "false"
     else:
-        report["actions"] = [{**a, "result": "PLANNED"} for a in actions]
+        report["actions"] = [{**a, "result": "ALREADY_APPLIED" if a.get("already_applied") else "PLANNED"}
+                             for a in actions]
     tmp = REPORT.with_suffix(".json.tmp")
     tmp.write_text(json.dumps(report, indent=1, ensure_ascii=False), encoding="utf-8")
     os.replace(tmp, REPORT)
@@ -180,7 +194,7 @@ def main(argv=None):
         summary.setdefault(f"{a['kind']}:{a['result']}", 0)
         summary[f"{a['kind']}:{a['result']}"] += 1
     print(json.dumps({"mode": report["mode"], "summary": summary, "report": str(REPORT.relative_to(ROOT))}))
-    return 0 if all(a["result"] in ("PASS", "PLANNED") for a in report["actions"]) else 1
+    return 0 if all(a["result"] in ("PASS", "PLANNED", "ALREADY_APPLIED") for a in report["actions"]) else 1
 
 
 if __name__ == "__main__":
