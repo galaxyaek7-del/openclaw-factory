@@ -1,0 +1,14 @@
+# Lesson: The Page That Needed A Server
+
+**Mistake:** shipped public pages whose entire content came from `fetch('/api/...')`, then served those pages from GitHub Pages, which has no Node process. The route does not exist there. Nothing errored in any local test, because locally the backend was always running.
+
+**Consequence (two separate instances, the second one found only by accident):**
+
+1. `customer_site/index.html` rendered zero of the 102 published products on the public deployment. It was reported as "the homepage shows none of the products" and initially misdiagnosed as *missing products* rather than *broken rendering*. Fixed 2026-10-28 with `publicSnapshot()` plus a committed `catalog.json` fallback.
+2. `solutions.html`, `recommended.html` and `compare.html` each rendered `GET /api/solutions`. On the real deployment a visitor saw "Temporarily unavailable" and nothing else. `recommended.html` was simultaneously the **#2 organic result** for `site:galaxyaek7-del.github.io` in Bing/DuckDuckGo — the best-ranked page on the site was, to every visitor who clicked it, empty. Fixed 2026-10-29 with `customer_site/solutions.json` plus `assets/gf-solutions.js`.
+
+**How found:** not by a test and not by review. A `site:` query against a search engine returned three real, indexed URLs; opening the logic of the two content pages that ranked showed they could not possibly have rendered their data on that host. The homepage instance was found earlier the same way, from a user report that the storefront "showed no products".
+
+**Fix, and why the fix is not "add a fallback where you notice one":** every page that renders server data now needs a committed snapshot of that data plus a loader that (a) tries the live route, (b) falls back to the snapshot, and (c) **states which source answered** so snapshot data is never presented as live data. The snapshot must not point at routes a static host cannot serve — `explore_url` had to become the vendor's own official page instead of `/api/solutions/click/<id>`, and that trade is disclosed on the page. Two drift guards exist so this cannot rot: `tests/test_hold_policy_catalog.js` (hold list) and `tests/test_solutions_static_fallback.js` (solutions snapshot re-runs its own exporter and fails on any difference).
+
+**Generalizable lesson:** a page is not tested because it renders in the environment where it was built. For every public surface, ask *what process is serving this, and what does it do when that process is absent?* The deployment target is part of the contract — GitHub Pages serves files and nothing else, so any `/api/` reference in a public page is a promise to a server that is not there. And the failure is silent and expensive: search engines happily index a page whose body is "Temporarily unavailable", and that is the version of the business the first real visitors see.
