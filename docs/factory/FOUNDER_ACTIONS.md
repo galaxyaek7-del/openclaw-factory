@@ -16,6 +16,21 @@ The command refuses on its own if the window, approval, revision or auth
 freshness does not hold. Success: each product prints `PASS` with a URL.
 After the approvals expire, new ones are needed (the dry run lists what is missing).
 
+### Making publishing automatic (one-time)
+
+Add `GF_AUTO_PUBLISH_APPROVED=true` to `.env`. From then on the factory loop publishes,
+every tick, each product you have approved, as soon as Gumroad's 24-hour window has
+room (`scripts/publish_approved_daily.py`). Approving is then your only step:
+
+```
+python scripts/approve_products.py --batch batch16 --only B16-008 B16-009 B16-010 --reference "approved by founder, chat 2026-10-30"          # preview
+python scripts/approve_products.py --batch batch16 --only B16-008 B16-009 B16-010 --reference "approved by founder, chat 2026-10-30" --yes    # record
+```
+
+Each approval is bound to the product's exact files, listing text, price and currency
+and expires (72 h by default); any later change needs a new approval. Without the
+switch the loop only reports approved products as ready.
+
 ## 2. Repair the live listings that deliver less than they describe
 
 ```

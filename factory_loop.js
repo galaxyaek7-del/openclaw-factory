@@ -5329,6 +5329,11 @@ async function runTick() {
     // them on the next tick). Batch-15 pages had waited five days for a hand run.
     markStep('tool_pages');
     actions.push({ step: 'tool_pages', ...(await runOnceScript('tool_pages_daily.py', { timeoutMs: 6 * 60 * 1000 })) });
+    // 2026-10-29: publish founder-approved products when Gumroad's 24-hour window
+    // has room. Off unless GF_AUTO_PUBLISH_APPROVED=true; the publisher's own
+    // approval, revision, price and auth checks still decide every product.
+    markStep('publish_approved');
+    actions.push({ step: 'publish_approved', ...(await runOnceScript('publish_approved_daily.py', { timeoutMs: 30 * 60 * 1000 })) });
     // customer_site/catalog.json is the only catalog GitHub Pages serves, and
     // nothing regenerated it after the registry it is derived from -- a product
     // published after the last manual export stayed invisible on the storefront
