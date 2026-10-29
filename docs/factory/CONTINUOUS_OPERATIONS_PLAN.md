@@ -53,3 +53,14 @@ Until then the factory itself keeps running; the disk check is critical and visi
 
 `NEEDS_ATTENTION.md` -> `python scripts/n8n_workflow_health.py` -> `python scripts/check_doctrine.py`
 -> CEO dashboard (arms, trends, revenue freshness).
+
+## 6. Update, 2026-10-29 afternoon (verified live)
+
+| Item | Result |
+|---|---|
+| n8n workflows | Sales Poll OK at 11:00 UTC (first success since 2026-10-25); Sensing OK at 11:09 UTC via the new missed-run catch-up (`scripts/n8n_sensing_catchup.py`), triggered by the loop on its own |
+| Low-disk mode (B38) | in the loop: below 2 GB free, PDF/cover generation stops; ledgers and monitoring continue |
+| Site publishing | network outages are now `deferred` (reason network) and recorded as windows in `data/network_outages.jsonl`; 23/109 runs had been reported "failed" for this reason |
+| Pinterest | 13 share images committed (`2b732e9`); public after the next push; 86 posts still need the board |
+| Telegram | bot `OpenClaw_Abdelkader_bot` has received no message, so no chat id can be discovered: founder sends `/start` to it |
+| Push | `main` holds non-site commits, so the site publisher waits for a reviewed manual push: `git push origin main` |
