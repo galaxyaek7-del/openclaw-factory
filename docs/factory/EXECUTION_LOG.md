@@ -2,6 +2,10 @@
 
 Newest first. One line per meaningful step; details live in commits and reports.
 
+- 2026-10-29 17:05Z: CI group (a) passes on Linux again (run 40917097622) after the second guard fix (`681eaec`): the guard's "real" isdir/exists went through the guarded os.stat on POSIX, so an overlay-only folder (niche_reports) looked live and os.listdir failed. Found by the grouped CI annotations (`c6dbe02`), which name each distinct failure with its file:line.
+- 2026-10-29: listing repairs prepared and dry-run (`scripts/apply_listing_repairs_20261029.py`): trademark kit gets the promised tracker (fee sheet rebuilt on the USPTO schedule, read 2026-10-29) and a guide with a dated fee-correction page (statement of use $150, extension $125; the guide said $200-250 and $225); GPSR kit gets the promised cost planner; 27 listings drop "and this guide.". Live run refused to the agent by the tool's safety classifier; founder runs it (`docs/factory/FOUNDER_ACTIONS.md`).
+- 2026-10-29: storefront catalogue 100 -> 107 (B16-001..007), dashboard decision queue derived from files, 30 of 39 archives verified byte-for-byte against their built bundle (9 older ones unknown).
+
 - 2026-10-29: commercial-engineering directive (GF-100K-S3). Live publishing stopped: the scheduled B16-008..010 publish was cancelled before it ran (stricter rule wins); `FACTORY_LIVE_PUBLISH=false` confirmed. Live reconciliation 16:02Z: Gumroad 0 transactions / $0, Paddle 403, Etsy/Payhip no credential.
 - 2026-10-29: delivery audit (GET-only): 112 products, 109 published; 24 published listings deliver less than they describe (21 thin, 3 promise a spreadsheet not attached, 1 promises more files, 1 published without a file, 1 preview delivered). Founder decision; nothing changed on Gumroad. `reports/GUMROAD_DELIVERY_AUDIT_2026-10-29.json`.
 - 2026-10-29: first exposure reading in 20 days: 8 Telegraph articles, 130 platform-reported views (~121 net of own loads; not verified human visits); daily reading now in the loop (`distribution_metrics_daily.py`). Commercial funnel (15 states) and diagnosis on the dashboard (`lib/commercial_funnel.js`): A_OR_B_OR_C, visits unmeasured.

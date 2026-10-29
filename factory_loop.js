@@ -5325,6 +5325,10 @@ async function runTick() {
     // sales). Eight experiments were RUNNING with no reading for 20 days.
     markStep('distribution_metrics');
     actions.push({ step: 'distribution_metrics', ...(await runOnceScript('distribution_metrics_daily.py', { timeoutMs: 5 * 60 * 1000 })) });
+    // 2026-10-29: tool pages for newly published products (site_publish sends
+    // them on the next tick). Batch-15 pages had waited five days for a hand run.
+    markStep('tool_pages');
+    actions.push({ step: 'tool_pages', ...(await runOnceScript('tool_pages_daily.py', { timeoutMs: 6 * 60 * 1000 })) });
     // customer_site/catalog.json is the only catalog GitHub Pages serves, and
     // nothing regenerated it after the registry it is derived from -- a product
     // published after the last manual export stayed invisible on the storefront
