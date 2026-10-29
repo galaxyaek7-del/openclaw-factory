@@ -138,3 +138,42 @@ test('an unusable payload is never treated as a valid answer', async () => {
   const data = await win.gfLoadSolutions();
   assert.equal(data.__source, 'snapshot', 'a success:false answer must not be rendered');
 });
+
+test('served over a plain static file host, the real snapshot renders', async () => {
+  // The deployment under test: files only, no /api. A real HTTP server over
+  // customer_site/ with every /api/ path answering 404 is the closest thing
+  // to GitHub Pages this machine can offer without a browser.
+  const http = require('http');
+  const types = { '.html': 'text/html; charset=utf-8', '.json': 'application/json; charset=utf-8', '.js': 'application/javascript; charset=utf-8' };
+
+  const server = http.createServer((req, res) => {
+    const rel = decodeURIComponent(req.url.split('?')[0]);
+    if (rel.startsWith('/api/')) {
+      res.writeHead(404, { 'content-type': 'text/plain' });
+      return res.end('Not Found');
+    }
+    const file = path.join(SITE, rel.replace(/^\/+/, ''));
+    if (!file.startsWith(SITE) || !fs.existsSync(file) || fs.statSync(file).isDirectory()) {
+      res.writeHead(404, { 'content-type': 'text/plain' });
+      return res.end('Not Found');
+    }
+    res.writeHead(200, { 'content-type': types[path.extname(file)] || 'application/octet-stream' });
+    res.end(fs.readFileSync(file));
+  });
+
+  await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
+  const base = `http://127.0.0.1:${server.address().port}/`;
+  try {
+    const win = loadLoader((url, init) => global.fetch(new URL(url, base), init));
+    const data = await win.gfLoadSolutions();
+    const committed = readJson(SNAPSHOT);
+    assert.equal(data.__source, 'snapshot');
+    assert.equal(data.solutions.length, committed.total_shown);
+    assert.match(win.gfSolutionsSourceNote(data), /Static snapshot/);
+    for (const s of data.solutions) {
+      assert.match(String(s.explore_url), /^https:\/\//);
+    }
+  } finally {
+    await new Promise((resolve) => server.close(resolve));
+  }
+});
