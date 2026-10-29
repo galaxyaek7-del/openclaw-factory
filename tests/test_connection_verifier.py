@@ -119,10 +119,28 @@ class TestRules(unittest.TestCase):
     def test_ai_provider_needs_a_recent_record(self):
         d = Path(tempfile.mkdtemp())
         log = d / "ai.jsonl"
+        no_agents = d / "agents.jsonl"   # isolate from the live agent log
         log.write_text(json.dumps({"timestamp": "2026-10-20T08:00:00", "model": "m"}) + "\n", encoding="utf-8")
-        self.assertEqual(cv.ai_provider(NOW, log_path=log)[0]["status"], cv.DEGRADED)
+        self.assertEqual(cv.ai_provider(NOW, log_path=log, agent_log_path=no_agents)[0]["status"], cv.DEGRADED)
         log.write_text(json.dumps({"timestamp": "2026-10-23T07:00:00", "model": "m"}) + "\n", encoding="utf-8")
-        self.assertEqual(cv.ai_provider(NOW, log_path=log)[0]["status"], cv.VERIFIED)
+        self.assertEqual(cv.ai_provider(NOW, log_path=log, agent_log_path=no_agents)[0]["status"], cv.VERIFIED)
+
+    def test_ai_provider_counts_successful_agent_calls(self):
+        # 2026-10-29: Groq showed DEGRADED ("135 h ago") while the server.js agents,
+        # which call Groq but do not write ai_cost_log.jsonl, had succeeded that morning.
+        d = Path(tempfile.mkdtemp())
+        log, agents = d / "ai.jsonl", d / "agents.jsonl"
+        log.write_text(json.dumps({"timestamp": "2026-10-18T08:00:00", "model": "m"}) + "\n", encoding="utf-8")
+        agents.write_text(json.dumps({"agent": "scout", "source": "sensing_trends", "outcome": "ok", "model": "g",
+                                      "started_at": "2026-10-23T07:30:00Z", "duration_ms": 600}) + "\n"
+                          + json.dumps({"agent": "qa", "outcome": "error", "model": "g",
+                                        "started_at": "2026-10-23T07:50:00Z"}) + "\n", encoding="utf-8")
+        row = cv.ai_provider(NOW, log_path=log, agent_log_path=agents)[0]
+        self.assertEqual(row["status"], cv.VERIFIED)
+        self.assertIn("agent scout via sensing_trends", row["evidence"])
+        agents.write_text(json.dumps({"agent": "qa", "outcome": "error", "model": "g",
+                                      "started_at": "2026-10-23T07:50:00Z"}) + "\n", encoding="utf-8")
+        self.assertEqual(cv.ai_provider(NOW, log_path=log, agent_log_path=agents)[0]["status"], cv.DEGRADED)
 
     def test_offline_run_has_no_probes(self):
         out = cv.verify(live=False, now=NOW)

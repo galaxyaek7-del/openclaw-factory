@@ -118,19 +118,41 @@ def loop_steps(now, window_hours=24, log_path=LOOP_LOG):
     return [head] + rows
 
 
-def ai_provider(now, log_path=AI_COST_LOG, max_age_hours=48):
-    lines = _tail_lines(log_path, 400_000)
-    for line in reversed(lines):
+def _last_json(path, max_bytes, pred=lambda e: True):
+    for line in reversed(_tail_lines(path, max_bytes)):
         try:
             e = json.loads(line)
         except ValueError:
             continue
-        age = _age_hours(e.get("timestamp"), now)
-        status = VERIFIED if age is not None and age <= max_age_hours else DEGRADED
-        return [_row("ai:groq", "model_provider", status,
-                     f"last real call {e.get('timestamp')} model={e.get('model')} latency={e.get('latency_ms')} ms"
-                     + (f" ({age:.1f} h ago)" if age is not None else ""), "runtime_record")]
-    return [_row("ai:groq", "model_provider", UNKNOWN, "no call recorded", "runtime_record")]
+        if pred(e):
+            return e
+    return None
+
+
+def ai_provider(now, log_path=AI_COST_LOG, max_age_hours=48, agent_log_path=None):
+    """Last successful Groq call from either record.
+
+    data/ai_cost_log.jsonl holds Python-side calls only. The six agents call Groq
+    from server.js and record each call in data/agent_executions.jsonl (2026-10-29:
+    the provider showed DEGRADED, "135 h ago", while agents had succeeded that
+    morning). The newer successful record wins, and the row names its source."""
+    agent_log_path = agent_log_path or AGENT_LOG
+    py = _last_json(log_path, 400_000)
+    ag = _last_json(agent_log_path, 400_000, lambda e: e.get("outcome") == "ok" and e.get("model"))
+    candidates = []
+    if py:
+        candidates.append((py.get("timestamp"), "python call", py.get("model"), py.get("latency_ms")))
+    if ag:
+        candidates.append((ag.get("started_at"), f"agent {ag.get('agent')} via {ag.get('source')}",
+                           ag.get("model"), ag.get("duration_ms")))
+    dated = [(c, _age_hours(c[0], now)) for c in candidates]
+    dated = [d for d in dated if d[1] is not None]
+    if not dated:
+        return [_row("ai:groq", "model_provider", UNKNOWN, "no call recorded", "runtime_record")]
+    (ts, src, model, ms), age = min(dated, key=lambda d: d[1])
+    status = VERIFIED if age <= max_age_hours else DEGRADED
+    return [_row("ai:groq", "model_provider", status,
+                 f"last real call {ts} ({src}) model={model} latency={ms} ms ({age:.1f} h ago)", "runtime_record")]
 
 
 # ---- read-only probes -----------------------------------------------------------
