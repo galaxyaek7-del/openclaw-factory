@@ -100,6 +100,27 @@ test('no delivery audit is UNKNOWN, not a clean bill', () => {
   assert.equal(d.kind, 'UNKNOWN');
 });
 
+test('a Telegraph experiment shows its article\'s latest platform reading, labelled as a counter', () => {
+  const defs = [
+    { record_type: 'experiment_definition', experiment_id: 'T1', status: 'RUNNING', change: 'article https://telegra.ph/Path-One-10-09' },
+    { record_type: 'experiment_definition', experiment_id: 'T2', status: 'RUNNING', change: 'article https://telegra.ph/Never-Read-10-09' },
+    { record_type: 'experiment_definition', experiment_id: 'X1', status: 'RUNNING', change: 'no article' },
+  ].map(r => JSON.stringify(r)).join('\n') + '\n';
+  const metrics = [
+    { timestamp: '2026-10-09T15:00:00Z', views: { one: 5 } },
+    { timestamp: '2026-10-29T16:00:00Z', views: { one: 22 }, net_external_estimate: { one: 21 }, articles: { one: 'Path-One-10-09' } },
+  ].map(r => JSON.stringify(r)).join('\n') + '\n';
+  const e = cf.experiments(factory({ 'data/commercial_experiments.jsonl': defs, 'data/distribution_metrics.jsonl': metrics }));
+  const byId = Object.fromEntries(e.recent.map(x => [x.id, x]));
+  assert.equal(byId.T1.exposure.views, 22);
+  assert.equal(byId.T1.exposure.net_external_estimate, 21);
+  assert.equal(byId.T1.exposure.kind, 'OBSERVED');
+  assert.match(byId.T1.exposure.note, /not a verified human visit/);
+  assert.equal(byId.T2.exposure.kind, 'UNKNOWN');
+  assert.equal(byId.X1.exposure, null);
+  assert.equal(e.with_exposure_reading, 1);
+});
+
 test('experiments: latest status wins and pending ones are not counted as running', () => {
   const rows = [
     { record_type: 'experiment_definition', experiment_id: 'E1', experiment_type: 'product_positioning', status: 'PENDING_APPROVAL', hypothesis: 'h' },
