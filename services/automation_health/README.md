@@ -22,6 +22,8 @@ STALE, UNKNOWN or INACTIVE, with the reason, and a short list of what needs atte
 - A **read-only** n8n API key (created and revocable by the customer) and the instance URL, or
   the two JSON exports `GET /api/v1/workflows` and `GET /api/v1/executions` (without `includeData`).
 - The customer's statement of how often each workflow should run.
+- Run on the raw exports: `python services/automation_health/audit.py --api workflows.json executions.json schedule.json`
+  (one page, a list of pages, or a bare list; payload fields from an `includeData` export are dropped and reported).
 
 ## Processing
 

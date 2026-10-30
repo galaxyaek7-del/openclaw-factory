@@ -52,6 +52,21 @@ class Audit(unittest.TestCase):
                            audit._ts(doc["now"]))
         self.assertEqual(out["counts"], {"OK": 2, "STALE": 1, "FAILING": 1, "INACTIVE": 1, "UNKNOWN": 1})
 
+    def test_raw_api_exports_are_read_and_payloads_dropped(self):
+        wdoc = {"data": [{"id": "7", "name": "Sync", "active": True, "nodes": [{"x": 1}]}], "nextCursor": None}
+        epages = [{"data": [{"id": "1", "workflowId": "7", "status": "error", "startedAt": "2026-10-29T10:00:00Z",
+                             "data": {"resultData": {"customer": "secret"}}}], "nextCursor": "c"},
+                  {"data": [{"id": "2", "workflowId": "7", "finished": True, "startedAt": "2026-10-29T09:00:00Z"},
+                            {"id": "3", "workflowId": "7", "startedAt": "2026-10-29T08:00:00Z"}]}]
+        wfs, exes, notes = audit.from_api_exports(wdoc, epages)
+        self.assertEqual(wfs, [{"id": "7", "name": "Sync", "active": True}])
+        self.assertEqual([e["status"] for e in exes], ["error", "success", "unknown"])
+        self.assertNotIn("secret", json.dumps(exes))
+        self.assertIn("1 execution(s) carried payload data", notes[0])
+        out = audit.assess(wfs, exes, {"Sync": 60}, audit._ts("2026-10-29T10:05:00Z"))
+        self.assertEqual(out["workflows"][0]["verdict"], "FAILING")
+        self.assertEqual(audit.from_api_exports([{"id": "9", "name": "B", "active": False}], [])[0][0]["name"], "B")
+
     def test_the_audit_reads_no_database_and_writes_nothing(self):
         src = (ROOT / "services" / "automation_health" / "audit.py").read_text(encoding="utf-8")
         for forbidden in ("sqlite3", "database.sqlite", "requests.post", "urlopen("):

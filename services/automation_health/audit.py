@@ -23,6 +23,8 @@ data, so whether a successful run did the right business thing is left to
 human review. Nothing here writes to n8n.
 
     python services/automation_health/audit.py services/automation_health/demo_input.json
+    python services/automation_health/audit.py --api workflows.json executions.json schedule.json
+      (the customer's raw API exports; schedule.json maps workflow name -> minutes, null = manual)
 """
 import json
 import sys
@@ -82,11 +84,48 @@ def assess(workflows, executions, expected_minutes, now):
             "scope_note": "status and timing only; business results of successful runs need human review"}
 
 
+def from_api_exports(workflows_doc, executions_doc):
+    """The raw n8n API responses, as the customer exports them: one page
+    {"data": [...], "nextCursor": ...}, a list of such pages, or a bare list.
+    Only the fields the audit uses are kept; payload fields from an
+    includeData export are dropped and counted, never stored."""
+    def items(doc):
+        pages = doc if isinstance(doc, list) and doc and isinstance(doc[0], dict) and "data" in doc[0] else [doc]
+        out = []
+        for p in pages:
+            out.extend(p.get("data", []) if isinstance(p, dict) else (p if isinstance(p, list) else []))
+        return [x for x in out if isinstance(x, dict)]
+    wfs = [{"id": w.get("id"), "name": w.get("name"), "active": bool(w.get("active"))} for w in items(workflows_doc)]
+    exes, dropped = [], 0
+    for e in items(executions_doc):
+        if "data" in e or "workflowData" in e:
+            dropped += 1
+        status = e.get("status")
+        if not status and e.get("finished") is True:
+            status = "success"           # older n8n versions: finished=true only on success
+        exes.append({"workflowId": e.get("workflowId"), "status": status or "unknown", "startedAt": e.get("startedAt")})
+    notes = []
+    if dropped:
+        notes.append("%d execution(s) carried payload data (includeData); it was ignored and not kept" % dropped)
+    return wfs, exes, notes
+
+
 def main(argv=None):
     argv = sys.argv[1:] if argv is None else argv
     if not argv:
         print(__doc__)
         return 2
+    if argv[0] == "--api":
+        # --api workflows.json executions.json schedule.json [now-ISO]
+        wdoc = json.load(open(argv[1], encoding="utf-8"))
+        edoc = json.load(open(argv[2], encoding="utf-8"))
+        schedule = json.load(open(argv[3], encoding="utf-8"))
+        now = _ts(argv[4]) if len(argv) > 4 else datetime.now(timezone.utc)
+        wfs, exes, notes = from_api_exports(wdoc, edoc)
+        out = assess(wfs, exes, schedule, now)
+        out["input_notes"] = notes
+        print(json.dumps(out, indent=1))
+        return 0
     doc = json.load(open(argv[0], encoding="utf-8"))
     now = _ts(doc.get("now")) or datetime.now(timezone.utc)
     out = assess(doc["workflows"], doc["executions"], doc.get("expected_minutes", {}), now)
