@@ -130,7 +130,7 @@ class TestCoverageInventory(unittest.TestCase):
 
     HOSTS = re.compile(r"api\.gumroad\.com|api\.paddle\.com|sandbox-api\.paddle|openapi\.etsy\.com|api\.x\.com|"
                        r"api\.twitter\.com|api\.telegra\.ph|indexnow|freelancer\.com/api|api\.linkedin\.com|"
-                       r"easecert\.com|euverify")
+                       r"easecert\.com|euverify|googleapis\.com/upload/youtube")
     WRITE = re.compile(r"requests\.(post|put|patch|delete)\(|_requests\.post\(|method=['\"](POST|PUT|PATCH|DELETE)|"
                        r"Request\([^)]*data=|urlopen\([^)]*data=|_api_post\(|authed\(")
     EXEMPT = {

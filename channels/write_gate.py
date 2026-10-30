@@ -231,6 +231,9 @@ def require_write_authorization(operation: str, **kw) -> WriteAuthDecision:
 CHECKOUT_ENV = "GF_ALLOW_CHECKOUT_TRANSACTIONS"
 MESSAGE_ENV = "GF_ALLOW_OUTBOUND_MESSAGES"
 SEARCH_PING_ENV = "GF_ALLOW_SEARCH_PING"
+# 2026-10-30: uploads of approved children's episodes to YouTube only. Narrow on
+# purpose: it does not open any shop, message or checkout write.
+KIDS_VIDEO_ENV = "GF_ALLOW_KIDS_VIDEO_UPLOAD"
 
 
 def _env_true(name: str) -> bool:
@@ -238,7 +241,8 @@ def _env_true(name: str) -> bool:
 
 
 def check_platform_write(platform: str, operation: str, *, checkout: bool = False,
-                         message: bool = False, search_ping: bool = False) -> WriteAuthDecision:
+                         message: bool = False, search_ping: bool = False,
+                         kids_video: bool = False) -> WriteAuthDecision:
     if message:
         if _env_true(MESSAGE_ENV):
             return WriteAuthDecision(True, f"{platform}.{operation}: {MESSAGE_ENV} is true",
@@ -252,21 +256,26 @@ def check_platform_write(platform: str, operation: str, *, checkout: bool = Fals
     if search_ping and _env_true(SEARCH_PING_ENV):
         return WriteAuthDecision(True, f"{platform}.{operation}: {SEARCH_PING_ENV} is true (search ping only)",
                                  state="SEARCH_PING_ONLY", live_publish_flag=False)
+    if kids_video and _env_true(KIDS_VIDEO_ENV):
+        return WriteAuthDecision(True, f"{platform}.{operation}: {KIDS_VIDEO_ENV} is true (approved kids video only)",
+                                 state="KIDS_VIDEO_ONLY", live_publish_flag=False)
     if checkout and _env_true(CHECKOUT_ENV):
         return WriteAuthDecision(True, f"{platform}.{operation}: {CHECKOUT_ENV} is true (checkout only)",
                                  state="CHECKOUT_ONLY", live_publish_flag=False)
     need = (f"FACTORY_LIVE_PUBLISH or {CHECKOUT_ENV}" if checkout
-            else f"FACTORY_LIVE_PUBLISH or {SEARCH_PING_ENV}" if search_ping else "FACTORY_LIVE_PUBLISH")
+            else f"FACTORY_LIVE_PUBLISH or {SEARCH_PING_ENV}" if search_ping
+            else f"FACTORY_LIVE_PUBLISH or {KIDS_VIDEO_ENV}" if kids_video else "FACTORY_LIVE_PUBLISH")
     return WriteAuthDecision(False, f"{platform}.{operation}: live mutation disabled ({need} is not true)",
                              state="NOT_CHECKED", live_publish_flag=False)
 
 
 def require_platform_write(platform: str, operation: str, *, checkout: bool = False,
-                           message: bool = False, search_ping: bool = False) -> WriteAuthDecision:
+                           message: bool = False, search_ping: bool = False,
+                           kids_video: bool = False) -> WriteAuthDecision:
     """Raise WriteNotAuthorized unless check_platform_write allows it. Call it
     first in every non-Gumroad mutation function, before any network I/O."""
     decision = check_platform_write(platform, operation, checkout=checkout, message=message,
-                                    search_ping=search_ping)
+                                    search_ping=search_ping, kids_video=kids_video)
     if not decision.allowed:
         raise WriteNotAuthorized(decision.reason)
     return decision

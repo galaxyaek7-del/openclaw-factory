@@ -220,7 +220,7 @@ PROFILES: Dict[str, Dict[str, Any]] = {
         "mission": "original Arabic-first educational animation for children 4-8",
         "target_customers": "parents and educators of Arabic-speaking young children",
         "revenue_model": "not yet chosen (platform revenue requires eligibility; licensing is an alternative)",
-        "distribution": "none wired; publishing/ holds drafts only",
+        "distribution": "YouTube (made for kids) via kids_studio/publishing: automatic once credentials and a per-episode approval exist",
         "stage": "BUILD",
         "stage_evidence": "two verified animatics (ep01, ep02); no narration, scripts DRAFT pending native Arabic review",
         "kpis": [

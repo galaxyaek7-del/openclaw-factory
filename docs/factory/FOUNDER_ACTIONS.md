@@ -99,6 +99,20 @@ python inquiry_intake.py review INQ-xxxxxxxxxxxx REPLIED --note "sent scope and 
 Arms: micro_b2b, research_data_services, ai_operations, productized_ai_services, digital_products,
 content_distribution, childrens_media_studio, affiliate_intelligence. Outcomes: REPLIED, QUALIFIED, NOT_A_FIT, SPAM, CLOSED.
 
+## 8. Children's channel on YouTube (automatic once these are done)
+
+The pipeline (checks, upload marked made for kids, Arabic subtitles, upload log) runs in the loop; see
+`kids_studio/publishing/README.md`. Today both episodes pass every check except these two:
+
+1. Once: create the YouTube API credentials in your own Google Cloud project (YouTube Data API v3, OAuth client
+   "Desktop app"), then `python scripts/youtube_oauth_setup.py client_secret.json`, and add
+   `GF_ALLOW_KIDS_VIDEO_UPLOAD=true` to `.env`.
+2. Per episode, after watching it and having the Arabic reviewed:
+   `python scripts/approve_kids_episode.py --episode ep01_nunu_little_bridge --privacy unlisted --child-safety-reviewed --arabic-reviewed`
+
+The two cuts are animatics without voices. Start with `unlisted` if you want to watch the uploaded version
+before making it public.
+
 ## What runs without you
 
 Every ~10 minutes (supervised): health and recovery, n8n watchdog and missed-run catch-up,

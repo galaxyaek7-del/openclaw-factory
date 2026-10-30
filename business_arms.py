@@ -366,8 +366,11 @@ def _studio_cfg(cfg: Dict[str, Any], evidence: Dict[str, Any]) -> Dict[str, Any]
         return cfg
     out = dict(cfg)
     film = "no finished film exists" if evidence.get("finished_film_exists") is not True else "a finished film exists"
-    out["gap"] = ("%d episode animatic(s) verified (%s); %s and no distribution channel is wired"
-                  % (n, ", ".join(evidence["verified_episode_renders"]), film))
+    channel = ("an automatic YouTube upload pipeline is built and waits for the founder's YouTube credentials "
+               "and a per-episode approval" if (ROOT / "kids_studio" / "publishing" / "youtube_publisher.py").exists()
+               else "no distribution channel is wired")
+    out["gap"] = ("%d episode animatic(s) verified (%s); %s; %s"
+                  % (n, ", ".join(evidence["verified_episode_renders"]), film, channel))
     out["blocker"] = out["gap"]
     return out
 

@@ -1,0 +1,44 @@
+{
+ "_note": "Upload registry for the children's YouTube channel (2026-10-30). One entry per cut that may be uploaded. Nothing here uploads anything: kids_studio/publishing/preflight.py checks an entry, and scripts/kids_youtube_publish_daily.py uploads it only when every check passes, including a founder approval bound to the exact video file. Metadata follows publishing/youtube_metadata_draft.md: accurate, no links or calls to action aimed at children, made for kids.",
+ "channel_defaults": {
+  "category_id": "1",
+  "default_language": "ar",
+  "default_audio_language": "ar",
+  "made_for_kids": true,
+  "contains_synthetic_media": false,
+  "license": "youtube",
+  "embeddable": true
+ },
+ "episodes": [
+  {
+   "episode": "ep01_nunu_little_bridge",
+   "label": "ANIMATIC (no voices; subtitles only)",
+   "video": "kids_studio/renders/ep01_animatic.mp4",
+   "verify": "kids_studio/renders/ep01_animatic.verify.json",
+   "subtitles": "kids_studio/renders/ep01_animatic.ar.srt",
+   "rights_ledger": "kids_studio/rights_ledger.json",
+   "not_in_this_cut": {
+    "voice-arabic": "the cut has no voice; dialogue is in the Arabic subtitle track",
+    "font-arabic": "no on-screen text; subtitles are a soft track rendered by YouTube"
+   },
+   "title": "نونو والجسر الصغير | نونو وأصدقاؤه، الحلقة ١",
+   "description": "نونو الثعلب يريد أن يلعب مع صديقيه لولو وميمو، لكنّ لوحًا في الجسر يهتزّ! هل يقفز؟ لا، يتوقّف ويفكّر، ثمّ يطلب المساعدة من جدّة بومة. قصّة قصيرة للأطفال من ٤ إلى ٨ سنوات عن التفكير قبل التصرّف وطلب المساعدة من الكبار.\n\nNunu the fox wants to play with his friends Lulu and Mimo, but a plank on the bridge is wobbling. He stops, thinks, and asks Grandma Owl for help. A short story for children aged 4-8 about thinking first and asking a grown-up.\n\nAn original Galaxy Forge animation. Arabic subtitles.",
+   "tags": ["قصص أطفال", "رسوم متحركة", "نونو", "تعليم الأطفال", "السلامة", "الصداقة"]
+  },
+  {
+   "episode": "ep02_lulus_lost_ball",
+   "label": "ANIMATIC (no voices; subtitles only)",
+   "video": "kids_studio/renders/ep02_lulus_lost_ball.mp4",
+   "verify": "kids_studio/renders/ep02_lulus_lost_ball.verify.json",
+   "subtitles": "kids_studio/renders/ep02_lulus_lost_ball.ar.srt",
+   "rights_ledger": "kids_studio/rights_ledger_ep02.json",
+   "not_in_this_cut": {
+    "voice-arabic": "the cut has no voice; dialogue is in the Arabic subtitle track",
+    "font-arabic": "no on-screen text; subtitles are a soft track rendered by YouTube"
+   },
+   "title": "لولى والكرة الضائعة | نونو وأصدقاؤه، الحلقة ٢",
+   "description": "لولى تلعب في الحديقة بكرتها الحمراء، فتتدحرج الكرة وتختفي. تبحث لولى بهدوء، وتسأل الدعسوقة الصغيرة، حتّى تجدها وتضعها في مكان آمن. قصّة قصيرة للأطفال من ٤ إلى ٨ سنوات عن الاهتمام بأغراضنا.\n\nLulu plays in the garden with her red ball until it rolls away. She looks calmly, asks a little ladybug, finds the ball and puts it somewhere safe. A short story for children aged 4-8 about looking after our things.\n\nAn original Galaxy Forge animation. Arabic subtitles.",
+   "tags": ["قصص أطفال", "رسوم متحركة", "لولى", "تعليم الأطفال", "المسؤولية", "الحديقة"]
+  }
+ ]
+}

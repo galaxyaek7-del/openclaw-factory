@@ -5368,6 +5368,12 @@ async function runTick() {
     // change is reported (action "changed"), never written into the release.
     markStep('uspto_fee_monitor');
     actions.push({ step: 'uspto_fee_monitor', ...(await runOnceScript('uspto_fee_monitor_daily.py', { timeoutMs: 2 * 60 * 1000 })) });
+    // 2026-10-30: children's YouTube channel. Uploads an episode only when its
+    // preflight passes (verification, subtitles, rights, metadata, a founder
+    // approval bound to the exact file, credentials) and the write gate allows
+    // it (GF_ALLOW_KIDS_VIDEO_UPLOAD or FACTORY_LIVE_PUBLISH); at most one per tick.
+    markStep('kids_youtube_publish');
+    actions.push({ step: 'kids_youtube_publish', ...(await runOnceScript('kids_youtube_publish_daily.py', { timeoutMs: 20 * 60 * 1000 })) });
     // 2026-10-29: tool pages for newly published products (site_publish sends
     // them on the next tick). Batch-15 pages had waited five days for a hand run.
     markStep('tool_pages');

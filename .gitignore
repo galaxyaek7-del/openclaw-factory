@@ -192,6 +192,9 @@ data/publication_approvals.json
 data/uspto_fee_monitor.jsonl
 # outcome of the daily background evidence audit (factory_loop.js)
 data/evidence_recording_audit_runs.jsonl
+# children's YouTube uploads: founder approvals and the upload log
+data/kids_upload_approvals.json
+data/youtube_uploads.jsonl
 
 # 2026-10-23 founder decision: paid product files leave the public repository.
 # They stay on the factory machine; tests that read them skip on CI when absent.
