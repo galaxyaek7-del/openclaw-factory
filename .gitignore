@@ -196,6 +196,8 @@ data/evidence_recording_audit_runs.jsonl
 data/kids_upload_approvals.json
 data/youtube_uploads.jsonl
 data/kids_youtube_status.json
+# daily dry run of the founder's documented commands
+data/founder_actions_selfcheck.json
 
 # 2026-10-23 founder decision: paid product files leave the public repository.
 # They stay on the factory machine; tests that read them skip on CI when absent.

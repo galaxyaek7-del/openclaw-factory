@@ -267,3 +267,12 @@ test('founder queue names children\'s episodes that wait only on the founder', (
   const done = cf.founderQueue({ products: [] }, null, null, factory({ 'data/kids_youtube_status.json': { episodes: [{ episode: 'ep01', passed: true, failing: [] }] } }));
   assert.equal(done.length, 0);
 });
+
+test('founder queue warns when a documented founder command would fail today', () => {
+  const sc = { failing: ['listing_repairs'], results: { listing_repairs: { status: 'FAIL', detail: 'HTTP 401' } } };
+  const q = cf.founderQueue({ products: [] }, null, null, factory({ 'data/founder_actions_selfcheck.json': sc }));
+  assert.equal(q.length, 1);
+  assert.match(q[0].title, /1 documented founder command\(s\) would fail today: listing_repairs/);
+  assert.match(q[0].why, /HTTP 401/);
+  assert.equal(cf.founderQueue({ products: [] }, null, null, factory({ 'data/founder_actions_selfcheck.json': { failing: [] } })).length, 0);
+});

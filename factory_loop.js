@@ -5372,6 +5372,11 @@ async function runTick() {
     // preflight passes (verification, subtitles, rights, metadata, a founder
     // approval bound to the exact file, credentials) and the write gate allows
     // it (GF_ALLOW_KIDS_VIDEO_UPLOAD or FACTORY_LIVE_PUBLISH); at most one per tick.
+    // 2026-10-30: once a day, dry-run every command FOUNDER_ACTIONS.md asks the
+    // founder to run (publish, listing repairs, kids preflight, accessibility
+    // repair, analytics install, inquiry queue); failures reach the decision queue.
+    markStep('founder_actions_selfcheck');
+    actions.push({ step: 'founder_actions_selfcheck', ...(await runOnceScript('founder_actions_selfcheck.py', { timeoutMs: 10 * 60 * 1000 })) });
     markStep('kids_youtube_publish');
     actions.push({ step: 'kids_youtube_publish', ...(await runOnceScript('kids_youtube_publish_daily.py', { timeoutMs: 20 * 60 * 1000 })) });
     // 2026-10-29: tool pages for newly published products (site_publish sends
