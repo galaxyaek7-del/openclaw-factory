@@ -257,8 +257,8 @@ EXPERIMENTS = {
                       "what": "free read-only n8n audit for a few instances in exchange for feedback"},
     "productized_ai_services": {"id": "D6", "state": "PREPARED",
                                 "what": "fix our own 22 accessibility warnings and publish the before/after, then a free 3-page check"},
-    "childrens_media_studio": {"id": None, "state": "NONE",
-                               "what": "private parent feedback on the ep01 animatic (founder decision)"},
+    "childrens_media_studio": {"id": "KF-ep01", "state": "PREPARED",
+                               "what": "private parent feedback on the ep01 animatic; protocol and privacy-safe recorder in kids_studio/feedback/ (founder shows it)"},
 }
 
 
