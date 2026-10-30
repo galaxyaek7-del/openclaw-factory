@@ -37,6 +37,8 @@ NL_ACT = "https://wetten.overheid.nl/BWBR0049571/2025-06-28/0"
 NL_STB = "https://zoek.officielebekendmakingen.nl/stb-2024-87.html"
 IT_GU = "https://www.gazzettaufficiale.it/eli/id/2022/07/01/22G00089/SG"
 IT_AGID = "https://accessibilita.agid.gov.it/domande-frequenti/"
+SE_SFS = "https://www.riksdagen.se/sv/dokument-och-lagar/dokument/svensk-forfattningssamling/lag-2023254-om-vissa-produkters-och-tjansters_sfs-2023-254"
+PL_DU = "https://isap.sejm.gov.pl/isap.nsf/DocDetails.xsp?id=WDU20240000731"
 FR_R4514 = "https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000048180406/"
 ES_L11 = "https://www.boe.es/buscar/act.php?id=BOE-A-2023-11022"
 ES_RDL1 = "https://www.boe.es/buscar/act.php?id=BOE-A-2013-12632"
@@ -74,6 +76,16 @@ ROWS = [
     ("IT", "D.Lgs. 82/2022", "art. 24(2)-(3)", "not complying with the authority's measures, or not cooperating",
      "30000", "none (administrative fine)", "AgID (services); MIMIT (products)", "VERIFIED_OFFICIAL_TEXT", IT_GU,
      VERSION, "minimum EUR 2,500"),
+    ("SE", "Lag (2023:254)", "s. 37 and 39", "breaches of the listed duties (ss. 6, 8, 11-13, 15-17, 19-26)", "",
+     "none (sanction fee)", "market surveillance or supervisory authority named by the government (s. 30)",
+     "VERIFIED_OFFICIAL_TEXT", SE_SFS, VERSION,
+     "sanction fee SEK 10,000 to SEK 10,000,000 (statute amount in kronor, not converted); may be reduced"),
+    ("PL", "Ustawa z 26 kwietnia 2024 r. (Dz. U. 2024 poz. 731)", "penalty article (number not read)",
+     "non-compliant products or services and unmet duties found in a decision under art. 56(1) or 65(1)", "",
+     "none (administrative penalty)", "President of PFRON or the competent market surveillance authority",
+     "VERIFIED_OFFICIAL_TEXT", PL_DU, VERSION,
+     "up to 10 times the previous year's average monthly salary in the national economy, capped at 10% of the "
+     "previous year's turnover"),
     ("AT", "Barrierefreiheitsgesetz (BaFG)", "s. 36(1)", "s. 36(1) offences, incl. placing a non-compliant "
      "product on the market (Nos 1-2)", "80000", "none (administrative fine)",
      "Sozialministeriumservice (penalty authority and market surveillance)", "VERIFIED_OFFICIAL_TEXT", AT_BAFG,
@@ -130,12 +142,16 @@ def build():
              "access_method": "PUBLIC_WEB_PAGE", "licence": facts},
             {"name": "D.Lgs. 82/2022 (gazzettaufficiale.it) and AgID FAQ", "origin": IT_GU, "accessed_on": VERSION,
              "access_method": "PUBLIC_WEB_PAGE", "licence": facts},
+            {"name": "SFS 2023:254 (riksdagen.se)", "origin": SE_SFS, "accessed_on": VERSION,
+             "access_method": "PUBLIC_WEB_PAGE", "licence": facts},
+            {"name": "Dz. U. 2024 poz. 731 (isap.sejm.gov.pl)", "origin": PL_DU, "accessed_on": VERSION,
+             "access_method": "PUBLIC_WEB_PAGE", "licence": facts},
             {"name": "Deque EAA country-by-country table (secondary)", "origin": DEQUE, "accessed_on": READ_1029,
              "access_method": "PUBLIC_WEB_PAGE", "licence": facts},
         ],
         "attribution": "Secondary figures: Deque Systems, EAA country-by-country compliance data (read 2026-10-29).",
         "collection_method": "Read the German and Irish legal texts on 2026-10-29 and the Austrian on 2026-10-30, "
-                             "recorded the penalty provisions; and the French and Spanish on 2026-10-30; the Dutch and Italian on 2026-10-30.",
+                             "recorded the penalty provisions; and the French and Spanish on 2026-10-30; the Dutch, Italian, Swedish and Polish on 2026-10-30. SE and PL amounts are not in euro.",
         "processing_steps": ["record amounts and section numbers", "tag verification status", "note conflicts"],
         "columns": [{"name": c, "type": "string", "description": c.replace("_", " ")} for c in COLUMNS],
         "files": [{"path": str(path.relative_to(ROOT)).replace("\\", "/"), "sha256": datacard.sha256_file(path),
@@ -145,7 +161,7 @@ def build():
         "refresh_days": 90,
         "last_refreshed": VERSION,
         "known_limitations": [
-            "All seven countries are tied to the legal text; FR (contravention amount, service scope) and NL (indexed euro value of the 5th fine category) are partly verified.",
+            "All nine countries are tied to the legal text; FR (contravention amount, service scope) and NL (indexed euro value of the 5th fine category) are partly verified.",
             "The source of the EUR 500,000 German figure in secondary tables is UNKNOWN.",
             "Maximum statutory penalties say nothing about enforcement practice.",
         ],

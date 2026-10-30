@@ -14,7 +14,7 @@ dashboard disagree, the dashboard is current. Evidence classes: OBSERVED, DERIVE
 | A Digital products | `digital_products` | 115 products in the registry, 109 live on Gumroad; batch pipeline with independent formula checks; per-product publication gate with expiring approvals; delivery audit; listing-repair script (dry run passes against the live listings) |
 | B Productized services | `productized_ai_services` | accessibility quick-check (`services/accessibility_check/`): fixed WCAG 2.2 rules, files or named URLs, never claims compliance; our own 118 pages: 0 errors, 22 warnings; repair script for our site prepared |
 | C Micro-B2B | `micro_b2b` | catalogue clean-up engine (CSV and XLSX, ambiguous dates and mixed currencies flagged); Merchant Center feed preflight (CSV, TSV, RSS/Atom XML; rules cited from Google's spec; hostile XML refused) |
-| D Research | `research_data_services` | EAA penalty register (7 countries, each figure tied to its legal text; two vendor figures contradicted); USPTO trademark fee table, checked daily against the official schedule |
+| D Research | `research_data_services` | EAA penalty register (9 countries, each figure tied to its legal text; two vendor figures contradicted); USPTO trademark fee table, checked daily against the official schedule |
 | E AI operations | `ai_operations` | n8n automation audit from the customer's read-only API exports (payloads dropped); priced against observed comparable offers |
 | F Affiliate intelligence | `affiliate_intelligence` | click tracking with classification, commission ledger, comparison pages (held) |
 | G Data products | `research_data_services` (shared) | the two datasets above, data cards PASS |

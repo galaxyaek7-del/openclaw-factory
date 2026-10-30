@@ -42,7 +42,14 @@ An online seller serving EU consumers asks: "What can a fine be under the EAA?"
   - D.Lgs. 82/2022 art. 24 sets EUR 5,000 to 40,000 for breaching the requirements, and EUR 2,500 to 30,000 for ignoring the authority's measures or not cooperating.
   - Providers with average turnover above EUR 500 million face up to 5% of turnover (L. 4/2004 art. 9(1-bis), confirmed in [AgID's FAQ](https://accessibilita.agid.gov.it/domande-frequenti/)).
   - Authorities: AgID for services, MIMIT for products. Source: [Gazzetta Ufficiale](https://www.gazzettaufficiale.it/eli/id/2022/07/01/22G00089/SG).
-- **Coverage:** all seven countries in this sample are tied to their own legal text. FR and NL each have one figure not re-read (the contravention amount; the indexed category value).
+- **Sweden (VERIFIED 2026-10-30):**
+  - Lag (2023:254) ss. 37 and 39: a sanction fee from SEK 10,000 to SEK 10,000,000, set by the seriousness and extent of the breach.
+  - Source: [riksdagen.se](https://www.riksdagen.se/sv/dokument-och-lagar/dokument/svensk-forfattningssamling/lag-2023254-om-vissa-produkters-och-tjansters_sfs-2023-254).
+- **Poland (VERIFIED 2026-10-30):**
+  - Dz. U. 2024 poz. 731: up to ten times the previous year's average monthly salary, capped at 10% of the previous year's turnover.
+  - Imposed by the President of PFRON or the market surveillance authority. The article number was not read.
+  - Source: [isap.sejm.gov.pl](https://isap.sejm.gov.pl/isap.nsf/DocDetails.xsp?id=WDU20240000731).
+- **Coverage:** all nine countries in this sample are tied to their own legal text. FR and NL each have one figure not re-read (the contravention amount; the indexed category value).
 
 ## Why this could be a product
 - **Who:** sellers and their advisers get conflicting numbers from vendors who also sell remediation. A neutral, statute-cited register with a verification status per figure does not appear to exist (INFERRED from the searches; not exhaustive).

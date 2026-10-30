@@ -91,6 +91,30 @@
    }
   },
   {
+   "name": "SFS 2023:254 (riksdagen.se)",
+   "origin": "https://www.riksdagen.se/sv/dokument-och-lagar/dokument/svensk-forfattningssamling/lag-2023254-om-vissa-produkters-och-tjansters_sfs-2023-254",
+   "accessed_on": "2026-10-30",
+   "access_method": "PUBLIC_WEB_PAGE",
+   "licence": {
+    "name": "Facts only (amounts, section numbers, authority names); no text reproduced",
+    "commercial_use": true,
+    "attribution_required": false,
+    "share_alike": false
+   }
+  },
+  {
+   "name": "Dz. U. 2024 poz. 731 (isap.sejm.gov.pl)",
+   "origin": "https://isap.sejm.gov.pl/isap.nsf/DocDetails.xsp?id=WDU20240000731",
+   "accessed_on": "2026-10-30",
+   "access_method": "PUBLIC_WEB_PAGE",
+   "licence": {
+    "name": "Facts only (amounts, section numbers, authority names); no text reproduced",
+    "commercial_use": true,
+    "attribution_required": false,
+    "share_alike": false
+   }
+  },
+  {
    "name": "Deque EAA country-by-country table (secondary)",
    "origin": "https://www.deque.com/european-accessibility-act-eaa-compliance/country-compliance-data/",
    "accessed_on": "2026-10-29",
@@ -104,7 +128,7 @@
   }
  ],
  "attribution": "Secondary figures: Deque Systems, EAA country-by-country compliance data (read 2026-10-29).",
- "collection_method": "Read the German and Irish legal texts on 2026-10-29 and the Austrian on 2026-10-30, recorded the penalty provisions; and the French and Spanish on 2026-10-30; the Dutch and Italian on 2026-10-30.",
+ "collection_method": "Read the German and Irish legal texts on 2026-10-29 and the Austrian on 2026-10-30, recorded the penalty provisions; and the French and Spanish on 2026-10-30; the Dutch, Italian, Swedish and Polish on 2026-10-30. SE and PL amounts are not in euro.",
  "processing_steps": [
   "record amounts and section numbers",
   "tag verification status",
@@ -170,8 +194,8 @@
  "files": [
   {
    "path": "data_products/releases/eaa-penalty-register/2026-10-30/eaa_penalty_register.csv",
-   "sha256": "b2058bcd15384fd05f1112106f2a738f6d4946303e1076225eafe47966ea8670",
-   "rows": 12
+   "sha256": "8994b38b7a85693573a95ee7aaae3011d2e9a23fdf8e331e0dfcbfade0913415",
+   "rows": 14
   }
  ],
  "personal_data": {
@@ -181,7 +205,7 @@
  "refresh_days": 90,
  "last_refreshed": "2026-10-30",
  "known_limitations": [
-  "All seven countries are tied to the legal text; FR (contravention amount, service scope) and NL (indexed euro value of the 5th fine category) are partly verified.",
+  "All nine countries are tied to the legal text; FR (contravention amount, service scope) and NL (indexed euro value of the 5th fine category) are partly verified.",
   "The source of the EUR 500,000 German figure in secondary tables is UNKNOWN.",
   "Maximum statutory penalties say nothing about enforcement practice."
  ]
