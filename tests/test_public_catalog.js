@@ -249,6 +249,21 @@ test('a listing the seller labels unsellable is never advertised', () => {
   assert.ok(!ids.includes('B16-002'), 'a DO NOT BUY listing was advertised');
   assert.ok(ids.includes('B16-003'), 'a genuinely free product must still be published');
 });
+test('a listing with no file and no delivery URL is never advertised', () => {
+  // REAL DEFECT, 2026-10-30: /l/svlky ($8.00) and /l/ieashv ($11.99) were
+  // published, priced, and had an empty file_info -- a buyer could pay and
+  // receive nothing. Gumroad's API cannot withdraw a listing, so the storefront
+  // stops advertising it (deliverability.py --export writes this copy).
+  const files = baseFiles();
+  files['data/undeliverable_products.json'] = {
+    generated_by: 'deliverability.py --export',
+    products: { nocover: { title: 'No Cover', price_cents: 2500 } },
+  };
+  const d = catalog.catalog({ root: factory(files), limit: 120, featuredOnly: false });
+  const ids = d.products.map((p) => p.id);
+  assert.ok(!ids.includes('B14-002'), 'a listing that cannot deliver was advertised');
+  assert.ok(ids.includes('B14-001'), 'the deliverable product must still be listed');
+});
 test('every page that lists products from /api/ can still render them on GitHub Pages', () => {
   // REAL DEFECT, 2026-10-28: index.html fetched /api/customer/catalog and
   // /api/public/catalog?limit=6 with no fallback. GitHub Pages has no Node

@@ -1,0 +1,22 @@
+{
+ "generated_by": "deliverability.py --export",
+ "source": "live Gumroad listings: published, priced, no file and no delivery URL",
+ "products": {
+  "iaiyt": {
+   "title": "EU AI Act Compliance Toolkit — Practical Templates & Implementation Guide for SMEs",
+   "price_cents": 0
+  },
+  "ieashv": {
+   "title": "Meeting Cost & ROI Calculator",
+   "price_cents": 1199
+  },
+  "owtmpe": {
+   "title": "[Unavailable] AI Workflow QA & Stress Test - one agent, reviewed before you demo it to a client",
+   "price_cents": 0
+  },
+  "svlky": {
+   "title": "Founder Access Continuity Organizer",
+   "price_cents": 800
+  }
+ }
+}
