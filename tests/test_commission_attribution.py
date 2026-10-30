@@ -13,7 +13,11 @@ import tempfile
 import threading
 import unittest
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "lib"))
+# Appended, not inserted first: lib/ holds http.py, which at the front of
+# sys.path shadows the standard http package for every later test in the same
+# process (2026-10-30: three test_commission_engine tests failed with "http is
+# not a package" when this file ran first).
+sys.path.append(os.path.join(os.path.dirname(__file__), "..", "lib"))
 
 import commission_attribution as ca  # noqa: E402
 

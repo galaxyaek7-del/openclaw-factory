@@ -5106,6 +5106,26 @@ function markStep(step) {
   factoryState.setCurrentTask('golden_hunter_tick', step);
 }
 
+// 2026-10-30: ticks overlapped around 00:10-00:45 UTC (the daily steps run
+// together) but no step recorded how long it took. Each actions.push() in
+// runTick() follows its own step, so stamping every pushed action with the
+// time since the previous push (or since the list was created) gives that
+// step's duration without touching the 65 call sites. elapsed_ms is added
+// only when the action does not carry its own.
+function timedActions(now = Date.now) {
+  const list = [];
+  let last = now();
+  list.push = function push(...items) {
+    const t = now();
+    for (const it of items) {
+      if (it && typeof it === 'object' && it.elapsed_ms === undefined) it.elapsed_ms = t - last;
+    }
+    last = t;
+    return Array.prototype.push.apply(this, items);
+  };
+  return list;
+}
+
 // Unified Recovery System §3 (2026-07-18): replays every currently-due
 // retry. `telegram_notify:*` entries carry enough stored context
 // (payload/webhookUrl/envVarName) to be genuinely resent — a failed
@@ -5275,7 +5295,7 @@ async function runTick() {
 
   markStep('diagnose');
   const diagnosis = await diagnose();
-  const actions = [];
+  const actions = timedActions();
   setLowDiskState(lowDiskState(diagnosis.reachable && diagnosis.health ? diagnosis.health.checks : null));
   if (lowDisk.active) {
     actions.push({ step: 'low_disk_mode', action: 'active',
@@ -5908,4 +5928,5 @@ module.exports = {
   dedupePendingRetries,
   formatRetryPayloadForDirectSend,
   runNodeScript,
+  timedActions,
 };

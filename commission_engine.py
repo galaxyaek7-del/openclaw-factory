@@ -704,13 +704,14 @@ def select_first_launch_opportunity(portfolio=None, now=None):
     # remains the final, purely-cosmetic tiebreak only when both real
     # signals are genuinely equal.
     # Phase 2026-08-14 (First Revenue directive, Section 1): founder's
-    # standing requirement is an Algeria-receivable payout where
-    # verifiable (PayPal does not support receiving payments in Algeria;
-    # CJ via Payoneer does). payout_algeria_compatible is a real,
-    # verified field on the portfolio records -- it ranks Algeria-
-    # compatible recurring candidates above otherwise-equal recurring
-    # ones, keeping this function in agreement with
-    # rank_commission_shortlist()'s identical tie-break below.
+    # standing requirement is a verifiable payout route. Revalidated
+    # 2026-10-21: PayPal's Algeria receive agreement lists Algeria but is
+    # conditional (linked US bank/Visa, 30-day hold, withdrawal-only
+    # balance); Awin via Payoneer is a documented route, but Awin does not
+    # confirm Algeria. payout_algeria_compatible remains a real portfolio
+    # field -- it ranks a documented-route recurring candidate above an
+    # otherwise-equal recurring one; affiliate.portfolio.algeria_payout_status()
+    # is the authoritative country/account classification.
     candidates.sort(key=lambda o: (
         not o["recurring_commission"],
         not bool(o.get("payout_algeria_compatible", False)),
@@ -1362,7 +1363,7 @@ def golden_hunter_commission_verification(portfolio=None, now=None):
     )
     checks["ranks_by_expected_value_and_confidence"] = {
         "ok": ranked_by_tier,
-        "note": "Ranked by (verification_tier desc, recurring first, payout_algeria_compatible first, real_dimensions_count desc, opportunity_id) -- the identical deterministic key rank_commission_shortlist() itself sorts by (unified with select_first_launch_opportunity() on 2026-08-14 so both real selection functions agree; Algeria-receivable payout added 2026-08-14 per First Revenue directive after official-source verification that PayPal does not support receiving payments in Algeria while CJ-via-Payoneer does). expected_value itself is honestly 'UNKNOWN -- requires commission_economics()' for every real entry today, never a fabricated confidence number substituted in its place.",
+        "note": "Ranked by (verification_tier desc, recurring first, payout_algeria_compatible first, real_dimensions_count desc, opportunity_id) -- the identical deterministic key rank_commission_shortlist() itself sorts by (unified with select_first_launch_opportunity() on 2026-08-14 so both real selection functions agree; payout-route signal added 2026-08-14 per First Revenue directive, revalidated 2026-10-21: PayPal's Algeria receive agreement is conditional, and Awin via Payoneer is a documented route whose Algeria capability is unconfirmed). expected_value itself is honestly 'UNKNOWN -- requires commission_economics()' for every real entry today, never a fabricated confidence number substituted in its place.",
     }
 
     checks["exposes_uncertainty"] = {
@@ -2583,12 +2584,20 @@ def public_solutions_catalog(category=None, portfolio=None, now=None):
             "limitations": "Not yet researched.",
             "alternatives_in_this_category": [x for x in CATEGORY_MAP.get(opp_category, []) if x != opp_id],
             "verification_status": verification["status"],
-            "why_recommended": f"This program's real, official terms have been independently verified against its own official domain (status: {verification['status']}) -- never recommended based on commission size.",
+            "why_recommended": (
+                f"This program's real, official terms have been independently verified against its own official domain (status: {verification['status']}) -- never recommended based on commission size."
+                if verification["status"] == "VERIFIED"
+                else f"Details for this program are not fully verified against its own official domain (status: {verification['status']}) -- treat them as preliminary research, never a confirmed fact, and check the official source before acting. Never recommended based on commission size."
+            ),
             "evidence": o.get("evidence_url") or o.get("terms_url"),
             "official_link": official_link,
             "last_verification_date": o.get("last_verified"),
             "freshness": freshness,
-            "affiliate_disclosure": "Galaxy Forge may earn a commission if you choose this solution through the link below, at no additional cost to you. This never affects whether or how a solution is listed.",
+            # The public click handler redirects to the vendor's own official
+            # terms/evidence page and never appends an affiliate tag today.
+            # This field makes that real state explicit for any consumer.
+            "affiliate_attributed": False,
+            "affiliate_disclosure": "No affiliate link is active for this solution today, and Galaxy Forge earns no commission from the link below. The link goes to the vendor's own official information page. This never affects whether or how a solution is listed.",
             "explore_url": f"/api/solutions/click/{opp_id}",
         })
 

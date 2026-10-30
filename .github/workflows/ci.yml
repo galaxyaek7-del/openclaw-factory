@@ -229,7 +229,7 @@ jobs:
         run: node scripts/run_js_group.js tests/test_factory_loop_daily_growth_stage_snapshot.js tests/test_factory_loop_daily_knowledge_graph.js tests/test_factory_loop_evidence_recording_audit.js tests/test_factory_loop_freelancer_grant_resume.js tests/test_factory_loop_freelancer_state_monitor.js tests/test_factory_loop_golden.js tests/test_factory_loop_internal_token.js tests/test_factory_loop_lock.js tests/test_factory_loop_lock_identity.js tests/test_factory_loop_monthly_galaxy_evolution_report.js
 
       - name: JS batch 7 of 19
-        run: node scripts/run_js_group.js tests/test_factory_loop_notification.js tests/test_factory_loop_payment_status_check_tick.js tests/test_factory_loop_pricing_review.js tests/test_factory_loop_quarterly_annual_reviews.js tests/test_factory_loop_reality_integrity_check.js tests/test_factory_loop_resilience_monitor_tick.js tests/test_factory_loop_seo_distribution.js tests/test_factory_loop_tick_overlap.js tests/test_factory_loop_weekly_executive_report.js tests/test_factory_loop_x_queued_post.js
+        run: node scripts/run_js_group.js tests/test_factory_loop_notification.js tests/test_factory_loop_payment_status_check_tick.js tests/test_factory_loop_pricing_review.js tests/test_factory_loop_quarterly_annual_reviews.js tests/test_factory_loop_reality_integrity_check.js tests/test_factory_loop_resilience_monitor_tick.js tests/test_factory_loop_seo_distribution.js tests/test_factory_loop_tick_overlap.js tests/test_factory_loop_step_timing.js tests/test_factory_loop_weekly_executive_report.js tests/test_factory_loop_x_queued_post.js
 
       - name: JS batch 8 of 19
         run: node scripts/run_js_group.js tests/test_factory_state.js

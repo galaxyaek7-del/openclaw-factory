@@ -33,10 +33,10 @@ sys.path.insert(0, str(ROOT))
 OUT = ROOT / "customer_site" / "solutions.json"
 
 
-def build():
+def build(now=None):
     from commission_engine import public_solutions_catalog
 
-    result = public_solutions_catalog()
+    result = public_solutions_catalog(now=now)
     solutions = []
     for s in result.get("solutions") or []:
         entry = dict(s)
@@ -95,7 +95,18 @@ def main():
         except ValueError:
             print("UNREADABLE: %s" % out)
             return 1
-        if _comparable(current) != _comparable(build()):
+        # Freshness labels and the 45-day stale cut depend on the date, so the
+        # snapshot is rebuilt as of its own generated_at: --check then tests
+        # the code and the data, not how many days have passed (2026-10-30:
+        # a correct snapshot would otherwise fail CI as soon as one entry
+        # crossed the 14-day FRESH/AGING line).
+        as_of = None
+        try:
+            from datetime import datetime
+            as_of = datetime.fromisoformat(str(current.get("generated_at")))
+        except (TypeError, ValueError):
+            as_of = None
+        if _comparable(current) != _comparable(build(now=as_of)):
             print("STALE: %s (run scripts/export_public_solutions.py)" % out)
             return 1
         print("OK: %s" % out)
