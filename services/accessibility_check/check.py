@@ -22,6 +22,7 @@ Checks (WCAG 2.2 success criterion):
   zoom disabled in the viewport tag         1.4.4 Resize Text
 
     python services/accessibility_check/check.py <file-or-folder> [report.json]
+    python services/accessibility_check/check.py --url https://shop.example/ https://shop.example/cart
 """
 import json
 import re
@@ -153,16 +154,55 @@ def check_html(text):
     return sorted(out, key=lambda f: (f["line"], f["issue"]))
 
 
+def _page(name, findings):
+    return {"page": name, "errors": sum(1 for x in findings if x["severity"] == "error"),
+            "warnings": sum(1 for x in findings if x["severity"] == "warning"), "findings": findings}
+
+
 def check_path(path):
     path = Path(path)
     files = sorted(path.rglob("*.html")) if path.is_dir() else [path]
-    pages = []
-    for f in files:
-        findings = check_html(f.read_text(encoding="utf-8", errors="replace"))
-        pages.append({"page": str(f.relative_to(path)).replace("\\", "/") if path.is_dir() else f.name,
-                      "errors": sum(1 for x in findings if x["severity"] == "error"),
-                      "warnings": sum(1 for x in findings if x["severity"] == "warning"),
-                      "findings": findings})
+    pages = [_page(str(f.relative_to(path)).replace("\\", "/") if path.is_dir() else f.name,
+                   check_html(f.read_text(encoding="utf-8", errors="replace"))) for f in files]
+    return summarize(pages)
+
+
+MAX_PAGE_BYTES = 5 * 1024 * 1024
+MAX_URLS = 10
+
+
+def _fetch(url, timeout=20):
+    import urllib.request
+    req = urllib.request.Request(url, headers={"User-Agent": "GalaxyForge-accessibility-check/1.0"})
+    with urllib.request.urlopen(req, timeout=timeout) as r:
+        body = r.read(MAX_PAGE_BYTES + 1)
+        if len(body) > MAX_PAGE_BYTES:
+            raise ValueError("page larger than %d MB" % (MAX_PAGE_BYTES // 1024 // 1024))
+        return body.decode(r.headers.get_content_charset() or "utf-8", "replace")
+
+
+def check_urls(urls, fetch=None):
+    """The pages a customer names: one GET each, the HTML as served (content
+    added later by scripts is not seen, and NOT_CHECKED says so). Only http(s);
+    at most MAX_URLS per report, as in the offer's scope."""
+    fetch = fetch or _fetch
+    if len(urls) > MAX_URLS:
+        raise ValueError("at most %d pages per report" % MAX_URLS)
+    pages, failed = [], []
+    for u in urls:
+        if not str(u).lower().startswith(("http://", "https://")):
+            failed.append({"url": u, "reason": "only http(s) addresses are checked"})
+            continue
+        try:
+            pages.append(_page(u, check_html(fetch(u))))
+        except Exception as exc:  # noqa: BLE001  (a page that cannot be read is reported, not hidden)
+            failed.append({"url": u, "reason": type(exc).__name__})
+    out = summarize(pages)
+    out["pages_not_read"] = failed
+    return out
+
+
+def summarize(pages):
     by_issue = {}
     for p in pages:
         for x in p["findings"]:
@@ -191,7 +231,11 @@ def main(argv=None):
     if not argv:
         print(__doc__)
         return 2
-    report = check_path(argv[0])
+    if argv[0] == "--url":
+        report = check_urls(argv[1:])
+        argv = [argv[0]]
+    else:
+        report = check_path(argv[0])
     if len(argv) > 1:
         Path(argv[1]).write_text(json.dumps(report, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
     print(json.dumps({k: report[k] for k in report if k not in ("pages",)}, indent=1, ensure_ascii=False))

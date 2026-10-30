@@ -129,6 +129,24 @@ class AccessibilityCheck(unittest.TestCase):
                 '<img src="d.png" role="presentation"><a name="top"></a></body></html>')
         self.assertEqual(a11y.check_html(html), [])
 
+    def test_named_urls_are_fetched_once_each_and_failures_reported(self):
+        pages = {"https://shop.example/": '<html><head><title>S</title></head><body><h1>S</h1><img src="a.png"></body></html>',
+                 "https://shop.example/cart": '<html lang="en"><head><title>C</title></head><body><h1>C</h1></body></html>'}
+        calls = []
+
+        def fake(u):
+            calls.append(u)
+            if u not in pages:
+                raise OSError("down")
+            return pages[u]
+        r = a11y.check_urls(list(pages) + ["https://shop.example/gone", "file:///etc/passwd"], fetch=fake)
+        self.assertEqual(calls, list(pages) + ["https://shop.example/gone"])   # file: is never fetched
+        self.assertEqual(r["pages_checked"], 2)
+        self.assertEqual(r["errors"], 2)                                       # missing lang + img alt
+        self.assertEqual([f["reason"] for f in r["pages_not_read"]], ["OSError", "only http(s) addresses are checked"])
+        with self.assertRaises(ValueError):
+            a11y.check_urls(["https://x.example/%d" % i for i in range(11)], fetch=fake)
+
     def test_report_never_claims_compliance(self):
         with tempfile.TemporaryDirectory() as d:
             Path(d, "p.html").write_text('<html lang="en"><title>x</title><h1>x</h1></html>', encoding="utf-8")
