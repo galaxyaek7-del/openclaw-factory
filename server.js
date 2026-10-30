@@ -8308,6 +8308,21 @@ if (process.env.__OPENCLAW_TEST_EMIT_SHUTDOWN_SIGNAL__) {
   process.emit(process.env.__OPENCLAW_TEST_EMIT_SHUTDOWN_SIGNAL__);
 }
 
+// 2026-10-30: last error handler. Without it Express answered a malformed
+// JSON body with an HTML page carrying the full stack trace and local file
+// paths (C:\openclaw-dasgboard\node_modules\...). A request-body error is
+// the caller's mistake: 400 JSON. Anything else: 500 JSON with no details;
+// the stack goes to the server log only.
+app.use((err, req, res, next) => {
+  if (res.headersSent) return next(err);
+  if (err && (err.type === 'entity.parse.failed' || err.type === 'entity.too.large' || err.type === 'charset.unsupported' || err.type === 'encoding.unsupported')) {
+    const status = err.type === 'entity.too.large' ? 413 : 400;
+    return res.status(status).json({ success: false, error: status === 413 ? 'request body too large' : 'request body is not valid JSON' });
+  }
+  console.error('[server] unhandled error on', req.method, req.path, err && err.stack ? err.stack : err);
+  res.status(500).json({ success: false, error: 'internal error' });
+});
+
 app.listen(PORT, BIND_HOST, () => {
   console.log(`✅ Galaxy Forge — http://localhost:${PORT} (bound to ${BIND_HOST})`);
   console.log(`🔧 Static dir: ${path.join(__dirname)}`);
