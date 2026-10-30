@@ -156,6 +156,16 @@ test('founder queue lists only what the files show is waiting, each with a comma
   assert.deepEqual(empty.founder_queue, []);
 });
 
+test('founder queue names both copies of a duplicate live listing', () => {
+  const reg = { products: [{ internal_id: 'GR-a', title: 'Reset Playbook' }, { internal_id: 'GR-b', title: 'Reset Playbook' },
+    { internal_id: 'GR-c', title: 'Other' }], drift: { duplicate_live_titles: ['Reset Playbook'] } };
+  const q = cf.founderQueue(reg, null, null, factory(), new Date('2026-10-30T20:00:00Z'));
+  assert.equal(q.length, 1);
+  assert.match(q[0].title, /Unpublish one copy of 1 duplicate live listing/);
+  assert.match(q[0].why, /GR-a and GR-b/);
+  assert.equal(cf.founderQueue({ products: [], drift: { duplicate_live_titles: [] } }, null, null, factory()).length, 0);
+});
+
 test('founder queue shows when publication approvals expire, or that they have lapsed', () => {
   const ready = { products: [{ internal_id: 'B16-008', primary_state: 'READY_FOR_AUTHORIZATION' },
     { internal_id: 'B16-009', primary_state: 'READY_FOR_AUTHORIZATION' }] };
