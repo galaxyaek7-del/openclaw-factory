@@ -62,8 +62,9 @@ SHARED_CAPABILITIES = {
     "visit_measurement": "NOT CONNECTED: no analytics receiver for the public site (backlog B6)",
     "commercial_measurement": "lib/commercial_funnel.js, commercial_reconciliation.py, channels/ledger.py",
     "experiments": "commercial_experiments.py, data/distribution_metrics.jsonl",
-    "customer_intake": "the factory cannot record public inquiries: GitHub Pages answers 405 to the intake POST; "
-                       "contact.html falls back to formsubmit.co e-mail (activation UNKNOWN), interest.html to a mailto link",
+    "customer_intake": "partial: inquiries reach the founder by e-mail (mailto links on the site) and are recorded by hand "
+                       "with `python inquiry_intake.py record-email`; the site cannot receive a form POST (GitHub Pages "
+                       "answers 405), and contact.html's formsubmit.co relay activation is UNKNOWN",
     "payments": "Gumroad (live); Paddle key refused (403)",
     "incident_memory": "incident_memory.py, docs/factory/SHARED_FILE_EDITING.md",
 }
@@ -245,14 +246,14 @@ PROFILES: Dict[str, Dict[str, Any]] = {
 EXPERIMENTS = {
     "digital_products": {"id": "EXP-B16-007-LI-01", "state": "PENDING_APPROVAL",
                          "what": "two LinkedIn variants for one product, 30 clicks per variant before a verdict"},
-    "micro_b2b": {"id": "D2/D5", "state": "BLOCKED: no public intake",
+    "micro_b2b": {"id": "D2/D5", "state": "BLOCKED: offer page awaits founder approval (e-mail route ready)",
                   "what": "free feed preflight or catalogue clean-up for the first sellers who send a file"},
-    "research_data_services": {"id": "D3/D7", "state": "BLOCKED: no public intake",
+    "research_data_services": {"id": "D3/D7", "state": "BLOCKED: offer page awaits founder approval (e-mail route ready)",
                                "what": "free EAA register sample (6 countries); count requests for the full register"},
     "affiliate_intelligence": {"id": None, "state": "NONE", "what": "on hold until a payout route is verified"},
     "content_distribution": {"id": None, "state": "BLOCKED: no visit measurement",
                              "what": "Telegraph counters read daily (platform counter, includes bots)"},
-    "ai_operations": {"id": "D4", "state": "BLOCKED: no public intake; forum rules unread",
+    "ai_operations": {"id": "D4", "state": "BLOCKED: offer page awaits founder approval; forum rules unread",
                       "what": "free read-only n8n audit for a few instances in exchange for feedback"},
     "productized_ai_services": {"id": "D6", "state": "PREPARED",
                                 "what": "fix our own 22 accessibility warnings and publish the before/after, then a free 3-page check"},

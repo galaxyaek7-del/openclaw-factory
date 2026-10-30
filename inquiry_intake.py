@@ -98,6 +98,7 @@ def validate(payload: Dict[str, Any], now: Optional[datetime] = None) -> Dict[st
         (rec["email"] + rec["message"] + rec["received_at"]).encode("utf-8")).hexdigest()[:12]
     rec["spam_signals"] = spam
     rec["status"] = "SPAM_SUSPECTED" if spam else "NEW"
+    rec["channel"] = _clean(payload.get("channel")) or "web_form"
     return rec
 
 
@@ -199,7 +200,69 @@ def readiness() -> Dict[str, Any]:
         "schema_and_queue": "IMPLEMENTED (inquiry_intake.py, tests/test_inquiry_intake.py)",
         "site_form_ingestion": "IMPLEMENTED, LOCAL ONLY: POST /api/customer/interest -> lib/customer_evidence.py -> data/customer_interest.jsonl (git-ignored); its signals appear in this queue",
         "public_receiver": "NOT CONNECTED: GitHub Pages answers 405 to a POST; the factory server listens on 127.0.0.1 only",
+        "email_route": "LIVE, MANUAL RECORDING: the public site links mailto:galaxyaek7@gmail.com on 38 pages (OBSERVED 2026-10-30); an emailed inquiry is entered with `python inquiry_intake.py record-email ...` and then appears in this queue",
         "email_fallback": "contact.html relays to the founder's inbox via formsubmit.co; whether that relay was activated is UNKNOWN; it bypasses this queue",
         "notification": "NOT CONNECTED: Telegram has no chat id; pending inquiries are shown on the dashboard",
         "founder_decision": "choose a receiver: (a) a free form service that forwards to the founder's inbox only, or (b) a free serverless endpoint that writes to this queue; both need an account in the founder's name",
     }
+
+
+def record_email(arm, sender_email, message, name="", offer_id="", received_at=None, ledger=None):
+    """Record an inquiry that arrived by e-mail (the founder enters it). Consent
+    to reply is implied: the person wrote to us. received_at is the mail's own
+    time, so the queue keeps the real order; a missing time is UNKNOWN, never
+    'now' pretending to be the arrival time."""
+    when = None
+    if received_at:
+        when = datetime.fromisoformat(str(received_at).replace("Z", "+00:00"))
+        if when.tzinfo is None:
+            when = when.replace(tzinfo=timezone.utc)
+    payload = {"name": name or sender_email.split("@")[0], "email": sender_email, "message": message,
+               "arm": arm, "offer_id": offer_id, "source_page": "email", "consent_to_reply": True,
+               "channel": "email"}
+    out = submit(payload, ledger=ledger, now=when)
+    if not received_at:
+        out["received_at_note"] = "UNKNOWN: entered without the mail's own time; received_at is the entry time"
+    return out
+
+
+def main(argv=None):
+    import argparse
+    ap = argparse.ArgumentParser(description="Inquiry queue (local).")
+    sub = ap.add_subparsers(dest="cmd", required=True)
+    e = sub.add_parser("record-email", help="record an inquiry that arrived by e-mail")
+    e.add_argument("--arm", required=True, choices=ARMS)
+    e.add_argument("--email", required=True)
+    e.add_argument("--name", default="")
+    e.add_argument("--offer", default="")
+    e.add_argument("--received-at", default=None, help="the mail's own time, ISO 8601")
+    g = e.add_mutually_exclusive_group(required=True)
+    g.add_argument("--message")
+    g.add_argument("--message-file")
+    sub.add_parser("queue", help="pending inquiries, without addresses")
+    r = sub.add_parser("review", help="record the outcome of an inquiry")
+    r.add_argument("inquiry_id")
+    r.add_argument("outcome", choices=OUTCOMES)
+    r.add_argument("--note", default="")
+    args = ap.parse_args(argv)
+    try:
+        if args.cmd == "record-email":
+            msg = args.message if args.message is not None else Path(args.message_file).read_text(encoding="utf-8")
+            out = record_email(args.arm, args.email, msg, args.name, args.offer, args.received_at)
+        elif args.cmd == "queue":
+            out = queue()
+        else:
+            out = review(args.inquiry_id, args.outcome, args.note)
+    except InvalidInquiry as exc:
+        print(json.dumps({"error": exc.errors}, ensure_ascii=False))
+        return 1
+    except (KeyError, ValueError) as exc:
+        print(json.dumps({"error": str(exc)}, ensure_ascii=False))
+        return 1
+    print(json.dumps(out, ensure_ascii=False, indent=1))
+    return 0
+
+
+if __name__ == "__main__":
+    import sys
+    sys.exit(main())

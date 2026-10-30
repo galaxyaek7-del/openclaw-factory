@@ -187,6 +187,19 @@ test('intake: counts only, never names or addresses, and the receiver is reporte
   assert.deepEqual(out.by_arm, { micro_b2b: { total: 2, pending: 1 } });
   assert.equal(out.public_receiver, 'NOT CONNECTED');
   assert.doesNotMatch(JSON.stringify(out), /@example\.com/);
+  assert.equal(out.email_route, 'NONE');
+});
+
+test('intake: the site mailto route is counted from the pages, and email inquiries are counted, never shown', () => {
+  const rows = JSON.stringify({ record: 'inquiry', inquiry_id: 'INQ-9', arm: 'micro_b2b', channel: 'email',
+    email: 'buyer@example.com' }) + '\n';
+  const out = cf.intake(factory({
+    'data/inquiries.jsonl': rows,
+    'customer_site/a.html': '<a href="mailto:owner@example.org">mail</a>',
+    'customer_site/b.html': '<p>no link</p>',
+  }));
+  assert.equal(out.email_route, 'LIVE on 1 page(s), recorded manually (1 recorded)');
+  assert.doesNotMatch(JSON.stringify(out), /@example\.(com|org)/);
 });
 
 test('intake: site-form signals are counted as unassigned, reviews close them, addresses never appear', () => {

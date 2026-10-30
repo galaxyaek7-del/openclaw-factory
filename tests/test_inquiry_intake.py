@@ -1,5 +1,6 @@
 """inquiry_intake.py: schema, validation, spam handling, duplicates, review
 queue and privacy. Temp ledgers only; the real one is never touched."""
+import json
 import subprocess
 import sys
 import tempfile
@@ -93,6 +94,45 @@ class Queue(unittest.TestCase):
             ii.review(a["inquiry_id"], "MAYBE", ledger=self.ledger, interest_ledger=self.interest)
         with self.assertRaises(KeyError):
             ii.review("INQ-000000000000", "REPLIED", ledger=self.ledger, interest_ledger=self.interest)
+
+    def test_an_emailed_inquiry_is_recorded_with_its_own_time(self):
+        out = ii.record_email("micro_b2b", "Owner@Shop.example", "Can you check my Merchant Center feed?",
+                              offer_id="feed-preflight", received_at="2026-10-30T09:15:00Z", ledger=self.ledger)
+        self.assertTrue(out["stored"])
+        self.assertNotIn("received_at_note", out)
+        rows = [json.loads(l) for l in self.ledger.read_text(encoding="utf-8").splitlines()]
+        self.assertEqual(rows[0]["channel"], "email")
+        self.assertEqual(rows[0]["received_at"], "2026-10-30T09:15:00+00:00")
+        self.assertEqual(rows[0]["email"], "owner@shop.example")
+        q = ii.queue(self.ledger, self.interest)
+        self.assertEqual(q["by_arm"]["micro_b2b"]["pending"], 1)
+        self.assertNotIn("owner@shop.example", json.dumps(q))
+        late = ii.record_email("micro_b2b", "b@shop.example", "Second question about feeds", ledger=self.ledger)
+        self.assertIn("UNKNOWN", late["received_at_note"])
+        with self.assertRaises(ii.InvalidInquiry):
+            ii.record_email("lottery", "c@shop.example", "x", ledger=self.ledger)
+
+    def test_the_command_line_records_and_lists_without_addresses(self):
+        import contextlib, io
+        orig = ii.LEDGER, ii.INTEREST_LEDGER
+        ii.LEDGER, ii.INTEREST_LEDGER = self.ledger, self.interest
+        try:
+            buf = io.StringIO()
+            with contextlib.redirect_stdout(buf):
+                rc = ii.main(["record-email", "--arm", "research_data_services", "--email", "adv@firm.example",
+                              "--message", "Do you cover Italy in the EAA register?", "--offer", "eaa-penalties",
+                              "--received-at", "2026-10-30T10:00:00+00:00"])
+            self.assertEqual(rc, 0)
+            buf = io.StringIO()
+            with contextlib.redirect_stdout(buf):
+                ii.main(["queue"])
+            self.assertIn("research_data_services", buf.getvalue())
+            self.assertNotIn("adv@firm.example", buf.getvalue())
+            with contextlib.redirect_stdout(io.StringIO()):
+                self.assertEqual(ii.main(["record-email", "--arm", "micro_b2b", "--email", "bad",
+                                          "--message", "hello there"]), 1)
+        finally:
+            ii.LEDGER, ii.INTEREST_LEDGER = orig
 
     def test_site_form_signals_join_the_queue_without_copying_them(self):
         import json
