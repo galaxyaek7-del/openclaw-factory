@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>DRAFT: n8n automation health audit | Galaxy Forge</title>
+<style>
+body{font-family:system-ui,sans-serif;max-width:760px;margin:2rem auto;padding:0 1rem;line-height:1.6;color:#1f2937}
+.draft{background:#fff3cd;border-left:4px solid #f0ad4e;padding:10px 14px;margin:0 0 1.5rem}
+table{border-collapse:collapse;width:100%;font-size:.9rem;margin:.5rem 0 1rem}
+td,th{border:1px solid #d1d5db;padding:4px 8px;text-align:left}
+.muted{color:#6b7280;font-size:.85rem}
+</style>
+</head>
+<body>
+<div class="draft"><strong>DRAFT, not published.</strong> The example workflows are invented. Requests go by e-mail; a person reads every message.</div>
+
+<h1>Which of your n8n workflows stopped working without telling you?</h1>
+<p>An automation that fails rarely announces it. Ours did: every company workflow on our own n8n failed for twelve
+days while the health check said OK, because the server still answered. This audit looks at what actually ran.</p>
+
+<h2>What you get</h2>
+<p>Every workflow on your instance labelled OK, FAILING, STALE, INACTIVE or UNKNOWN, with the reason, and a short
+list of what needs attention first. A workflow is only called OK after a recent successful run on the schedule you
+tell us it should keep.</p>
+
+<h2>Example (invented workflows)</h2>
+<table>
+<tr><th>Workflow</th><th>Verdict</th><th>Why</th></tr>
+<tr><td>Order sync to sheet</td><td>OK</td><td>ran successfully within its hour</td></tr>
+<tr><td>Weekly invoice reminder</td><td>STALE</td><td>no successful run for more than two weeks</td></tr>
+<tr><td>Lead form to CRM</td><td>FAILING</td><td>the latest run ended in an error</td></tr>
+<tr><td>Old Slack digest</td><td>INACTIVE</td><td>switched off</td></tr>
+<tr><td>Review request mailer</td><td>UNKNOWN</td><td>no run on record</td></tr>
+</table>
+
+<h2>What we need, and what we never touch</h2>
+<p>A read-only API key you create and delete afterwards (or the two JSON exports of your workflows and executions,
+without execution data), and how often each workflow should run. We never read your database, credentials or the
+data your workflows carry, and we change nothing on your instance.</p>
+
+<h2>Not included</h2>
+<p>Fixing workflows, Zapier or Make, uptime monitoring, and whether a "successful" run did the right thing in your
+business: that question comes back to you.</p>
+
+<h2>Price (to be confirmed)</h2>
+<p>Planned: $49 per instance of up to about 30 workflows. Fix-one-workflow services cost from about $15 to $600;
+this audits all of them and fixes none.</p>
+
+<h2>Ask</h2>
+<p><a href="mailto:galaxyaek7@gmail.com?subject=n8n%20automation%20audit">Ask for an audit by e-mail</a>. A person reads every message and replies from the same address; your address is used only to answer you.</p>
+
+<p class="muted">Built on services/automation_health; the example is reproducible from demo_input.json. Not affiliated with n8n.</p>
+</body>
+</html>

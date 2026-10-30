@@ -101,7 +101,7 @@ ARMS: Dict[str, Dict[str, Any]] = {
         "context": ["ai_capability/", "orchestrator/"],
         "acceptance": ["a customer-facing AI operations offer", "a delivery workflow", "a paying engagement"],
         "commercial_path": ["services/automation_health/README.md"],
-        "gap": "offer and tested audit demonstration exist (synthetic input); no published page, no inquiry, no engagement",
+        "gap": "offer with observed comparable prices ($14-$600 fix jobs, a $25 forum audit), tested audit demonstration and a draft page with an e-mail call to action; not published, no inquiry, no engagement",
         "blocker": "no recorded public intake; no customer engagement",
     },
     "productized_ai_services": {

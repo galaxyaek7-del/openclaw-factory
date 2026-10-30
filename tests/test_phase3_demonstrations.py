@@ -176,7 +176,7 @@ class OfferDrafts(unittest.TestCase):
 
     def test_drafts_are_noindex_formless_and_pass_our_own_check(self):
         pages = sorted(self.DRAFTS.glob("*.html"))
-        self.assertEqual(len(pages), 3)
+        self.assertEqual(len(pages), 4)
         for p in pages:
             html = p.read_text(encoding="utf-8")
             self.assertIn('<meta name="robots" content="noindex">', html, p.name)

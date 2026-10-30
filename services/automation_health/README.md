@@ -53,10 +53,17 @@ Included: status and timing per workflow, the attention list, one follow-up ques
 Excluded: fixing workflows, credentials, data-content checks, other automation platforms
 (Zapier/Make need their own adapter), uptime monitoring.
 
-## Price hypothesis (UNKNOWN)
+## Price hypothesis (UNKNOWN until a buyer answers)
 
-$49 per audit. No price evidence for a comparable offer has been collected yet; collect it before
-the page goes live.
+$49 per audit (one instance, up to ~30 workflows). Comparable offers read on 2026-10-30 (OBSERVED):
+- Fiverr, "fix one n8n error": [$98.45 incl. fees](https://www.fiverr.com/automateowned/build-an-n8n-automation-with-ai-agents-error-handling-and-documentation),
+  [$24.60](https://www.fiverr.com/novatechs/troubleshoot-enhance-and-optimize-n8n-automation-workflows) (past orders listed at $50 to $200), [$14.05](https://www.fiverr.com/techautomate247/create-n8n-automation-ai-agents-and-api-integrations).
+- Upwork catalogue, "n8n workflow reliability audit & fix": [$149 to $599](https://www.upwork.com/services/product/development-it-fix-stabilize-your-n8n-workflow-errors-credentials-silent-failures-2002132381087128397).
+- n8n community forum, Jobs category: a [$25 written audit of one workflow export](https://community.n8n.io/t/for-hire-fixed-price-n8n-micro-automations-audits-instant-usdc-payment-no-platform-fees/306934)
+  (this also shows the forum hosts "[FOR HIRE]" posts; its rules are still to be read before experiment D4).
+
+Difference: those fix one workflow; this audits every workflow on the instance from the read-only API and
+names the silent ones (stale schedules, inactive or never-run workflows), without fixing anything.
 
 ## Cheapest test
 
