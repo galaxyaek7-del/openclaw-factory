@@ -5345,6 +5345,11 @@ async function runTick() {
     // sales). Eight experiments were RUNNING with no reading for 20 days.
     markStep('distribution_metrics');
     actions.push({ step: 'distribution_metrics', ...(await runOnceScript('distribution_metrics_daily.py', { timeoutMs: 5 * 60 * 1000 })) });
+    // 2026-10-30: research arm upkeep. One GET of the USPTO fee schedule per
+    // day, compared code by code with the published dataset release; a
+    // change is reported (action "changed"), never written into the release.
+    markStep('uspto_fee_monitor');
+    actions.push({ step: 'uspto_fee_monitor', ...(await runOnceScript('uspto_fee_monitor_daily.py', { timeoutMs: 2 * 60 * 1000 })) });
     // 2026-10-29: tool pages for newly published products (site_publish sends
     // them on the next tick). Batch-15 pages had waited five days for a hand run.
     markStep('tool_pages');

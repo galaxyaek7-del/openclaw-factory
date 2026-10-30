@@ -188,6 +188,8 @@ data/*.jsonl.lock
 data/kids_feedback.jsonl
 # founder's per-product publication approvals (local record, not for the public repo)
 data/publication_approvals.json
+# USPTO fee-change monitor log (data_products/uspto_fee_monitor.py)
+data/uspto_fee_monitor.jsonl
 
 # 2026-10-23 founder decision: paid product files leave the public repository.
 # They stay on the factory machine; tests that read them skip on CI when absent.
