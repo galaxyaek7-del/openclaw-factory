@@ -72,7 +72,7 @@ ARMS: Dict[str, Dict[str, Any]] = {
         "acceptance": ["repeatable research output", "a written offer", "a paying engagement"],
         "commercial_path": ["services/research/uspto_trademark_fees_brief_2026-10-29.md",
                             "services/research/eaa_penalty_register_brief_2026-10-29.md"],
-        "gap": "two validated sample datasets with briefs (USPTO fees; EAA penalties, six countries tied to the statutes); a draft page exists; not published, no buyer",
+        "gap": "two validated sample datasets with briefs (USPTO fees; EAA penalties, seven countries tied to the statutes); a draft page exists; not published, no buyer",
         "blocker": "research infrastructure exists but no customer-facing offer or engagement",
     },
     "affiliate_intelligence": {

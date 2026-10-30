@@ -35,6 +35,8 @@ IE_SI = "https://www.irishstatutebook.ie/eli/2023/si/636/made/en/print"
 AT_BAFG = "https://ris.bka.gv.at/eli/bgbl/i/2023/76/P36/NOR40254396"
 NL_ACT = "https://wetten.overheid.nl/BWBR0049571/2025-06-28/0"
 NL_STB = "https://zoek.officielebekendmakingen.nl/stb-2024-87.html"
+IT_GU = "https://www.gazzettaufficiale.it/eli/id/2022/07/01/22G00089/SG"
+IT_AGID = "https://accessibilita.agid.gov.it/domande-frequenti/"
 FR_R4514 = "https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000048180406/"
 ES_L11 = "https://www.boe.es/buscar/act.php?id=BOE-A-2023-11022"
 ES_RDL1 = "https://www.boe.es/buscar/act.php?id=BOE-A-2013-12632"
@@ -64,6 +66,14 @@ ROWS = [
      "none (administrative fine)", "RDI (products); ACM and others for services", "VERIFIED_OFFICIAL_TEXT", NL_STB,
      VERSION, "maximum is the 5th fine category of Criminal Code art. 23; its euro value is indexed and was not "
               "re-read (the secondary table's EUR 103,000 is that category's value in an earlier year)"),
+    ("IT", "D.Lgs. 82/2022", "art. 24(1)", "breach of the accessibility requirements and economic operators' duties "
+     "(arts 3, 6, 8, 9, 10, 12)", "40000", "none (administrative fine)", "AgID (services); MIMIT (products)",
+     "VERIFIED_OFFICIAL_TEXT", IT_GU, VERSION,
+     "minimum EUR 5,000; providers with average turnover above EUR 500 million: up to 5% of turnover "
+     "(L. 4/2004 art. 9(1-bis), confirmed by AgID: " + IT_AGID + ")"),
+    ("IT", "D.Lgs. 82/2022", "art. 24(2)-(3)", "not complying with the authority's measures, or not cooperating",
+     "30000", "none (administrative fine)", "AgID (services); MIMIT (products)", "VERIFIED_OFFICIAL_TEXT", IT_GU,
+     VERSION, "minimum EUR 2,500"),
     ("AT", "Barrierefreiheitsgesetz (BaFG)", "s. 36(1)", "s. 36(1) offences, incl. placing a non-compliant "
      "product on the market (Nos 1-2)", "80000", "none (administrative fine)",
      "Sozialministeriumservice (penalty authority and market surveillance)", "VERIFIED_OFFICIAL_TEXT", AT_BAFG,
@@ -118,12 +128,14 @@ def build():
              "access_method": "PUBLIC_WEB_PAGE", "licence": facts},
             {"name": "Staatsblad 2024, 87 (officielebekendmakingen.nl)", "origin": NL_STB, "accessed_on": VERSION,
              "access_method": "PUBLIC_WEB_PAGE", "licence": facts},
+            {"name": "D.Lgs. 82/2022 (gazzettaufficiale.it) and AgID FAQ", "origin": IT_GU, "accessed_on": VERSION,
+             "access_method": "PUBLIC_WEB_PAGE", "licence": facts},
             {"name": "Deque EAA country-by-country table (secondary)", "origin": DEQUE, "accessed_on": READ_1029,
              "access_method": "PUBLIC_WEB_PAGE", "licence": facts},
         ],
         "attribution": "Secondary figures: Deque Systems, EAA country-by-country compliance data (read 2026-10-29).",
         "collection_method": "Read the German and Irish legal texts on 2026-10-29 and the Austrian on 2026-10-30, "
-                             "recorded the penalty provisions; and the French and Spanish on 2026-10-30; the Dutch on 2026-10-30.",
+                             "recorded the penalty provisions; and the French and Spanish on 2026-10-30; the Dutch and Italian on 2026-10-30.",
         "processing_steps": ["record amounts and section numbers", "tag verification status", "note conflicts"],
         "columns": [{"name": c, "type": "string", "description": c.replace("_", " ")} for c in COLUMNS],
         "files": [{"path": str(path.relative_to(ROOT)).replace("\\", "/"), "sha256": datacard.sha256_file(path),
@@ -133,7 +145,7 @@ def build():
         "refresh_days": 90,
         "last_refreshed": VERSION,
         "known_limitations": [
-            "All six countries are tied to the legal text; FR (contravention amount, service scope) and NL (indexed euro value of the 5th fine category) are partly verified.",
+            "All seven countries are tied to the legal text; FR (contravention amount, service scope) and NL (indexed euro value of the 5th fine category) are partly verified.",
             "The source of the EUR 500,000 German figure in secondary tables is UNKNOWN.",
             "Maximum statutory penalties say nothing about enforcement practice.",
         ],

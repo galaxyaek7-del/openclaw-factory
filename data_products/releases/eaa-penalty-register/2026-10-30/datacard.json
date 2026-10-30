@@ -79,6 +79,18 @@
    }
   },
   {
+   "name": "D.Lgs. 82/2022 (gazzettaufficiale.it) and AgID FAQ",
+   "origin": "https://www.gazzettaufficiale.it/eli/id/2022/07/01/22G00089/SG",
+   "accessed_on": "2026-10-30",
+   "access_method": "PUBLIC_WEB_PAGE",
+   "licence": {
+    "name": "Facts only (amounts, section numbers, authority names); no text reproduced",
+    "commercial_use": true,
+    "attribution_required": false,
+    "share_alike": false
+   }
+  },
+  {
    "name": "Deque EAA country-by-country table (secondary)",
    "origin": "https://www.deque.com/european-accessibility-act-eaa-compliance/country-compliance-data/",
    "accessed_on": "2026-10-29",
@@ -92,7 +104,7 @@
   }
  ],
  "attribution": "Secondary figures: Deque Systems, EAA country-by-country compliance data (read 2026-10-29).",
- "collection_method": "Read the German and Irish legal texts on 2026-10-29 and the Austrian on 2026-10-30, recorded the penalty provisions; and the French and Spanish on 2026-10-30; the Dutch on 2026-10-30.",
+ "collection_method": "Read the German and Irish legal texts on 2026-10-29 and the Austrian on 2026-10-30, recorded the penalty provisions; and the French and Spanish on 2026-10-30; the Dutch and Italian on 2026-10-30.",
  "processing_steps": [
   "record amounts and section numbers",
   "tag verification status",
@@ -158,8 +170,8 @@
  "files": [
   {
    "path": "data_products/releases/eaa-penalty-register/2026-10-30/eaa_penalty_register.csv",
-   "sha256": "fc69ef9bc907f9a528ca8739877dd6d92380d73999577d152f335bcb5fd70f0a",
-   "rows": 10
+   "sha256": "b2058bcd15384fd05f1112106f2a738f6d4946303e1076225eafe47966ea8670",
+   "rows": 12
   }
  ],
  "personal_data": {
@@ -169,7 +181,7 @@
  "refresh_days": 90,
  "last_refreshed": "2026-10-30",
  "known_limitations": [
-  "All six countries are tied to the legal text; FR (contravention amount, service scope) and NL (indexed euro value of the 5th fine category) are partly verified.",
+  "All seven countries are tied to the legal text; FR (contravention amount, service scope) and NL (indexed euro value of the 5th fine category) are partly verified.",
   "The source of the EUR 500,000 German figure in secondary tables is UNKNOWN.",
   "Maximum statutory penalties say nothing about enforcement practice."
  ]

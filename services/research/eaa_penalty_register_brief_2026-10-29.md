@@ -38,7 +38,11 @@ An online seller serving EU consumers asks: "What can a fine be under the EAA?"
   - Its art. 83 sets EUR 301 to EUR 1,000,000: minor up to EUR 30,000, serious up to EUR 90,000.
   - The secondary table's EUR 1,000,000 is this fallback ceiling.
   - Sources: [Ley 11/2023](https://www.boe.es/buscar/act.php?id=BOE-A-2023-11022), [RDL 1/2013](https://www.boe.es/buscar/act.php?id=BOE-A-2013-12632).
-- **Coverage:** all six countries in this sample are tied to their own legal text. FR and NL each have one figure not re-read (the contravention amount; the indexed category value).
+- **Italy (VERIFIED 2026-10-30, Gazzetta Ufficiale):**
+  - D.Lgs. 82/2022 art. 24 sets EUR 5,000 to 40,000 for breaching the requirements, and EUR 2,500 to 30,000 for ignoring the authority's measures or not cooperating.
+  - Providers with average turnover above EUR 500 million face up to 5% of turnover (L. 4/2004 art. 9(1-bis), confirmed in [AgID's FAQ](https://accessibilita.agid.gov.it/domande-frequenti/)).
+  - Authorities: AgID for services, MIMIT for products. Source: [Gazzetta Ufficiale](https://www.gazzettaufficiale.it/eli/id/2022/07/01/22G00089/SG).
+- **Coverage:** all seven countries in this sample are tied to their own legal text. FR and NL each have one figure not re-read (the contravention amount; the indexed category value).
 
 ## Why this could be a product
 - **Who:** sellers and their advisers get conflicting numbers from vendors who also sell remediation. A neutral, statute-cited register with a verification status per figure does not appear to exist (INFERRED from the searches; not exhaustive).
