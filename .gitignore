@@ -190,6 +190,8 @@ data/kids_feedback.jsonl
 data/publication_approvals.json
 # USPTO fee-change monitor log (data_products/uspto_fee_monitor.py)
 data/uspto_fee_monitor.jsonl
+# outcome of the daily background evidence audit (factory_loop.js)
+data/evidence_recording_audit_runs.jsonl
 
 # 2026-10-23 founder decision: paid product files leave the public repository.
 # They stay on the factory machine; tests that read them skip on CI when absent.

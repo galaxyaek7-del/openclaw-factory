@@ -41,6 +41,26 @@ async function main() {
     assert.ok(result.detail && result.detail.length > 0);
   });
 
+  await test('startBackgroundEvidenceAudit: does not block, gets 30 minutes, logs success and failure', async () => {
+    const fs = require('fs');
+    const os = require('os');
+    const path = require('path');
+    const log = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'gf-eaudit-')), 'runs.jsonl');
+    let release, seenTimeout;
+    const pending = new Promise((r) => { release = r; });
+    const fakeRun = (opts) => { seenTimeout = opts.timeoutMs; return pending; };
+    const p = fl.startBackgroundEvidenceAudit('2026-10-31', fakeRun, log);
+    assert.strictEqual(seenTimeout, 30 * 60 * 1000);
+    assert.strictEqual(fs.existsSync(log), false);              // nothing waits for the audit
+    release({ ok: true, recorded: 160, reality_score: { percentages: { REAL: 98.8 } } });
+    const rec = await p;
+    assert.deepStrictEqual([rec.ok, rec.recorded, rec.real_pct, rec.day], [true, 160, 98.8, '2026-10-31']);
+    await fl.startBackgroundEvidenceAudit('2026-11-01', () => Promise.resolve({ ok: false, detail: 'timeout' }), log);
+    const lines = fs.readFileSync(log, 'utf8').trim().split('\n').map(JSON.parse);
+    assert.deepStrictEqual(lines.map((l) => [l.day, l.ok, l.detail]), [['2026-10-31', true, null], ['2026-11-01', false, 'timeout']]);
+    assert.strictEqual(await fl.startBackgroundEvidenceAudit('x', () => Promise.reject(new Error('boom')), log), null);
+  });
+
   console.log(`\n${passed} passed`);
 }
 

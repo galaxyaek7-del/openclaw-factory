@@ -2968,12 +2968,30 @@ async function maybeRunDailyEvidenceRecordingAudit(now = new Date()) {
   } catch (err) {
     // Best effort only — never let a marker write failure block the audit.
   }
-  const result = await runDailyEvidenceRecordingAudit();
-  if (!result.ok) {
-    return { action: 'failed', detail: result.detail };
-  }
-  const pct = result.reality_score && result.reality_score.percentages;
-  return { action: 'generated', detail: `تم تسجيل ${result.recorded} دليل حقيقي — Reality Score: ${pct ? pct.REAL : '؟'}%` };
+  // 2026-10-30: run in the background. Awaited, the audit (10+ minutes on
+  // 160 endpoints) held the first tick of each day for ~20 minutes, so the
+  // 00:10 and 00:20 ticks were skipped as overlaps, and it still hit the
+  // 600 s limit before finishing. Now the tick goes on at once; the audit gets
+  // 30 minutes and writes its own outcome to data/evidence_recording_audit_runs.jsonl.
+  startBackgroundEvidenceAudit(today);
+  return { action: 'started', detail: `تدقيق الأدلة اليومي بدأ في الخلفية (${today}); النتيجة في data/evidence_recording_audit_runs.jsonl` };
+}
+
+const EVIDENCE_AUDIT_RUNS_LOG = path.join(FACTORY_DIR, 'data', 'evidence_recording_audit_runs.jsonl');
+
+function startBackgroundEvidenceAudit(day, run = runDailyEvidenceRecordingAudit, log = EVIDENCE_AUDIT_RUNS_LOG) {
+  const started = Date.now();
+  return run({ timeoutMs: 30 * 60 * 1000 }).then((result) => {
+    const pct = result && result.reality_score && result.reality_score.percentages;
+    const rec = { day, finished_at: new Date().toISOString(), elapsed_ms: Date.now() - started,
+      ok: !!(result && result.ok), recorded: result && result.ok ? result.recorded : null,
+      real_pct: pct ? pct.REAL : null, detail: result && !result.ok ? result.detail : null };
+    try {
+      fs.mkdirSync(path.dirname(log), { recursive: true });
+      fs.appendFileSync(log, JSON.stringify(rec) + '\n', 'utf8');
+    } catch (_) { /* best effort: the loop log still shows the start */ }
+    return rec;
+  }).catch(() => null);
 }
 
 // V5.6 Sec 18 — daily REALITY_INTEGRITY_CHECK writer. Same marker-file
@@ -5894,7 +5912,7 @@ module.exports = {
   runRecordDailyGrowthStageSnapshot, maybeRecordDailyGrowthStageSnapshot,
   runRecordDailyProductLifecycleSnapshot, maybeRecordDailyProductLifecycleSnapshot,
   runRecordDailyCommercialReadinessSnapshot, maybeRecordDailyCommercialReadinessSnapshot,
-  runDailyEvidenceRecordingAudit, maybeRunDailyEvidenceRecordingAudit,
+  runDailyEvidenceRecordingAudit, maybeRunDailyEvidenceRecordingAudit, startBackgroundEvidenceAudit,
   runDailyRealityIntegrityCheck, maybeRunDailyRealityIntegrityCheck,
   runSeoDistribution, maybeRunDailySeoDistribution,
   runGoldenHunterRefresh, maybeRunDailyGoldenRefresh,
