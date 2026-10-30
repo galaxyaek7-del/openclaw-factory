@@ -156,12 +156,14 @@ class EaaPenaltyRegister(unittest.TestCase):
             rows = list(csv.DictReader(f))
         self.assertTrue(all(r["status"] in ("VERIFIED_OFFICIAL_TEXT", "SECONDARY_UNVERIFIED") for r in rows))
         verified = {r["country"] for r in rows if r["status"] == "VERIFIED_OFFICIAL_TEXT"}
-        self.assertEqual(verified, {"DE", "IE", "AT"})
+        self.assertEqual(verified, {"DE", "IE", "AT", "FR", "ES"})
         for r in rows:
             if r["status"] == "VERIFIED_OFFICIAL_TEXT":
                 self.assertTrue(r["source_url"].startswith(("https://www.gesetze-im-internet.de/",
                                                             "https://www.irishstatutebook.ie/",
-                                                            "https://ris.bka.gv.at/")))
+                                                            "https://ris.bka.gv.at/",
+                                                            "https://www.legifrance.gouv.fr/",
+                                                            "https://www.boe.es/")))
         de = [r for r in rows if r["country"] == "DE"]
         self.assertEqual(sorted(r["max_fine_eur"] for r in de), ["10000", "100000"])
         at = sorted(int(r["max_fine_eur"]) for r in rows if r["country"] == "AT")

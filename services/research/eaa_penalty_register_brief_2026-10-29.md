@@ -26,7 +26,17 @@ An online seller serving EU consumers asks: "What can a fine be under the EAA?"
   - The penalty authority is the Sozialministeriumservice.
   - Source: [RIS](https://ris.bka.gv.at/eli/bgbl/i/2023/76/P36/NOR40254396). This one matches the secondary table.
 - **Netherlands (instrument identified, amounts not read):** the implementing act ([wetten.overheid.nl](https://wetten.overheid.nl/BWBR0049571/2025-06-28/0)) amends the Warenwet and the Wet handhaving consumentenbescherming, so its penalties sit in those acts.
-- **Not verified:** France, the Netherlands and Spain are carried in the dataset as SECONDARY_UNVERIFIED (Deque figures). France has another secondary source at EUR 50,000–75,000.
+- **France (VERIFIED in part, 2026-10-30):**
+  - Code de la consommation art. R.451-4 I (created by Décret 2023-931) punishes listed product breaches with the fine of a 5th-class contravention: CE marking, conformity assessment, and manufacturer, importer and distributor duties.
+  - The amount is set by the Code pénal, not re-read for this release. Whether service breaches fall under this article is UNKNOWN.
+  - Source: [Légifrance](https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000048180406/).
+  - A contravention is far below the EUR 300,000 one secondary table gives (another gives EUR 50,000–75,000). Where those figures come from is UNKNOWN.
+- **Spain (VERIFIED, 2026-10-30):**
+  - Ley 11/2023 art. 30 sends breaches to the sectoral legislation. Where that is silent, Title III of RDL 1/2013 applies.
+  - Its art. 83 sets EUR 301 to EUR 1,000,000: minor up to EUR 30,000, serious up to EUR 90,000.
+  - The secondary table's EUR 1,000,000 is this fallback ceiling.
+  - Sources: [Ley 11/2023](https://www.boe.es/buscar/act.php?id=BOE-A-2023-11022), [RDL 1/2013](https://www.boe.es/buscar/act.php?id=BOE-A-2013-12632).
+- **Not verified:** the Netherlands remains a secondary claim (Deque, EUR 103,000).
 
 ## Why this could be a product
 - **Who:** sellers and their advisers get conflicting numbers from vendors who also sell remediation. A neutral, statute-cited register with a verification status per figure does not appear to exist (INFERRED from the searches; not exhaustive).

@@ -34,6 +34,9 @@ BFSG = "https://www.gesetze-im-internet.de/bfsg/__37.html"
 IE_SI = "https://www.irishstatutebook.ie/eli/2023/si/636/made/en/print"
 AT_BAFG = "https://ris.bka.gv.at/eli/bgbl/i/2023/76/P36/NOR40254396"
 NL_ACT = "https://wetten.overheid.nl/BWBR0049571/2025-06-28/0"
+FR_R4514 = "https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000048180406/"
+ES_L11 = "https://www.boe.es/buscar/act.php?id=BOE-A-2023-11022"
+ES_RDL1 = "https://www.boe.es/buscar/act.php?id=BOE-A-2013-12632"
 DEQUE = "https://www.deque.com/european-accessibility-act-eaa-compliance/country-compliance-data/"
 COLUMNS = ["country", "instrument", "provision", "offence_scope", "max_fine_eur", "imprisonment",
            "enforcing_bodies", "status", "source_url", "retrieved_on", "note"]
@@ -50,8 +53,11 @@ ROWS = [
      "up to 18 months", "CCPC (market surveillance, products); ComReg, Central Bank, Coimisiun na Mean and others "
      "prosecute offences within their functions (Reg. 35)", "VERIFIED_OFFICIAL_TEXT", IE_SI, READ_1029,
      "Summary conviction: class A fine or up to 6 months (class A amount not re-read for this release)"),
-    ("FR", "(several; per secondary source)", "", "", "300000", "", "DGCCRF, ARCOM, AFM, Banque de France, ARCEP",
-     "SECONDARY_UNVERIFIED", DEQUE, READ_1029, "another secondary source gives 50,000-75,000"),
+    ("FR", "Code de la consommation (Decret 2023-931)", "art. R.451-4 I", "listed product breaches: CE marking, "
+     "conformity assessment, manufacturer, importer and distributor duties", "", "none (contravention fine)",
+     "DGCCRF with ARCOM, ARCEP, Banque de France, ACPR, AMF (services)", "VERIFIED_OFFICIAL_TEXT", FR_R4514, VERSION,
+     "fine of a 5th-class contravention, amount set by the Code penal (not re-read); whether service breaches "
+     "fall under this article is UNKNOWN; secondary tables give EUR 300,000 and EUR 50,000-75,000"),
     ("NL", "(several; per secondary source)", "", "", "103000", "", "AFM, ACM, ILT", "SECONDARY_UNVERIFIED",
      DEQUE, READ_1029, "the implementing act (" + NL_ACT + ") amends the Warenwet and the Wet handhaving "
                      "consumentenbescherming; penalty amounts sit in those acts and were not read"),
@@ -66,8 +72,14 @@ ROWS = [
     ("AT", "Barrierefreiheitsgesetz (BaFG)", "s. 36(3)", "s. 36(3) offences", "16000", "none (administrative fine)",
      "Sozialministeriumservice", "VERIFIED_OFFICIAL_TEXT", AT_BAFG, VERSION,
      "the reduced amount for SMEs under s. 36(3), if any, was not read"),
-    ("ES", "Law 11/2023 and others, per secondary source", "", "", "1000000", "",
-     "Autonomous communities, Ceuta, Melilla", "SECONDARY_UNVERIFIED", DEQUE, READ_1029, ""),
+    ("ES", "Ley 11/2023", "art. 30", "breaches of Title I (accessibility of products and services)", "",
+     "", "per sectoral legislation", "VERIFIED_OFFICIAL_TEXT", ES_L11, VERSION,
+     "sanctions follow the sectoral legislation; where it is silent, Title III of RDL 1/2013 applies (next row)"),
+    ("ES", "Real Decreto Legislativo 1/2013 (fallback)", "art. 83", "fallback regime for accessibility breaches",
+     "1000000", "none (administrative fine)", "State or autonomous-community authorities (art. 105 for the State)",
+     "VERIFIED_OFFICIAL_TEXT", ES_RDL1, VERSION,
+     "minor up to EUR 30,000, serious up to EUR 90,000, very serious up to EUR 1,000,000 (minimum EUR 301); "
+     "matches the secondary EUR 1,000,000 only as the fallback ceiling"),
 ]
 
 
@@ -97,12 +109,16 @@ def build():
              "access_method": "PUBLIC_WEB_PAGE", "licence": facts},
             {"name": "BaFG s. 36 (ris.bka.gv.at)", "origin": AT_BAFG, "accessed_on": VERSION,
              "access_method": "PUBLIC_WEB_PAGE", "licence": facts},
+            {"name": "Code de la consommation art. R.451-4 (legifrance.gouv.fr)", "origin": FR_R4514,
+             "accessed_on": VERSION, "access_method": "PUBLIC_WEB_PAGE", "licence": facts},
+            {"name": "Ley 11/2023 and RDL 1/2013 (boe.es)", "origin": ES_L11, "accessed_on": VERSION,
+             "access_method": "PUBLIC_WEB_PAGE", "licence": facts},
             {"name": "Deque EAA country-by-country table (secondary)", "origin": DEQUE, "accessed_on": READ_1029,
              "access_method": "PUBLIC_WEB_PAGE", "licence": facts},
         ],
         "attribution": "Secondary figures: Deque Systems, EAA country-by-country compliance data (read 2026-10-29).",
         "collection_method": "Read the German and Irish legal texts on 2026-10-29 and the Austrian on 2026-10-30, "
-                             "recorded the penalty provisions; carried three other countries from a secondary table, marked unverified.",
+                             "recorded the penalty provisions; and the French and Spanish on 2026-10-30; NL carried from a secondary table, marked unverified.",
         "processing_steps": ["record amounts and section numbers", "tag verification status", "note conflicts"],
         "columns": [{"name": c, "type": "string", "description": c.replace("_", " ")} for c in COLUMNS],
         "files": [{"path": str(path.relative_to(ROOT)).replace("\\", "/"), "sha256": datacard.sha256_file(path),
@@ -112,7 +128,7 @@ def build():
         "refresh_days": 90,
         "last_refreshed": VERSION,
         "known_limitations": [
-            "DE, IE and AT are verified against the legal text; FR, NL, ES are secondary claims.",
+            "DE, IE, AT, FR and ES are verified against the legal text (FR partly: the contravention amount and the service scope are not read); NL is a secondary claim.",
             "The source of the EUR 500,000 German figure in secondary tables is UNKNOWN.",
             "Maximum statutory penalties say nothing about enforcement practice.",
         ],
