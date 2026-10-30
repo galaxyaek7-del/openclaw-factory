@@ -127,7 +127,22 @@ class AccessibilityCheck(unittest.TestCase):
 
 
 class EaaPenaltyRegister(unittest.TestCase):
-    REL = ROOT / "data_products" / "releases" / "eaa-penalty-register" / "2026-10-29"
+    REL = ROOT / "data_products" / "releases" / "eaa-penalty-register" / "2026-10-30"
+    OLD = ROOT / "data_products" / "releases" / "eaa-penalty-register" / "2026-10-29"
+
+    def test_every_release_file_matches_the_hash_its_card_pins(self):
+        from data_products import datacard
+        cards = sorted((ROOT / "data_products" / "releases").glob("*/*/datacard.json"))
+        self.assertGreaterEqual(len(cards), 3)
+        for c in cards:
+            card = json.loads(c.read_text(encoding="utf-8"))
+            for f in card["files"]:
+                self.assertEqual(datacard.sha256_file(ROOT / f["path"]), f["sha256"], f["path"])
+
+    def test_the_earlier_release_is_kept_unchanged(self):
+        from data_products import datacard
+        card = json.loads((self.OLD / "datacard.json").read_text(encoding="utf-8"))
+        self.assertEqual(card["files"][0]["sha256"], datacard.sha256_file(self.OLD / "eaa_penalty_register.csv"))
 
     def test_release_validates_and_matches_its_card(self):
         v = json.loads((self.REL / "validation.json").read_text(encoding="utf-8"))
@@ -141,13 +156,16 @@ class EaaPenaltyRegister(unittest.TestCase):
             rows = list(csv.DictReader(f))
         self.assertTrue(all(r["status"] in ("VERIFIED_OFFICIAL_TEXT", "SECONDARY_UNVERIFIED") for r in rows))
         verified = {r["country"] for r in rows if r["status"] == "VERIFIED_OFFICIAL_TEXT"}
-        self.assertEqual(verified, {"DE", "IE"})
+        self.assertEqual(verified, {"DE", "IE", "AT"})
         for r in rows:
             if r["status"] == "VERIFIED_OFFICIAL_TEXT":
                 self.assertTrue(r["source_url"].startswith(("https://www.gesetze-im-internet.de/",
-                                                            "https://www.irishstatutebook.ie/")))
+                                                            "https://www.irishstatutebook.ie/",
+                                                            "https://ris.bka.gv.at/")))
         de = [r for r in rows if r["country"] == "DE"]
         self.assertEqual(sorted(r["max_fine_eur"] for r in de), ["10000", "100000"])
+        at = sorted(int(r["max_fine_eur"]) for r in rows if r["country"] == "AT")
+        self.assertEqual(at, [16000, 40000, 80000])
 
 
 if __name__ == "__main__":

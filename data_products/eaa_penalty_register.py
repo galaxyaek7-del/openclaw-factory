@@ -27,10 +27,13 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 from data_products import datacard  # noqa: E402
 
-VERSION = "2026-10-29"
+VERSION = "2026-10-30"  # 2026-10-29: DE, IE; 2026-10-30: AT verified, NL instrument identified
 RELEASE = ROOT / "data_products" / "releases" / "eaa-penalty-register" / VERSION
+READ_1029 = "2026-10-29"  # DE, IE and the secondary table were read on this date
 BFSG = "https://www.gesetze-im-internet.de/bfsg/__37.html"
 IE_SI = "https://www.irishstatutebook.ie/eli/2023/si/636/made/en/print"
+AT_BAFG = "https://ris.bka.gv.at/eli/bgbl/i/2023/76/P36/NOR40254396"
+NL_ACT = "https://wetten.overheid.nl/BWBR0049571/2025-06-28/0"
 DEQUE = "https://www.deque.com/european-accessibility-act-eaa-compliance/country-compliance-data/"
 COLUMNS = ["country", "instrument", "provision", "offence_scope", "max_fine_eur", "imprisonment",
            "enforcing_bodies", "status", "source_url", "retrieved_on", "note"]
@@ -38,23 +41,33 @@ ROWS = [
     ("DE", "Barrierefreiheitsstaerkungsgesetz (BFSG)", "s. 37(2)",
      "s. 37(1) Nos 1, 7, 8, 9, 10: incl. offering or providing a non-compliant service (No 8)",
      "100000", "none in this provision", "UNKNOWN (not read for this release)", "VERIFIED_OFFICIAL_TEXT", BFSG,
-     VERSION, "Secondary table gives EUR 500,000 for DE and cites BFSG plus the Medienstaatsvertrag; "
+     READ_1029, "Secondary table gives EUR 500,000 for DE and cites BFSG plus the Medienstaatsvertrag; "
               "which provision yields 500,000 is UNKNOWN"),
     ("DE", "Barrierefreiheitsstaerkungsgesetz (BFSG)", "s. 37(2)", "s. 37(1) Nos 2-6: information, marking, "
      "documentation duties", "10000", "none in this provision", "UNKNOWN (not read for this release)",
-     "VERIFIED_OFFICIAL_TEXT", BFSG, VERSION, ""),
+     "VERIFIED_OFFICIAL_TEXT", BFSG, READ_1029, ""),
     ("IE", "S.I. No. 636/2023", "Reg. 32", "offences under the Regulations, conviction on indictment", "60000",
      "up to 18 months", "CCPC (market surveillance, products); ComReg, Central Bank, Coimisiun na Mean and others "
-     "prosecute offences within their functions (Reg. 35)", "VERIFIED_OFFICIAL_TEXT", IE_SI, VERSION,
+     "prosecute offences within their functions (Reg. 35)", "VERIFIED_OFFICIAL_TEXT", IE_SI, READ_1029,
      "Summary conviction: class A fine or up to 6 months (class A amount not re-read for this release)"),
     ("FR", "(several; per secondary source)", "", "", "300000", "", "DGCCRF, ARCOM, AFM, Banque de France, ARCEP",
-     "SECONDARY_UNVERIFIED", DEQUE, VERSION, "another secondary source gives 50,000-75,000"),
+     "SECONDARY_UNVERIFIED", DEQUE, READ_1029, "another secondary source gives 50,000-75,000"),
     ("NL", "(several; per secondary source)", "", "", "103000", "", "AFM, ACM, ILT", "SECONDARY_UNVERIFIED",
-     DEQUE, VERSION, ""),
-    ("AT", "Barrierefreiheitsgesetz (BaFG), per secondary source", "", "", "80000", "",
-     "Federal Office for Social Affairs and Disability", "SECONDARY_UNVERIFIED", DEQUE, VERSION, ""),
+     DEQUE, READ_1029, "the implementing act (" + NL_ACT + ") amends the Warenwet and the Wet handhaving "
+                     "consumentenbescherming; penalty amounts sit in those acts and were not read"),
+    ("AT", "Barrierefreiheitsgesetz (BaFG)", "s. 36(1)", "s. 36(1) offences, incl. placing a non-compliant "
+     "product on the market (Nos 1-2)", "80000", "none (administrative fine)",
+     "Sozialministeriumservice (penalty authority and market surveillance)", "VERIFIED_OFFICIAL_TEXT", AT_BAFG,
+     VERSION, "micro, small and medium enterprises: up to EUR 50,000; matches the secondary table's EUR 80,000"),
+    ("AT", "Barrierefreiheitsgesetz (BaFG)", "s. 36(2)", "s. 36(2) offences, incl. not preparing the required "
+     "information about services (s. 14(2) with Annex 3)", "40000", "none (administrative fine)",
+     "Sozialministeriumservice", "VERIFIED_OFFICIAL_TEXT", AT_BAFG, VERSION,
+     "micro, small and medium enterprises: up to EUR 25,000"),
+    ("AT", "Barrierefreiheitsgesetz (BaFG)", "s. 36(3)", "s. 36(3) offences", "16000", "none (administrative fine)",
+     "Sozialministeriumservice", "VERIFIED_OFFICIAL_TEXT", AT_BAFG, VERSION,
+     "the reduced amount for SMEs under s. 36(3), if any, was not read"),
     ("ES", "Law 11/2023 and others, per secondary source", "", "", "1000000", "",
-     "Autonomous communities, Ceuta, Melilla", "SECONDARY_UNVERIFIED", DEQUE, VERSION, ""),
+     "Autonomous communities, Ceuta, Melilla", "SECONDARY_UNVERIFIED", DEQUE, READ_1029, ""),
 ]
 
 
@@ -76,18 +89,20 @@ def build():
         "out_of_scope_use": "Not legal advice; not a complete list of member states; not a statement of what a "
                             "regulator would actually impose.",
         "sources": [
-            {"name": "BFSG s. 37 (gesetze-im-internet.de)", "origin": BFSG, "accessed_on": VERSION,
+            {"name": "BFSG s. 37 (gesetze-im-internet.de)", "origin": BFSG, "accessed_on": READ_1029,
              "access_method": "PUBLIC_WEB_PAGE",
              "licence": {"name": "German official work (s. 5 UrhG), public domain", "commercial_use": True,
                          "attribution_required": False, "share_alike": False}},
-            {"name": "S.I. No. 636/2023 (irishstatutebook.ie)", "origin": IE_SI, "accessed_on": VERSION,
+            {"name": "S.I. No. 636/2023 (irishstatutebook.ie)", "origin": IE_SI, "accessed_on": READ_1029,
              "access_method": "PUBLIC_WEB_PAGE", "licence": facts},
-            {"name": "Deque EAA country-by-country table (secondary)", "origin": DEQUE, "accessed_on": VERSION,
+            {"name": "BaFG s. 36 (ris.bka.gv.at)", "origin": AT_BAFG, "accessed_on": VERSION,
+             "access_method": "PUBLIC_WEB_PAGE", "licence": facts},
+            {"name": "Deque EAA country-by-country table (secondary)", "origin": DEQUE, "accessed_on": READ_1029,
              "access_method": "PUBLIC_WEB_PAGE", "licence": facts},
         ],
         "attribution": "Secondary figures: Deque Systems, EAA country-by-country compliance data (read 2026-10-29).",
-        "collection_method": "Read the German and Irish legal texts on 2026-10-29 and recorded the penalty "
-                             "provisions; carried four other countries from a secondary table, marked unverified.",
+        "collection_method": "Read the German and Irish legal texts on 2026-10-29 and the Austrian on 2026-10-30, "
+                             "recorded the penalty provisions; carried three other countries from a secondary table, marked unverified.",
         "processing_steps": ["record amounts and section numbers", "tag verification status", "note conflicts"],
         "columns": [{"name": c, "type": "string", "description": c.replace("_", " ")} for c in COLUMNS],
         "files": [{"path": str(path.relative_to(ROOT)).replace("\\", "/"), "sha256": datacard.sha256_file(path),
@@ -97,13 +112,13 @@ def build():
         "refresh_days": 90,
         "last_refreshed": VERSION,
         "known_limitations": [
-            "Only DE and IE are verified against the legal text; FR, NL, AT, ES are secondary claims.",
+            "DE, IE and AT are verified against the legal text; FR, NL, ES are secondary claims.",
             "The source of the EUR 500,000 German figure in secondary tables is UNKNOWN.",
             "Maximum statutory penalties say nothing about enforcement practice.",
         ],
     }
     (RELEASE / "datacard.json").write_text(json.dumps(card, indent=1, ensure_ascii=False), encoding="utf-8")
-    result = datacard.validate_card(card, ROOT, today=date(2026, 10, 29))
+    result = datacard.validate_card(card, ROOT, today=date(2026, 10, 30))
     (RELEASE / "validation.json").write_text(json.dumps(result, indent=1, ensure_ascii=False, default=str), encoding="utf-8")
     return result
 

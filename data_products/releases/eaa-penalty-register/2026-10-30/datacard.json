@@ -1,0 +1,140 @@
+{
+ "dataset_id": "eaa-penalty-register",
+ "title": "European Accessibility Act penalties by member state, with verification status",
+ "version": "2026-10-30",
+ "description": "Maximum fines and imprisonment terms under national EAA transpositions, each figure tagged as read in the official text or carried from a secondary source.",
+ "intended_use": "Exposure briefings for online sellers serving EU consumers; checking vendor claims.",
+ "out_of_scope_use": "Not legal advice; not a complete list of member states; not a statement of what a regulator would actually impose.",
+ "sources": [
+  {
+   "name": "BFSG s. 37 (gesetze-im-internet.de)",
+   "origin": "https://www.gesetze-im-internet.de/bfsg/__37.html",
+   "accessed_on": "2026-10-29",
+   "access_method": "PUBLIC_WEB_PAGE",
+   "licence": {
+    "name": "German official work (s. 5 UrhG), public domain",
+    "commercial_use": true,
+    "attribution_required": false,
+    "share_alike": false
+   }
+  },
+  {
+   "name": "S.I. No. 636/2023 (irishstatutebook.ie)",
+   "origin": "https://www.irishstatutebook.ie/eli/2023/si/636/made/en/print",
+   "accessed_on": "2026-10-29",
+   "access_method": "PUBLIC_WEB_PAGE",
+   "licence": {
+    "name": "Facts only (amounts, section numbers, authority names); no text reproduced",
+    "commercial_use": true,
+    "attribution_required": false,
+    "share_alike": false
+   }
+  },
+  {
+   "name": "BaFG s. 36 (ris.bka.gv.at)",
+   "origin": "https://ris.bka.gv.at/eli/bgbl/i/2023/76/P36/NOR40254396",
+   "accessed_on": "2026-10-30",
+   "access_method": "PUBLIC_WEB_PAGE",
+   "licence": {
+    "name": "Facts only (amounts, section numbers, authority names); no text reproduced",
+    "commercial_use": true,
+    "attribution_required": false,
+    "share_alike": false
+   }
+  },
+  {
+   "name": "Deque EAA country-by-country table (secondary)",
+   "origin": "https://www.deque.com/european-accessibility-act-eaa-compliance/country-compliance-data/",
+   "accessed_on": "2026-10-29",
+   "access_method": "PUBLIC_WEB_PAGE",
+   "licence": {
+    "name": "Facts only (amounts, section numbers, authority names); no text reproduced",
+    "commercial_use": true,
+    "attribution_required": false,
+    "share_alike": false
+   }
+  }
+ ],
+ "attribution": "Secondary figures: Deque Systems, EAA country-by-country compliance data (read 2026-10-29).",
+ "collection_method": "Read the German and Irish legal texts on 2026-10-29 and the Austrian on 2026-10-30, recorded the penalty provisions; carried three other countries from a secondary table, marked unverified.",
+ "processing_steps": [
+  "record amounts and section numbers",
+  "tag verification status",
+  "note conflicts"
+ ],
+ "columns": [
+  {
+   "name": "country",
+   "type": "string",
+   "description": "country"
+  },
+  {
+   "name": "instrument",
+   "type": "string",
+   "description": "instrument"
+  },
+  {
+   "name": "provision",
+   "type": "string",
+   "description": "provision"
+  },
+  {
+   "name": "offence_scope",
+   "type": "string",
+   "description": "offence scope"
+  },
+  {
+   "name": "max_fine_eur",
+   "type": "string",
+   "description": "max fine eur"
+  },
+  {
+   "name": "imprisonment",
+   "type": "string",
+   "description": "imprisonment"
+  },
+  {
+   "name": "enforcing_bodies",
+   "type": "string",
+   "description": "enforcing bodies"
+  },
+  {
+   "name": "status",
+   "type": "string",
+   "description": "status"
+  },
+  {
+   "name": "source_url",
+   "type": "string",
+   "description": "source url"
+  },
+  {
+   "name": "retrieved_on",
+   "type": "string",
+   "description": "retrieved on"
+  },
+  {
+   "name": "note",
+   "type": "string",
+   "description": "note"
+  }
+ ],
+ "files": [
+  {
+   "path": "data_products/releases/eaa-penalty-register/2026-10-30/eaa_penalty_register.csv",
+   "sha256": "4cabae2717bdf0ebc49c87dcb1b01f20634756fece358d463ed18f52980e1e08",
+   "rows": 9
+  }
+ ],
+ "personal_data": {
+  "contains": false
+ },
+ "licence_out": "Galaxy Forge compilation of facts",
+ "refresh_days": 90,
+ "last_refreshed": "2026-10-30",
+ "known_limitations": [
+  "DE, IE and AT are verified against the legal text; FR, NL, ES are secondary claims.",
+  "The source of the EUR 500,000 German figure in secondary tables is UNKNOWN.",
+  "Maximum statutory penalties say nothing about enforcement practice."
+ ]
+}

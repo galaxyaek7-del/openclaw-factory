@@ -27,3 +27,8 @@
 *.ttf   binary
 *.otf   binary
 *.mp4   binary
+
+# Data product releases: their data cards pin each file's sha256, so the
+# bytes must be the same on every checkout (2026-10-30: CRLF CSVs were stored
+# as LF and the pinned hash failed on Linux CI).
+data_products/releases/** -text

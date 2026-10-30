@@ -1,7 +1,7 @@
 # Research sample: European Accessibility Act penalties: what the statutes say vs. what is quoted
 
 Date: 2026-10-29. Status: SAMPLE (not offered, not legal advice).
-Dataset: `data_products/releases/eaa-penalty-register/2026-10-29/` (data card PASS).
+Dataset: `data_products/releases/eaa-penalty-register/2026-10-30/` (data card PASS; the 2026-10-29 release is kept unchanged).
 
 ## Question
 An online seller serving EU consumers asks: "What can a fine be under the EAA?"
@@ -20,7 +20,13 @@ An online seller serving EU consumers asks: "What can a fine be under the EAA?"
   - Deque's country table gives Germany "up to EUR 500,000", citing the BFSG together with its implementing regulation and the Medienstaatsvertrag.
   - BFSG s. 37 alone gives EUR 100,000. Which provision produces EUR 500,000 is UNKNOWN; the media-law route is a plausible but unverified explanation.
   - Vendor blogs also quote EUR 100,000+ and EUR 500,000 without statutes.
-- **Not verified:** France, Netherlands, Austria and Spain are carried in the dataset as SECONDARY_UNVERIFIED (Deque figures). France has another secondary source at EUR 50,000–75,000.
+- **Austria (VERIFIED 2026-10-30, official text):**
+  - BaFG s. 36 sets up to EUR 80,000 for s. 36(1) offences, EUR 40,000 for s. 36(2) and EUR 16,000 for s. 36(3).
+  - Lower ceilings apply to micro, small and medium enterprises: EUR 50,000 under (1) and EUR 25,000 under (2).
+  - The penalty authority is the Sozialministeriumservice.
+  - Source: [RIS](https://ris.bka.gv.at/eli/bgbl/i/2023/76/P36/NOR40254396). This one matches the secondary table.
+- **Netherlands (instrument identified, amounts not read):** the implementing act ([wetten.overheid.nl](https://wetten.overheid.nl/BWBR0049571/2025-06-28/0)) amends the Warenwet and the Wet handhaving consumentenbescherming, so its penalties sit in those acts.
+- **Not verified:** France, the Netherlands and Spain are carried in the dataset as SECONDARY_UNVERIFIED (Deque figures). France has another secondary source at EUR 50,000–75,000.
 
 ## Why this could be a product
 - **Who:** sellers and their advisers get conflicting numbers from vendors who also sell remediation. A neutral, statute-cited register with a verification status per figure does not appear to exist (INFERRED from the searches; not exhaustive).
