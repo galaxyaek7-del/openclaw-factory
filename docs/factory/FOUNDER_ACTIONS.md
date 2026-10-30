@@ -85,6 +85,20 @@ and restart the server so the command handler (`lib/telegram_commands.js`) accep
 | Create the Pinterest board "Small Business Finance Tools" | 86 product pins wait only for it | B18 BLOCKED |
 | New Paddle API key | second checkout path; current key returns 403 | B12 BLOCKED |
 
+## 7. When an inquiry arrives by e-mail
+
+The site already links your address on 38 pages, and the three new offer drafts use the same link. To put an
+e-mail inquiry in the review queue (the dashboard counts it; the address is never shown there):
+
+```
+python inquiry_intake.py record-email --arm micro_b2b --email sender@example.com --offer feed-preflight --received-at 2026-10-30T09:15:00Z --message "the text of their e-mail"
+python inquiry_intake.py queue
+python inquiry_intake.py review INQ-xxxxxxxxxxxx REPLIED --note "sent scope and price"
+```
+
+Arms: micro_b2b, research_data_services, ai_operations, productized_ai_services, digital_products,
+content_distribution, childrens_media_studio, affiliate_intelligence. Outcomes: REPLIED, QUALIFIED, NOT_A_FIT, SPAM, CLOSED.
+
 ## What runs without you
 
 Every ~10 minutes (supervised): health and recovery, n8n watchdog and missed-run catch-up,
