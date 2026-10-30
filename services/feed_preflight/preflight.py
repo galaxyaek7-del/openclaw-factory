@@ -16,7 +16,7 @@ Reuses services/spreadsheet_normalization/engine.py for header and cell
 normalisation and its credential scan (a feed with secret-shaped values is
 refused, not processed).
 
-    python services/feed_preflight/preflight.py feed.csv [report.json]
+    python services/feed_preflight/preflight.py feed.csv|feed.xml [report.json]
 """
 import csv
 import io
@@ -65,7 +65,46 @@ def check_gtin(raw):
     return None
 
 
+MAX_XML_BYTES = 50 * 1024 * 1024
+
+
+class UnsafeFeed(ValueError):
+    pass
+
+
+def read_feed_xml(text):
+    """RSS 2.0 <item> or Atom <entry> feeds with Google's g: fields. Customer XML
+    is untrusted: any DOCTYPE or ENTITY declaration is refused before parsing
+    (entity-expansion attacks), and so is a file over MAX_XML_BYTES. Only leaf
+    elements become fields; nested groups such as g:shipping are kept as one
+    flattened text so they never overwrite a top-level value."""
+    import xml.etree.ElementTree as ET
+    if len(text.encode("utf-8")) > MAX_XML_BYTES:
+        raise UnsafeFeed("XML feed larger than %d MB" % (MAX_XML_BYTES // 1024 // 1024))
+    head = text[:200000].upper()
+    if "<!DOCTYPE" in head or "<!ENTITY" in head:
+        raise UnsafeFeed("XML feeds with a DOCTYPE or ENTITY declaration are refused")
+    root = ET.fromstring(text)
+    items = [e for e in root.iter() if e.tag.split("}")[-1] in ("item", "entry")]
+    rows = []
+    for it in items:
+        row = {}
+        for child in it:
+            name = engine.norm_header(child.tag.split("}")[-1])
+            if name == "link" and not (child.text or "").strip() and child.get("href"):
+                value = child.get("href")      # Atom <link href="..."/>
+            elif len(child):
+                value = " ".join(t.strip() for t in child.itertext() if t.strip())
+            else:
+                value = child.text or ""
+            row.setdefault(name, engine.norm_cell(value))
+        rows.append(row)
+    return rows
+
+
 def read_feed(text):
+    if text.lstrip().startswith("<"):
+        return read_feed_xml(text)
     sample = text[:4096]
     delim = "\t" if sample.count("\t") > sample.count(",") else ","
     reader = csv.DictReader(io.StringIO(text), delimiter=delim)
@@ -102,9 +141,12 @@ def preflight(rows):
             add(n, iid, "id", "error", "id is used by %d rows; each product needs its own" % ids[iid])
         av = r.get("availability", "")
         if av and av not in AVAILABILITY:
-            hint = av.lower().replace(" ", "_")
-            add(n, iid, "availability", "error", "'%s' is not a supported value%s" % (
-                av, " (did you mean %s?)" % hint if hint in AVAILABILITY else ""))
+            hint = av.strip().lower().replace(" ", "_")
+            if hint in AVAILABILITY:
+                add(n, iid, "availability", "warning",
+                    "'%s' is a spelling variant; the specification lists %s, use it exactly" % (av, hint))
+            else:
+                add(n, iid, "availability", "error", "'%s' is not a supported value (%s)" % (av, ", ".join(AVAILABILITY)))
         for col in ("price", "sale_price"):
             v = r.get(col, "")
             if not v:
@@ -164,7 +206,11 @@ def main(argv=None):
     if not argv:
         print(__doc__)
         return 2
-    report = preflight(read_feed(Path(argv[0]).read_text(encoding="utf-8-sig")))
+    try:
+        report = preflight(read_feed(Path(argv[0]).read_text(encoding="utf-8-sig")))
+    except UnsafeFeed as exc:
+        print(json.dumps({"status": "REFUSED", "reason": str(exc)}))
+        return 1
     text = json.dumps(report, indent=1, ensure_ascii=False)
     if len(argv) > 1:
         Path(argv[1]).write_text(text, encoding="utf-8")

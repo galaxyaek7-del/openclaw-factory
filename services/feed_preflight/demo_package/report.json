@@ -1,10 +1,10 @@
 {
  "status": "CHECKED",
  "rows": 12,
- "errors": 11,
- "warnings": 2,
- "rows_with_errors": 9,
- "rows_clean": 3,
+ "errors": 10,
+ "warnings": 3,
+ "rows_with_errors": 8,
+ "rows_clean": 4,
  "by_field": {
   "price": 2,
   "gtin": 3,
@@ -37,8 +37,8 @@
    "row": 5,
    "id": "NC-004",
    "field": "availability",
-   "severity": "error",
-   "issue": "'In Stock' is not a supported value (did you mean in_stock?)",
+   "severity": "warning",
+   "issue": "'In Stock' is a spelling variant; the specification lists in_stock, use it exactly",
    "source": "https://support.google.com/merchants/answer/7052112"
   },
   {

@@ -25,12 +25,12 @@ python services/feed_preflight/build_demo.py
 ```
 Inputs and outputs:
 - **Input:** `demo_package/input_feed.csv`, 12 synthetic products from an invented store. GTINs are generated with correct or deliberately wrong check digits.
-- **Output:** `demo_package/report.json` and `report.md`. 11 errors and 2 warnings across 9 rows; 3 rows clean.
+- **Output:** `demo_package/report.json` and `report.md`. 10 errors and 3 warnings; 8 rows have an error, 4 have none.
 
 The faults it finds:
 - comma decimal price;
 - wrong GTIN check digit;
-- "In Stock" instead of `in_stock`;
+- "In Stock" instead of `in_stock` (a warning: a spelling variant of the listed value);
 - duplicate id;
 - link without a scheme;
 - restricted GS1 range;
@@ -43,7 +43,7 @@ The faults it finds:
 The code is `preflight.py`. It reuses `services/spreadsheet_normalization/engine.py` for header and cell normalisation and its credential scan, and refuses files carrying secrets.
 
 ## Scope and exclusions
-- **In scope:** one feed file (CSV or TSV), a row-by-row fix list, and one re-check after the seller's fixes.
+- **In scope:** one feed file (CSV, TSV, or RSS/Atom XML; XML with a DOCTYPE or entity declarations is refused), a row-by-row fix list, and one re-check after the seller's fixes.
 - **Excluded:**
   - landing-page price matching;
   - policy and image review;

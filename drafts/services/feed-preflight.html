@@ -18,7 +18,7 @@ td,th{border:1px solid #d1d5db;padding:4px 8px;text-align:left}
 
 <h1>Find the feed errors before Google disapproves your products</h1>
 <p>A disapproved item disappears from Shopping ads and free listings until it is fixed and reviewed again.
-Most fixes happen after the damage. This check runs on your exported feed file before you upload it, and
+Most fixes happen after the damage. This check runs on your exported feed file (CSV, TSV or XML) before you upload it, and
 needs no access to your Merchant Center account.</p>
 
 <h2>What it checks</h2>
@@ -34,11 +34,11 @@ It never invents a code: a wrong GTIN is reported for you to confirm with the ma
 <tr><th>Row</th><th>What was in the feed</th><th>What the report says</th></tr>
 <tr><td>3</td><td><code>24,00 USD</code></td><td>a comma is not accepted as the decimal point</td></tr>
 <tr><td>4</td><td>a GTIN with one wrong digit</td><td>check digit is wrong; ask the manufacturer</td></tr>
-<tr><td>5</td><td><code>In Stock</code></td><td>not a supported value (did you mean in_stock?)</td></tr>
+<tr><td>5</td><td><code>In Stock</code></td><td>warning: a spelling variant; use <code>in_stock</code> exactly</td></tr>
 <tr><td>8, 9</td><td>two products with the same ID</td><td>each product needs its own ID</td></tr>
 <tr><td>13</td><td>price 0.00 and identifier_exists = no next to a GTIN</td><td>two errors</td></tr>
 </table>
-<p>Result: 12 rows, 3 clean, 11 errors and 2 warnings. The full report has one line per finding with the rule it comes from.</p>
+<p>Result: 12 rows, 8 with an error, 10 errors and 3 warnings. The full report has one line per finding with the rule it comes from.</p>
 
 <h2>What it does not check</h2>
 <p>Whether your feed price matches the landing page and checkout, image and policy review, category-specific

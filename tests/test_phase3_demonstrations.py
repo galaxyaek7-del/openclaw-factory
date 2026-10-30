@@ -55,7 +55,7 @@ class FeedPreflight(unittest.TestCase):
 
     def test_each_rule(self):
         cases = [({"price": "10,00 USD"}, ("price", "error")), ({"price": "0.00 USD"}, ("price", "error")),
-                 ({"availability": "In Stock"}, ("availability", "error")), ({"link": "x.example/1"}, ("link", "error")),
+                 ({"availability": "In Stock"}, ("availability", "warning")), ({"availability": "soon"}, ("availability", "error")), ({"link": "x.example/1"}, ("link", "error")),
                  ({"title": "x" * 151}, ("title", "error")), ({"gtin": "4006381333932"}, ("gtin", "error")),
                  ({"gtin": "4006381333931", "identifier_exists": "no"}, ("identifier_exists", "error")),
                  ({"brand": "", "mpn": ""}, ("gtin", "warning")), ({"condition": "mint"}, ("condition", "error")),
@@ -69,6 +69,23 @@ class FeedPreflight(unittest.TestCase):
         r = pf.preflight([{"id": "A", "title": "t"}])
         missing = {f["field"] for f in r["findings"] if f["issue"] == "required column is missing"}
         self.assertEqual(missing, {"description", "link", "image_link", "availability", "price"})
+
+    def test_xml_feeds_are_read_and_hostile_xml_is_refused(self):
+        xml = ('<?xml version="1.0"?><rss xmlns:g="http://base.google.com/ns/1.0" version="2.0"><channel>'
+               '<item><g:id>A1</g:id><title>Mug</title><description>A mug</description>'
+               '<link>https://x.example/1</link><g:image_link>https://x.example/1.jpg</g:image_link>'
+               '<g:availability>in_stock</g:availability><g:price>10.00 USD</g:price><g:brand>B</g:brand>'
+               '<g:mpn>M1</g:mpn><g:shipping><g:country>US</g:country><g:price>99,00 USD</g:price></g:shipping>'
+               '</item></channel></rss>')
+        rows = pf.read_feed(xml)
+        self.assertEqual(rows[0]["price"], "10.00 USD")           # nested g:shipping price never overwrites it
+        self.assertEqual(pf.preflight(rows)["errors"], 0)
+        atom = ('<feed xmlns="http://www.w3.org/2005/Atom" xmlns:g="http://base.google.com/ns/1.0"><entry>'
+                '<g:id>A2</g:id><link href="https://x.example/2"/></entry></feed>')
+        self.assertEqual(pf.read_feed(atom)[0]["link"], "https://x.example/2")
+        for bad in ('<?xml version="1.0"?><!DOCTYPE r [<!ENTITY a "x">]><rss/>', '<!doctype rss><rss/>'):
+            with self.assertRaises(pf.UnsafeFeed):
+                pf.read_feed(bad)
 
     def test_a_feed_with_credentials_is_refused(self):
         r = pf.preflight(feed({}, cols=("id", "title", "api_key")))

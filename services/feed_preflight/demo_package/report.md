@@ -1,12 +1,12 @@
 # Feed preflight report (demonstration, synthetic store)
 
-Rows checked: 12. Rows clean: 3. Rows with errors: 9. Errors: 11. Warnings: 2.
+Rows checked: 12. Rows clean: 4. Rows with errors: 8. Errors: 10. Warnings: 3.
 
 | Row | id | Field | Severity | What to fix |
 |---|---|---|---|---|
 | 3 | NC-002 | price | error | '24,00 USD': a comma is not accepted as the decimal point; use a number, a point for decimals and an ISO 4217 code, e.g. 15.00 USD |
 | 4 | NC-003 | gtin | error | GTIN check digit is wrong; do not guess a code, ask the manufacturer |
-| 5 | NC-004 | availability | error | 'In Stock' is not a supported value (did you mean in_stock?) |
+| 5 | NC-004 | availability | warning | 'In Stock' is a spelling variant; the specification lists in_stock, use it exactly |
 | 6 | NC-005 | gtin | warning | no GTIN and no brand+MPN pair; if the product truly has none, set identifier_exists to no |
 | 8 | NC-007 | id | error | id is used by 2 rows; each product needs its own |
 | 8 | NC-007 | link | error | must start with http:// or https:// |
