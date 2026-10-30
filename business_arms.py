@@ -103,11 +103,13 @@ ARMS: Dict[str, Dict[str, Any]] = {
     },
     "productized_ai_services": {
         "name": "Productized AI Services",
-        "implementation": [],
+        # 2026-10-29: accessibility quick-check (automated rules + human summary,
+        # no AI model), tested; synthetic demo and a run on our own pages.
+        "implementation": ["services/accessibility_check/check.py", "services/accessibility_check/README.md"],
         "acceptance": ["a scoped service offer", "a delivery workflow", "a paying engagement"],
-        "commercial_path": [],
-        "gap": "no implementation evidence found anywhere in the repository",
-        "blocker": "no implementation evidence found anywhere in the repository",
+        "commercial_path": ["services/accessibility_check/README.md"],
+        "gap": "scoped offer and tested demonstration exist; no published page, no inquiry, no engagement",
+        "blocker": "no recorded public intake; no customer engagement",
     },
     "childrens_media_studio": {
         "name": "Children's Media Studio",

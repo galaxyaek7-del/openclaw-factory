@@ -1,0 +1,135 @@
+{
+ "status": "CHECKED",
+ "rows": 12,
+ "errors": 11,
+ "warnings": 2,
+ "rows_with_errors": 9,
+ "rows_clean": 3,
+ "by_field": {
+  "price": 2,
+  "gtin": 3,
+  "availability": 1,
+  "id": 2,
+  "link": 1,
+  "title": 1,
+  "image_link": 1,
+  "sale_price": 1,
+  "identifier_exists": 1
+ },
+ "findings": [
+  {
+   "row": 3,
+   "id": "NC-002",
+   "field": "price",
+   "severity": "error",
+   "issue": "'24,00 USD': a comma is not accepted as the decimal point; use a number, a point for decimals and an ISO 4217 code, e.g. 15.00 USD",
+   "source": "https://support.google.com/merchants/answer/7052112"
+  },
+  {
+   "row": 4,
+   "id": "NC-003",
+   "field": "gtin",
+   "severity": "error",
+   "issue": "GTIN check digit is wrong; do not guess a code, ask the manufacturer",
+   "source": "https://support.google.com/merchants/answer/6324461"
+  },
+  {
+   "row": 5,
+   "id": "NC-004",
+   "field": "availability",
+   "severity": "error",
+   "issue": "'In Stock' is not a supported value (did you mean in_stock?)",
+   "source": "https://support.google.com/merchants/answer/7052112"
+  },
+  {
+   "row": 6,
+   "id": "NC-005",
+   "field": "gtin",
+   "severity": "warning",
+   "issue": "no GTIN and no brand+MPN pair; if the product truly has none, set identifier_exists to no",
+   "source": "https://support.google.com/merchants/answer/6324461"
+  },
+  {
+   "row": 8,
+   "id": "NC-007",
+   "field": "id",
+   "severity": "error",
+   "issue": "id is used by 2 rows; each product needs its own",
+   "source": "https://support.google.com/merchants/answer/7052112"
+  },
+  {
+   "row": 8,
+   "id": "NC-007",
+   "field": "link",
+   "severity": "error",
+   "issue": "must start with http:// or https://",
+   "source": "https://support.google.com/merchants/answer/7052112"
+  },
+  {
+   "row": 9,
+   "id": "NC-007",
+   "field": "id",
+   "severity": "error",
+   "issue": "id is used by 2 rows; each product needs its own",
+   "source": "https://support.google.com/merchants/answer/7052112"
+  },
+  {
+   "row": 10,
+   "id": "NC-009",
+   "field": "gtin",
+   "severity": "error",
+   "issue": "GTIN is in a restricted GS1 range (02, 04, 2); do not guess a code, ask the manufacturer",
+   "source": "https://support.google.com/merchants/answer/6324461"
+  },
+  {
+   "row": 11,
+   "id": "NC-010",
+   "field": "title",
+   "severity": "error",
+   "issue": "longer than 150 characters (166)",
+   "source": "https://support.google.com/merchants/answer/7052112"
+  },
+  {
+   "row": 12,
+   "id": "NC-011",
+   "field": "image_link",
+   "severity": "error",
+   "issue": "required value is empty",
+   "source": "https://support.google.com/merchants/answer/7052112"
+  },
+  {
+   "row": 12,
+   "id": "NC-011",
+   "field": "sale_price",
+   "severity": "warning",
+   "issue": "sale price is not below the price",
+   "source": "https://support.google.com/merchants/answer/7052112"
+  },
+  {
+   "row": 13,
+   "id": "NC-012",
+   "field": "price",
+   "severity": "error",
+   "issue": "a price of 0 is not accepted (except phones sold with a contract)",
+   "source": "https://support.google.com/merchants/answer/7052112"
+  },
+  {
+   "row": 13,
+   "id": "NC-012",
+   "field": "identifier_exists",
+   "severity": "error",
+   "issue": "set to 'no' while a GTIN is given; the product may be disapproved",
+   "source": "https://support.google.com/merchants/answer/7052112"
+  }
+ ],
+ "not_checked": [
+  "whether feed price and availability match the landing page and checkout",
+  "image content and policy compliance",
+  "category-specific required attributes",
+  "account-level settings (shipping, returns, tax)"
+ ],
+ "sources": [
+  "https://support.google.com/merchants/answer/7052112",
+  "https://support.google.com/merchants/answer/6324461"
+ ]
+}

@@ -78,7 +78,9 @@ and restart the server so the command handler (`lib/telegram_commands.js`) accep
 
 | Decision | Why | Status today |
 |---|---|---|
-| A free analytics receiver (e.g. Cloudflare Web Analytics, needs your account) | the only way to know whether anyone visits; without it the funnel diagnosis stays "A or B or C" | B6 BLOCKED |
+| A free analytics receiver: Cloudflare Web Analytics, manual setup (no DNS change), in your name; then `python scripts/set_cloudflare_analytics.py --token <site token> --apply` and push (`--remove --apply` undoes it) | the only way to know whether anyone visits; without it the funnel diagnosis stays "A or B or C" | B6 BLOCKED; command ready and tested |
+| A public inquiry receiver (free form service forwarding to your inbox, or a free serverless endpoint writing to the queue) | all three phase-3 demonstrations and three earlier offers wait on it; the local queue (`inquiry_intake.py` + site-form signals) is ready | BLOCKED |
+| Approve fixing our own 22 accessibility warnings on the public site and publishing the before/after | proof for the accessibility quick-check offer; a public-site change | PREPARED, see `services/accessibility_check/demo_package/own_site_report.md` |
 | Approve EXP-B16-007-LI-01 and post its two LinkedIn texts a week apart | first two-arm experiment on a free channel you can use today | PENDING_APPROVAL, see `EXPERIMENT_EXP-B16-007-LI-01.md` |
 | Create the Pinterest board "Small Business Finance Tools" | 86 product pins wait only for it | B18 BLOCKED |
 | New Paddle API key | second checkout path; current key returns 403 | B12 BLOCKED |

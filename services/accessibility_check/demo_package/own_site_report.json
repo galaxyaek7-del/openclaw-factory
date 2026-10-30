@@ -1,0 +1,909 @@
+{
+ "pages_checked": 118,
+ "pages_with_errors": 0,
+ "errors": 0,
+ "warnings": 22,
+ "by_issue": {
+  "form field labelled only by placeholder text (WCAG 1.3.1)": {
+   "pages": 5,
+   "occurrences": 11
+  },
+  "unlabelled field kept out of the tab order (WCAG 1.3.1)": {
+   "pages": 4,
+   "occurrences": 5
+  },
+  "page has no h1 (WCAG 1.3.1)": {
+   "pages": 3,
+   "occurrences": 3
+  },
+  "heading level skipped (WCAG 1.3.1)": {
+   "pages": 3,
+   "occurrences": 3
+  }
+ },
+ "pages": [
+  {
+   "page": "about.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "affiliate/aff-aweber-001.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "affiliate/aff-digitalocean-001.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "affiliate-program.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "affiliate-standing-desks.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "b12-access-continuity-organizer.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "b12-client-handoff-pack.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "b12-digital-declutter-system.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "b12-freelancer-rate-calculator.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "b12-grant-pipeline-tracker.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "b12-home-office-organizer.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "b12-meeting-cost-calculator.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "b12-moving-house-planner.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "b12-pet-sitter-handover-kit.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "b12-podcast-guest-kit.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "blog-etsy-appeal-evidence.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "blog-etsy-appeal-mistakes.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "blog-etsy-first-24-hours.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "blog-etsy-temp-vs-permanent.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "blog-etsy-write-clear-appeal.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "blog-eu-ai-act-compliance-sme-guide.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "compare.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "contact.html",
+   "errors": 0,
+   "warnings": 1,
+   "findings": [
+    {
+     "line": 95,
+     "issue": "unlabelled field kept out of the tab order (a spam trap?) is still announced by screen readers; add aria-hidden=\"true\"",
+     "wcag": "1.3.1",
+     "severity": "warning",
+     "detail": "input[text]"
+    }
+   ]
+  },
+  {
+   "page": "edu/hire-vs-diy-automation-freelancer.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "edu/n8n-vs-zapier-vs-make-2026.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "edu/silent-failures-automation-monitoring.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "etsy-kit-faq.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "etsy-kit-getting-started.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "etsy-suspension-appeal-kit.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "eu-ai-act-compliance-toolkit.html",
+   "errors": 0,
+   "warnings": 2,
+   "findings": [
+    {
+     "line": 143,
+     "issue": "form field labelled only by placeholder text",
+     "wcag": "1.3.1",
+     "severity": "warning",
+     "detail": "input[text]"
+    },
+    {
+     "line": 144,
+     "issue": "form field labelled only by placeholder text",
+     "wcag": "1.3.1",
+     "severity": "warning",
+     "detail": "input[email]"
+    }
+   ]
+  },
+  {
+   "page": "free-guides.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "gpsr-free-checklist.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "gpsr-landing.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "guide-adobe-affiliate.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "guide-amazon-associates-affiliate.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "guide-aweber-advocate-program.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "guide-brevo-affiliate-program.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "guide-canva-affiliate.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "guide-creative-market-affiliate.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "guide-digitalocean-affiliate-program.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "guide-diminished-value-claim.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "guide-envato-affiliate.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "guide-etsy-affiliate.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "guide-etsy-marketplace.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "guide-etsy-suspension-appeal.html",
+   "errors": 0,
+   "warnings": 2,
+   "findings": [
+    {
+     "line": 90,
+     "issue": "form field labelled only by placeholder text",
+     "wcag": "1.3.1",
+     "severity": "warning",
+     "detail": "input[text]"
+    },
+    {
+     "line": 91,
+     "issue": "form field labelled only by placeholder text",
+     "wcag": "1.3.1",
+     "severity": "warning",
+     "detail": "input[email]"
+    }
+   ]
+  },
+  {
+   "page": "guide-eudr-sme-deadlines.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "guide-food-truck-permit-stack.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "guide-freelancer-scope-control.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "guide-freelancer-scope-creep.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "guide-google-workspace-affiliate.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "guide-gumroad-affiliate.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "guide-gumroad-marketplace.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "guide-mindfulness-focus-for-founders.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "guide-n8n-affiliate.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "guide-paddle-partnership.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "guide-sales-tax-nexus-rolling-method.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "guide-siteground-affiliate-program.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "guide-stripe-chargeback-evidence.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "guide-subscription-renewal-audit.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "guide-systemeio-affiliate.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "guide-turo-invoice-dispute.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "guide-zapier-affiliate.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "guides.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "history.html",
+   "errors": 0,
+   "warnings": 1,
+   "findings": [
+    {
+     "line": 86,
+     "issue": "page has no h1",
+     "wcag": "1.3.1",
+     "severity": "warning",
+     "detail": ""
+    }
+   ]
+  },
+  {
+   "page": "index.html",
+   "errors": 0,
+   "warnings": 4,
+   "findings": [
+    {
+     "line": 394,
+     "issue": "unlabelled field kept out of the tab order (a spam trap?) is still announced by screen readers; add aria-hidden=\"true\"",
+     "wcag": "1.3.1",
+     "severity": "warning",
+     "detail": "input[text]"
+    },
+    {
+     "line": 417,
+     "issue": "form field labelled only by placeholder text",
+     "wcag": "1.3.1",
+     "severity": "warning",
+     "detail": "input[text]"
+    },
+    {
+     "line": 470,
+     "issue": "unlabelled field kept out of the tab order (a spam trap?) is still announced by screen readers; add aria-hidden=\"true\"",
+     "wcag": "1.3.1",
+     "severity": "warning",
+     "detail": "input[text]"
+    },
+    {
+     "line": 495,
+     "issue": "heading level skipped (h4 after h2)",
+     "wcag": "1.3.1",
+     "severity": "warning",
+     "detail": ""
+    }
+   ]
+  },
+  {
+   "page": "interest.html",
+   "errors": 0,
+   "warnings": 1,
+   "findings": [
+    {
+     "line": 92,
+     "issue": "unlabelled field kept out of the tab order (a spam trap?) is still announced by screen readers; add aria-hidden=\"true\"",
+     "wcag": "1.3.1",
+     "severity": "warning",
+     "detail": "input[text]"
+    }
+   ]
+  },
+  {
+   "page": "login.html",
+   "errors": 0,
+   "warnings": 2,
+   "findings": [
+    {
+     "line": 103,
+     "issue": "page has no h1",
+     "wcag": "1.3.1",
+     "severity": "warning",
+     "detail": ""
+    },
+    {
+     "line": 107,
+     "issue": "unlabelled field kept out of the tab order (a spam trap?) is still announced by screen readers; add aria-hidden=\"true\"",
+     "wcag": "1.3.1",
+     "severity": "warning",
+     "detail": "input[text]"
+    }
+   ]
+  },
+  {
+   "page": "offer-eu-ai-act-toolkit.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "products.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "recommended.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "saas-portal.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "service-eu-deadline-briefing.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "service-kdp-typesetting.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "service-verified-lead-lists.html",
+   "errors": 0,
+   "warnings": 3,
+   "findings": [
+    {
+     "line": 67,
+     "issue": "form field labelled only by placeholder text",
+     "wcag": "1.3.1",
+     "severity": "warning",
+     "detail": "input[text]"
+    },
+    {
+     "line": 68,
+     "issue": "form field labelled only by placeholder text",
+     "wcag": "1.3.1",
+     "severity": "warning",
+     "detail": "input[email]"
+    },
+    {
+     "line": 70,
+     "issue": "form field labelled only by placeholder text",
+     "wcag": "1.3.1",
+     "severity": "warning",
+     "detail": "textarea"
+    }
+   ]
+  },
+  {
+   "page": "solutions.html",
+   "errors": 0,
+   "warnings": 1,
+   "findings": [
+    {
+     "line": 143,
+     "issue": "heading level skipped (h4 after h1)",
+     "wcag": "1.3.1",
+     "severity": "warning",
+     "detail": ""
+    }
+   ]
+  },
+  {
+   "page": "status.html",
+   "errors": 0,
+   "warnings": 5,
+   "findings": [
+    {
+     "line": 136,
+     "issue": "page has no h1",
+     "wcag": "1.3.1",
+     "severity": "warning",
+     "detail": ""
+    },
+    {
+     "line": 138,
+     "issue": "form field labelled only by placeholder text",
+     "wcag": "1.3.1",
+     "severity": "warning",
+     "detail": "input[text]"
+    },
+    {
+     "line": 163,
+     "issue": "heading level skipped (h4 after h2)",
+     "wcag": "1.3.1",
+     "severity": "warning",
+     "detail": ""
+    },
+    {
+     "line": 171,
+     "issue": "form field labelled only by placeholder text",
+     "wcag": "1.3.1",
+     "severity": "warning",
+     "detail": "input[text]"
+    },
+    {
+     "line": 192,
+     "issue": "form field labelled only by placeholder text",
+     "wcag": "1.3.1",
+     "severity": "warning",
+     "detail": "textarea"
+    }
+   ]
+  },
+  {
+   "page": "tool-13-week-cash-flow-forecast.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "tool-business-mileage-log-deduction-tracker.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "tool-car-buy-vs-lease-calculator.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "tool-client-pipeline-proposal-tracker.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "tool-customer-lifetime-value-cac-calculator.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "tool-debt-payoff-planner.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "tool-employee-true-cost-calculator.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "tool-etsy-shopify-product-profit-calculator.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "tool-event-budget-ticket-breakeven-planner.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "tool-food-truck-cost-estimator.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "tool-freelance-project-profitability-tracker.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "tool-inventory-reorder-point-tracker.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "tool-membership-subscription-mrr-churn-forecaster.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "tool-price-increase-impact-calculator.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "tool-pto-accrual-leave-balance-tracker.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "tool-quarterly-tax-set-aside-planner.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "tool-refinance-break-even-calculator.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "tool-renovation-budget-quote-comparison.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "tool-rent-vs-buy-home-calculator.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "tool-rental-property-deal-analyzer.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "tool-saas-waste-estimator.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "tool-safe-conversion-dilution-calculator.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "tool-service-pricing-break-even-calculator.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "tool-shift-schedule-labor-cost-planner.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "tool-sinking-funds-emergency-fund-planner.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "tool-solar-panel-payback-savings-calculator.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "tool-startup-runway-burn-planner.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "tool-wedding-budget-vendor-payment-planner.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "tool-zero-based-monthly-budget-planner.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "tools.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "trial.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "trust/affiliate-disclosure.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "trust/complaint-policy.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "trust/cookie-policy.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "trust/incident-disclosure-policy.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "trust/index.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "trust/privacy-policy.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "trust/refund-policy.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "trust/responsible-ai-policy.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "trust/security-policy.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "trust/terms-of-service.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  },
+  {
+   "page": "turo-guest-dispute-toolkit.html",
+   "errors": 0,
+   "warnings": 0,
+   "findings": []
+  }
+ ],
+ "not_checked": [
+  "keyboard access and visible focus (2.1.1, 2.4.7)",
+  "colour contrast (1.4.3, 1.4.11)",
+  "whether alt text describes the image (1.1.1)",
+  "captions and audio description (1.2.x)",
+  "focus order and reading order (2.4.3, 1.3.2)",
+  "error identification in forms (3.3.1)",
+  "behaviour with a screen reader",
+  "content added by scripts after load"
+ ],
+ "statement": "Automated triage of a few machine-checkable criteria. Not an audit, not a certification, and not evidence of WCAG, ADA or European Accessibility Act compliance."
+}

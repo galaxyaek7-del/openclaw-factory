@@ -24,7 +24,7 @@ class Profiles(unittest.TestCase):
         self.assertEqual(letters, set("ABCDEFGHI"))
 
     def test_live_profiles_are_consistent(self):
-        s = state(affiliate_intelligence="BLOCKED", productized_ai_services="PLANNED")
+        s = state(affiliate_intelligence="BLOCKED", productized_ai_services="PARTIAL")
         self.assertEqual(ap.validate(s), [])
 
     def test_operating_needs_verified_revenue(self):
@@ -34,7 +34,7 @@ class Profiles(unittest.TestCase):
         self.assertTrue(any("digital_products: stage OPERATING not supported by evidence status PARTIAL" in p
                             for p in problems), problems)
         ok = state(digital_products="REVENUE_VERIFIED", affiliate_intelligence="BLOCKED",
-                   productized_ai_services="PLANNED")
+                   productized_ai_services="PARTIAL")
         self.assertEqual(ap.validate(ok, profiles), [])
 
     def test_a_planned_arm_cannot_claim_a_commercial_test(self):
@@ -43,13 +43,21 @@ class Profiles(unittest.TestCase):
         self.assertTrue(any("ai_operations: stage COMMERCIAL_TEST" in p
                             for p in ap.validate(state(ai_operations="PLANNED"), profiles)))
 
+    def test_every_arm_names_its_current_experiment_and_none_claims_to_run(self):
+        self.assertEqual(set(ap.EXPERIMENTS), set(ap.PROFILES))
+        for key, e in ap.EXPERIMENTS.items():
+            self.assertTrue(e["state"] in ("PENDING_APPROVAL", "PREPARED", "NONE") or e["state"].startswith("BLOCKED: "), key)
+            self.assertNotIn("RUNNING", e["state"], key)
+        rows = ap.summary(state(affiliate_intelligence="BLOCKED"))["arms"]
+        self.assertTrue(all("experiment" in r for r in rows))
+
     def test_every_dependency_is_a_named_shared_capability(self):
         for key, p in ap.PROFILES.items():
             for d in p["depends_on"]:
                 self.assertIn(d, ap.SHARED_CAPABILITIES, key)
 
     def test_summary_names_cross_arm_bottlenecks(self):
-        out = ap.summary(state(affiliate_intelligence="BLOCKED", productized_ai_services="PLANNED"))
+        out = ap.summary(state(affiliate_intelligence="BLOCKED", productized_ai_services="PARTIAL"))
         caps = {b["capability"]: b["blocks"] for b in out["bottlenecks"]}
         self.assertIn("visit_measurement", caps)
         self.assertGreaterEqual(len(caps["visit_measurement"]), 3)

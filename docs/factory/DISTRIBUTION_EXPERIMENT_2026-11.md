@@ -69,9 +69,43 @@ Link: `...?utm_source=linkedin&utm_medium=social_organic&utm_campaign=gf-researc
 | D3 | research/data | LinkedIn | no | yes | BLOCKED (intake) |
 | D4 | AI operations | n8n community | no | yes | BLOCKED (intake; forum rules UNKNOWN) |
 
+## Additions 2026-10-29 (phase 3 demonstrations; all BLOCKED on intake)
+
+| ID | Arm | Buyer | Outcome the message promises | Channel | Destination | State |
+|---|---|---|---|---|---|---|
+| D5 | micro-B2B | sellers listing in Google Shopping | "find feed errors before Google disapproves the items" | seller communities that allow it; LinkedIn | feed-preflight page (not built) | BLOCKED (intake, page) |
+| D6 | productized services | small shop owners | "a ranked list of accessibility fixes, no compliance claim" | LinkedIn; our own before/after page | accessibility page (not built) | BLOCKED (intake, own fixes first) |
+| D7 | research/data | EU-selling sellers and advisers | "EAA penalties as the statutes state them, with what is still unverified" | LinkedIn | register sample page (not built) | BLOCKED (intake) |
+
+Drafts for D5–D7 are not written yet: the copy should quote the demonstration outputs
+(`services/feed_preflight/demo_package/report.md`, `services/accessibility_check/demo_package/own_site_report.md`,
+`services/research/eaa_penalty_register_brief_2026-10-29.md`) once the pages exist.
+
+## Measurement, defined before any post
+
+| Signal | Where it is read | Class once read | Counts as |
+|---|---|---|---|
+| Post impressions, link clicks | LinkedIn post analytics, read by the founder | OBSERVED (platform counter) | exposure and clicks only |
+| Arrivals on our pages | site analytics, once a receiver exists | OBSERVED | visits, not people |
+| Inquiries | `inquiry_intake.py` queue (incl. site-form signals) | OBSERVED | demand signal, qualified only after review |
+| Sales | Gumroad `/v2/sales` | OBSERVED | transaction; revenue only when paid out |
+
+A click is never reported as an inquiry, and an inquiry never as a sale.
+
+## Approvals required (exact)
+
+1. EXP-B16-007-LI-01: the founder posts both variants from the founder's own LinkedIn account and records the post URLs (Claude does not post).
+2. D2–D7: first a public intake receiver (founder choice and account), then a page per offer (a public-site change, founder approval), then the post itself.
+3. D4: the n8n forum's promotion rules read by the founder before any post.
+
 ## Decision rules (per item, after 4 weeks)
 
 - No verdict below 30 link clicks per item (or per variant in D1); below that the result is
   INSUFFICIENT DATA, which still bounds the channel.
+- 30 clicks is a working threshold chosen for a $0 test, not a statistical guarantee: with click
+  rates near 1–2 % per inquiry, 30 clicks can easily produce zero inquiries by chance. Read any
+  result together with: who actually saw the post (the founder's network is not the target buyer
+  pool), how many impressions it got, whether bots or the founder's own clicks are in the count,
+  and whether the destination recorded the arrival at all.
 - Continue an offer when it produces at least one in-scope inquiry or sale; modify the framing when
   clicks arrive without inquiries; stop a channel that produced no measurable response.

@@ -98,7 +98,7 @@ PROFILES: Dict[str, Dict[str, Any]] = {
         "revenue_model": "fixed-scope service fee ($49 / $79 / $149 hypothesis, unvalidated)",
         "distribution": "service page + interest form; direct outreach not authorized",
         "stage": "BUILD",
-        "stage_evidence": "offer, tested engine and a reproducible demonstration package (catalogue merge clean-up, synthetic data); no customer engagement",
+        "stage_evidence": "two tested demonstrations on synthetic data: catalogue merge clean-up and a Merchant Center feed preflight (services/feed_preflight, rules cited from Google's spec); no customer engagement",
         "demonstration": "services/spreadsheet_normalization/demo_package/README.md",
         "kpis": [
             {"kpi": "qualified inquiries", "source": "data/customer_interest.jsonl", "available": "OBSERVED"},
@@ -120,8 +120,8 @@ PROFILES: Dict[str, Dict[str, Any]] = {
         "revenue_model": "paid briefs or dataset access (hypothesis)",
         "distribution": "none yet",
         "stage": "BUILD",
-        "stage_evidence": "sample brief and a validated sample dataset (USPTO trademark fees, data card PASS); not offered",
-        "demonstration": "services/research/uspto_trademark_fees_brief_2026-10-29.md",
+        "stage_evidence": "two validated sample datasets with briefs (USPTO trademark fees; EAA penalty register, DE and IE verified against the statutes); not offered",
+        "demonstration": "services/research/eaa_penalty_register_brief_2026-10-29.md",
         "kpis": [
             {"kpi": "offers defined", "source": "none", "available": "UNKNOWN"},
             {"kpi": "inquiries", "source": "none", "available": "UNKNOWN"},
@@ -132,8 +132,8 @@ PROFILES: Dict[str, Dict[str, Any]] = {
         "modify_if": "evidence points to a one-off report rather than a dataset",
         "stop_if": "no segment with willingness to pay is found after a documented search",
         "next_decision": {"owner": "factory",
-                          "decision": "publish the free USPTO fee CSV and brief with a change-alert sign-up (needs intake)",
-                          "cheapest_test": "a free sample brief on the site; count requests for the full version"},
+                          "decision": "verify two more EAA countries against their statutes; publish the free DE/IE sample when intake exists",
+                          "cheapest_test": "a free sample brief on the site; count requests for the full register"},
     },
     "affiliate_intelligence": {
         "mission": "earn commissions by recommending tools that genuinely fit a reader's problem",
@@ -199,19 +199,21 @@ PROFILES: Dict[str, Dict[str, Any]] = {
     },
     "productized_ai_services": {
         "mission": "deliver defined, repeatable AI-assisted services with human review",
-        "target_customers": "small firms with document or reporting backlogs (hypothesis)",
-        "revenue_model": "per-job fee (hypothesis)",
-        "distribution": "none yet",
-        "stage": "DISCOVERY",
-        "stage_evidence": "no implementation evidence in the repository",
-        "kpis": [{"kpi": "offer defined", "source": "none", "available": "UNKNOWN"}],
+        "target_customers": "small online shops and service sites with no accessibility review (hypothesis)",
+        "revenue_model": "fixed-scope report fee ($39 for up to 10 pages, unvalidated)",
+        "distribution": "none yet; own-site before/after planned as public proof",
+        "stage": "BUILD",
+        "stage_evidence": "accessibility quick-check implemented and tested (automated rules + human summary, no AI model); synthetic demo and a real run on our own 118 pages (0 errors, 22 warnings); not offered",
+        "demonstration": "services/accessibility_check/README.md",
+        "kpis": [{"kpi": "offer defined", "source": "services/accessibility_check/README.md", "available": "OBSERVED"},
+                 {"kpi": "free checks requested", "source": "data/inquiries.jsonl", "available": "UNKNOWN"}],
         "depends_on": ["opportunity_engine", "customer_intake"],
         "continue_if": "one service can be delivered end to end with tested quality",
         "modify_if": "the service only works with heavy manual effort: price for it or drop it",
         "stop_if": "no tested delivery path exists",
         "next_decision": {"owner": "factory",
-                          "decision": "choose one document task the factory already does internally and write its scope",
-                          "cheapest_test": "deliver it once internally with the QA it would need for a customer"},
+                          "decision": "fix our own 22 accessibility warnings and publish the before/after (a site change needs approval)",
+                          "cheapest_test": "free 3-page check offered through the inquiry queue; count requests and fixes made"},
     },
     "childrens_media_studio": {
         "mission": "original Arabic-first educational animation for children 4-8",
@@ -234,6 +236,28 @@ PROFILES: Dict[str, Dict[str, Any]] = {
                           "decision": "native Arabic script review and the narration route (founder decision recorded in the studio)",
                           "cheapest_test": "show the ep01 animatic to a few parents privately and record feedback"},
     },
+}
+
+
+# Current experiment per arm (2026-10-29). State is one of PENDING_APPROVAL,
+# BLOCKED (with the reason), PREPARED or NONE; nothing here is running unless
+# a founder approval is recorded in docs/factory/DISTRIBUTION_EXPERIMENT_2026-11.md.
+EXPERIMENTS = {
+    "digital_products": {"id": "EXP-B16-007-LI-01", "state": "PENDING_APPROVAL",
+                         "what": "two LinkedIn variants for one product, 30 clicks per variant before a verdict"},
+    "micro_b2b": {"id": "D2/D5", "state": "BLOCKED: no public intake",
+                  "what": "free feed preflight or catalogue clean-up for the first sellers who send a file"},
+    "research_data_services": {"id": "D3/D7", "state": "BLOCKED: no public intake",
+                               "what": "free EAA register sample (DE, IE); count requests for the full register"},
+    "affiliate_intelligence": {"id": None, "state": "NONE", "what": "on hold until a payout route is verified"},
+    "content_distribution": {"id": None, "state": "BLOCKED: no visit measurement",
+                             "what": "Telegraph counters read daily (platform counter, includes bots)"},
+    "ai_operations": {"id": "D4", "state": "BLOCKED: no public intake; forum rules unread",
+                      "what": "free read-only n8n audit for a few instances in exchange for feedback"},
+    "productized_ai_services": {"id": "D6", "state": "PREPARED",
+                                "what": "fix our own 22 accessibility warnings and publish the before/after, then a free 3-page check"},
+    "childrens_media_studio": {"id": None, "state": "NONE",
+                               "what": "private parent feedback on the ep01 animatic (founder decision)"},
 }
 
 
@@ -278,7 +302,8 @@ def summary(state: Dict[str, Any]) -> Dict[str, Any]:
                      "revenue_model": p["revenue_model"], "distribution": p["distribution"],
                      "kpis": p["kpis"], "kpis_measurable": "%d of %d" % (known, len(p["kpis"])),
                      "depends_on": p["depends_on"], "continue_if": p["continue_if"], "modify_if": p["modify_if"],
-                     "stop_if": p["stop_if"], "next_decision": p["next_decision"], "demonstration": p.get("demonstration")})
+                     "stop_if": p["stop_if"], "next_decision": p["next_decision"], "demonstration": p.get("demonstration"),
+                     "experiment": EXPERIMENTS.get(key, {"id": None, "state": "NONE", "what": ""})})
     by_stage = {s: [r["arm"] for r in rows if r["stage"] == s] for s in STAGES}
     dependency_load = {}
     for r in rows:

@@ -1,0 +1,8 @@
+{
+ "dataset_id": "eaa-penalty-register",
+ "version": "2026-10-29",
+ "status": "PASS",
+ "findings": [],
+ "checked_on": "2026-10-29",
+ "note": "provenance and format checks only; offering it for sale is a founder decision"
+}

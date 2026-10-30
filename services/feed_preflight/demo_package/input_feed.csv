@@ -1,0 +1,13 @@
+id,title,description,link,image_link,availability,price,sale_price,brand,gtin,mpn,identifier_exists,condition,color,size
+NC-001,Cedar & Smoke Soy Candle 220 g,"Hand-poured soy candle, 220 g, 45-hour burn.",https://shop.example.org/p/1,https://shop.example.org/img/1.jpg,in_stock,24.00 USD,,Northfield Candle Co,0612345000012,,,new,,
+NC-002,Fig Leaf Soy Candle 220 g,"Hand-poured soy candle, 220 g, 45-hour burn.",https://shop.example.org/p/2,https://shop.example.org/img/2.jpg,in_stock,"24,00 USD",,Northfield Candle Co,0612345000029,,,new,,
+NC-003,Sea Salt Soy Candle 220 g,"Hand-poured soy candle, 220 g, 45-hour burn.",https://shop.example.org/p/3,https://shop.example.org/img/3.jpg,in_stock,24.00 USD,,Northfield Candle Co,0612345000037,,,new,,
+NC-004,Amber Soy Candle 220 g,"Hand-poured soy candle, 220 g, 45-hour burn.",https://shop.example.org/p/4,https://shop.example.org/img/4.jpg,In Stock,24.00 USD,,Northfield Candle Co,0612345000043,,,new,,
+NC-005,Gift Set: Three Minis,"Hand-poured soy candle, 220 g, 45-hour burn.",https://shop.example.org/p/5,https://shop.example.org/img/5.jpg,in_stock,39.00 USD,,,,,,new,,
+NC-006,Gift Set: Wick Trimmer,"Hand-poured soy candle, 220 g, 45-hour burn.",https://shop.example.org/p/6,https://shop.example.org/img/6.jpg,in_stock,12.00 USD,,Northfield Candle Co,,,no,new,,
+NC-007,Lavender Soy Candle 220 g,"Hand-poured soy candle, 220 g, 45-hour burn.",shop.example.org/p/7,https://shop.example.org/img/7.jpg,in_stock,24.00 USD,,Northfield Candle Co,0612345000074,,,new,,
+NC-007,Lavender Soy Candle 450 g,"Hand-poured soy candle, 220 g, 45-hour burn.",https://shop.example.org/p/7b,https://shop.example.org/img/7b.jpg,in_stock,38.00 USD,,Northfield Candle Co,0612345000081,,,new,,
+NC-009,Store Brand Tea Light x50,"Hand-poured soy candle, 220 g, 45-hour burn.",https://shop.example.org/p/9,https://shop.example.org/img/9.jpg,in_stock,9.00 USD,,Northfield Candle Co,2400000000099,,,new,,
+NC-010,Winter Candle Extra Long Title Extra Long Title Extra Long Title Extra Long Title Extra Long Title Extra Long Title Extra Long Title Extra Long Title Extra Long Title ,"Hand-poured soy candle, 220 g, 45-hour burn.",https://shop.example.org/p/10,https://shop.example.org/img/10.jpg,in_stock,26.00 USD,,Northfield Candle Co,0612345000104,,,new,,
+NC-011,Birch Soy Candle 220 g,"Hand-poured soy candle, 220 g, 45-hour burn.",https://shop.example.org/p/11,,in_stock,24.00 USD,25.00 USD,Northfield Candle Co,0612345000111,,,new,,
+NC-012,Clove Soy Candle 220 g,"Hand-poured soy candle, 220 g, 45-hour burn.",https://shop.example.org/p/12,https://shop.example.org/img/12.jpg,in_stock,0.00 USD,,Northfield Candle Co,0612345000128,,no,new,,
