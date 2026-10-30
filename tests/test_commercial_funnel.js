@@ -156,6 +156,23 @@ test('founder queue lists only what the files show is waiting, each with a comma
   assert.deepEqual(empty.founder_queue, []);
 });
 
+test('founder queue shows when publication approvals expire, or that they have lapsed', () => {
+  const ready = { products: [{ internal_id: 'B16-008', primary_state: 'READY_FOR_AUTHORIZATION' },
+    { internal_id: 'B16-009', primary_state: 'READY_FOR_AUTHORIZATION' }] };
+  const appr = (exp9) => ({ 'data/publication_approvals.json': { approvals: [
+    { product_id: 'B16-008', status: 'APPROVED', expires_at: '2026-11-01T20:56:00Z' },
+    { product_id: 'B16-009', status: 'APPROVED', expires_at: exp9 }] } });
+  const now = new Date('2026-10-30T20:56:00Z');
+  let q = cf.founderQueue(ready, null, null, factory(appr('2026-11-02T00:00:00Z')), now)[0];
+  assert.equal(q.deadline, '2026-11-01T20:56:00Z');
+  assert.match(q.why, /expire 2026-11-01T20:56:00Z \(in about 48 h\)/);
+  q = cf.founderQueue(ready, null, null, factory(appr('2026-10-30T00:00:00Z')), now)[0];
+  assert.match(q.why, /approval missing or expired for B16-009: re-approve/);
+  q = cf.founderQueue(ready, null, null, factory(), now)[0];
+  assert.equal(q.deadline, null);
+  assert.match(q.why, /waiting only for a live run$/);
+});
+
 test('measurement: a beacon without a receiver is not a measured page view', () => {
   const root = factory({
     'customer_site/a.html': '<script src="assets/gf-pageview.js"></script>',

@@ -186,6 +186,8 @@ data/customer_interest_rejected.jsonl
 data/*.jsonl.lock
 # parents' answers about private kids-episode viewings (kids_studio/feedback)
 data/kids_feedback.jsonl
+# founder's per-product publication approvals (local record, not for the public repo)
+data/publication_approvals.json
 
 # 2026-10-23 founder decision: paid product files leave the public repository.
 # They stay on the factory machine; tests that read them skip on CI when absent.
