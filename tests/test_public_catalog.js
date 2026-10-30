@@ -227,6 +227,28 @@ test('no customer_site page points at a root-absolute path only Express can serv
   assert.deepEqual(offenders, [], 'these 404 on GitHub Pages and only work when Express mounts the site at /site');
 });
 
+test('a listing the seller labels unsellable is never advertised', () => {
+  // REAL DEFECT, 2026-10-29: owtmpe stayed published on Gumroad at $0 because
+  // the public API cannot withdraw a listing, and the storefront grid listed it
+  // as a $0 product beside real ones. The seller's own title is the evidence.
+  const files = baseFiles();
+  files['data/product_registry.json'] = {
+    products: [
+      ...REGISTRY.products,
+      { internal_id: 'B16-001', title: '[Unavailable] QA Stress Test', price_cents: 0, published: true,
+        url: 'https://aekraft.gumroad.com/l/owtmpe' },
+      { internal_id: 'B16-002', title: 'GALAXY FORGE API TEST - DO NOT BUY', price_cents: 100, published: true,
+        url: 'https://aekraft.gumroad.com/l/dxfwlu' },
+      { internal_id: 'B16-003', title: 'Free Starter Sheet', price_cents: 0, published: true,
+        url: 'https://aekraft.gumroad.com/l/freebie' },
+    ],
+  };
+  const d = catalog.catalog({ root: factory(files), limit: 120, featuredOnly: false });
+  const ids = d.products.map((p) => p.id);
+  assert.ok(!ids.includes('B16-001'), 'an [Unavailable] listing was advertised');
+  assert.ok(!ids.includes('B16-002'), 'a DO NOT BUY listing was advertised');
+  assert.ok(ids.includes('B16-003'), 'a genuinely free product must still be published');
+});
 test('every page that lists products from /api/ can still render them on GitHub Pages', () => {
   // REAL DEFECT, 2026-10-28: index.html fetched /api/customer/catalog and
   // /api/public/catalog?limit=6 with no fallback. GitHub Pages has no Node
