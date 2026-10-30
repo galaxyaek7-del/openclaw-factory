@@ -255,3 +255,15 @@ test('experiments: latest status wins and pending ones are not counted as runnin
   assert.equal(e.running, 1);
   assert.equal(e.with_observations, 1);
 });
+
+test('founder queue names children\'s episodes that wait only on the founder', () => {
+  const st = { episodes: [{ episode: 'ep01', passed: false, failing: ['approval', 'credentials'] },
+    { episode: 'ep02', passed: false, failing: ['subtitles', 'approval'] }] };
+  const q = cf.founderQueue({ products: [] }, null, null, factory({ 'data/kids_youtube_status.json': st }));
+  assert.equal(q.length, 1);
+  assert.match(q[0].title, /1 episode\(s\) pass every check/);
+  assert.match(q[0].why, /ep01: waiting for YouTube credentials and your approval/);
+  assert.match(q[0].command, /youtube_oauth_setup\.py/);
+  const done = cf.founderQueue({ products: [] }, null, null, factory({ 'data/kids_youtube_status.json': { episodes: [{ episode: 'ep01', passed: true, failing: [] }] } }));
+  assert.equal(done.length, 0);
+});

@@ -55,11 +55,27 @@ def _log(rec, ledger):
         f.write(json.dumps(rec, ensure_ascii=False) + "\n")
 
 
+STATUS = ROOT / "data" / "kids_youtube_status.json"
+
+
+def write_status(rows, now, path=STATUS):
+    """What each episode is waiting for, for the dashboard's decision queue.
+    Episode ids, failing check names and digests only; no credentials."""
+    doc = {"generated_at": now.isoformat(timespec="seconds"),
+           "episodes": [{"episode": r["episode"], "passed": r["passed"], "failing": r["failing"]} for r in rows]}
+    try:
+        Path(path).parent.mkdir(parents=True, exist_ok=True)
+        Path(path).write_text(json.dumps(doc, ensure_ascii=False, indent=1), encoding="utf-8")
+    except OSError:
+        pass
+
+
 def once(creds=None, now=None, http=None, **paths):
     now = now or datetime.now(timezone.utc)
     creds = credentials() if creds is None else creds
     ledger = paths.get("ledger", preflight.LEDGER)
     defaults, rows = status(creds, now, **paths)
+    write_status(rows, now, paths.get("status", STATUS))
     ready = [r for r in rows if r["passed"]]
     blocked = ["%s: %s" % (r["episode"], ", ".join(r["failing"])) for r in rows if not r["passed"]]
     if not ready:

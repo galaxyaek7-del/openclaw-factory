@@ -45,7 +45,8 @@ class Base(unittest.TestCase):
         self.registry.write_text(json.dumps({"channel_defaults": self.defaults, "episodes": [self.ep]}), encoding="utf-8")
         self.approvals = self.root / "approvals.json"
         self.uploads = self.root / "uploads.jsonl"
-        self.paths = {"registry": self.registry, "approvals": self.approvals, "ledger": self.uploads, "root": self.root}
+        self.paths = {"registry": self.registry, "approvals": self.approvals, "ledger": self.uploads, "root": self.root,
+                      "status": self.root / "status.json"}
 
     def tearDown(self):
         self.dir.cleanup()
@@ -124,6 +125,9 @@ class Upload(Base):
         out = self.run_once(fake, GF_ALLOW_KIDS_VIDEO_UPLOAD="true")
         self.assertEqual(out["action"], "none")
         self.assertEqual(fake.calls, [])
+        st = json.loads((self.root / "status.json").read_text(encoding="utf-8"))
+        self.assertEqual(st["episodes"], [{"episode": "ep99", "passed": False, "failing": ["approval"]}])
+        self.assertNotIn("secret", json.dumps(st))
 
     def test_ready_but_gate_closed_makes_no_call(self):
         self.approve()
