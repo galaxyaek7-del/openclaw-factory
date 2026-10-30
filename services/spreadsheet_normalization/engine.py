@@ -23,6 +23,74 @@ def norm_cell(v):
     return str(v).strip()
 
 
+MAX_UPLOAD_BYTES = 20 * 1024 * 1024
+MAX_XLSX_UNPACKED_BYTES = 200 * 1024 * 1024
+
+
+class UnreadableTable(ValueError):
+    pass
+
+
+def _xlsx_value(v):
+    """A typed Excel cell as text: real dates become ISO dates (a time part
+    is kept only when it is not midnight), numbers keep their value."""
+    from datetime import datetime, date
+    if isinstance(v, datetime):
+        return v.date().isoformat() if (v.hour, v.minute, v.second) == (0, 0, 0) else v.isoformat(sep=" ")
+    if isinstance(v, date):
+        return v.isoformat()
+    if isinstance(v, float) and v.is_integer():
+        return str(int(v))
+    return v
+
+
+def read_table(path):
+    """(rows, notes) from a CSV or the first sheet of an XLSX file. The offer
+    takes one sheet: other sheets are reported in notes, never merged.
+    Formulas are read as their stored values (data_only); a file without them
+    reads as empty cells, which the QA report then shows as missing."""
+    import os
+    import zipfile
+    from pathlib import Path
+    path = Path(path)
+    size = os.path.getsize(path)
+    if size > MAX_UPLOAD_BYTES:
+        raise UnreadableTable("file larger than %d MB" % (MAX_UPLOAD_BYTES // 1024 // 1024))
+    notes = []
+    if path.suffix.lower() == ".xlsx":
+        try:
+            with zipfile.ZipFile(path) as z:
+                if sum(i.file_size for i in z.infolist()) > MAX_XLSX_UNPACKED_BYTES:
+                    raise UnreadableTable("workbook expands beyond %d MB" % (MAX_XLSX_UNPACKED_BYTES // 1024 // 1024))
+        except zipfile.BadZipFile:
+            raise UnreadableTable("not a valid .xlsx file")
+        import openpyxl
+        wb = openpyxl.load_workbook(path, read_only=True, data_only=True)
+        try:
+            ws = wb.worksheets[0]
+            if len(wb.worksheets) > 1:
+                notes.append("only the first sheet (%s) was read; other sheets: %s"
+                             % (ws.title, ", ".join(s.title for s in wb.worksheets[1:])))
+            it = ws.iter_rows(values_only=True)
+            header = next(it, None)
+            if not header:
+                return [], notes
+            names = [norm_cell(h) or "column_%d" % (i + 1) for i, h in enumerate(header)]
+            rows = []
+            for r in it:
+                if r is None or all(c in (None, "") for c in r):
+                    continue
+                rows.append({names[i]: _xlsx_value(r[i]) if i < len(r) else None for i in range(len(names))})
+        finally:
+            wb.close()
+        return rows, notes
+    text = path.read_text(encoding="utf-8-sig", errors="strict")
+    sample = text[:4096]
+    delim = max((",", ";", "\t"), key=sample.count)
+    import io
+    return list(csv.DictReader(io.StringIO(text), delimiter=delim)), notes
+
+
 _DM_OR_MD = re.compile(r"^(\d{1,2})([/-])(\d{1,2})\2(\d{4})$")
 _YMD_DOT = re.compile(r"^(\d{4})\.(\d{1,2})\.(\d{1,2})$")
 _ISO = re.compile(r"^(\d{4})-(\d{2})-(\d{2})$")

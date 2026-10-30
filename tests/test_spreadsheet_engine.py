@@ -104,5 +104,58 @@ class TestEngine(unittest.TestCase):
             self.assertTrue((base / f).exists(), f)
 
 
+class TestReadTable(unittest.TestCase):
+    """read_table(): the offer promises CSV and XLSX; both must actually read."""
+
+    def setUp(self):
+        import tempfile
+        self.dir = tempfile.TemporaryDirectory()
+        self.d = Path(self.dir.name)
+
+    def tearDown(self):
+        self.dir.cleanup()
+
+    def test_xlsx_first_sheet_typed_values_and_notes(self):
+        import datetime
+        import openpyxl
+        import engine
+        p = self.d / "cat.xlsx"
+        wb = openpyxl.Workbook()
+        ws = wb.active
+        ws.title = "Products"
+        ws.append(["SKU", "Price", "Date", None])
+        ws.append([" ab-1 ", 8.5, datetime.datetime(2026, 3, 15), 3.0])
+        ws.append([None, None, None, None])
+        ws.append(["ab-2", "€8,50", "03-04-2026", None])
+        wb.create_sheet("Notes")
+        wb.save(p)
+        rows, notes = engine.read_table(p)
+        self.assertEqual(len(rows), 2)                                  # the empty row is skipped
+        self.assertEqual(rows[0]["Date"], "2026-03-15")                 # a real Excel date becomes ISO
+        self.assertEqual(rows[0]["column_4"], 3)                        # unnamed header gets a name
+        self.assertIn("other sheets: Notes", notes[0])
+        out = normalize(rows, sku_cols=("sku",), currency_cols=("price",), date_cols=("date",))
+        self.assertEqual([r["price"] for r in out["rows"]], [8.5, 8.5])
+        self.assertEqual(out["qa"]["dates_ambiguous_kept"], 1)
+
+    def test_csv_with_semicolons_and_bad_files(self):
+        import engine
+        p = self.d / "eu.csv"
+        p.write_text("sku;price\nAB-1;8,50\n", encoding="utf-8")
+        rows, _ = engine.read_table(p)
+        self.assertEqual(rows, [{"sku": "AB-1", "price": "8,50"}])
+        bad = self.d / "fake.xlsx"
+        bad.write_bytes(b"not a zip")
+        with self.assertRaises(engine.UnreadableTable):
+            engine.read_table(bad)
+        orig = engine.MAX_UPLOAD_BYTES
+        engine.MAX_UPLOAD_BYTES = 5
+        try:
+            with self.assertRaises(engine.UnreadableTable):
+                engine.read_table(p)
+        finally:
+            engine.MAX_UPLOAD_BYTES = orig
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
