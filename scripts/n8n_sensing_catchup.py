@@ -101,13 +101,18 @@ def _write_state(state, path):
 def run_once(now=None, state_path=STATE_PATH, health=None, dns_ok=None, secret=None, trigger=None):
     now = now or datetime.now(timezone.utc)
     today = now.date().isoformat()
+    state = _read_state(state_path)
+    # 2026-10-30: once today's run has succeeded nothing can be due until
+    # tomorrow; skip the n8n database copy that every 10-minute tick paid
+    # (2.6 s idle, 14 s under load).
+    if state.get("succeeded_on") == today:
+        return {"action": "none", "detail": "already succeeded today (recorded)"}
     if health is None:
         from scripts import n8n_workflow_health as h
         health = h.build_report() if hasattr(h, "build_report") else json.loads(
             __import__("subprocess").run([sys.executable, str(ROOT / "scripts" / "n8n_workflow_health.py"), "--json"],
                                          capture_output=True, text=True, timeout=60).stdout)
     workflow = (health.get("workflows") or {}).get(WORKFLOW)
-    state = _read_state(state_path)
     attempts = int(state.get(today, 0))
     if secret is None:
         from channels.env_config import read_env_value
@@ -115,6 +120,8 @@ def run_once(now=None, state_path=STATE_PATH, health=None, dns_ok=None, secret=N
     ok, reason = decide(workflow, today, attempts, _dns_ok() if dns_ok is None else dns_ok, bool(secret),
                         now_hour=now.hour)
     if not ok:
+        if reason == "already succeeded today":
+            _write_state({today: attempts, "succeeded_on": today}, state_path)
         return {"action": "none", "detail": reason}
     state = {today: attempts + 1}  # keep only today's counter
     _write_state(state, state_path)

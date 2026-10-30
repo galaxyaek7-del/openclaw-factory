@@ -59,6 +59,21 @@ class TestRunOnce(unittest.TestCase):
         return nc.run_once(now=NOW, state_path=self.state, health=health(w), dns_ok=dns,
                            secret="s3cret", trigger=self.trigger)
 
+    def test_a_recorded_success_skips_the_n8n_read_for_the_rest_of_the_day(self):
+        ok = {"last_status": "success", "last_started_at": "2026-10-23 07:00:01",
+              "last_success_at": "2026-10-23 07:00:05"}
+        self.assertEqual(self.run_(ok)["detail"], "already succeeded today")
+        # same day: health must not be read again (a None report would raise)
+        out = nc.run_once(now=NOW, state_path=self.state, health=None, dns_ok=True, secret="s3cret",
+                          trigger=self.trigger)
+        self.assertEqual(out, {"action": "none", "detail": "already succeeded today (recorded)"})
+        # next day: the record no longer applies and a failed run is retried
+        nxt = nc.run_once(now=NOW.replace(day=24), state_path=self.state,
+                          health=health(dict(FAILED_TODAY, last_started_at="2026-10-24 07:00:01")),
+                          dns_ok=True, secret="s3cret", trigger=self.trigger)
+        self.assertEqual(nxt["action"], "triggered", nxt)
+        self.assertEqual(len(self.calls), 1)
+
     def test_triggers_at_most_twice_a_day(self):
         outs = [self.run_()["action"] for _ in range(4)]
         self.assertEqual(outs, ["triggered", "triggered", "none", "none"])
