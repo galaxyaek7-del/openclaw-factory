@@ -219,3 +219,30 @@ test('entry missing next_retry_at is treated as immediately due', () => {
     cleanup(p);
   }
 });
+
+test('renameWithRetry: retries Windows sharing errors, then cleans up the temp file', () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'gf-rename-'));
+  const tmp = path.join(dir, 'state.json.tmp-1');
+  const dst = path.join(dir, 'state.json');
+  try {
+    fs.writeFileSync(tmp, '{}');
+    let calls = 0;
+    const flaky = (a, b) => { calls += 1; if (calls < 3) { const e = new Error('busy'); e.code = 'EPERM'; throw e; } fs.renameSync(a, b); };
+    factoryState.renameWithRetry(tmp, dst, 5, 1, flaky);
+    assert.equal(calls, 3);
+    assert.ok(fs.existsSync(dst) && !fs.existsSync(tmp));
+
+    fs.writeFileSync(tmp, '{}');
+    const always = () => { const e = new Error('busy'); e.code = 'EBUSY'; throw e; };
+    assert.throws(() => factoryState.renameWithRetry(tmp, dst, 3, 1, always), /busy/);
+    assert.equal(fs.existsSync(tmp), false);
+
+    fs.writeFileSync(tmp, '{}');
+    let other = 0;
+    const missing = () => { other += 1; const e = new Error('nope'); e.code = 'ENOENT'; throw e; };
+    assert.throws(() => factoryState.renameWithRetry(tmp, dst, 5, 1, missing), /nope/);
+    assert.equal(other, 1);
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});

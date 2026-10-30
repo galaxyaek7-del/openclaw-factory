@@ -69,8 +69,34 @@ def save_state(state, path=None):
         json.dump(state, f, ensure_ascii=False, indent=2)
         f.flush()
         os.fsync(f.fileno())
-    os.replace(tmp_path, p)
+    replace_with_retry(tmp_path, p)
     return state
+
+
+def replace_with_retry(src, dst, attempts=5, delay_s=0.02, replace=os.replace):
+    """os.replace, retried briefly on Windows sharing errors (another process
+    has dst open: PermissionError). If it still fails, the temp file is
+    removed so none is left behind, and the error propagates as before.
+    Mirrors lib/factory_state.js renameWithRetry() (2026-10-30)."""
+    import time
+    for i in range(1, attempts + 1):
+        try:
+            replace(src, dst)
+            return
+        except PermissionError:
+            if i >= attempts:
+                try:
+                    os.remove(src)
+                except OSError:
+                    pass
+                raise
+            time.sleep(delay_s * i)
+        except OSError:
+            try:
+                os.remove(src)
+            except OSError:
+                pass
+            raise
 
 
 # Every mutator below must never raise back into its caller — this is new

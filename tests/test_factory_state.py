@@ -197,5 +197,40 @@ class TestExponentialBackoff(unittest.TestCase):
         self.assertEqual(len(due), 1)
 
 
+class TestReplaceWithRetry(unittest.TestCase):
+    def test_retries_sharing_errors_then_cleans_up(self):
+        with tempfile.TemporaryDirectory() as d:
+            src, dst = os.path.join(d, "s.tmp"), os.path.join(d, "s.json")
+            open(src, "w").close()
+            calls = []
+
+            def flaky(a, b):
+                calls.append(1)
+                if len(calls) < 3:
+                    raise PermissionError("in use")
+                os.replace(a, b)
+            factory_state.replace_with_retry(src, dst, delay_s=0, replace=flaky)
+            self.assertEqual(len(calls), 3)
+            self.assertTrue(os.path.exists(dst) and not os.path.exists(src))
+
+            open(src, "w").close()
+
+            def always(a, b):
+                raise PermissionError("in use")
+            with self.assertRaises(PermissionError):
+                factory_state.replace_with_retry(src, dst, attempts=3, delay_s=0, replace=always)
+            self.assertFalse(os.path.exists(src))
+
+            open(src, "w").close()
+            seen = []
+
+            def missing(a, b):
+                seen.append(1)
+                raise FileNotFoundError("gone")
+            with self.assertRaises(FileNotFoundError):
+                factory_state.replace_with_retry(src, dst, delay_s=0, replace=missing)
+            self.assertEqual(len(seen), 1)
+
+
 if __name__ == "__main__":
     unittest.main()
