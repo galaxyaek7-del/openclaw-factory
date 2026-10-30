@@ -83,6 +83,22 @@ class DigitalProductsFromRegistry(unittest.TestCase):
         cfg = ba._digital_products_cfg(ba.ARMS["digital_products"], ba._registry_evidence(Path("/nonexistent.json")))
         self.assertEqual(ba.ARMS["digital_products"]["external_dependency"], cfg["external_dependency"])
 
+    def test_content_arm_reports_telegraph_exposure_as_exposure_only(self):
+        with tempfile.TemporaryDirectory() as d:
+            (Path(d) / "data").mkdir()
+            self.assertEqual(ba._telegraph_evidence(Path(d)), {})
+            self.assertIs(ba._content_cfg(ba.ARMS["content_distribution"], {}), ba.ARMS["content_distribution"])
+            rows = [{"timestamp": "2026-10-29T17:00:00+00:00", "views": {"a": 1}},
+                    {"timestamp": "2026-10-30T00:03:00+00:00", "views": {"a": 5, "b": 7, "c": "error"}}]
+            (Path(d) / "data" / "distribution_metrics.jsonl").write_text(
+                "\n".join(json.dumps(r) for r in rows) + "\nnot json\n", encoding="utf-8")
+            tele = ba._telegraph_evidence(Path(d))
+        self.assertEqual((tele["articles"], tele["views"]), (2, 12))
+        cfg = ba._content_cfg(ba.ARMS["content_distribution"], tele)
+        self.assertIn("2 articles, 12 views", cfg["gap"])
+        self.assertIn("no audience response is established", cfg["gap"])
+        self.assertNotIn("REVENUE", cfg["gap"])
+
     def test_a_registry_sale_alone_does_not_make_revenue_verified(self):
         with tempfile.TemporaryDirectory() as t:
             ev = ba._registry_evidence(registry(t, [{"published": True, "sales_count": 2, "sales_usd_cents": 3800}]))

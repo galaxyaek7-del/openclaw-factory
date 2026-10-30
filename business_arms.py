@@ -372,12 +372,47 @@ def _studio_cfg(cfg: Dict[str, Any], evidence: Dict[str, Any]) -> Dict[str, Any]
     return out
 
 
+def _telegraph_evidence(root: Path = None) -> Dict[str, Any]:
+    """Latest Telegraph getViews reading (scripts/distribution_metrics_daily.py)."""
+    p = (root or ROOT) / "data" / "distribution_metrics.jsonl"
+    last = None
+    try:
+        for line in p.read_text(encoding="utf-8").splitlines():
+            try:
+                rec = json.loads(line)
+            except ValueError:
+                continue
+            if isinstance(rec.get("views"), dict):
+                last = rec
+    except OSError:
+        return {}
+    if not last:
+        return {}
+    ok = {k: v for k, v in last["views"].items() if isinstance(v, int)}
+    return {"articles": len(ok), "views": sum(ok.values()), "read_at": last.get("timestamp")}
+
+
+def _content_cfg(cfg: Dict[str, Any], tele: Dict[str, Any]) -> Dict[str, Any]:
+    """Content and Distribution, restated from the latest Telegraph reading. The
+    view counter is the platform's own (includes bots and our own loads), so it
+    is exposure, never a measured audience response."""
+    if not tele.get("articles"):
+        return cfg
+    out = dict(cfg)
+    out["gap"] = ("Telegraph works: %d articles, %d views by the platform's counter (includes bots and own loads; "
+                  "read %s); the X arm is credit-blocked; clicks and site visits are not measured, so no audience "
+                  "response is established" % (tele["articles"], tele["views"], str(tele.get("read_at"))[:16]))
+    out["blocker"] = "no click or visit measurement (analytics receiver needs the founder's account); X arm credit-blocked"
+    return out
+
+
 def arm_status() -> Dict[str, Any]:
     revenue = _revenue_state()
     evidence = _registry_evidence()
     cfgs = dict(ARMS)
     cfgs["digital_products"] = _digital_products_cfg(ARMS["digital_products"], evidence)
     cfgs["childrens_media_studio"] = _studio_cfg(ARMS["childrens_media_studio"], _studio_evidence())
+    cfgs["content_distribution"] = _content_cfg(ARMS["content_distribution"], _telegraph_evidence())
     cfgs["affiliate_intelligence"] = _affiliate_cfg(ARMS["affiliate_intelligence"], _click_evidence(),
                                                     _commission_evidence())
     arms = {key: evaluate_arm(key, cfg, revenue) for key, cfg in cfgs.items()}
