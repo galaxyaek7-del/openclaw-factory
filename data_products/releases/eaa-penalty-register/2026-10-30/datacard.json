@@ -67,6 +67,18 @@
    }
   },
   {
+   "name": "Staatsblad 2024, 87 (officielebekendmakingen.nl)",
+   "origin": "https://zoek.officielebekendmakingen.nl/stb-2024-87.html",
+   "accessed_on": "2026-10-30",
+   "access_method": "PUBLIC_WEB_PAGE",
+   "licence": {
+    "name": "Facts only (amounts, section numbers, authority names); no text reproduced",
+    "commercial_use": true,
+    "attribution_required": false,
+    "share_alike": false
+   }
+  },
+  {
    "name": "Deque EAA country-by-country table (secondary)",
    "origin": "https://www.deque.com/european-accessibility-act-eaa-compliance/country-compliance-data/",
    "accessed_on": "2026-10-29",
@@ -80,7 +92,7 @@
   }
  ],
  "attribution": "Secondary figures: Deque Systems, EAA country-by-country compliance data (read 2026-10-29).",
- "collection_method": "Read the German and Irish legal texts on 2026-10-29 and the Austrian on 2026-10-30, recorded the penalty provisions; and the French and Spanish on 2026-10-30; NL carried from a secondary table, marked unverified.",
+ "collection_method": "Read the German and Irish legal texts on 2026-10-29 and the Austrian on 2026-10-30, recorded the penalty provisions; and the French and Spanish on 2026-10-30; the Dutch on 2026-10-30.",
  "processing_steps": [
   "record amounts and section numbers",
   "tag verification status",
@@ -146,7 +158,7 @@
  "files": [
   {
    "path": "data_products/releases/eaa-penalty-register/2026-10-30/eaa_penalty_register.csv",
-   "sha256": "e5f11c697308ea74f6562972d4fa9409ff4697ee673c508c4c58e4a9590afd0e",
+   "sha256": "fc69ef9bc907f9a528ca8739877dd6d92380d73999577d152f335bcb5fd70f0a",
    "rows": 10
   }
  ],
@@ -157,7 +169,7 @@
  "refresh_days": 90,
  "last_refreshed": "2026-10-30",
  "known_limitations": [
-  "DE, IE, AT, FR and ES are verified against the legal text (FR partly: the contravention amount and the service scope are not read); NL is a secondary claim.",
+  "All six countries are tied to the legal text; FR (contravention amount, service scope) and NL (indexed euro value of the 5th fine category) are partly verified.",
   "The source of the EUR 500,000 German figure in secondary tables is UNKNOWN.",
   "Maximum statutory penalties say nothing about enforcement practice."
  ]

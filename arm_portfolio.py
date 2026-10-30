@@ -120,7 +120,7 @@ PROFILES: Dict[str, Dict[str, Any]] = {
         "revenue_model": "paid briefs or dataset access (hypothesis)",
         "distribution": "none yet",
         "stage": "BUILD",
-        "stage_evidence": "two validated sample datasets with briefs (USPTO trademark fees; EAA penalty register, 5 of 6 countries checked against the statutes, two vendor figures contradicted); not offered",
+        "stage_evidence": "two validated sample datasets with briefs (USPTO trademark fees; EAA penalty register, 6 of 6 countries tied to the statutes, two vendor figures contradicted); not offered",
         "demonstration": "services/research/eaa_penalty_register_brief_2026-10-29.md",
         "kpis": [
             {"kpi": "offers defined", "source": "none", "available": "UNKNOWN"},
@@ -132,7 +132,7 @@ PROFILES: Dict[str, Dict[str, Any]] = {
         "modify_if": "evidence points to a one-off report rather than a dataset",
         "stop_if": "no segment with willingness to pay is found after a documented search",
         "next_decision": {"owner": "factory",
-                          "decision": "read the Dutch amounts and the French contravention scope; publish the free sample when intake exists",
+                          "decision": "publish the free 6-country sample when intake exists; extend to the next EU markets by request count",
                           "cheapest_test": "a free sample brief on the site; count requests for the full register"},
     },
     "affiliate_intelligence": {
@@ -248,7 +248,7 @@ EXPERIMENTS = {
     "micro_b2b": {"id": "D2/D5", "state": "BLOCKED: no public intake",
                   "what": "free feed preflight or catalogue clean-up for the first sellers who send a file"},
     "research_data_services": {"id": "D3/D7", "state": "BLOCKED: no public intake",
-                               "what": "free EAA register sample (5 countries); count requests for the full register"},
+                               "what": "free EAA register sample (6 countries); count requests for the full register"},
     "affiliate_intelligence": {"id": None, "state": "NONE", "what": "on hold until a payout route is verified"},
     "content_distribution": {"id": None, "state": "BLOCKED: no visit measurement",
                              "what": "Telegraph counters read daily (platform counter, includes bots)"},

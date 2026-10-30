@@ -34,6 +34,7 @@ BFSG = "https://www.gesetze-im-internet.de/bfsg/__37.html"
 IE_SI = "https://www.irishstatutebook.ie/eli/2023/si/636/made/en/print"
 AT_BAFG = "https://ris.bka.gv.at/eli/bgbl/i/2023/76/P36/NOR40254396"
 NL_ACT = "https://wetten.overheid.nl/BWBR0049571/2025-06-28/0"
+NL_STB = "https://zoek.officielebekendmakingen.nl/stb-2024-87.html"
 FR_R4514 = "https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000048180406/"
 ES_L11 = "https://www.boe.es/buscar/act.php?id=BOE-A-2023-11022"
 ES_RDL1 = "https://www.boe.es/buscar/act.php?id=BOE-A-2013-12632"
@@ -58,9 +59,11 @@ ROWS = [
      "DGCCRF with ARCOM, ARCEP, Banque de France, ACPR, AMF (services)", "VERIFIED_OFFICIAL_TEXT", FR_R4514, VERSION,
      "fine of a 5th-class contravention, amount set by the Code penal (not re-read); whether service breaches "
      "fall under this article is UNKNOWN; secondary tables give EUR 300,000 and EUR 50,000-75,000"),
-    ("NL", "(several; per secondary source)", "", "", "103000", "", "AFM, ACM, ILT", "SECONDARY_UNVERIFIED",
-     DEQUE, READ_1029, "the implementing act (" + NL_ACT + ") amends the Warenwet and the Wet handhaving "
-                     "consumentenbescherming; penalty amounts sit in those acts and were not read"),
+    ("NL", "Implementatiewet toegankelijkheidsvoorschriften (Stb. 2024, 87)", "Warenwet (products); Whc art. 8a "
+     "(services)", "accessibility breaches by product makers/sellers and by service providers", "",
+     "none (administrative fine)", "RDI (products); ACM and others for services", "VERIFIED_OFFICIAL_TEXT", NL_STB,
+     VERSION, "maximum is the 5th fine category of Criminal Code art. 23; its euro value is indexed and was not "
+              "re-read (the secondary table's EUR 103,000 is that category's value in an earlier year)"),
     ("AT", "Barrierefreiheitsgesetz (BaFG)", "s. 36(1)", "s. 36(1) offences, incl. placing a non-compliant "
      "product on the market (Nos 1-2)", "80000", "none (administrative fine)",
      "Sozialministeriumservice (penalty authority and market surveillance)", "VERIFIED_OFFICIAL_TEXT", AT_BAFG,
@@ -113,12 +116,14 @@ def build():
              "accessed_on": VERSION, "access_method": "PUBLIC_WEB_PAGE", "licence": facts},
             {"name": "Ley 11/2023 and RDL 1/2013 (boe.es)", "origin": ES_L11, "accessed_on": VERSION,
              "access_method": "PUBLIC_WEB_PAGE", "licence": facts},
+            {"name": "Staatsblad 2024, 87 (officielebekendmakingen.nl)", "origin": NL_STB, "accessed_on": VERSION,
+             "access_method": "PUBLIC_WEB_PAGE", "licence": facts},
             {"name": "Deque EAA country-by-country table (secondary)", "origin": DEQUE, "accessed_on": READ_1029,
              "access_method": "PUBLIC_WEB_PAGE", "licence": facts},
         ],
         "attribution": "Secondary figures: Deque Systems, EAA country-by-country compliance data (read 2026-10-29).",
         "collection_method": "Read the German and Irish legal texts on 2026-10-29 and the Austrian on 2026-10-30, "
-                             "recorded the penalty provisions; and the French and Spanish on 2026-10-30; NL carried from a secondary table, marked unverified.",
+                             "recorded the penalty provisions; and the French and Spanish on 2026-10-30; the Dutch on 2026-10-30.",
         "processing_steps": ["record amounts and section numbers", "tag verification status", "note conflicts"],
         "columns": [{"name": c, "type": "string", "description": c.replace("_", " ")} for c in COLUMNS],
         "files": [{"path": str(path.relative_to(ROOT)).replace("\\", "/"), "sha256": datacard.sha256_file(path),
@@ -128,7 +133,7 @@ def build():
         "refresh_days": 90,
         "last_refreshed": VERSION,
         "known_limitations": [
-            "DE, IE, AT, FR and ES are verified against the legal text (FR partly: the contravention amount and the service scope are not read); NL is a secondary claim.",
+            "All six countries are tied to the legal text; FR (contravention amount, service scope) and NL (indexed euro value of the 5th fine category) are partly verified.",
             "The source of the EUR 500,000 German figure in secondary tables is UNKNOWN.",
             "Maximum statutory penalties say nothing about enforcement practice.",
         ],
