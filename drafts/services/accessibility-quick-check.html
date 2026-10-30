@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>DRAFT: Accessibility quick-check | Galaxy Forge</title>
+<style>
+body{font-family:system-ui,sans-serif;max-width:760px;margin:2rem auto;padding:0 1rem;line-height:1.6;color:#1f2937}
+.draft{background:#fff3cd;border-left:4px solid #f0ad4e;padding:10px 14px;margin:0 0 1.5rem}
+table{border-collapse:collapse;width:100%;font-size:.9rem;margin:.5rem 0 1rem}
+td,th{border:1px solid #d1d5db;padding:4px 8px;text-align:left}
+.muted{color:#6b7280;font-size:.85rem}
+.note{background:#eef2ff;border-left:4px solid #6366f1;padding:10px 14px}
+</style>
+</head>
+<body>
+<div class="draft"><strong>DRAFT, not published.</strong> There is no request form yet. The "our own site" figures below
+are real and dated 2026-10-29; they will be replaced by a before/after once our own fixes are applied.</div>
+
+<h1>A first accessibility fix list for a small shop</h1>
+<p>If your site has never had an accessibility review, start with what a machine can find reliably: images without
+alternative text, form fields with no label, links and buttons with no name, a page with no language or title, zoom
+switched off. Each finding comes with the page, the line and the WCAG 2.2 criterion it fails.</p>
+
+<p class="note"><strong>What this is not.</strong> It is not an audit, not a certification and not evidence of WCAG, ADA or
+European Accessibility Act compliance. Keyboard use, colour contrast, screen-reader behaviour and whether alt text
+actually describes the image all need a person, and every report lists them as not checked. In 2025 the US FTC
+ordered an accessibility vendor to pay $1M for claiming its automated tool made sites compliant; we make no such claim.</p>
+
+<h2>We ran it on our own site first</h2>
+<table>
+<tr><th>Finding (118 pages)</th><th>Count</th></tr>
+<tr><td>Errors</td><td>0</td></tr>
+<tr><td>Form fields labelled only by placeholder text</td><td>11</td></tr>
+<tr><td>Hidden spam-trap fields still announced to screen readers</td><td>5</td></tr>
+<tr><td>Pages without a main heading (h1)</td><td>3</td></tr>
+<tr><td>Skipped heading levels</td><td>3</td></tr>
+</table>
+<p>16 of the 22 warnings can be fixed mechanically; the other 6 need a decision about each page's outline.</p>
+
+<h2>Scope</h2>
+<p>Up to 10 pages you choose, a ranked fix list, and one re-check after your changes. We do not edit your site and
+do not give legal advice.</p>
+
+<h2>Price (to be confirmed)</h2>
+<p>Planned: $39 for up to 10 pages. Free browser tools exist (axe, WAVE); this is for owners who want the list
+ranked and explained rather than raw tool output.</p>
+
+<p class="muted">Built on services/accessibility_check. No AI model is used; the checks are fixed rules.</p>
+</body>
+</html>

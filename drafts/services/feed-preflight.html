@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>DRAFT: Merchant Center feed preflight | Galaxy Forge</title>
+<style>
+body{font-family:system-ui,sans-serif;max-width:760px;margin:2rem auto;padding:0 1rem;line-height:1.6;color:#1f2937}
+.draft{background:#fff3cd;border-left:4px solid #f0ad4e;padding:10px 14px;margin:0 0 1.5rem}
+table{border-collapse:collapse;width:100%;font-size:.9rem;margin:.5rem 0 1rem}
+td,th{border:1px solid #d1d5db;padding:4px 8px;text-align:left}
+.muted{color:#6b7280;font-size:.85rem}
+</style>
+</head>
+<body>
+<div class="draft"><strong>DRAFT, not published.</strong> The example store is invented. There is no request form yet;
+one will be added only once submissions reliably reach a person.</div>
+
+<h1>Find the feed errors before Google disapproves your products</h1>
+<p>A disapproved item disappears from Shopping ads and free listings until it is fixed and reviewed again.
+Most fixes happen after the damage. This check runs on your exported feed file before you upload it, and
+needs no access to your Merchant Center account.</p>
+
+<h2>What it checks</h2>
+<p>Only rules published in Google's own
+<a href="https://support.google.com/merchants/answer/7052112">product data specification</a> and
+<a href="https://support.google.com/merchants/answer/6324461">GTIN rules</a>: required columns and values, the
+price format (a point for decimals and a currency code), availability values, title and ID length, duplicate IDs,
+links without http(s), the GTIN check digit and restricted GS1 ranges, and an identifier flag that contradicts a GTIN.
+It never invents a code: a wrong GTIN is reported for you to confirm with the manufacturer.</p>
+
+<h2>Example: an invented candle shop, 12 products</h2>
+<table>
+<tr><th>Row</th><th>What was in the feed</th><th>What the report says</th></tr>
+<tr><td>3</td><td><code>24,00 USD</code></td><td>a comma is not accepted as the decimal point</td></tr>
+<tr><td>4</td><td>a GTIN with one wrong digit</td><td>check digit is wrong; ask the manufacturer</td></tr>
+<tr><td>5</td><td><code>In Stock</code></td><td>not a supported value (did you mean in_stock?)</td></tr>
+<tr><td>8, 9</td><td>two products with the same ID</td><td>each product needs its own ID</td></tr>
+<tr><td>13</td><td>price 0.00 and identifier_exists = no next to a GTIN</td><td>two errors</td></tr>
+</table>
+<p>Result: 12 rows, 3 clean, 11 errors and 2 warnings. The full report has one line per finding with the rule it comes from.</p>
+
+<h2>What it does not check</h2>
+<p>Whether your feed price matches the landing page and checkout, image and policy review, category-specific
+attributes, and account settings such as shipping and tax: Google decides those at review. No approval is promised.</p>
+
+<h2>Price (to be confirmed)</h2>
+<p>Planned: $29 for one feed up to 500 rows, including one re-check after your fixes.</p>
+
+<p class="muted">Built on services/feed_preflight; reproducible with build_demo.py. Not affiliated with Google.</p>
+</body>
+</html>

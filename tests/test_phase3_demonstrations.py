@@ -171,5 +171,21 @@ class EaaPenaltyRegister(unittest.TestCase):
         self.assertEqual(at, [16000, 40000, 80000])
 
 
+class OfferDrafts(unittest.TestCase):
+    DRAFTS = ROOT / "drafts" / "services"
+
+    def test_drafts_are_noindex_formless_and_pass_our_own_check(self):
+        pages = sorted(self.DRAFTS.glob("*.html"))
+        self.assertEqual(len(pages), 3)
+        for p in pages:
+            html = p.read_text(encoding="utf-8")
+            self.assertIn('<meta name="robots" content="noindex">', html, p.name)
+            self.assertIn("DRAFT, not published", html, p.name)
+            for banned in ("<form", "fetch(", "/api/", "<script"):
+                self.assertNotIn(banned, html, "%s contains %s" % (p.name, banned))
+        report = a11y.check_path(self.DRAFTS)
+        self.assertEqual((report["errors"], report["warnings"]), (0, 0))
+
+
 if __name__ == "__main__":
     unittest.main()

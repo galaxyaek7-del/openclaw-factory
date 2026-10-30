@@ -77,9 +77,9 @@ Link: `...?utm_source=linkedin&utm_medium=social_organic&utm_campaign=gf-researc
 | D6 | productized services | small shop owners | "a ranked list of accessibility fixes, no compliance claim" | LinkedIn; our own before/after page | accessibility page (not built) | BLOCKED (intake, own fixes first) |
 | D7 | research/data | EU-selling sellers and advisers | "EAA penalties as the statutes state them, with what is still unverified" | LinkedIn | register sample page (not built) | BLOCKED (intake) |
 
-Drafts for D5–D7 are not written yet: the copy should quote the demonstration outputs
-(`services/feed_preflight/demo_package/report.md`, `services/accessibility_check/demo_package/own_site_report.md`,
-`services/research/eaa_penalty_register_brief_2026-10-29.md`) once the pages exist.
+Draft destination pages for D5–D7 exist, unpublished, in `drafts/services/` (noindex, no form, no script;
+they quote the real demonstration outputs and pass our own accessibility check). The posts themselves are
+not drafted: their wording should follow the page once a receiver exists and the page is approved.
 
 ## Measurement, defined before any post
 
