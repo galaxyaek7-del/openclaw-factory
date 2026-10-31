@@ -173,8 +173,8 @@ class AccessibilityCheck(unittest.TestCase):
 
 
 class EaaPenaltyRegister(unittest.TestCase):
-    REL = ROOT / "data_products" / "releases" / "eaa-penalty-register" / "2026-10-30"
-    OLD = ROOT / "data_products" / "releases" / "eaa-penalty-register" / "2026-10-29"
+    REL = ROOT / "data_products" / "releases" / "eaa-penalty-register" / "2026-10-31"
+    OLDER = [ROOT / "data_products" / "releases" / "eaa-penalty-register" / v for v in ("2026-10-29", "2026-10-30")]
 
     def test_every_release_file_matches_the_hash_its_card_pins(self):
         from data_products import datacard
@@ -185,10 +185,11 @@ class EaaPenaltyRegister(unittest.TestCase):
             for f in card["files"]:
                 self.assertEqual(datacard.sha256_file(ROOT / f["path"]), f["sha256"], f["path"])
 
-    def test_the_earlier_release_is_kept_unchanged(self):
+    def test_the_earlier_releases_are_kept_unchanged(self):
         from data_products import datacard
-        card = json.loads((self.OLD / "datacard.json").read_text(encoding="utf-8"))
-        self.assertEqual(card["files"][0]["sha256"], datacard.sha256_file(self.OLD / "eaa_penalty_register.csv"))
+        for old in self.OLDER:
+            card = json.loads((old / "datacard.json").read_text(encoding="utf-8"))
+            self.assertEqual(card["files"][0]["sha256"], datacard.sha256_file(old / "eaa_penalty_register.csv"))
 
     def test_release_validates_and_matches_its_card(self):
         v = json.loads((self.REL / "validation.json").read_text(encoding="utf-8"))
@@ -202,7 +203,7 @@ class EaaPenaltyRegister(unittest.TestCase):
             rows = list(csv.DictReader(f))
         self.assertTrue(all(r["status"] in ("VERIFIED_OFFICIAL_TEXT", "SECONDARY_UNVERIFIED") for r in rows))
         verified = {r["country"] for r in rows if r["status"] == "VERIFIED_OFFICIAL_TEXT"}
-        self.assertEqual(verified, {"DE", "IE", "AT", "FR", "ES", "NL", "IT", "SE", "PL"})
+        self.assertEqual(verified, {"DE", "IE", "AT", "FR", "ES", "NL", "IT", "SE", "PL", "DK"})
         for r in rows:
             if r["status"] == "VERIFIED_OFFICIAL_TEXT":
                 self.assertTrue(r["source_url"].startswith(("https://www.gesetze-im-internet.de/",
@@ -213,11 +214,19 @@ class EaaPenaltyRegister(unittest.TestCase):
                                                             "https://zoek.officielebekendmakingen.nl/",
                                                             "https://www.gazzettaufficiale.it/",
                                                             "https://www.riksdagen.se/",
-                                                            "https://isap.sejm.gov.pl/")))
+                                                            "https://isap.sejm.gov.pl/",
+                                                            "https://www.retsinformation.dk/")))
         de = [r for r in rows if r["country"] == "DE"]
         self.assertEqual(sorted(r["max_fine_eur"] for r in de), ["10000", "100000"])
         at = sorted(int(r["max_fine_eur"]) for r in rows if r["country"] == "AT")
         self.assertEqual(at, [16000, 40000, 80000])
+        # 2026-10-31: the French contravention amounts, the 2026 Dutch category, Denmark without a maximum.
+        fr = sorted(int(r["max_fine_eur"]) for r in rows if r["country"] == "FR" and r["max_fine_eur"])
+        self.assertEqual(fr, [1500, 7500])
+        self.assertIn("110000", [r["max_fine_eur"] for r in rows if r["country"] == "NL"])
+        dk = [r for r in rows if r["country"] == "DK"]
+        self.assertEqual((len(dk), dk[0]["max_fine_eur"]), (1, ""))
+        self.assertIn("no statutory maximum", dk[0]["note"])
 
 
 class OfferDrafts(unittest.TestCase):

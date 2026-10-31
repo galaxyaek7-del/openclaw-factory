@@ -1,7 +1,7 @@
 # Research sample: European Accessibility Act penalties: what the statutes say vs. what is quoted
 
 Date: 2026-10-29. Status: SAMPLE (not offered, not legal advice).
-Dataset: `data_products/releases/eaa-penalty-register/2026-10-30/` (data card PASS; the 2026-10-29 release is kept unchanged).
+Dataset: `data_products/releases/eaa-penalty-register/2026-10-31/` (data card PASS; the 2026-10-29 and 2026-10-30 releases are kept unchanged).
 
 ## Question
 An online seller serving EU consumers asks: "What can a fine be under the EAA?"
@@ -27,10 +27,11 @@ An online seller serving EU consumers asks: "What can a fine be under the EAA?"
   - Source: [RIS](https://ris.bka.gv.at/eli/bgbl/i/2023/76/P36/NOR40254396). This one matches the secondary table.
 - **Netherlands (VERIFIED 2026-10-30, official gazette):**
   - The implementing act ([Staatsblad 2024, 87](https://zoek.officielebekendmakingen.nl/stb-2024-87.html)) sets the maximum administrative fine at the 5th fine category of Criminal Code art. 23, both for products (Warenwet) and for services (Wet handhaving consumentenbescherming).
-  - That category's euro value is indexed and was not re-read. The secondary table's EUR 103,000 matches an earlier year's value.
+  - That category is EUR 110,000 from 1 January 2026 ([Staatsblad 2025, 401](https://zoek.officielebekendmakingen.nl/stb-2025-401.html), read 2026-10-31); it was EUR 103,000 until 31 December 2025, the figure the secondary table still gives.
+  - Criminal Code art. 23(7) lets a court go one category higher for a legal person, but it is a criminal-law rule and this is an administrative fine, so it is not applied.
 - **France (VERIFIED in part, 2026-10-30):**
   - Code de la consommation art. R.451-4 I (created by Décret 2023-931) punishes listed product breaches with the fine of a 5th-class contravention: CE marking, conformity assessment, and manufacturer, importer and distributor duties.
-  - The amount is set by the Code pénal, not re-read for this release. Whether service breaches fall under this article is UNKNOWN.
+  - The amount (read 2026-10-31): EUR 1,500 per 5th-class contravention ([Code pénal art. 131-13](https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000006417258)), EUR 3,000 for a repeat offence where the regulation provides for it; for a legal person five times that, EUR 7,500 (art. 131-41). Whether service breaches fall under this article is UNKNOWN.
   - Source: [Légifrance](https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000048180406/).
   - A contravention is far below the EUR 300,000 one secondary table gives (another gives EUR 50,000–75,000). Where those figures come from is UNKNOWN.
 - **Spain (VERIFIED, 2026-10-30):**
@@ -49,7 +50,11 @@ An online seller serving EU consumers asks: "What can a fine be under the EAA?"
   - Dz. U. 2024 poz. 731: up to ten times the previous year's average monthly salary, capped at 10% of the previous year's turnover.
   - Imposed by the President of PFRON or the market surveillance authority. The article number was not read.
   - Source: [isap.sejm.gov.pl](https://isap.sejm.gov.pl/isap.nsf/DocDetails.xsp?id=WDU20240000731).
-- **Coverage:** all nine countries in this sample are tied to their own legal text. FR and NL each have one figure not re-read (the contravention amount; the indexed category value).
+- **Denmark (VERIFIED 2026-10-31):**
+  - Lov nr. 801 of 7 June 2022 s. 57 punishes breaches of the requirements and duties with a fine and states no maximum; the court sets the amount. Companies are liable under Straffeloven chapter 5 (s. 57(3)).
+  - Read in the act as published; a 2024 amendment (Lov nr. 637) was not read. Source: [retsinformation.dk](https://www.retsinformation.dk/eli/lta/2022/801).
+- **Finland (not included):** the services sanctions sit in Act 306/2019, whose text could not be read on 2026-10-31.
+- **Coverage:** all ten countries in this sample are tied to their own legal text. Open points: France's service scope, Denmark's 2024 amendment, Poland's article number.
 
 ## Why this could be a product
 - **Who:** sellers and their advisers get conflicting numbers from vendors who also sell remediation. A neutral, statute-cited register with a verification status per figure does not appear to exist (INFERRED from the searches; not exhaustive).

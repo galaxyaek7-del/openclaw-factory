@@ -121,7 +121,7 @@ PROFILES: Dict[str, Dict[str, Any]] = {
         "revenue_model": "paid briefs or dataset access (hypothesis)",
         "distribution": "none yet",
         "stage": "BUILD",
-        "stage_evidence": "two validated sample datasets with briefs (USPTO trademark fees; EAA penalty register, 9 countries tied to the statutes, two vendor figures contradicted); not offered",
+        "stage_evidence": "two validated sample datasets with briefs (USPTO trademark fees; EAA penalty register, 10 countries tied to the statutes, two vendor figures contradicted); not offered",
         "demonstration": "services/research/eaa_penalty_register_brief_2026-10-29.md",
         "kpis": [
             {"kpi": "offers defined", "source": "none", "available": "UNKNOWN"},
@@ -249,7 +249,7 @@ EXPERIMENTS = {
     "micro_b2b": {"id": "D2/D5", "state": "BLOCKED: offer page awaits founder approval (e-mail route ready)",
                   "what": "free feed preflight or catalogue clean-up for the first sellers who send a file"},
     "research_data_services": {"id": "D3/D7", "state": "BLOCKED: offer page awaits founder approval (e-mail route ready)",
-                               "what": "free EAA register sample (9 countries); count requests for the full register"},
+                               "what": "free EAA register sample (10 countries); count requests for the full register"},
     "affiliate_intelligence": {"id": None, "state": "NONE", "what": "on hold until a payout route is verified"},
     "content_distribution": {"id": None, "state": "BLOCKED: no visit measurement",
                              "what": "Telegraph counters read daily (platform counter, includes bots)"},
