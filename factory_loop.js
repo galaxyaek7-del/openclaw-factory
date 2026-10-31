@@ -5377,6 +5377,11 @@ async function runTick() {
     // repair, analytics install, inquiry queue); failures reach the decision queue.
     markStep('founder_actions_selfcheck');
     actions.push({ step: 'founder_actions_selfcheck', ...(await runOnceScript('founder_actions_selfcheck.py', { timeoutMs: 10 * 60 * 1000 })) });
+    // 2026-10-31: once a day, gzip copies of the git-ignored business records
+    // (approvals, inquiries, interest, tickets, upload ledgers) into
+    // data/_backups/local-<date>/, restore-checked; secrets never copied.
+    markStep('local_data_backup');
+    actions.push({ step: 'local_data_backup', ...(await runOnceScript('backup_local_data.py', { timeoutMs: 5 * 60 * 1000 })) });
     markStep('kids_youtube_publish');
     actions.push({ step: 'kids_youtube_publish', ...(await runOnceScript('kids_youtube_publish_daily.py', { timeoutMs: 20 * 60 * 1000 })) });
     // 2026-10-29: tool pages for newly published products (site_publish sends
