@@ -1,0 +1,104 @@
+{
+ "id": "B17-001",
+ "slug": "eaa-penalty-exposure-checker",
+ "title": "European Accessibility Act Penalty Exposure Checker (9 EU Countries)",
+ "price_cents": 1900,
+ "files": {
+  "workbook": {
+   "path": "books/batch17/B17-001/eaa_penalty_exposure_checker.xlsx",
+   "bytes": 12530,
+   "sha256": "c059f2a180cc72d0f211637b921da32b38e44e8963d85e219c5e8b5b6dd23eb3"
+  },
+  "guide": {
+   "path": "books/batch17/B17-001/eaa_penalty_exposure_checker_guide.pdf",
+   "bytes": 8587,
+   "sha256": "0c7326d7b532c99e763d05691c1b24b1fb4046b6ea0100c3d575fa5f3610fa26"
+  },
+  "cover": {
+   "path": "books/covers/B17-001.png",
+   "bytes": 53654,
+   "sha256": "a5decaf5f9a0783f024a8fc34b658ab3430ce22ef3d2899811b7d6b19cf2069b"
+  },
+  "bundle": {
+   "path": "books/batch17/B17-001/eaa_penalty_exposure_checker_bundle.zip",
+   "bytes": 18599,
+   "sha256": "5fe68b0806371d446b3cb692a1ca663d5e2d6693f8a598bfca078458740937bf"
+  }
+ },
+ "qa": {
+  "file_test": {
+   "status": "PASS",
+   "problems": []
+  },
+  "recalc": {
+   "engine": "lib/xlsx_eval.py vs independent Python model",
+   "checked": 21,
+   "failed": []
+  },
+  "guide": {
+   "pages": 4,
+   "title_found": true,
+   "disclaimer_found": true
+  },
+  "cover": {
+   "size": [
+    1280,
+    720
+   ]
+  },
+  "brand": {
+   "passed": true,
+   "failed_checks": [],
+   "listing_chars": 1750
+  },
+  "bundle": {
+   "files": [
+    "eaa-penalty-exposure-checker/README.txt",
+    "eaa-penalty-exposure-checker/eaa_penalty_exposure_checker.xlsx",
+    "eaa-penalty-exposure-checker/eaa_penalty_exposure_checker_guide.pdf"
+   ],
+   "corrupt_member": null
+  },
+  "ok": true,
+  "listing": {
+   "description_html": "<p>Enter your turnover and company size and see the maximum fine each of nine EU countries&#x27; own EAA law sets for a company like yours, with the exact provision and a link to the official text for every figure.</p><p>This workbook takes each country&#x27;s maximum penalty from its own legal text (Germany, Ireland, Austria, France, Spain, the Netherlands, Italy, Sweden and Poland), records the provision and the official source, and applies the rules that depend on your company, such as Italy&#x27;s 5% of turnover for very large providers, Austria&#x27;s lower ceiling for small and medium-sized companies, and Poland&#x27;s cap of 10% of turnover.</p><p><strong>What's included</strong></p><ul><li>Statutory maximum penalty for your company in nine EU countries</li><li>Every figure tied to the article and the official legal text it comes from</li><li>Rules that depend on you: SME ceilings, turnover-based caps</li><li>No invented numbers: values a law takes from elsewhere are left for you</li><li>Register of provisions, authorities and verification status</li><li>PDF guide with the method, a worked example and the limits</li></ul><p><strong>Who it's for</strong></p><ul><li>Online shops and service providers selling to EU consumers</li><li>Compliance and legal teams preparing a risk note</li><li>Accessibility consultants and agencies advising clients</li><li>Founders deciding how to prioritise accessibility work</li></ul><p><strong>You get:</strong> eaa_penalty_exposure_checker.xlsx (Inputs, Exposure, Register) and a PDF guide.</p><p>Works in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.</p><p><em>This workbook summarises statutory maximum penalties as read in the official legal texts on 29 and 30 October 2026. It is not legal advice, says nothing about the fines regulators actually impose, and laws change; check the linked source before relying on any figure.</em></p>"
+  }
+ },
+ "category": "Business & Finance",
+ "tags": [
+  "accessibility",
+  "eaa",
+  "compliance",
+  "eu law",
+  "risk assessment",
+  "excel template"
+ ],
+ "currency": "USD",
+ "pricing_evidence": {
+  "basis": "Offers read on 2026-10-30 through a web-search index plus internal Gumroad comparables.",
+  "external_observations": [
+   {
+    "url": "https://reciteme.com/download/eaa-compliance-checklist/",
+    "price_usd": 0,
+    "note": "free EAA checklist (lead magnet)"
+   },
+   {
+    "url": "https://www.deque.com/european-accessibility-act-eaa-compliance/country-compliance-data/",
+    "price_usd": 0,
+    "note": "free country penalty table; Germany figure contradicts the statute"
+   },
+   {
+    "url": "https://eaacompliance.org/",
+    "price_usd": 480.0,
+    "note": "monitoring subscription, EUR 449 per month (Scale plan)"
+   }
+  ],
+  "internal_comparables": [
+   {
+    "id": "B16-008",
+    "price_cents": 1900
+   }
+  ],
+  "rationale": "$19: free tables and checklists exist but cite no provisions and do not compute a company's own ceiling; monitoring services cost hundreds per month. Priced like our other single-purpose tools."
+ }
+}

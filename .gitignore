@@ -176,6 +176,7 @@ books/**/*.zip
 books/_batch14_src/
 books/_batch15_src/
 books/_batch16_src/
+books/_batch17_src/
 data/registry_daily_state.json
 data/tool_pages_daily_state.json
 # customer inquiries: names and e-mail addresses (inquiry_intake.py)

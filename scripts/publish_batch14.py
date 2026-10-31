@@ -47,6 +47,7 @@ BATCHES = {
     "batch14": (ROOT / "books" / "batch14", ROOT / "data" / "batch14_publish_results.json"),
     "batch15": (ROOT / "books" / "batch15", ROOT / "data" / "batch15_publish_results.json"),
     "batch16": (ROOT / "books" / "batch16", ROOT / "data" / "batch16_publish_results.json"),
+    "batch17": (ROOT / "books" / "batch17", ROOT / "data" / "batch17_publish_results.json"),
 }
 COVER_URL = "https://raw.githubusercontent.com/galaxyaek7-del/openclaw-factory/main/books/covers/{id}.png"
 DEFAULT_APPROVALS = ROOT / "data" / "publication_approvals.json"
