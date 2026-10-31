@@ -11,8 +11,8 @@ register keeps each figure next to its source and a verification status:
   SECONDARY_UNVERIFIED    taken from a secondary source, not yet checked
                           against the statute (shown so the gap is visible)
 
-Scope (release 2026-10-31): ten countries, each tied to its own legal text
-(DE, IE, FR, NL, IT, SE, PL, AT, ES, DK). Earlier releases are kept unchanged.
+Scope (release 2026-10-31.2): eleven countries, each tied to its own legal text
+(DE, IE, FR, NL, IT, SE, PL, AT, ES, DK, LU). Earlier releases are kept unchanged.
 Only facts (amounts, section numbers, authority names) are recorded; no legal
 text is reproduced. Not legal advice.
 
@@ -28,10 +28,12 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 from data_products import datacard  # noqa: E402
 
-VERSION = "2026-10-31"  # 2026-10-29: DE, IE; 2026-10-30: AT..PL; 2026-10-31: FR/NL amounts, DK
+VERSION = "2026-10-31.2"  # 2026-10-29: DE, IE; 2026-10-30: AT..PL; 2026-10-31: FR/NL amounts, DK; .2: LU
+RELEASE_DATE = "2026-10-31"  # a second release the same day keeps its own folder; dates stay plain dates
 RELEASE = ROOT / "data_products" / "releases" / "eaa-penalty-register" / VERSION
 READ_1029 = "2026-10-29"  # DE, IE and the secondary table were read on this date
 READ_1030 = "2026-10-30"  # AT, FR R.451-4, NL instrument, IT, SE, PL, ES
+READ_1031 = "2026-10-31"  # FR contravention amounts, NL 2026 category, DK, LU
 BFSG = "https://www.gesetze-im-internet.de/bfsg/__37.html"
 IE_SI = "https://www.irishstatutebook.ie/eli/2023/si/636/made/en/print"
 AT_BAFG = "https://ris.bka.gv.at/eli/bgbl/i/2023/76/P36/NOR40254396"
@@ -47,6 +49,7 @@ FR_CP13141 = "https://www.legifrance.gouv.fr/codes/section_lc/LEGITEXT0000060707
 NL_STB2025 = "https://zoek.officielebekendmakingen.nl/stb-2025-401.html"
 NL_SR23 = "https://wetten.overheid.nl/BWBR0001854/2026-01-01/0/BoekEerste/TiteldeelII/Artikel23"
 DK_LOV = "https://www.retsinformation.dk/eli/lta/2022/801"
+LU_LOI = "https://legilux.public.lu/eli/etat/leg/loi/2023/03/08/a133/jo"
 ES_L11 = "https://www.boe.es/buscar/act.php?id=BOE-A-2023-11022"
 ES_RDL1 = "https://www.boe.es/buscar/act.php?id=BOE-A-2013-12632"
 DEQUE = "https://www.deque.com/european-accessibility-act-eaa-compliance/country-compliance-data/"
@@ -71,10 +74,10 @@ ROWS = [
      "fine of a 5th-class contravention (next two rows for the amount); whether service breaches "
      "fall under this article is UNKNOWN; secondary tables give EUR 300,000 and EUR 50,000-75,000"),
     ("FR", "Code penal", "art. 131-13 5", "amount of a 5th-class contravention (natural persons)", "1500",
-     "none", "", "VERIFIED_OFFICIAL_TEXT", FR_CP13113, VERSION,
+     "none", "", "VERIFIED_OFFICIAL_TEXT", FR_CP13113, READ_1031,
      "up to EUR 3,000 for a repeat offence where the regulation provides for it (not established for R.451-4)"),
     ("FR", "Code penal", "art. 131-41", "legal persons: five times the natural-person maximum for a contravention",
-     "7500", "none", "", "VERIFIED_OFFICIAL_TEXT", FR_CP13141, VERSION,
+     "7500", "none", "", "VERIFIED_OFFICIAL_TEXT", FR_CP13141, READ_1031,
      "EUR 1,500 x 5; EUR 15,000 only where a repeat-offence increase applies"),
     ("NL", "Implementatiewet toegankelijkheidsvoorschriften (Stb. 2024, 87)", "Warenwet (products); Whc art. 8a "
      "(services)", "accessibility breaches by product makers/sellers and by service providers", "",
@@ -82,7 +85,7 @@ ROWS = [
      READ_1030, "maximum is the 5th fine category of Criminal Code art. 23 (next row for its 2026 amount)"),
     ("NL", "Wetboek van Strafrecht art. 23(4), amended by Stb. 2025, 401", "5th fine category",
      "euro value of the 5th category from 1 January 2026", "110000", "none (administrative fine)", "",
-     "VERIFIED_OFFICIAL_TEXT", NL_STB2025, VERSION,
+     "VERIFIED_OFFICIAL_TEXT", NL_STB2025, READ_1031,
      "EUR 103,000 until 31 December 2025 (the secondary tables' figure); art. 23(7), next-higher category for legal "
      "persons, is a criminal-law rule and is not applied to this administrative fine; read in " + NL_SR23),
     ("IT", "D.Lgs. 82/2022", "art. 24(1)", "breach of the accessibility requirements and economic operators' duties "
@@ -125,9 +128,16 @@ ROWS = [
     ("DK", "Lov nr. 801 af 7. juni 2022 (tilgaengelighedskrav for produkter og tjenester)", "s. 57",
      "breaches of the accessibility requirements and operators' duties (s. 57(1) Nos 1-7)", "",
      "none stated (fine only)", "Sikkerhedsstyrelsen and other control authorities", "VERIFIED_OFFICIAL_TEXT",
-     DK_LOV, VERSION, "fine (boede) with no statutory maximum: the court sets the amount; companies are liable under "
+     DK_LOV, READ_1031, "fine (boede) with no statutory maximum: the court sets the amount; companies are liable under "
      "Straffeloven chapter 5 (s. 57(3)); read in the 2022 text as published, a 2024 amendment (Lov nr. 637) was not "
      "read"),
+    ("LU", "Loi du 8 mars 2023 (Memorial A n. 133)", "art. 33", "breaches of the accessibility requirements (art. 6) "
+     "and of the duties of manufacturers, importers, distributors and service providers (arts 9, 11-13, 15)",
+     "500000", "none (criminal fine)", "OSAPS (Office de la surveillance de l'accessibilite des produits et services)",
+     "VERIFIED_OFFICIAL_TEXT", LU_LOI, READ_1031,
+     "EUR 251 to 500,000, proportionate to the extent of the breach; repeat offence EUR 500 to 1,000,000 (art. 33(2)); "
+     "art. 32: administrative fine EUR 250 to 15,000 for obstructing supervision or ignoring OSAPS decisions; read in "
+     "the law as published, later amendments ('loi modifiee') not read"),
 ]
 
 
@@ -169,18 +179,20 @@ def build():
              "access_method": "PUBLIC_WEB_PAGE", "licence": facts},
             {"name": "Dz. U. 2024 poz. 731 (isap.sejm.gov.pl)", "origin": PL_DU, "accessed_on": READ_1030,
              "access_method": "PUBLIC_WEB_PAGE", "licence": facts},
-            {"name": "Code penal arts 131-13 and 131-41 (legifrance.gouv.fr)", "origin": FR_CP13113, "accessed_on": VERSION,
+            {"name": "Code penal arts 131-13 and 131-41 (legifrance.gouv.fr)", "origin": FR_CP13113, "accessed_on": READ_1031,
              "access_method": "PUBLIC_WEB_PAGE", "licence": facts},
-            {"name": "Staatsblad 2025, 401 and Wetboek van Strafrecht art. 23", "origin": NL_STB2025, "accessed_on": VERSION,
+            {"name": "Staatsblad 2025, 401 and Wetboek van Strafrecht art. 23", "origin": NL_STB2025, "accessed_on": READ_1031,
              "access_method": "PUBLIC_WEB_PAGE", "licence": facts},
-            {"name": "Lov nr. 801 af 7. juni 2022 (retsinformation.dk)", "origin": DK_LOV, "accessed_on": VERSION,
+            {"name": "Lov nr. 801 af 7. juni 2022 (retsinformation.dk)", "origin": DK_LOV, "accessed_on": READ_1031,
+             "access_method": "PUBLIC_WEB_PAGE", "licence": facts},
+            {"name": "Loi du 8 mars 2023 (legilux.public.lu, Memorial A n. 133)", "origin": LU_LOI, "accessed_on": READ_1031,
              "access_method": "PUBLIC_WEB_PAGE", "licence": facts},
             {"name": "Deque EAA country-by-country table (secondary)", "origin": DEQUE, "accessed_on": READ_1029,
              "access_method": "PUBLIC_WEB_PAGE", "licence": facts},
         ],
         "attribution": "Secondary figures: Deque Systems, EAA country-by-country compliance data (read 2026-10-29).",
         "collection_method": "Read the German and Irish legal texts on 2026-10-29 and the Austrian on 2026-10-30, "
-                             "recorded the penalty provisions; and the French and Spanish on 2026-10-30; the Dutch, Italian, Swedish and Polish on 2026-10-30; the French contravention amounts, the 2026 Dutch fine category and Denmark on 2026-10-31. SE and PL amounts are not in euro; DK sets no maximum.",
+                             "recorded the penalty provisions; and the French and Spanish on 2026-10-30; the Dutch, Italian, Swedish and Polish on 2026-10-30; the French contravention amounts, the 2026 Dutch fine category, Denmark and Luxembourg on 2026-10-31. SE and PL amounts are not in euro; DK sets no maximum.",
         "processing_steps": ["record amounts and section numbers", "tag verification status", "note conflicts"],
         "columns": [{"name": c, "type": "string", "description": c.replace("_", " ")} for c in COLUMNS],
         "files": [{"path": str(path.relative_to(ROOT)).replace("\\", "/"), "sha256": datacard.sha256_file(path),
@@ -188,16 +200,16 @@ def build():
         "personal_data": {"contains": False},
         "licence_out": "Galaxy Forge compilation of facts",
         "refresh_days": 90,
-        "last_refreshed": VERSION,
+        "last_refreshed": RELEASE_DATE,
         "known_limitations": [
-            "All ten countries are tied to the legal text; open points: FR service scope of R.451-4, DK 2024 amendment not read, PL article number not read.",
-            "Finland was searched on 2026-10-31 but its services sanctions (Act 306/2019) could not be read; not included.",
+            "All eleven countries are tied to the legal text; open points: LU later amendments not read, FR service scope of R.451-4, DK 2024 amendment not read, PL article number not read.",
+            "Finland was searched on 2026-10-31 but its services sanctions (Act 306/2019) could not be read; not included. Belgium was searched the same day: transposition is split across authorities and the final text was not found; not included.",
             "The source of the EUR 500,000 German figure in secondary tables is UNKNOWN.",
             "Maximum statutory penalties say nothing about enforcement practice.",
         ],
     }
     (RELEASE / "datacard.json").write_text(json.dumps(card, indent=1, ensure_ascii=False), encoding="utf-8")
-    result = datacard.validate_card(card, ROOT, today=date.fromisoformat(VERSION))
+    result = datacard.validate_card(card, ROOT, today=date.fromisoformat(RELEASE_DATE))
     (RELEASE / "validation.json").write_text(json.dumps(result, indent=1, ensure_ascii=False, default=str), encoding="utf-8")
     return result
 

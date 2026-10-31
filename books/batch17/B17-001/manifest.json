@@ -1,28 +1,28 @@
 {
  "id": "B17-001",
  "slug": "eaa-penalty-exposure-checker",
- "title": "European Accessibility Act Penalty Exposure Checker (10 EU Countries)",
+ "title": "European Accessibility Act Penalty Exposure Checker (11 EU Countries)",
  "price_cents": 1900,
  "files": {
   "workbook": {
    "path": "books/batch17/B17-001/eaa_penalty_exposure_checker.xlsx",
-   "bytes": 13345,
-   "sha256": "ed7d615140f95fb7202fafc3e11d80d28cfc91cdf0c4247284297ac949b4124c"
+   "bytes": 13738,
+   "sha256": "8f58a77c777e343b34a49e704f5aa7a0b947093888e362711ef041ea8f32d683"
   },
   "guide": {
    "path": "books/batch17/B17-001/eaa_penalty_exposure_checker_guide.pdf",
-   "bytes": 9151,
-   "sha256": "21e26de6fbc7e60dc8ade411b4ee67b673cb5736e8bbd6bec7f964b2f437d795"
+   "bytes": 9278,
+   "sha256": "b8a33baa0673ac232b7f2ecf0d20f7313aa75b968d8759a4224778f53f23a185"
   },
   "cover": {
    "path": "books/covers/B17-001.png",
-   "bytes": 54518,
-   "sha256": "027027e05e6fa71e0ab34cf771163a9df494729440bf179d474fd00591cc4f7a"
+   "bytes": 54584,
+   "sha256": "584917455fef2c16ded7d5a96233d229dc563319790f2cc72fc38255be37e491"
   },
   "bundle": {
    "path": "books/batch17/B17-001/eaa_penalty_exposure_checker_bundle.zip",
-   "bytes": 19885,
-   "sha256": "679af58b2446bd1a631f923ff83444fc54a0267c4a82ba0209b57a4e202fdb17"
+   "bytes": 20386,
+   "sha256": "7208326ebf462b290031444293da18d6c322ce57df3b5192b8dd9da270589f56"
   }
  },
  "qa": {
@@ -32,7 +32,7 @@
   },
   "recalc": {
    "engine": "lib/xlsx_eval.py vs independent Python model",
-   "checked": 23,
+   "checked": 25,
    "failed": []
   },
   "guide": {
@@ -49,7 +49,7 @@
   "brand": {
    "passed": true,
    "failed_checks": [],
-   "listing_chars": 1767
+   "listing_chars": 1785
   },
   "bundle": {
    "files": [
@@ -61,7 +61,7 @@
   },
   "ok": true,
   "listing": {
-   "description_html": "<p>Enter your turnover and company size and see the maximum fine each of ten EU countries&#x27; own EAA law sets for a company like yours, with the exact provision and a link to the official text for every figure.</p><p>This workbook takes each country&#x27;s maximum penalty from its own legal text (Germany, Ireland, Austria, France, Spain, the Netherlands, Italy, Sweden, Poland and Denmark), records the provision and the official source, and applies the rules that depend on your company, such as Italy&#x27;s 5% of turnover for very large providers, Austria&#x27;s lower ceiling for small and medium-sized companies, and Poland&#x27;s cap of 10% of turnover.</p><p><strong>What's included</strong></p><ul><li>Statutory maximum penalty for your company in ten EU countries</li><li>Every figure tied to the article and the official legal text it comes from</li><li>Rules that depend on you: SME ceilings, turnover-based caps</li><li>No invented numbers: France and the Netherlands traced to their 2026 amounts</li><li>Register of provisions, authorities and verification status</li><li>PDF guide with the method, a worked example and the limits</li></ul><p><strong>Who it's for</strong></p><ul><li>Online shops and service providers selling to EU consumers</li><li>Compliance and legal teams preparing a risk note</li><li>Accessibility consultants and agencies advising clients</li><li>Founders deciding how to prioritise accessibility work</li></ul><p><strong>You get:</strong> eaa_penalty_exposure_checker.xlsx (Inputs, Exposure, Register) and a PDF guide.</p><p>Works in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.</p><p><em>This workbook summarises statutory maximum penalties as read in the official legal texts between 29 and 31 October 2026. It is not legal advice, says nothing about the fines regulators actually impose, and laws change; check the linked source before relying on any figure.</em></p>"
+   "description_html": "<p>Enter your turnover and company size and see the maximum fine each of eleven EU countries&#x27; own EAA law sets for a company like yours, with the exact provision and a link to the official text for every figure.</p><p>This workbook takes each country&#x27;s maximum penalty from its own legal text (Germany, Ireland, Austria, France, Spain, the Netherlands, Italy, Sweden, Poland, Denmark and Luxembourg), records the provision and the official source, and applies the rules that depend on your company, such as Italy&#x27;s 5% of turnover for very large providers, Austria&#x27;s lower ceiling for small and medium-sized companies, and Poland&#x27;s cap of 10% of turnover.</p><p><strong>What's included</strong></p><ul><li>Statutory maximum penalty for your company in eleven EU countries</li><li>Every figure tied to the article and the official legal text it comes from</li><li>Rules that depend on you: SME ceilings, turnover-based caps</li><li>No invented numbers: France and the Netherlands traced to their 2026 amounts</li><li>Register of provisions, authorities and verification status</li><li>PDF guide with the method, a worked example and the limits</li></ul><p><strong>Who it's for</strong></p><ul><li>Online shops and service providers selling to EU consumers</li><li>Compliance and legal teams preparing a risk note</li><li>Accessibility consultants and agencies advising clients</li><li>Founders deciding how to prioritise accessibility work</li></ul><p><strong>You get:</strong> eaa_penalty_exposure_checker.xlsx (Inputs, Exposure, Register) and a PDF guide.</p><p>Works in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.</p><p><em>This workbook summarises statutory maximum penalties as read in the official legal texts between 29 and 31 October 2026. It is not legal advice, says nothing about the fines regulators actually impose, and laws change; check the linked source before relying on any figure.</em></p>"
   }
  },
  "category": "Business & Finance",

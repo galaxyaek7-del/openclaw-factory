@@ -173,8 +173,9 @@ class AccessibilityCheck(unittest.TestCase):
 
 
 class EaaPenaltyRegister(unittest.TestCase):
-    REL = ROOT / "data_products" / "releases" / "eaa-penalty-register" / "2026-10-31"
-    OLDER = [ROOT / "data_products" / "releases" / "eaa-penalty-register" / v for v in ("2026-10-29", "2026-10-30")]
+    REL = ROOT / "data_products" / "releases" / "eaa-penalty-register" / "2026-10-31.2"
+    OLDER = [ROOT / "data_products" / "releases" / "eaa-penalty-register" / v
+             for v in ("2026-10-29", "2026-10-30", "2026-10-31")]
 
     def test_every_release_file_matches_the_hash_its_card_pins(self):
         from data_products import datacard
@@ -203,7 +204,7 @@ class EaaPenaltyRegister(unittest.TestCase):
             rows = list(csv.DictReader(f))
         self.assertTrue(all(r["status"] in ("VERIFIED_OFFICIAL_TEXT", "SECONDARY_UNVERIFIED") for r in rows))
         verified = {r["country"] for r in rows if r["status"] == "VERIFIED_OFFICIAL_TEXT"}
-        self.assertEqual(verified, {"DE", "IE", "AT", "FR", "ES", "NL", "IT", "SE", "PL", "DK"})
+        self.assertEqual(verified, {"DE", "IE", "AT", "FR", "ES", "NL", "IT", "SE", "PL", "DK", "LU"})
         for r in rows:
             if r["status"] == "VERIFIED_OFFICIAL_TEXT":
                 self.assertTrue(r["source_url"].startswith(("https://www.gesetze-im-internet.de/",
@@ -215,7 +216,8 @@ class EaaPenaltyRegister(unittest.TestCase):
                                                             "https://www.gazzettaufficiale.it/",
                                                             "https://www.riksdagen.se/",
                                                             "https://isap.sejm.gov.pl/",
-                                                            "https://www.retsinformation.dk/")))
+                                                            "https://www.retsinformation.dk/",
+                                                            "https://legilux.public.lu/")))
         de = [r for r in rows if r["country"] == "DE"]
         self.assertEqual(sorted(r["max_fine_eur"] for r in de), ["10000", "100000"])
         at = sorted(int(r["max_fine_eur"]) for r in rows if r["country"] == "AT")
@@ -227,6 +229,9 @@ class EaaPenaltyRegister(unittest.TestCase):
         dk = [r for r in rows if r["country"] == "DK"]
         self.assertEqual((len(dk), dk[0]["max_fine_eur"]), (1, ""))
         self.assertIn("no statutory maximum", dk[0]["note"])
+        lu = [r for r in rows if r["country"] == "LU"]
+        self.assertEqual([r["max_fine_eur"] for r in lu], ["500000"])
+        self.assertIn("1,000,000", lu[0]["note"])
 
 
 class OfferDrafts(unittest.TestCase):

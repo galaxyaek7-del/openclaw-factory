@@ -39,9 +39,9 @@ switch the loop only reports approved products as ready.
 
 ### New: B17-001, EAA Penalty Exposure Checker ($19, built 2026-10-31)
 
-A workbook giving the statutory maximum EAA penalty in ten EU countries for the
+A workbook giving the statutory maximum EAA penalty in eleven EU countries for the
 buyer's turnover and size, each figure tied to its article and official source
-(register release 2026-10-31). QA: 23 recalc checks plus 44 on two other input
+(register release 2026-10-31.2). QA: 25 recalc checks plus 48 on two other input
 sets, guide, cover, listing all PASS; the dry run holds only on your approval.
 To approve, then publish:
 

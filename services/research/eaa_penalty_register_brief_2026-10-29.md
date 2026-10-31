@@ -1,7 +1,7 @@
 # Research sample: European Accessibility Act penalties: what the statutes say vs. what is quoted
 
 Date: 2026-10-29. Status: SAMPLE (not offered, not legal advice).
-Dataset: `data_products/releases/eaa-penalty-register/2026-10-31/` (data card PASS; the 2026-10-29 and 2026-10-30 releases are kept unchanged).
+Dataset: `data_products/releases/eaa-penalty-register/2026-10-31.2/` (data card PASS; earlier releases are kept unchanged).
 
 ## Question
 An online seller serving EU consumers asks: "What can a fine be under the EAA?"
@@ -53,8 +53,13 @@ An online seller serving EU consumers asks: "What can a fine be under the EAA?"
 - **Denmark (VERIFIED 2026-10-31):**
   - Lov nr. 801 of 7 June 2022 s. 57 punishes breaches of the requirements and duties with a fine and states no maximum; the court sets the amount. Companies are liable under Straffeloven chapter 5 (s. 57(3)).
   - Read in the act as published; a 2024 amendment (Lov nr. 637) was not read. Source: [retsinformation.dk](https://www.retsinformation.dk/eli/lta/2022/801).
+- **Luxembourg (VERIFIED 2026-10-31):**
+  - Loi du 8 mars 2023 art. 33: a criminal fine of EUR 251 to 500,000 for breaching the requirements or the duties of manufacturers, importers, distributors and service providers (arts 6, 9, 11-13, 15); EUR 500 to 1,000,000 for a repeat offence.
+  - Art. 32: an administrative fine of EUR 250 to 15,000 for obstructing supervision or ignoring the authority's decisions. Authority: OSAPS.
+  - Read in the law as published (Memorial A n. 133, 15 March 2023); later amendments were not read. Source: [legilux.public.lu](https://legilux.public.lu/eli/etat/leg/loi/2023/03/08/a133/jo).
+- **Belgium (not included):** the transposition is split across federal and regional authorities; the final text with its sanctions was not found on 2026-10-31.
 - **Finland (not included):** the services sanctions sit in Act 306/2019, whose text could not be read on 2026-10-31.
-- **Coverage:** all ten countries in this sample are tied to their own legal text. Open points: France's service scope, Denmark's 2024 amendment, Poland's article number.
+- **Coverage:** all eleven countries in this sample are tied to their own legal text. Open points: Luxembourg's later amendments, France's service scope, Denmark's 2024 amendment, Poland's article number.
 
 ## Why this could be a product
 - **Who:** sellers and their advisers get conflicting numbers from vendors who also sell remediation. A neutral, statute-cited register with a verification status per figure does not appear to exist (INFERRED from the searches; not exhaustive).
