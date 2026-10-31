@@ -13,6 +13,7 @@ queue shows any that fail.
 """
 import json
 import os
+import re
 import subprocess
 import sys
 import tempfile
@@ -125,6 +126,14 @@ CHECKS = [("publish_approved_products", check_publish), ("listing_repairs", chec
           ("analytics_install", check_analytics_install), ("inquiry_queue", check_inquiry_queue)]
 
 
+# A dry run that could not reach the platform says nothing about the command:
+# it is UNREACHABLE (not a failure, not shown as a broken command) and the
+# whole check is repeated, at most hourly, until the network answers.
+NETWORK_ERROR = re.compile(r"NameResolutionError|getaddrinfo failed|Failed to resolve|Temporary failure in name resolution|"
+                           r"Max retries exceeded|ConnectionError|Connection refused|URLError|timed out|ConnectTimeout|ReadTimeout")
+RETRY_AFTER_SECONDS = 3600
+
+
 def run(now=None, out=OUT, checks=CHECKS):
     now = now or datetime.now(timezone.utc)
     results = {}
@@ -134,9 +143,12 @@ def run(now=None, out=OUT, checks=CHECKS):
                 status, detail = fn(tmp)
             except Exception as exc:  # noqa: BLE001  (a broken check is itself a finding)
                 status, detail = "FAIL", "%s: %s" % (type(exc).__name__, str(exc)[:160])
+            if status == "FAIL" and NETWORK_ERROR.search(detail or ""):
+                status = "UNREACHABLE"
             results[name] = {"status": status, "detail": detail}
     doc = {"checked_at": now.isoformat(timespec="seconds"), "results": results,
-           "failing": [k for k, v in results.items() if v["status"] != "PASS"]}
+           "failing": [k for k, v in results.items() if v["status"] not in ("PASS", "UNREACHABLE")],
+           "unreachable": [k for k, v in results.items() if v["status"] == "UNREACHABLE"]}
     Path(out).parent.mkdir(parents=True, exist_ok=True)
     Path(out).write_text(json.dumps(doc, ensure_ascii=False, indent=1), encoding="utf-8")
     return doc
@@ -145,15 +157,25 @@ def run(now=None, out=OUT, checks=CHECKS):
 def once(now=None, out=OUT, checks=CHECKS):
     now = now or datetime.now(timezone.utc)
     try:
-        last = json.loads(Path(out).read_text(encoding="utf-8")).get("checked_at", "")[:10]
+        prev = json.loads(Path(out).read_text(encoding="utf-8"))
     except (OSError, ValueError):
-        last = None
+        prev = {}
+    last = (prev.get("checked_at") or "")[:10]
     if last == now.date().isoformat():
-        return {"action": "none", "detail": "founder actions already checked today"}
+        if not prev.get("unreachable"):
+            return {"action": "none", "detail": "founder actions already checked today"}
+        try:
+            age = (now - datetime.fromisoformat(prev["checked_at"])).total_seconds()
+        except (KeyError, ValueError):
+            age = RETRY_AFTER_SECONDS
+        if age < RETRY_AFTER_SECONDS:
+            return {"action": "none", "detail": "network unreachable at the last check; retrying after an hour"}
     doc = run(now, out, checks)
-    return {"action": "failed" if doc["failing"] else "checked",
-            "detail": ("failing: " + ", ".join(doc["failing"])) if doc["failing"] else
-                      "all %d founder commands still work" % len(doc["results"])}
+    if doc["failing"]:
+        return {"action": "failed", "detail": "failing: " + ", ".join(doc["failing"])}
+    if doc["unreachable"]:
+        return {"action": "unreachable", "detail": "platform not reachable, retried hourly: " + ", ".join(doc["unreachable"])}
+    return {"action": "checked", "detail": "all %d founder commands still work" % len(doc["results"])}
 
 
 if __name__ == "__main__":

@@ -54,6 +54,18 @@ class SelfCheck(unittest.TestCase):
                   "analytics_install", "inquiry_queue"):
             self.assertIn(n, names)
 
+    def test_an_unreachable_platform_is_retried_not_reported_broken(self):
+        def offline(tmp):
+            return "FAIL", "HTTPSConnection(host='api.gumroad.com'): Failed to resolve 'api.gumroad.com' (getaddrinfo failed)"
+        first = sc.once(NOW, self.out, [("a", ok), ("b", offline)])
+        self.assertEqual(first["action"], "unreachable")
+        doc = json.loads(self.out.read_text(encoding="utf-8"))
+        self.assertEqual((doc["failing"], doc["unreachable"]), ([], ["b"]))
+        self.assertEqual(sc.once(NOW.replace(minute=30), self.out, [("a", ok), ("b", ok)])["action"], "none")
+        again = sc.once(NOW.replace(hour=22, minute=5), self.out, [("a", ok), ("b", ok)])
+        self.assertEqual(again["action"], "checked")
+        self.assertEqual(sc.once(NOW.replace(hour=23), self.out, [("a", ok), ("b", offline)])["action"], "none")
+
     def test_a_product_awaiting_only_approval_is_not_a_failure(self):
         from unittest import mock
         root = Path(self.dir.name) / "root"
