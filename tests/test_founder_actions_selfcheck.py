@@ -54,6 +54,35 @@ class SelfCheck(unittest.TestCase):
                   "analytics_install", "inquiry_queue"):
             self.assertIn(n, names)
 
+    def test_a_product_awaiting_only_approval_is_not_a_failure(self):
+        from unittest import mock
+        root = Path(self.dir.name) / "root"
+        (root / "data").mkdir(parents=True)
+        (root / "data" / "product_registry.json").write_text(json.dumps({"products": [
+            {"internal_id": "B16-008", "primary_state": "READY_FOR_AUTHORIZATION"},
+            {"internal_id": "B17-001", "primary_state": "READY_FOR_AUTHORIZATION"}]}), encoding="utf-8")
+        held = {"authorization": ["authorization: no approval record exists for product 'B17-001'"],
+                "files": ["workbook: missing", "authorization: no approval record exists"]}
+
+        def fake(case):
+            def run(args, timeout=300):
+                report = Path(args[args.index("--report") + 1])
+                if "batch16" in args:
+                    doc = {"summary": {"pass": 1}, "products": [{"id": "B16-008", "status": "PASS"}]}
+                else:
+                    doc = {"summary": {"pass": 0, "hold": 1},
+                           "products": [{"id": "B17-001", "status": "HOLD", "missing_prerequisites": held[case]}]}
+                report.write_text(json.dumps(doc), encoding="utf-8")
+                return 0, "", ""
+            return run
+
+        with mock.patch.object(sc, "ROOT", root), mock.patch.object(sc, "_run", fake("authorization")):
+            status, detail = sc.check_publish(self.dir.name)
+        self.assertEqual(status, "PASS")
+        self.assertIn("awaiting your approval: B17-001", detail)
+        with mock.patch.object(sc, "ROOT", root), mock.patch.object(sc, "_run", fake("files")):
+            self.assertEqual(sc.check_publish(self.dir.name)[0], "FAIL")
+
     def test_the_result_file_is_git_ignored(self):
         import subprocess
         r = subprocess.run(["git", "check-ignore", "-q", "--no-index", "data/founder_actions_selfcheck.json"], cwd=ROOT)

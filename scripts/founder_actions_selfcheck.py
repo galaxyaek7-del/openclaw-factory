@@ -50,16 +50,25 @@ def check_publish(tmp):
         return "PASS", "no product waiting for publication"
     batches = sorted({p["internal_id"].split("-")[0].lower().replace("b", "batch") for p in ready})
     report = Path(tmp) / "publish.json"
-    bad = []
+    bad, awaiting = [], []
     for b in batches:
         ids = [p["internal_id"] for p in ready if p["internal_id"].lower().startswith(b.replace("batch", "b"))]
         rc, out, err = _run(["scripts/publish_batch14.py", "--batch", b, "--approvals", "data/publication_approvals.json",
                              "--only", *ids, "--report", str(report)])
         doc = json.loads(report.read_text(encoding="utf-8")) if report.is_file() else {}
         s = doc.get("summary") or {}
-        if rc != 0 or s.get("pass") != len(ids):
+        # A product held only for the founder's own approval is not a broken
+        # command: the decision queue already asks for that approval.
+        for p in doc.get("products") or []:
+            miss = p.get("missing_prerequisites") or []
+            if p.get("status") == "HOLD" and miss and all(m.startswith("authorization:") for m in miss):
+                awaiting.append(p.get("id"))
+        if rc != 0 or (s.get("pass") or 0) + sum(1 for i in awaiting if i in ids) != len(ids):
             bad.append("%s: %s" % (b, s or (err or out)[-200:]))
-    return ("FAIL", "; ".join(bad)) if bad else ("PASS", "%d product(s) pass every publication gate" % len(ready))
+    if bad:
+        return "FAIL", "; ".join(bad)
+    msg = "%d product(s) pass every publication gate" % (len(ready) - len(awaiting))
+    return "PASS", msg + ("; awaiting your approval: %s" % ", ".join(awaiting) if awaiting else "")
 
 
 def check_listing_repairs(tmp):

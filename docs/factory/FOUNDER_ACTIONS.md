@@ -31,6 +31,22 @@ Each approval is bound to the product's exact files, listing text, price and cur
 and expires (72 h by default); any later change needs a new approval. Without the
 switch the loop only reports approved products as ready.
 
+### New: B17-001, EAA Penalty Exposure Checker ($19, built 2026-10-31)
+
+A workbook giving the statutory maximum EAA penalty in nine EU countries for the
+buyer's turnover and size, each figure tied to its article and official source.
+QA: 21 recalc checks plus 24 on two other input sets, guide, cover, listing all
+PASS; the dry run holds only on your approval. To approve, then publish:
+
+```
+python scripts/approve_products.py --batch batch17 --only B17-001 --reference "<your note>"          # preview
+python scripts/approve_products.py --batch batch17 --only B17-001 --reference "<your note>" --yes    # record
+python scripts/publish_batch14.py --batch batch17 --live --approvals data/publication_approvals.json --only B17-001
+```
+
+Gumroad allows 10 new products per rolling 24 hours; publish B16-008..010 first,
+their approvals expire sooner.
+
 ## 2. Repair the live listings that deliver less than they describe
 
 ```
