@@ -39,6 +39,7 @@ FILES = [
     "data/attribution_log.jsonl", "data/uspto_fee_monitor.jsonl", "data/agent_executions.jsonl",
     "data/agent_tasks.jsonl", "data/evidence_recording_audit_runs.jsonl",
     "data/thin_listing_disclosures_20261031_live.json",  # record of a live listing change (2026-10-31)
+    "data/discoverability_20261031_live.json",  # record of a live listing change (2026-10-31)
     # tracked ledgers whose newest lines may not be committed yet
     "finance_data.json", "data/sales_ledger.jsonl", "data/decisions.jsonl", "data/incident_memory.jsonl",
 ]

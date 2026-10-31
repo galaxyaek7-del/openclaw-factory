@@ -32,6 +32,11 @@ and its live accounts on that date unless marked otherwise.
    the recommended trigger is a first verified sale plus 30 days without a delivery defect.
 4. **Protection, continuously (below).**
 
+**Done 2026-10-31 (founder approval in chat):** Gumroad Discover visibility. 7 untagged listings got
+their manifest tags and 51 moved out of "Other" into categories the account already uses; each
+read back from the live catalog with 0 mismatches. Untagged live listings: 0; "Other": 67 -> 11
+(8 personal tools with no matching category, plus 3 held or defective listings).
+
 ## Protection system
 
 In place (OBSERVED): one write gate for every live platform write; per-product approvals bound to
