@@ -1,6 +1,6 @@
 {
  "schema": 1,
- "generated_at": "2026-10-31T12:01:51+00:00",
+ "generated_at": "2026-10-31T12:21:09+00:00",
  "offers": [
   {
    "offer_id": "B13-001",
@@ -193,7 +193,7 @@
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "qa_status": "QA_PASS",
    "rights_status": "OWNED_ORIGINAL",
-   "description": "See every week's cash position for the next quarter, spot the tight weeks before they happen, and track forecast against actual.\nMonthly profit-and-loss reports hide timing. A month can be profitable on paper while payroll lands two days before the biggest customer pays. A weekly view shows that gap in advance, while there is still time to move a payment, chase an invoice or arrange a credit line.\nWhat's included\n- Weekly view of the next 13 weeks: receipts, payments by category, net cash flow and closing balance\n- Automatic BELOW BUFFER flag for any week under the minimum balance you set\n- Summary: quarter totals, ending cash, lowest balance, number of tight weeks\n- Variance sheet to compare your real bank balance with the forecast each week\n- Formulas locked against accidental overwrites; inputs clearly marked in yellow\n- PDF guide with a worked example and a field-by-field reference\nWho it's for\n- Owners of small and service businesses who pay staff weekly or bi-weekly\n- Freelancers and agencies with lumpy client payments\n- Bookkeepers preparing a cash view for a client or a bank\n- Anyone asked by a lender for a short-term cash forecast\nYou get: 13_week_cash_flow_forecast.xlsx (Inputs, Forecast, Summary, Variance) and this guide.\nWorks in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.\nThis workbook is a planning tool, not accounting, tax or financial advice. Its results are only as accurate as the figures you enter; check important decisions with a qualified accountant.",
+   "description": "See every week's cash position for the next quarter, spot the tight weeks before they happen, and track forecast against actual.\nMonthly profit-and-loss reports hide timing. A month can be profitable on paper while payroll lands two days before the biggest customer pays. A weekly view shows that gap in advance, while there is still time to move a payment, chase an invoice or arrange a credit line.\nWhat's included\n- Weekly view of the next 13 weeks: receipts, payments by category, net cash flow and closing balance\n- Automatic BELOW BUFFER flag for any week under the minimum balance you set\n- Summary: quarter totals, ending cash, lowest balance, number of tight weeks\n- Variance sheet to compare your real bank balance with the forecast each week\n- Formulas locked against accidental overwrites; inputs clearly marked in yellow\n- PDF guide with a worked example and a field-by-field reference\nWho it's for\n- Owners of small and service businesses who pay staff weekly or bi-weekly\n- Freelancers and agencies with lumpy client payments\n- Bookkeepers preparing a cash view for a client or a bank\n- Anyone asked by a lender for a short-term cash forecast\nYou get: 13_week_cash_flow_forecast.xlsx (Inputs, Forecast, Summary, Variance) and a PDF guide.\nWorks in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.\nThis workbook is a planning tool, not accounting, tax or financial advice. Its results are only as accurate as the figures you enter; check important decisions with a qualified accountant.",
    "tags": [
     "finance",
     "small business",
@@ -247,7 +247,7 @@
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "qa_status": "QA_PASS",
    "rights_status": "OWNED_ORIGINAL",
-   "description": "Compare up to 25 buy-and-hold rental deals side by side: monthly cash flow, cap rate, cash-on-cash return, DSCR and a clear verdict against your own targets.\nThis analyzer puts every deal through the same full calculation: financing, operating costs, reserves for vacancy, maintenance and capital expenses, then net operating income, monthly cash flow and the standard return measures lenders and investors use, so you can compare deals on the same terms.\nWhat's included\n- One row per property, up to 25 deals compared side by side\n- Mortgage payment (PMT), NOI, monthly cash flow, cap rate, cash-on-cash return, DSCR and rent-to-price\n- Vacancy, maintenance, management and CapEx reserves built in, so the numbers are not best-case\n- Verdict per deal against the cash-on-cash and DSCR targets you set\n- Handles cash purchases (100% down) as well as financed deals\n- PDF guide with three worked example deals and a field-by-field reference\nWho it's for\n- First-time and small portfolio rental investors\n- House hackers comparing a duplex against a single-family home\n- Agents and wholesalers presenting numbers to buyers\n- Anyone checking a seller's or agent's pro forma\nYou get: rental_property_deal_analyzer.xlsx (Targets, Deals, Summary) and this guide.\nWorks in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.\nThis workbook is an analysis aid, not investment, lending, legal or tax advice. Results depend entirely on the figures you enter; verify rents, taxes, insurance and loan terms with local professionals before buying.",
+   "description": "Compare up to 25 buy-and-hold rental deals side by side: monthly cash flow, cap rate, cash-on-cash return, DSCR and a clear verdict against your own targets.\nThis analyzer puts every deal through the same full calculation: financing, operating costs, reserves for vacancy, maintenance and capital expenses, then net operating income, monthly cash flow and the standard return measures lenders and investors use, so you can compare deals on the same terms.\nWhat's included\n- One row per property, up to 25 deals compared side by side\n- Mortgage payment (PMT), NOI, monthly cash flow, cap rate, cash-on-cash return, DSCR and rent-to-price\n- Vacancy, maintenance, management and CapEx reserves built in, so the numbers are not best-case\n- Verdict per deal against the cash-on-cash and DSCR targets you set\n- Handles cash purchases (100% down) as well as financed deals\n- PDF guide with three worked example deals and a field-by-field reference\nWho it's for\n- First-time and small portfolio rental investors\n- House hackers comparing a duplex against a single-family home\n- Agents and wholesalers presenting numbers to buyers\n- Anyone checking a seller's or agent's pro forma\nYou get: rental_property_deal_analyzer.xlsx (Targets, Deals, Summary) and a PDF guide.\nWorks in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.\nThis workbook is an analysis aid, not investment, lending, legal or tax advice. Results depend entirely on the figures you enter; verify rents, taxes, insurance and loan terms with local professionals before buying.",
    "tags": [
     "real estate",
     "investment",
@@ -301,7 +301,7 @@
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "qa_status": "QA_PASS",
    "rights_status": "OWNED_ORIGINAL",
-   "description": "A real month-by-month payoff schedule for up to six debts: your debt-free month, total interest, and how much you save against paying minimums only.\nThis planner calculates that plan month by month for up to six debts, for up to ten years: the balance of every debt every month, the month each one is paid off, the month you are debt-free, and the total interest. It also estimates what the same debts would cost if you paid minimums only, so you can see the interest you save.\nWhat's included\n- True month-by-month schedule for up to six debts and 120 months, with automatic rollover of freed-up payments\n- Your debt-free month and the payoff month of every single debt\n- Total interest with your plan versus an estimate for minimum payments only, and the interest saved\n- Works for avalanche (highest rate first) or snowball (smallest balance first): just order the rows\n- Warning when a minimum payment does not cover the monthly interest\n- PDF guide with a worked four-debt example\nWho it's for\n- Anyone paying down credit cards, store cards, personal loans or car loans\n- Couples agreeing a shared payoff plan and budget\n- Readers of debt-free books who want the numbers for their own debts\n- Coaches and counsellors preparing a plan with a client\nYou get: debt_payoff_planner.xlsx (Plan, Debts, Schedule) and this guide.\nWorks in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.\nThis workbook is a budgeting aid, not financial, credit or legal advice. It assumes fixed interest rates and that you make every payment on time; lenders' real statements may differ slightly because of daily interest and fees.",
+   "description": "A real month-by-month payoff schedule for up to six debts: your debt-free month, total interest, and how much you save against paying minimums only.\nThis planner calculates that plan month by month for up to six debts, for up to ten years: the balance of every debt every month, the month each one is paid off, the month you are debt-free, and the total interest. It also estimates what the same debts would cost if you paid minimums only, so you can see the interest you save.\nWhat's included\n- True month-by-month schedule for up to six debts and 120 months, with automatic rollover of freed-up payments\n- Your debt-free month and the payoff month of every single debt\n- Total interest with your plan versus an estimate for minimum payments only, and the interest saved\n- Works for avalanche (highest rate first) or snowball (smallest balance first): just order the rows\n- Warning when a minimum payment does not cover the monthly interest\n- PDF guide with a worked four-debt example\nWho it's for\n- Anyone paying down credit cards, store cards, personal loans or car loans\n- Couples agreeing a shared payoff plan and budget\n- Readers of debt-free books who want the numbers for their own debts\n- Coaches and counsellors preparing a plan with a client\nYou get: debt_payoff_planner.xlsx (Plan, Debts, Schedule) and a PDF guide.\nWorks in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.\nThis workbook is a budgeting aid, not financial, credit or legal advice. It assumes fixed interest rates and that you make every payment on time; lenders' real statements may differ slightly because of daily interest and fees.",
    "tags": [
     "personal finance",
     "debt snowball",
@@ -355,7 +355,7 @@
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "qa_status": "QA_PASS",
    "rights_status": "OWNED_ORIGINAL",
-   "description": "Log income and expenses as they happen and see, each quarter, how much to set aside and pay for federal income tax, self-employment tax and state tax.\nThis planner turns that into a routine. You log each payment you receive and each business expense; the workbook assigns them to the IRS estimated-tax periods, and for each quarter calculates self-employment tax, an estimate of federal and state income tax, the amount to pay by the due date, and the share of income to set aside.\nWhat's included\n- Income and expense logs that assign each entry to the IRS estimated-tax period automatically\n- Self-employment tax with the 2026 Social Security wage base (184,500), including W-2 wages you already earned\n- Estimated federal and state income tax using your own rates, and the payment due for each period\n- Safe-harbor installment from last year's tax (100% or 110% rule)\n- Set-aside % so you know how much of each payment to move to savings\n- PDF guide with a full-year worked example and the 2026 due dates\nWho it's for\n- Freelancers, consultants and contractors paid on a 1099\n- Sole proprietors and single-member LLC owners\n- Creators and online sellers with business income\n- People with a side business on top of a W-2 job\nYou get: quarterly_tax_set_aside_planner.xlsx (Settings, Income, Expenses, Quarters) and this guide.\nWorks in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.\nThis workbook estimates taxes for planning; it is not tax advice and does not replace Form 1040-ES or a tax professional. It uses your own estimated income-tax rates and does not model every deduction or credit. Confirm figures with a qualified tax preparer.",
+   "description": "Log income and expenses as they happen and see, each quarter, how much to set aside and pay for federal income tax, self-employment tax and state tax.\nThis planner turns that into a routine. You log each payment you receive and each business expense; the workbook assigns them to the IRS estimated-tax periods, and for each quarter calculates self-employment tax, an estimate of federal and state income tax, the amount to pay by the due date, and the share of income to set aside.\nWhat's included\n- Income and expense logs that assign each entry to the IRS estimated-tax period automatically\n- Self-employment tax with the 2026 Social Security wage base (184,500), including W-2 wages you already earned\n- Estimated federal and state income tax using your own rates, and the payment due for each period\n- Safe-harbor installment from last year's tax (100% or 110% rule)\n- Set-aside % so you know how much of each payment to move to savings\n- PDF guide with a full-year worked example and the 2026 due dates\nWho it's for\n- Freelancers, consultants and contractors paid on a 1099\n- Sole proprietors and single-member LLC owners\n- Creators and online sellers with business income\n- People with a side business on top of a W-2 job\nYou get: quarterly_tax_set_aside_planner.xlsx (Settings, Income, Expenses, Quarters) and a PDF guide.\nWorks in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.\nThis workbook estimates taxes for planning; it is not tax advice and does not replace Form 1040-ES or a tax professional. It uses your own estimated income-tax rates and does not model every deduction or credit. Confirm figures with a qualified tax preparer.",
    "tags": [
     "self employed",
     "tax planning",
@@ -409,7 +409,7 @@
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "qa_status": "QA_PASS",
    "rights_status": "OWNED_ORIGINAL",
-   "description": "The real profit on every product after platform fees, payment processing, Offsite Ads, shipping, packaging and ad spend, plus the price you need for the margin you want.\nThis calculator puts all of it on one row per product, so you see the real profit and margin of each item, which products lose money, and the minimum price and target-margin price for each one.\nWhat's included\n- Real profit and margin per product after every Etsy or Shopify fee, shipping, packaging and ad cost\n- Etsy listing, 6.5% transaction, 3% + 0.25 processing and 15% Offsite Ads (with the 100 cap) built in and editable\n- Shopify Basic 2.9% + 0.30 processing for side-by-side comparison\n- Break-even price and price for your target margin on every row\n- LOSS / LOW MARGIN flags and a summary of how many products need attention\n- PDF guide with five worked example products\nWho it's for\n- Etsy sellers of handmade, vintage, print-on-demand and digital items\n- Shopify store owners pricing new products\n- Sellers deciding whether to offer free shipping or discounts\n- Makers comparing the same product on both platforms\nYou get: etsy_shopify_product_profit_calculator.xlsx (Fees, Products, Summary) and this guide.\nWorks in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.\nFee rates are the published US rates checked on 2026-10-23 (Etsy: 0.20 listing, 6.5% transaction, 3% + 0.25 payment processing, 15% Offsite Ads capped at 100 per order; Shopify Basic: 2.9% + 0.30). Platforms change fees and rates differ by country and plan: confirm on etsy.com/legal/fees and shopify.com/pricing and update the Fees sheet. Not tax or accounting advice. Etsy and Shopify are trademarks of their owners. This is an independent tool with no connection to either company.",
+   "description": "The real profit on every product after platform fees, payment processing, Offsite Ads, shipping, packaging and ad spend, plus the price you need for the margin you want.\nThis calculator puts all of it on one row per product, so you see the real profit and margin of each item, which products lose money, and the minimum price and target-margin price for each one.\nWhat's included\n- Real profit and margin per product after every Etsy or Shopify fee, shipping, packaging and ad cost\n- Etsy listing, 6.5% transaction, 3% + 0.25 processing and 15% Offsite Ads (with the 100 cap) built in and editable\n- Shopify Basic 2.9% + 0.30 processing for side-by-side comparison\n- Break-even price and price for your target margin on every row\n- LOSS / LOW MARGIN flags and a summary of how many products need attention\n- PDF guide with five worked example products\nWho it's for\n- Etsy sellers of handmade, vintage, print-on-demand and digital items\n- Shopify store owners pricing new products\n- Sellers deciding whether to offer free shipping or discounts\n- Makers comparing the same product on both platforms\nYou get: etsy_shopify_product_profit_calculator.xlsx (Fees, Products, Summary) and a PDF guide.\nWorks in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.\nFee rates are the published US rates checked on 2026-10-23 (Etsy: 0.20 listing, 6.5% transaction, 3% + 0.25 payment processing, 15% Offsite Ads capped at 100 per order; Shopify Basic: 2.9% + 0.30). Platforms change fees and rates differ by country and plan: confirm on etsy.com/legal/fees and shopify.com/pricing and update the Fees sheet. Not tax or accounting advice. Etsy and Shopify are trademarks of their owners. This is an independent tool with no connection to either company.",
    "tags": [
     "ecommerce",
     "etsy",
@@ -463,7 +463,7 @@
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "qa_status": "QA_PASS",
    "rights_status": "OWNED_ORIGINAL",
-   "description": "Price every service from your real costs and capacity: cost per billable hour, minimum price, target-margin price, and whether next month's plan covers your costs and your own pay.\nThis calculator works that number out from your fixed costs, your target owner pay and your real capacity (weeks worked, hours per week and the share of hours that are billable). Every service then gets a floor price that covers its share of costs and fees, a target price that adds your profit margin, and a status against what you charge today.\nWhat's included\n- Your real cost per billable hour from fixed costs, owner pay and capacity\n- Floor price and target-margin price for every service, with BELOW COST / BELOW TARGET flags\n- Profit, margin and contribution at your current prices\n- Monthly plan: revenue, hours, capacity used and whether it covers your costs and your pay\n- Price-linked fees (card processing, platforms) included in every price\n- PDF guide with a worked example for a four-service studio\nWho it's for\n- Freelancers, consultants and coaches\n- Agencies and studios\n- Trades and home-service businesses pricing by the job\n- Salons, clinics and other appointment businesses\nYou get: service_pricing_break_even_calculator.xlsx (Costs & Capacity, Services, Summary) and this guide.\nWorks in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.\nThis workbook is a pricing aid, not accounting, tax or legal advice. It relies on your own cost and time estimates; review prices with your accountant where needed.",
+   "description": "Price every service from your real costs and capacity: cost per billable hour, minimum price, target-margin price, and whether next month's plan covers your costs and your own pay.\nThis calculator works that number out from your fixed costs, your target owner pay and your real capacity (weeks worked, hours per week and the share of hours that are billable). Every service then gets a floor price that covers its share of costs and fees, a target price that adds your profit margin, and a status against what you charge today.\nWhat's included\n- Your real cost per billable hour from fixed costs, owner pay and capacity\n- Floor price and target-margin price for every service, with BELOW COST / BELOW TARGET flags\n- Profit, margin and contribution at your current prices\n- Monthly plan: revenue, hours, capacity used and whether it covers your costs and your pay\n- Price-linked fees (card processing, platforms) included in every price\n- PDF guide with a worked example for a four-service studio\nWho it's for\n- Freelancers, consultants and coaches\n- Agencies and studios\n- Trades and home-service businesses pricing by the job\n- Salons, clinics and other appointment businesses\nYou get: service_pricing_break_even_calculator.xlsx (Costs & Capacity, Services, Summary) and a PDF guide.\nWorks in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.\nThis workbook is a pricing aid, not accounting, tax or legal advice. It relies on your own cost and time estimates; review prices with your accountant where needed.",
    "tags": [
     "pricing",
     "break even",
@@ -517,7 +517,7 @@
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "qa_status": "QA_PASS",
    "rights_status": "OWNED_ORIGINAL",
-   "description": "Know what to reorder, when and how much: reorder points with safety stock, days of stock left, and a suggested order list for every SKU.\nA reorder point fixes that. It is the stock level at which you must order so that the new stock arrives before you run out: average daily sales x supplier lead time, plus a safety buffer for slower deliveries or a busy week. This tracker calculates it for every SKU, compares it with what you have on hand and already on order, and tells you which items to reorder now, which soon, and how many to order.\nWhat's included\n- Reorder point with safety stock for every SKU, from your sales rate and supplier lead time\n- REORDER NOW / REORDER SOON / OK status that counts stock already on order\n- Suggested order quantity that respects supplier minimums\n- Days of stock left, order value and total stock value\n- Up to 200 SKUs, filterable and sortable\n- PDF guide with a worked six-SKU example\nWho it's for\n- Etsy, Shopify and Amazon sellers holding their own stock\n- Small shops, cafes and salons buying supplies\n- Makers managing raw materials\n- Anyone currently reordering from memory\nYou get: inventory_reorder_point_tracker.xlsx (Settings, Items, Summary) and this guide.\nWorks in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.\nThis workbook is a planning aid based on the sales rates and lead times you enter; it does not connect to your store or supplier, and stock-outs can still happen when demand or lead times change. Not accounting advice.",
+   "description": "Know what to reorder, when and how much: reorder points with safety stock, days of stock left, and a suggested order list for every SKU.\nA reorder point fixes that. It is the stock level at which you must order so that the new stock arrives before you run out: average daily sales x supplier lead time, plus a safety buffer for slower deliveries or a busy week. This tracker calculates it for every SKU, compares it with what you have on hand and already on order, and tells you which items to reorder now, which soon, and how many to order.\nWhat's included\n- Reorder point with safety stock for every SKU, from your sales rate and supplier lead time\n- REORDER NOW / REORDER SOON / OK status that counts stock already on order\n- Suggested order quantity that respects supplier minimums\n- Days of stock left, order value and total stock value\n- Up to 200 SKUs, filterable and sortable\n- PDF guide with a worked six-SKU example\nWho it's for\n- Etsy, Shopify and Amazon sellers holding their own stock\n- Small shops, cafes and salons buying supplies\n- Makers managing raw materials\n- Anyone currently reordering from memory\nYou get: inventory_reorder_point_tracker.xlsx (Settings, Items, Summary) and a PDF guide.\nWorks in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.\nThis workbook is a planning aid based on the sales rates and lead times you enter; it does not connect to your store or supplier, and stock-outs can still happen when demand or lead times change. Not accounting advice.",
    "tags": [
     "ecommerce",
     "inventory",
@@ -571,7 +571,7 @@
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "qa_status": "QA_PASS",
    "rights_status": "OWNED_ORIGINAL",
-   "description": "Track every lead and proposal from first contact to won or lost: weighted pipeline value, win rate, follow-ups due, and which lead sources actually bring paying clients.\nThis tracker keeps every lead on one row with its value and stage. It calculates a weighted pipeline value from the probability you give each stage, flags open deals that have not been contacted for longer than your follow-up limit, and reports your win rate, average deal size and results by lead source.\nWhat's included\n- One row per lead from first contact to won or lost, with value and stage\n- Weighted pipeline value from stage probabilities you set\n- FOLLOW UP flag for open deals that have gone quiet past your limit\n- Win rate, average won deal and days to close\n- Results by lead source: leads, wins, won value and win rate\n- PDF guide with a worked ten-lead example\nWho it's for\n- Freelancers sending proposals\n- Small agencies and studios\n- Consultants and coaches\n- Trades and contractors quoting jobs\nYou get: client_pipeline_proposal_tracker.xlsx (Settings, Pipeline, Summary) and this guide.\nWorks in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.\nThis workbook is an organising aid. Weighted values are estimates based on the stage probabilities you set, not forecasts of what will close.",
+   "description": "Track every lead and proposal from first contact to won or lost: weighted pipeline value, win rate, follow-ups due, and which lead sources actually bring paying clients.\nThis tracker keeps every lead on one row with its value and stage. It calculates a weighted pipeline value from the probability you give each stage, flags open deals that have not been contacted for longer than your follow-up limit, and reports your win rate, average deal size and results by lead source.\nWhat's included\n- One row per lead from first contact to won or lost, with value and stage\n- Weighted pipeline value from stage probabilities you set\n- FOLLOW UP flag for open deals that have gone quiet past your limit\n- Win rate, average won deal and days to close\n- Results by lead source: leads, wins, won value and win rate\n- PDF guide with a worked ten-lead example\nWho it's for\n- Freelancers sending proposals\n- Small agencies and studios\n- Consultants and coaches\n- Trades and contractors quoting jobs\nYou get: client_pipeline_proposal_tracker.xlsx (Settings, Pipeline, Summary) and a PDF guide.\nWorks in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.\nThis workbook is an organising aid. Weighted values are estimates based on the stage probabilities you set, not forecasts of what will close.",
    "tags": [
     "freelancer",
     "crm",
@@ -625,7 +625,7 @@
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "qa_status": "QA_PASS",
    "rights_status": "OWNED_ORIGINAL",
-   "description": "Month by month for three years: revenue, costs, burn and cash. See your runway, your break-even month, and whether you reach break-even before the money runs out, with a second scenario to compare.\nThis planner projects 36 months from a few assumptions you control: cash today, current monthly revenue and costs, and how fast each grows. It adds any one-off items you know about (a fundraise, an equipment purchase, a big contract) and calculates monthly burn, ending cash, your runway, your break-even month and whether you get there in time.\nWhat's included\n- 36-month projection of revenue, costs, burn and ending cash from a few assumptions\n- Runway in months, break-even month, lowest cash and whether break-even comes before cash runs out\n- A second scenario next to the plan to test cost cuts, slower growth or price changes\n- One-off items for fundraises, loans, equipment and big contracts\n- Monthly status: OUT OF CASH, BURNING or PROFITABLE\n- PDF guide with a worked example comparing plan and scenario\nWho it's for\n- Founders of bootstrapped and early-stage startups\n- Owners of small companies investing ahead of revenue\n- Agencies and studios planning a hire\n- Anyone preparing numbers for investors or a bank\nYou get: startup_runway_burn_planner.xlsx (Assumptions, Plan, Scenario, Summary) and this guide.\nWorks in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.\nThis workbook is a planning model, not financial, investment or legal advice. Projections are only as good as the growth and cost assumptions you enter; real results will differ.",
+   "description": "Month by month for three years: revenue, costs, burn and cash. See your runway, your break-even month, and whether you reach break-even before the money runs out, with a second scenario to compare.\nThis planner projects 36 months from a few assumptions you control: cash today, current monthly revenue and costs, and how fast each grows. It adds any one-off items you know about (a fundraise, an equipment purchase, a big contract) and calculates monthly burn, ending cash, your runway, your break-even month and whether you get there in time.\nWhat's included\n- 36-month projection of revenue, costs, burn and ending cash from a few assumptions\n- Runway in months, break-even month, lowest cash and whether break-even comes before cash runs out\n- A second scenario next to the plan to test cost cuts, slower growth or price changes\n- One-off items for fundraises, loans, equipment and big contracts\n- Monthly status: OUT OF CASH, BURNING or PROFITABLE\n- PDF guide with a worked example comparing plan and scenario\nWho it's for\n- Founders of bootstrapped and early-stage startups\n- Owners of small companies investing ahead of revenue\n- Agencies and studios planning a hire\n- Anyone preparing numbers for investors or a bank\nYou get: startup_runway_burn_planner.xlsx (Assumptions, Plan, Scenario, Summary) and a PDF guide.\nWorks in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.\nThis workbook is a planning model, not financial, investment or legal advice. Projections are only as good as the growth and cost assumptions you enter; real results will differ.",
    "tags": [
     "startup",
     "cash flow",
@@ -679,7 +679,7 @@
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "qa_status": "QA_PASS",
    "rights_status": "OWNED_ORIGINAL",
-   "description": "Give every dollar of this month's income a job, log spending as it happens, and see category by category where the money actually went.\nThis planner makes that a monthly routine: list your income, plan each category, then log transactions as they happen. Actual spending per category is added up automatically from the transaction log, so you see during the month, not after it, which categories are running over.\nWhat's included\n- Zero-based plan: income minus planned categories, with 'left to assign' until every dollar has a job\n- Transaction log that totals each category automatically and flags OVER budget\n- Category check that catches transactions logged to a category not in your budget\n- Needs / Wants / Savings / Debt split compared with the 50/30/20 guideline\n- Ready-made example categories you can rename\n- PDF guide with a worked example month\nWho it's for\n- Anyone starting a budget for the first time\n- Couples sharing household money\n- People paying off debt who need every dollar planned\n- Freelancers smoothing an irregular income\nYou get: zero_based_monthly_budget_planner.xlsx (Income, Categories, Transactions, Summary) and this guide.\nWorks in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.\nThis workbook is a personal budgeting aid, not financial advice. It does not connect to your bank; it shows only what you enter.",
+   "description": "Give every dollar of this month's income a job, log spending as it happens, and see category by category where the money actually went.\nThis planner makes that a monthly routine: list your income, plan each category, then log transactions as they happen. Actual spending per category is added up automatically from the transaction log, so you see during the month, not after it, which categories are running over.\nWhat's included\n- Zero-based plan: income minus planned categories, with 'left to assign' until every dollar has a job\n- Transaction log that totals each category automatically and flags OVER budget\n- Category check that catches transactions logged to a category not in your budget\n- Needs / Wants / Savings / Debt split compared with the 50/30/20 guideline\n- Ready-made example categories you can rename\n- PDF guide with a worked example month\nWho it's for\n- Anyone starting a budget for the first time\n- Couples sharing household money\n- People paying off debt who need every dollar planned\n- Freelancers smoothing an irregular income\nYou get: zero_based_monthly_budget_planner.xlsx (Income, Categories, Transactions, Summary) and a PDF guide.\nWorks in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.\nThis workbook is a personal budgeting aid, not financial advice. It does not connect to your bank; it shows only what you enter.",
    "tags": [
     "monthly budget",
     "personal finance",
@@ -733,7 +733,7 @@
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "qa_status": "QA_PASS",
    "rights_status": "OWNED_ORIGINAL",
-   "description": "Find out whether a refinance really pays: monthly savings, break-even month, and the true cost difference over the years you will actually keep the loan.\nMost quick calculators stop at the monthly saving. This workbook also finds the break-even month, and compares the two loans over the period you expect to keep the loan, counting the payments made and the balance still owed at the end, so a longer new term cannot hide its cost.\nWhat's included\n- Monthly payment for your current loan and the new offer\n- Break-even month: when the closing costs are paid back by the monthly saving\n- Net benefit over the years you will actually keep the loan, counting the balance still owed\n- Option to pay closing costs in cash or roll them into the new loan\n- Year by Year sheet: both balances and the running advantage for ten years\n- PDF guide with a worked example and a field-by-field reference\nWho it's for\n- Homeowners comparing a refinance offer with their current mortgage\n- Borrowers deciding between paying closing costs in cash or rolling them into the loan\n- Anyone comparing two fixed-rate loan offers on the same balance\n- Small landlords reviewing refinancing on a rental property\nYou get: refinance_break_even_calculator.xlsx (Inputs, Comparison, Year by Year) and this guide.\nWorks in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.\nThis workbook is a comparison tool, not financial, lending or tax advice. It uses fixed-rate payment math and the figures you enter; check any loan decision against your lender's official Loan Estimate and with a qualified adviser.",
+   "description": "Find out whether a refinance really pays: monthly savings, break-even month, and the true cost difference over the years you will actually keep the loan.\nMost quick calculators stop at the monthly saving. This workbook also finds the break-even month, and compares the two loans over the period you expect to keep the loan, counting the payments made and the balance still owed at the end, so a longer new term cannot hide its cost.\nWhat's included\n- Monthly payment for your current loan and the new offer\n- Break-even month: when the closing costs are paid back by the monthly saving\n- Net benefit over the years you will actually keep the loan, counting the balance still owed\n- Option to pay closing costs in cash or roll them into the new loan\n- Year by Year sheet: both balances and the running advantage for ten years\n- PDF guide with a worked example and a field-by-field reference\nWho it's for\n- Homeowners comparing a refinance offer with their current mortgage\n- Borrowers deciding between paying closing costs in cash or rolling them into the loan\n- Anyone comparing two fixed-rate loan offers on the same balance\n- Small landlords reviewing refinancing on a rental property\nYou get: refinance_break_even_calculator.xlsx (Inputs, Comparison, Year by Year) and a PDF guide.\nWorks in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.\nThis workbook is a comparison tool, not financial, lending or tax advice. It uses fixed-rate payment math and the figures you enter; check any loan decision against your lender's official Loan Estimate and with a qualified adviser.",
    "tags": [
     "break even",
     "mortgage",
@@ -787,7 +787,7 @@
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "qa_status": "QA_PASS",
    "rights_status": "OWNED_ORIGINAL",
-   "description": "What a hire really costs beyond the salary: employer payroll taxes, benefits, workers' comp, equipment and paid time off, with the true cost per productive hour.\nThis workbook adds every one of those costs to a wage you choose, shows the total annual cost, the multiplier over the wage, and the cost per productive hour once paid holidays and time off are taken out, so you can price your work and budget the hire with real numbers.\nWhat's included\n- Total yearly cost of a hire: wage, employer payroll taxes, workers' comp, benefits, equipment\n- 2026 federal figures filled in (Social Security wage base $184,500, Medicare 1.45%, federal unemployment tax 0.6% on $7,000), all editable\n- Your state unemployment rate and wage base, and your workers' comp rate, as inputs\n- Cost multiplier over the wage and true cost per productive hour\n- Compare up to eight roles side by side\n- PDF guide with a worked example and a field-by-field reference\nWho it's for\n- Owners planning their first or next employee\n- Founders comparing an employee with a contractor quote\n- Service businesses pricing work from the real cost of staff time\n- Managers preparing a hiring budget\nYou get: employee_true_cost_calculator.xlsx (Rates, One Hire, Compare Roles) and this guide.\nWorks in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.\nThis workbook is a planning estimate, not payroll, tax or legal advice. Tax rates and wage bases change every year and state unemployment and workers' compensation rates differ by employer; confirm current figures with your payroll provider or accountant before budgeting a hire.",
+   "description": "What a hire really costs beyond the salary: employer payroll taxes, benefits, workers' comp, equipment and paid time off, with the true cost per productive hour.\nThis workbook adds every one of those costs to a wage you choose, shows the total annual cost, the multiplier over the wage, and the cost per productive hour once paid holidays and time off are taken out, so you can price your work and budget the hire with real numbers.\nWhat's included\n- Total yearly cost of a hire: wage, employer payroll taxes, workers' comp, benefits, equipment\n- 2026 federal figures filled in (Social Security wage base $184,500, Medicare 1.45%, federal unemployment tax 0.6% on $7,000), all editable\n- Your state unemployment rate and wage base, and your workers' comp rate, as inputs\n- Cost multiplier over the wage and true cost per productive hour\n- Compare up to eight roles side by side\n- PDF guide with a worked example and a field-by-field reference\nWho it's for\n- Owners planning their first or next employee\n- Founders comparing an employee with a contractor quote\n- Service businesses pricing work from the real cost of staff time\n- Managers preparing a hiring budget\nYou get: employee_true_cost_calculator.xlsx (Rates, One Hire, Compare Roles) and a PDF guide.\nWorks in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.\nThis workbook is a planning estimate, not payroll, tax or legal advice. Tax rates and wage bases change every year and state unemployment and workers' compensation rates differ by employer; confirm current figures with your payroll provider or accountant before budgeting a hire.",
    "tags": [
     "small business",
     "calculator",
@@ -841,7 +841,7 @@
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "qa_status": "QA_PASS",
    "rights_status": "OWNED_ORIGINAL",
-   "description": "Compare buying with a loan and leasing on the same footing: everything you pay over the lease period, minus what the car is worth to you at the end.\nThis workbook compares the two over the same period, the length of the lease. For buying it counts the down payment, the loan payments, the loan balance still owed at the end, maintenance, minus the resale value you expect; for leasing it counts the amount due at signing, the payments with tax, the fees and any extra-mileage charge.\nWhat's included\n- Buy and lease compared over the same period, not by monthly payment\n- Buying counts the loan balance still owed and the resale value at the end\n- Leasing counts amount due at signing, tax on payments, fees and extra-mileage charges\n- Break-even resale value: how much the decision depends on your resale estimate\n- Works for personal and company-car decisions\n- PDF guide with a worked example and a field-by-field reference\nWho it's for\n- Drivers choosing between a lease offer and a car loan\n- Small business owners comparing a company car lease with a purchase\n- Anyone who wants to check a dealer's 'lower monthly payment' pitch\nYou get: car_buy_vs_lease_calculator.xlsx (Inputs, Comparison) and this guide.\nWorks in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.\nThis workbook is a comparison tool, not financial or tax advice. Results depend on the quotes and the resale value you enter; read the lease contract and the loan disclosure before signing, and check business-use tax treatment with an accountant.",
+   "description": "Compare buying with a loan and leasing on the same footing: everything you pay over the lease period, minus what the car is worth to you at the end.\nThis workbook compares the two over the same period, the length of the lease. For buying it counts the down payment, the loan payments, the loan balance still owed at the end, maintenance, minus the resale value you expect; for leasing it counts the amount due at signing, the payments with tax, the fees and any extra-mileage charge.\nWhat's included\n- Buy and lease compared over the same period, not by monthly payment\n- Buying counts the loan balance still owed and the resale value at the end\n- Leasing counts amount due at signing, tax on payments, fees and extra-mileage charges\n- Break-even resale value: how much the decision depends on your resale estimate\n- Works for personal and company-car decisions\n- PDF guide with a worked example and a field-by-field reference\nWho it's for\n- Drivers choosing between a lease offer and a car loan\n- Small business owners comparing a company car lease with a purchase\n- Anyone who wants to check a dealer's 'lower monthly payment' pitch\nYou get: car_buy_vs_lease_calculator.xlsx (Inputs, Comparison) and a PDF guide.\nWorks in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.\nThis workbook is a comparison tool, not financial or tax advice. Results depend on the quotes and the resale value you enter; read the lease contract and the loan disclosure before signing, and check business-use tax treatment with an accountant.",
    "tags": [
     "calculator",
     "car buying",
@@ -895,7 +895,7 @@
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "qa_status": "QA_PASS",
    "rights_status": "OWNED_ORIGINAL",
-   "description": "Split your budget across categories, record every quote and contract, track deposits and the balances still due, and see at once which category has gone over.\nThis workbook keeps the budget and the contracts in one place. You set a total and split it across categories; for each category you record what you have actually agreed with the vendor, what you have paid and when the balance is due. Every category over its plan is flagged, and the Summary shows money committed, paid, still owed, and the cost per guest.\nWhat's included\n- Budget split across 15 categories with planned amounts from your total\n- Contracted amount, payments made, balance due and due date for every vendor\n- OVER PLAN flag the moment a contract exceeds its category\n- Summary: committed, paid, still owed, uncommitted budget, cost per guest\n- Planned shares check: tells you when the split does not add up to 100%\n- PDF guide with a worked example and a field-by-field reference\nWho it's for\n- Couples planning their own wedding\n- Parents or family members managing the payments\n- Wedding planners and coordinators tracking several vendors for a client\nYou get: wedding_budget_vendor_payment_planner.xlsx (Budget, Vendors, Summary) and this guide.\nWorks in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.\nThis workbook is a planning tool, not financial, legal or tax advice. Amounts and due dates are only as accurate as the figures you enter; always check payment terms and cancellation clauses in each vendor's written contract.",
+   "description": "Split your budget across categories, record every quote and contract, track deposits and the balances still due, and see at once which category has gone over.\nThis workbook keeps the budget and the contracts in one place. You set a total and split it across categories; for each category you record what you have actually agreed with the vendor, what you have paid and when the balance is due. Every category over its plan is flagged, and the Summary shows money committed, paid, still owed, and the cost per guest.\nWhat's included\n- Budget split across 15 categories with planned amounts from your total\n- Contracted amount, payments made, balance due and due date for every vendor\n- OVER PLAN flag the moment a contract exceeds its category\n- Summary: committed, paid, still owed, uncommitted budget, cost per guest\n- Planned shares check: tells you when the split does not add up to 100%\n- PDF guide with a worked example and a field-by-field reference\nWho it's for\n- Couples planning their own wedding\n- Parents or family members managing the payments\n- Wedding planners and coordinators tracking several vendors for a client\nYou get: wedding_budget_vendor_payment_planner.xlsx (Budget, Vendors, Summary) and a PDF guide.\nWorks in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.\nThis workbook is a planning tool, not financial, legal or tax advice. Amounts and due dates are only as accurate as the figures you enter; always check payment terms and cancellation clauses in each vendor's written contract.",
    "tags": [
     "budget",
     "planner",
@@ -949,7 +949,7 @@
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "qa_status": "QA_PASS",
    "rights_status": "OWNED_ORIGINAL",
-   "description": "Compare contractor quotes line by line, catch the quote that leaves items out, choose per item, and see your total with a contingency against the budget.\nThis workbook breaks the job into line items. You enter your own estimate and each contractor's price per item; it shows the lowest price per item, totals each contractor only over the items they actually priced, and marks a quote INCOMPLETE when it leaves items out, so totals are never compared unfairly.\nWhat's included\n- Line-by-line comparison of three contractor quotes with your own estimate\n- Lowest price per item and contractor totals over the items they actually priced\n- INCOMPLETE flag for any quote that leaves items out\n- Choose a contractor per item; contingency added at the rate you set\n- Budget check: total with contingency against your budget\n- PDF guide with a worked example and a field-by-field reference\nWho it's for\n- Homeowners planning a kitchen, bathroom or whole-house renovation\n- Landlords comparing quotes for a unit refurbishment\n- Anyone collecting three quotes and wanting a fair comparison\nYou get: renovation_budget_quote_comparison.xlsx (Project, Line Items, Summary) and this guide.\nWorks in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.\nThis workbook is a budgeting and comparison tool, not construction, legal or financial advice. Check licences, insurance, permits, payment terms and exactly what each quote includes before you sign a contract.",
+   "description": "Compare contractor quotes line by line, catch the quote that leaves items out, choose per item, and see your total with a contingency against the budget.\nThis workbook breaks the job into line items. You enter your own estimate and each contractor's price per item; it shows the lowest price per item, totals each contractor only over the items they actually priced, and marks a quote INCOMPLETE when it leaves items out, so totals are never compared unfairly.\nWhat's included\n- Line-by-line comparison of three contractor quotes with your own estimate\n- Lowest price per item and contractor totals over the items they actually priced\n- INCOMPLETE flag for any quote that leaves items out\n- Choose a contractor per item; contingency added at the rate you set\n- Budget check: total with contingency against your budget\n- PDF guide with a worked example and a field-by-field reference\nWho it's for\n- Homeowners planning a kitchen, bathroom or whole-house renovation\n- Landlords comparing quotes for a unit refurbishment\n- Anyone collecting three quotes and wanting a fair comparison\nYou get: renovation_budget_quote_comparison.xlsx (Project, Line Items, Summary) and a PDF guide.\nWorks in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.\nThis workbook is a budgeting and comparison tool, not construction, legal or financial advice. Check licences, insurance, permits, payment terms and exactly what each quote includes before you sign a contract.",
    "tags": [
     "budget planner",
     "renovation",
@@ -1003,7 +1003,7 @@
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "qa_status": "QA_PASS",
    "rights_status": "OWNED_ORIGINAL",
-   "description": "Before you raise prices, see how many sales you could lose and still earn more, and what profit each increase gives at the loss you actually expect.\nBecause a price increase goes straight to margin, the answer is often larger than people expect. This workbook calculates it for up to eight increases: the most sales you could lose and still make the same gross profit, and the monthly profit at the loss you actually expect.\nWhat's included\n- Up to eight price-increase scenarios side by side\n- Maximum share of sales you can lose and still keep today's gross profit\n- Monthly profit at the sales loss you actually expect, and the change against today\n- Uses your real variable and fixed costs\n- Works for products, services and subscriptions\n- PDF guide with a worked example and a field-by-field reference\nWho it's for\n- Service businesses and agencies reviewing their rates\n- Online sellers and shops with rising supplier costs\n- Subscription businesses considering a new price for new or existing customers\n- Anyone who has not raised prices in a year or more\nYou get: price_increase_impact_calculator.xlsx (Current, Scenarios) and this guide.\nWorks in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.\nThis workbook is a planning tool, not financial advice. It models profit from the costs and volumes you enter; real customer response to a price change is uncertain, so test increases carefully.",
+   "description": "Before you raise prices, see how many sales you could lose and still earn more, and what profit each increase gives at the loss you actually expect.\nBecause a price increase goes straight to margin, the answer is often larger than people expect. This workbook calculates it for up to eight increases: the most sales you could lose and still make the same gross profit, and the monthly profit at the loss you actually expect.\nWhat's included\n- Up to eight price-increase scenarios side by side\n- Maximum share of sales you can lose and still keep today's gross profit\n- Monthly profit at the sales loss you actually expect, and the change against today\n- Uses your real variable and fixed costs\n- Works for products, services and subscriptions\n- PDF guide with a worked example and a field-by-field reference\nWho it's for\n- Service businesses and agencies reviewing their rates\n- Online sellers and shops with rising supplier costs\n- Subscription businesses considering a new price for new or existing customers\n- Anyone who has not raised prices in a year or more\nYou get: price_increase_impact_calculator.xlsx (Current, Scenarios) and a PDF guide.\nWorks in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.\nThis workbook is a planning tool, not financial advice. It models profit from the costs and volumes you enter; real customer response to a price change is uncertain, so test increases carefully.",
    "tags": [
     "small business",
     "pricing",
@@ -1057,7 +1057,7 @@
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "qa_status": "QA_PASS",
    "rights_status": "OWNED_ORIGINAL",
-   "description": "For each marketing channel: what a customer costs to win, what they are worth in gross profit, the value-to-cost ratio, and how many months it takes to earn the cost back.\nThis workbook works it out per channel: the customer acquisition cost (spend divided by new customers), the customer's lifetime value in gross profit (not revenue), the ratio between the two, and the payback period, the months of gross profit it takes to earn back what the customer cost.\nWhat's included\n- Customer acquisition cost per marketing channel\n- Lifetime value in gross profit, not revenue\n- Value-to-cost ratio and payback months per channel\n- GROW / WATCH / CUT verdict against the targets you set\n- Blended summary with best and worst channel\n- PDF guide with a worked example and a field-by-field reference\nWho it's for\n- Online shops and DTC brands running paid ads\n- Service businesses using referrals, ads and directories\n- Subscription and membership businesses\n- Founders preparing a growth plan or investor update\nYou get: customer_lifetime_value_cac_calculator.xlsx (Settings, Channels, Summary) and this guide.\nWorks in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.\nThis workbook is a planning tool, not financial advice. Lifetime value is an estimate built from the averages you enter; check it against real repeat-purchase data as it accumulates.",
+   "description": "For each marketing channel: what a customer costs to win, what they are worth in gross profit, the value-to-cost ratio, and how many months it takes to earn the cost back.\nThis workbook works it out per channel: the customer acquisition cost (spend divided by new customers), the customer's lifetime value in gross profit (not revenue), the ratio between the two, and the payback period, the months of gross profit it takes to earn back what the customer cost.\nWhat's included\n- Customer acquisition cost per marketing channel\n- Lifetime value in gross profit, not revenue\n- Value-to-cost ratio and payback months per channel\n- GROW / WATCH / CUT verdict against the targets you set\n- Blended summary with best and worst channel\n- PDF guide with a worked example and a field-by-field reference\nWho it's for\n- Online shops and DTC brands running paid ads\n- Service businesses using referrals, ads and directories\n- Subscription and membership businesses\n- Founders preparing a growth plan or investor update\nYou get: customer_lifetime_value_cac_calculator.xlsx (Settings, Channels, Summary) and a PDF guide.\nWorks in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.\nThis workbook is a planning tool, not financial advice. Lifetime value is an estimate built from the averages you enter; check it against real repeat-purchase data as it accumulates.",
    "tags": [
     "saas metrics",
     "cac",
@@ -1111,7 +1111,7 @@
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "qa_status": "QA_PASS",
    "rights_status": "OWNED_ORIGINAL",
-   "description": "Plan the week's shifts, see each person's hours and overtime, and check the week's labor cost as a share of forecast sales before the schedule goes out.\nThis workbook turns a weekly schedule into money: hours per person per day, regular and overtime hours, the cost of each person with employer taxes, the daily hours on the floor, and the week's labor cost as a share of the sales you forecast. Weeks over your labor target are flagged.\nWhat's included\n- Weekly schedule for up to 20 people, hours per day\n- Regular and overtime hours per person, at your threshold and multiplier\n- Loaded labor cost with your employer tax and insurance estimate\n- Labor % of forecast sales with an OVER TARGET flag\n- Staff hours per day to match the schedule to busy and quiet days\n- PDF guide with a worked example and a field-by-field reference\nWho it's for\n- Restaurant, cafe and bar managers\n- Retail store managers\n- Clinic, salon and studio owners with hourly staff\n- Small teams with variable weekly hours\nYou get: shift_schedule_labor_cost_planner.xlsx (Settings, Schedule, Week Summary) and this guide.\nWorks in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.\nThis workbook is a planning tool, not legal or payroll advice. It applies weekly overtime after the threshold you set; some states also require daily overtime or other premiums, so check the rules that apply to your staff with your payroll provider.",
+   "description": "Plan the week's shifts, see each person's hours and overtime, and check the week's labor cost as a share of forecast sales before the schedule goes out.\nThis workbook turns a weekly schedule into money: hours per person per day, regular and overtime hours, the cost of each person with employer taxes, the daily hours on the floor, and the week's labor cost as a share of the sales you forecast. Weeks over your labor target are flagged.\nWhat's included\n- Weekly schedule for up to 20 people, hours per day\n- Regular and overtime hours per person, at your threshold and multiplier\n- Loaded labor cost with your employer tax and insurance estimate\n- Labor % of forecast sales with an OVER TARGET flag\n- Staff hours per day to match the schedule to busy and quiet days\n- PDF guide with a worked example and a field-by-field reference\nWho it's for\n- Restaurant, cafe and bar managers\n- Retail store managers\n- Clinic, salon and studio owners with hourly staff\n- Small teams with variable weekly hours\nYou get: shift_schedule_labor_cost_planner.xlsx (Settings, Schedule, Week Summary) and a PDF guide.\nWorks in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.\nThis workbook is a planning tool, not legal or payroll advice. It applies weekly overtime after the threshold you set; some states also require daily overtime or other premiums, so check the rules that apply to your staff with your payroll provider.",
    "tags": [
     "restaurant",
     "staffing",
@@ -1165,7 +1165,7 @@
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "qa_status": "QA_PASS",
    "rights_status": "OWNED_ORIGINAL",
-   "description": "A trip-by-trip mileage log with the date, destination, purpose and odometer readings, totals by purpose, odometer error checks, and the standard-mileage deduction at the rate you enter.\nIRS Publication 463 asks for records that show the amount (miles), the time (date), the place (destination) and the business purpose of each trip. This log has a column for each, calculates the miles from odometer readings, flags readings that cannot be right, and totals the business miles and the deduction at the standard mileage rate you enter.\nWhat's included\n- Trip log with date, from, to, business purpose, category and odometer readings\n- Miles calculated automatically, with a CHECK flag for impossible readings\n- Deduction at the standard mileage rate you enter (72.5 cents example: IRS January 2026 rate)\n- Miles by purpose category and business-use share of all driving\n- Room for 400 trips in a year\n- PDF guide with a worked example and a field-by-field reference\nWho it's for\n- Self-employed people and freelancers who drive for work\n- Small business owners using a personal car for business trips\n- Real estate agents, consultants, tradespeople and delivery-based sellers\n- Bookkeepers collecting mileage records from clients\nYou get: business_mileage_log_deduction_tracker.xlsx (Settings, Mileage Log, Summary) and this guide.\nWorks in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.\nThis workbook is a record-keeping tool, not tax advice. Whether you can deduct vehicle costs, and whether the standard mileage rate or actual expenses is better for you, depends on your situation; confirm with IRS Publication 463 and a tax professional.",
+   "description": "A trip-by-trip mileage log with the date, destination, purpose and odometer readings, totals by purpose, odometer error checks, and the standard-mileage deduction at the rate you enter.\nIRS Publication 463 asks for records that show the amount (miles), the time (date), the place (destination) and the business purpose of each trip. This log has a column for each, calculates the miles from odometer readings, flags readings that cannot be right, and totals the business miles and the deduction at the standard mileage rate you enter.\nWhat's included\n- Trip log with date, from, to, business purpose, category and odometer readings\n- Miles calculated automatically, with a CHECK flag for impossible readings\n- Deduction at the standard mileage rate you enter (72.5 cents example: IRS January 2026 rate)\n- Miles by purpose category and business-use share of all driving\n- Room for 400 trips in a year\n- PDF guide with a worked example and a field-by-field reference\nWho it's for\n- Self-employed people and freelancers who drive for work\n- Small business owners using a personal car for business trips\n- Real estate agents, consultants, tradespeople and delivery-based sellers\n- Bookkeepers collecting mileage records from clients\nYou get: business_mileage_log_deduction_tracker.xlsx (Settings, Mileage Log, Summary) and a PDF guide.\nWorks in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.\nThis workbook is a record-keeping tool, not tax advice. Whether you can deduct vehicle costs, and whether the standard mileage rate or actual expenses is better for you, depends on your situation; confirm with IRS Publication 463 and a tax professional.",
    "tags": [
     "small business",
     "self employed",
@@ -1219,7 +1219,7 @@
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "qa_status": "QA_PASS",
    "rights_status": "OWNED_ORIGINAL",
-   "description": "Turn the irregular bills that wreck a budget (insurance, car repairs, holidays, gifts) into a fixed monthly amount, and see when your emergency fund will be complete with what is left.\nA sinking fund is money put aside a little each month for a known future bill. This workbook lists those bills, how much each will be, how much is already saved and how many months are left, and calculates the monthly amount each one needs.\nWhat's included\n- Monthly amount needed for every irregular bill, from target, savings so far and months left\n- Progress per fund\n- Emergency fund target from your essential expenses and chosen months\n- Months until the emergency fund is complete with what is left after sinking funds\n- NOT FUNDED warning when sinking funds already take all your monthly saving\n- PDF guide with a worked example and a field-by-field reference\nWho it's for\n- Households tired of irregular bills breaking the monthly budget\n- Freelancers and self-employed people with uneven income\n- Anyone building a first emergency fund\n- Couples planning shared savings goals\nYou get: sinking_funds_emergency_fund_planner.xlsx (Plan, Sinking Funds, Summary) and this guide.\nWorks in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.\nThis workbook is a personal budgeting tool, not financial advice. It plans savings from the figures you enter; it does not account for interest, investment returns or inflation.",
+   "description": "Turn the irregular bills that wreck a budget (insurance, car repairs, holidays, gifts) into a fixed monthly amount, and see when your emergency fund will be complete with what is left.\nA sinking fund is money put aside a little each month for a known future bill. This workbook lists those bills, how much each will be, how much is already saved and how many months are left, and calculates the monthly amount each one needs.\nWhat's included\n- Monthly amount needed for every irregular bill, from target, savings so far and months left\n- Progress per fund\n- Emergency fund target from your essential expenses and chosen months\n- Months until the emergency fund is complete with what is left after sinking funds\n- NOT FUNDED warning when sinking funds already take all your monthly saving\n- PDF guide with a worked example and a field-by-field reference\nWho it's for\n- Households tired of irregular bills breaking the monthly budget\n- Freelancers and self-employed people with uneven income\n- Anyone building a first emergency fund\n- Couples planning shared savings goals\nYou get: sinking_funds_emergency_fund_planner.xlsx (Plan, Sinking Funds, Summary) and a PDF guide.\nWorks in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.\nThis workbook is a personal budgeting tool, not financial advice. It plans savings from the figures you enter; it does not account for interest, investment returns or inflation.",
    "tags": [
     "personal finance",
     "budget planner",
@@ -1273,7 +1273,7 @@
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "qa_status": "QA_PASS",
    "rights_status": "OWNED_ORIGINAL",
-   "description": "Enter your post-money SAFEs and the terms of the priced round; see how many shares each SAFE converts into, the round price per share, and who owns what afterwards.\nThis calculator takes the shares and options you have, each post-money SAFE (amount and valuation cap) and the priced round (pre-money valuation and new money). It shows each SAFE's ownership at conversion, the shares each one receives, the round's price per share, the new investors' shares and everyone's ownership after the round.\nWhat's included\n- Each post-money SAFE's ownership at conversion (amount / valuation cap)\n- Shares issued to every SAFE holder, without circular formulas\n- Priced round: price per share and new investor shares\n- Ownership after the round for founders, option pool, SAFE holders and new investors\n- Founder dilution in percentage points, plus a CHECK flag when SAFEs reach 100%\n- PDF guide with the formulas, a worked example and the limits stated plainly\nWho it's for\n- Founders raising or about to convert SAFEs\n- Startup operators preparing for a seed or Series A priced round\n- Angel investors checking what a SAFE converts into\n- Accelerator and incubator teams teaching cap table basics\nYou get: safe_conversion_dilution_calculator.xlsx (Settings, SAFEs, Summary) and this guide.\nWorks in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.\nThis workbook is a modelling tool, not legal, tax or investment advice. Conversion depends on the exact wording of your SAFE documents and the priced round; confirm every figure with your lawyer before you sign or rely on it.",
+   "description": "Enter your post-money SAFEs and the terms of the priced round; see how many shares each SAFE converts into, the round price per share, and who owns what afterwards.\nThis calculator takes the shares and options you have, each post-money SAFE (amount and valuation cap) and the priced round (pre-money valuation and new money). It shows each SAFE's ownership at conversion, the shares each one receives, the round's price per share, the new investors' shares and everyone's ownership after the round.\nWhat's included\n- Each post-money SAFE's ownership at conversion (amount / valuation cap)\n- Shares issued to every SAFE holder, without circular formulas\n- Priced round: price per share and new investor shares\n- Ownership after the round for founders, option pool, SAFE holders and new investors\n- Founder dilution in percentage points, plus a CHECK flag when SAFEs reach 100%\n- PDF guide with the formulas, a worked example and the limits stated plainly\nWho it's for\n- Founders raising or about to convert SAFEs\n- Startup operators preparing for a seed or Series A priced round\n- Angel investors checking what a SAFE converts into\n- Accelerator and incubator teams teaching cap table basics\nYou get: safe_conversion_dilution_calculator.xlsx (Settings, SAFEs, Summary) and a PDF guide.\nWorks in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.\nThis workbook is a modelling tool, not legal, tax or investment advice. Conversion depends on the exact wording of your SAFE documents and the priced round; confirm every figure with your lawyer before you sign or rely on it.",
    "tags": [],
    "sales_count": 0,
    "cover_url": "https://public-files.gumroad.com/iyj3yjkk18oq4id9vubw0rrrdxwu",
@@ -1322,7 +1322,7 @@
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "qa_status": "QA_PASS",
    "rights_status": "OWNED_ORIGINAL",
-   "description": "Net system cost, year-by-year production with panel ageing, rising electricity prices, maintenance, and the year your panels pay for themselves.\nThis calculator makes each assumption an input and runs 25 years: production falling with panel ageing, the value of that output at an electricity price that rises each year, maintenance, cumulative savings, and your net position against the net cost of the system. It reports the payback year, the 25-year savings and the return on the net cost.\nWhat's included\n- 25-year table: production with panel ageing, rising electricity prices, upkeep\n- Payback year, simple payback and 25-year net gain\n- Return on the net cost after the incentives you enter\n- Share of output at the retail price for lower export credits\n- No assumed federal credit (ended for expenditures after 2025)\n- PDF guide with formulas, a worked example and how to read a solar quote\nWho it's for\n- Homeowners comparing solar quotes\n- Small business owners considering panels on their building\n- Installers who want to show customers a transparent payback\n- Anyone checking a salesperson's payback claim\nYou get: solar_panel_payback_savings_calculator.xlsx (Settings, 25 Years, Summary) and this guide.\nWorks in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.\nThis workbook is an estimating tool, not financial or tax advice. Production, prices and incentives vary by location, roof and contract; check every input with your installer, your utility and a tax professional before you sign.",
+   "description": "Net system cost, year-by-year production with panel ageing, rising electricity prices, maintenance, and the year your panels pay for themselves.\nThis calculator makes each assumption an input and runs 25 years: production falling with panel ageing, the value of that output at an electricity price that rises each year, maintenance, cumulative savings, and your net position against the net cost of the system. It reports the payback year, the 25-year savings and the return on the net cost.\nWhat's included\n- 25-year table: production with panel ageing, rising electricity prices, upkeep\n- Payback year, simple payback and 25-year net gain\n- Return on the net cost after the incentives you enter\n- Share of output at the retail price for lower export credits\n- No assumed federal credit (ended for expenditures after 2025)\n- PDF guide with formulas, a worked example and how to read a solar quote\nWho it's for\n- Homeowners comparing solar quotes\n- Small business owners considering panels on their building\n- Installers who want to show customers a transparent payback\n- Anyone checking a salesperson's payback claim\nYou get: solar_panel_payback_savings_calculator.xlsx (Settings, 25 Years, Summary) and a PDF guide.\nWorks in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.\nThis workbook is an estimating tool, not financial or tax advice. Production, prices and incentives vary by location, roof and contract; check every input with your installer, your utility and a tax professional before you sign.",
    "tags": [],
    "sales_count": 0,
    "cover_url": "https://public-files.gumroad.com/60elfuumn9o3o85om2rh48manhk7",
@@ -1371,7 +1371,7 @@
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "qa_status": "QA_PASS",
    "rights_status": "OWNED_ORIGINAL",
-   "description": "Compare buying a home with renting and investing the difference: net worth under each choice for every year up to 30, the break-even year, and the answer for the number of years you plan to stay.\nThis calculator puts both choices on the same footing. For every year up to 30 it computes the home's value, the remaining loan, the full cost of owning, the rent, and a renter's investment account that starts with the down payment and closing costs and receives the difference in yearly costs. It compares the net worth of each choice if you sold or stopped at the end of that year.\nWhat's included\n- Net worth of buying vs renting-and-investing for every year up to 30\n- Full cost of owning: mortgage, property tax, insurance, upkeep, HOA, closing and selling costs\n- Renter's investment account built from the down payment and the cost difference\n- Answer for the number of years you plan to stay, plus the break-even year\n- Loan balance computed with the standard amortisation formula\n- PDF guide with the formulas, a worked example and the limits stated plainly\nWho it's for\n- First-time buyers deciding whether to buy now or keep renting\n- Renters weighing a move to a more expensive area\n- Couples planning how long they will stay in a city\n- Financial coaches who want a transparent rent-vs-buy model\nYou get: rent_vs_buy_home_calculator.xlsx (Settings, Years, Summary) and this guide.\nWorks in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.\nThis workbook is a comparison tool, not financial, tax or mortgage advice. Taxes, mortgage terms, prices and returns vary; check your figures with a lender and a financial professional before you decide.",
+   "description": "Compare buying a home with renting and investing the difference: net worth under each choice for every year up to 30, the break-even year, and the answer for the number of years you plan to stay.\nThis calculator puts both choices on the same footing. For every year up to 30 it computes the home's value, the remaining loan, the full cost of owning, the rent, and a renter's investment account that starts with the down payment and closing costs and receives the difference in yearly costs. It compares the net worth of each choice if you sold or stopped at the end of that year.\nWhat's included\n- Net worth of buying vs renting-and-investing for every year up to 30\n- Full cost of owning: mortgage, property tax, insurance, upkeep, HOA, closing and selling costs\n- Renter's investment account built from the down payment and the cost difference\n- Answer for the number of years you plan to stay, plus the break-even year\n- Loan balance computed with the standard amortisation formula\n- PDF guide with the formulas, a worked example and the limits stated plainly\nWho it's for\n- First-time buyers deciding whether to buy now or keep renting\n- Renters weighing a move to a more expensive area\n- Couples planning how long they will stay in a city\n- Financial coaches who want a transparent rent-vs-buy model\nYou get: rent_vs_buy_home_calculator.xlsx (Settings, Years, Summary) and a PDF guide.\nWorks in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.\nThis workbook is a comparison tool, not financial, tax or mortgage advice. Taxes, mortgage terms, prices and returns vary; check your figures with a lender and a financial professional before you decide.",
    "tags": [],
    "sales_count": 0,
    "cover_url": "https://public-files.gumroad.com/ir1w4npos1q9pebsun0pmh8ppwtq",
@@ -1420,7 +1420,7 @@
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "qa_status": "QA_PASS",
    "rights_status": "OWNED_ORIGINAL",
-   "description": "Hours accrued each pay period, hours used and booked, balances held at your policy cap, hours lost to the cap, over-booked leave flagged, and the dollar value of the leave you owe.\nThis tracker holds one row per employee: the balance carried in, hours accrued per pay period, pay periods so far, hours used and hours already booked. It applies your policy cap, shows the hours lost because a balance reached the cap, flags anyone whose booked leave exceeds the balance, and values each balance at the employee's hourly rate.\nWhat's included\n- Accrual per pay period, hours used and booked, for up to 50 employees\n- Balances held at your policy cap, with hours lost to the cap shown\n- Over-booked leave flagged before it happens\n- Leave liability in dollars and days, per person and in total\n- Works for weekly, biweekly, semimonthly or monthly payroll\n- PDF guide with the formulas, a worked example and setup tips\nWho it's for\n- Small business owners who run payroll themselves\n- Office managers and bookkeepers tracking leave for a team\n- Nonprofits and clinics with hourly and salaried staff\n- Founders preparing leave balances for an accountant or a payroll switch\nYou get: pto_accrual_leave_balance_tracker.xlsx (Policy, Employees, Summary) and this guide.\nWorks in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.\nThis workbook is a record-keeping tool, not legal or payroll advice. Paid leave, accrual caps and payout of unused leave are regulated differently by state and country; confirm your policy against the law that applies to you.",
+   "description": "Hours accrued each pay period, hours used and booked, balances held at your policy cap, hours lost to the cap, over-booked leave flagged, and the dollar value of the leave you owe.\nThis tracker holds one row per employee: the balance carried in, hours accrued per pay period, pay periods so far, hours used and hours already booked. It applies your policy cap, shows the hours lost because a balance reached the cap, flags anyone whose booked leave exceeds the balance, and values each balance at the employee's hourly rate.\nWhat's included\n- Accrual per pay period, hours used and booked, for up to 50 employees\n- Balances held at your policy cap, with hours lost to the cap shown\n- Over-booked leave flagged before it happens\n- Leave liability in dollars and days, per person and in total\n- Works for weekly, biweekly, semimonthly or monthly payroll\n- PDF guide with the formulas, a worked example and setup tips\nWho it's for\n- Small business owners who run payroll themselves\n- Office managers and bookkeepers tracking leave for a team\n- Nonprofits and clinics with hourly and salaried staff\n- Founders preparing leave balances for an accountant or a payroll switch\nYou get: pto_accrual_leave_balance_tracker.xlsx (Policy, Employees, Summary) and a PDF guide.\nWorks in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.\nThis workbook is a record-keeping tool, not legal or payroll advice. Paid leave, accrual caps and payout of unused leave are regulated differently by state and country; confirm your policy against the law that applies to you.",
    "tags": [],
    "sales_count": 0,
    "cover_url": "https://public-files.gumroad.com/owas7qf529zf3mw3y0d7c2zstrb9",
@@ -1469,7 +1469,7 @@
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "qa_status": "QA_PASS",
    "rights_status": "OWNED_ORIGINAL",
-   "description": "List fixed and per-attendee costs, set the ticket price and fees, and see the break-even attendance, the break-even ticket price, and profit or loss at every attendance level up to capacity.\nThis planner separates fixed costs (venue, speakers, insurance) from per-attendee costs (catering, badges, swag), takes sponsorship off the fixed costs, and works out net revenue per ticket after percentage and per-ticket fees. It shows the contribution each attendee makes, the break-even attendance, the ticket price that breaks even at your expected attendance, and profit at ten attendance levels up to capacity.\nWhat's included\n- Fixed and per-attendee costs, with sponsorship deducted\n- Net revenue per ticket after percentage and per-ticket fees\n- Break-even attendance and break-even ticket price\n- Profit or loss at ten attendance levels up to capacity\n- Flags cost lines with an unrecognised type instead of ignoring them silently\n- PDF guide with the formulas, a worked example and pricing tips\nWho it's for\n- Meetup, workshop and conference organisers\n- Event planners pricing tickets for clients\n- Community groups and nonprofits running paid events\n- Venue owners hosting their own ticketed nights\nYou get: event_budget_ticket_breakeven_planner.xlsx (Settings, Costs, Attendance, Summary) and this guide.\nWorks in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.\nThis workbook is a planning tool, not financial, tax or legal advice. Ticketing fees, taxes and venue terms vary; check them with your ticketing provider, venue and accountant before you set prices.",
+   "description": "List fixed and per-attendee costs, set the ticket price and fees, and see the break-even attendance, the break-even ticket price, and profit or loss at every attendance level up to capacity.\nThis planner separates fixed costs (venue, speakers, insurance) from per-attendee costs (catering, badges, swag), takes sponsorship off the fixed costs, and works out net revenue per ticket after percentage and per-ticket fees. It shows the contribution each attendee makes, the break-even attendance, the ticket price that breaks even at your expected attendance, and profit at ten attendance levels up to capacity.\nWhat's included\n- Fixed and per-attendee costs, with sponsorship deducted\n- Net revenue per ticket after percentage and per-ticket fees\n- Break-even attendance and break-even ticket price\n- Profit or loss at ten attendance levels up to capacity\n- Flags cost lines with an unrecognised type instead of ignoring them silently\n- PDF guide with the formulas, a worked example and pricing tips\nWho it's for\n- Meetup, workshop and conference organisers\n- Event planners pricing tickets for clients\n- Community groups and nonprofits running paid events\n- Venue owners hosting their own ticketed nights\nYou get: event_budget_ticket_breakeven_planner.xlsx (Settings, Costs, Attendance, Summary) and a PDF guide.\nWorks in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.\nThis workbook is a planning tool, not financial, tax or legal advice. Ticketing fees, taxes and venue terms vary; check them with your ticketing provider, venue and accountant before you set prices.",
    "tags": [],
    "sales_count": 0,
    "cover_url": "https://public-files.gumroad.com/qzf061509asz5p30nn1ujkwyveoe",
@@ -1518,7 +1518,7 @@
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "qa_status": "QA_PASS",
    "rights_status": "OWNED_ORIGINAL",
-   "description": "Project members, monthly recurring revenue and net revenue after fees for 24 months from your price, sign-ups, growth and churn, with the steady-state member count and customer lifetime value.\nThis forecaster takes your starting members, price, monthly sign-ups, sign-up growth, churn and payment fees, and builds a 24-month projection of members, MRR, net revenue and cumulative revenue. It also shows the member count the business settles at if sign-ups stay flat (sign-ups divided by churn), the average member lifetime, and lifetime value per member.\nWhat's included\n- 24-month projection of members, MRR, net revenue and cumulative revenue\n- Sign-up growth and monthly churn as separate inputs\n- Steady-state member count: where joins equal cancellations\n- Average member lifetime and lifetime value after fees\n- Month 12 and month 24 members, MRR and ARR on one summary\n- PDF guide with the formulas, a worked example and churn-measurement tips\nWho it's for\n- Paid community and membership site owners\n- Newsletter and Patreon-style creators\n- Small SaaS and subscription box founders\n- Coaches selling monthly programs\nYou get: membership_subscription_mrr_churn_forecaster.xlsx (Settings, Forecast, Summary) and this guide.\nWorks in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.\nThis workbook is a forecasting tool, not financial, tax or investment advice. It projects from the assumptions you enter; real sign-ups and churn will differ month to month.",
+   "description": "Project members, monthly recurring revenue and net revenue after fees for 24 months from your price, sign-ups, growth and churn, with the steady-state member count and customer lifetime value.\nThis forecaster takes your starting members, price, monthly sign-ups, sign-up growth, churn and payment fees, and builds a 24-month projection of members, MRR, net revenue and cumulative revenue. It also shows the member count the business settles at if sign-ups stay flat (sign-ups divided by churn), the average member lifetime, and lifetime value per member.\nWhat's included\n- 24-month projection of members, MRR, net revenue and cumulative revenue\n- Sign-up growth and monthly churn as separate inputs\n- Steady-state member count: where joins equal cancellations\n- Average member lifetime and lifetime value after fees\n- Month 12 and month 24 members, MRR and ARR on one summary\n- PDF guide with the formulas, a worked example and churn-measurement tips\nWho it's for\n- Paid community and membership site owners\n- Newsletter and Patreon-style creators\n- Small SaaS and subscription box founders\n- Coaches selling monthly programs\nYou get: membership_subscription_mrr_churn_forecaster.xlsx (Settings, Forecast, Summary) and a PDF guide.\nWorks in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.\nThis workbook is a forecasting tool, not financial, tax or investment advice. It projects from the assumptions you enter; real sign-ups and churn will differ month to month.",
    "tags": [],
    "sales_count": 0,
    "cover_url": "https://public-files.gumroad.com/bffotftwfmlycqvzyqm7082x9rkf",
@@ -1567,7 +1567,7 @@
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "qa_status": "QA_PASS",
    "rights_status": "OWNED_ORIGINAL",
-   "description": "Log each fixed-fee project's fee, estimated and actual hours and direct costs, and see the hourly rate you really earned, hour overruns, and how far each project fell short of your target rate.\nThis tracker turns every project into an effective hourly rate (fee minus direct costs, divided by actual hours), compares it with your target rate, and shows the hour overrun and the money left on the table against that target. Projects below target are flagged, and the summary gives your overall effective rate, best and worst project, and how many projects fell short.\nWhat's included\n- Effective hourly rate for every fixed-fee project\n- Hour overrun against your estimate\n- Money left on the table against your target rate\n- BELOW TARGET flags for underpriced projects\n- Overall effective rate, best and worst project, estimate accuracy\n- PDF guide with the formulas, a worked example and quoting tips\nWho it's for\n- Freelance designers, developers and writers\n- Consultants working on fixed fees\n- Small agencies pricing client projects\n- Anyone moving from hourly to project pricing\nYou get: freelance_project_profitability_tracker.xlsx (Settings, Projects, Summary) and this guide.\nWorks in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.\nThis workbook is a tracking tool, not financial, tax or legal advice. It does not calculate income tax or self-employment tax.",
+   "description": "Log each fixed-fee project's fee, estimated and actual hours and direct costs, and see the hourly rate you really earned, hour overruns, and how far each project fell short of your target rate.\nThis tracker turns every project into an effective hourly rate (fee minus direct costs, divided by actual hours), compares it with your target rate, and shows the hour overrun and the money left on the table against that target. Projects below target are flagged, and the summary gives your overall effective rate, best and worst project, and how many projects fell short.\nWhat's included\n- Effective hourly rate for every fixed-fee project\n- Hour overrun against your estimate\n- Money left on the table against your target rate\n- BELOW TARGET flags for underpriced projects\n- Overall effective rate, best and worst project, estimate accuracy\n- PDF guide with the formulas, a worked example and quoting tips\nWho it's for\n- Freelance designers, developers and writers\n- Consultants working on fixed fees\n- Small agencies pricing client projects\n- Anyone moving from hourly to project pricing\nYou get: freelance_project_profitability_tracker.xlsx (Settings, Projects, Summary) and a PDF guide.\nWorks in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.\nThis workbook is a tracking tool, not financial, tax or legal advice. It does not calculate income tax or self-employment tax.",
    "tags": [],
    "sales_count": 0,
    "cover_url": "https://public-files.gumroad.com/y85a8mfm3pmxsnlimm8kewo4iebp",
@@ -1616,7 +1616,7 @@
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "qa_status": "QA_PASS",
    "rights_status": "OWNED_ORIGINAL",
-   "description": "Enter each dish's price, plate cost and units sold, and the worksheet classifies every item by contribution margin and popularity using the standard menu-engineering method, with food cost % and menu mix.\nThis worksheet applies the standard Kasavana and Smith approach. An item is popular when its share of the menu mix reaches 70% of an equal share (with 20 items, 70% of 5% = 3.5%), and profitable when its contribution margin is at or above the menu's weighted average. That gives four classes: Stars (popular and profitable), Plowhorses (popular, low margin), Puzzles (profitable, unpopular) and Dogs (neither).\nWhat's included\n- Classifies every dish as Star, Plowhorse, Puzzle or Dog\n- Standard 70% popularity rule and weighted-average contribution margin\n- Food cost % and total contribution per item\n- Menu mix % from your point-of-sale counts\n- Count of items in each class for the whole section\n- PDF guide with the method, a worked example and what to do with each class\nWho it's for\n- Restaurant and cafe owners\n- Chefs and kitchen managers reviewing a menu\n- Food truck and catering operators\n- Hospitality students and consultants\nYou get: restaurant_menu_engineering_worksheet.xlsx (Menu, Summary) and this guide.\nWorks in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.\nThis workbook is an analysis tool, not financial or business advice. Its results depend on accurate plate costs and sales counts from your own records.",
+   "description": "Enter each dish's price, plate cost and units sold, and the worksheet classifies every item by contribution margin and popularity using the standard menu-engineering method, with food cost % and menu mix.\nThis worksheet applies the standard Kasavana and Smith approach. An item is popular when its share of the menu mix reaches 70% of an equal share (with 20 items, 70% of 5% = 3.5%), and profitable when its contribution margin is at or above the menu's weighted average. That gives four classes: Stars (popular and profitable), Plowhorses (popular, low margin), Puzzles (profitable, unpopular) and Dogs (neither).\nWhat's included\n- Classifies every dish as Star, Plowhorse, Puzzle or Dog\n- Standard 70% popularity rule and weighted-average contribution margin\n- Food cost % and total contribution per item\n- Menu mix % from your point-of-sale counts\n- Count of items in each class for the whole section\n- PDF guide with the method, a worked example and what to do with each class\nWho it's for\n- Restaurant and cafe owners\n- Chefs and kitchen managers reviewing a menu\n- Food truck and catering operators\n- Hospitality students and consultants\nYou get: restaurant_menu_engineering_worksheet.xlsx (Menu, Summary) and a PDF guide.\nWorks in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.\nThis workbook is an analysis tool, not financial or business advice. Its results depend on accurate plate costs and sales counts from your own records.",
    "tags": [
     "restaurant",
     "excel template",
@@ -1672,7 +1672,7 @@
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "qa_status": "QA_PASS",
    "rights_status": "OWNED_ORIGINAL",
-   "description": "Split rent, utilities and shared costs between up to five housemates, choosing for each bill whether it is shared equally, by income or by room size, and see who owes whom at the end of the month.\nThis splitter lets you set a split method for each bill: Equal, Income (in proportion to each housemate's income) or Room size (in proportion to each room's floor area). It records who actually paid each bill, then works out what each housemate owed, what they paid, and the net balance: positive means they are owed money, negative means they owe.\nWhat's included\n- Split each bill Equal, by Income or by Room size\n- Up to five housemates and 60 bills\n- Records who paid each bill and works out net balances\n- Positive balance = owed money, negative = owes money; nets add to zero\n- Flags misspelled payer names and unknown split methods\n- PDF guide with the formulas, a worked example and a settle-up tip\nWho it's for\n- Students and young professionals in shared houses\n- Couples splitting costs by income\n- Co-living and house-share organisers\n- Anyone tired of settle-up arguments\nYou get: roommate_shared_bill_splitter.xlsx (Housemates, Bills, Balances) and this guide.\nWorks in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.\nThis workbook is a budgeting tool, not legal or financial advice. It does not replace a written tenancy or house-share agreement.",
+   "description": "Split rent, utilities and shared costs between up to five housemates, choosing for each bill whether it is shared equally, by income or by room size, and see who owes whom at the end of the month.\nThis splitter lets you set a split method for each bill: Equal, Income (in proportion to each housemate's income) or Room size (in proportion to each room's floor area). It records who actually paid each bill, then works out what each housemate owed, what they paid, and the net balance: positive means they are owed money, negative means they owe.\nWhat's included\n- Split each bill Equal, by Income or by Room size\n- Up to five housemates and 60 bills\n- Records who paid each bill and works out net balances\n- Positive balance = owed money, negative = owes money; nets add to zero\n- Flags misspelled payer names and unknown split methods\n- PDF guide with the formulas, a worked example and a settle-up tip\nWho it's for\n- Students and young professionals in shared houses\n- Couples splitting costs by income\n- Co-living and house-share organisers\n- Anyone tired of settle-up arguments\nYou get: roommate_shared_bill_splitter.xlsx (Housemates, Bills, Balances) and a PDF guide.\nWorks in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.\nThis workbook is a budgeting tool, not legal or financial advice. It does not replace a written tenancy or house-share agreement.",
    "tags": [
     "budget",
     "roommate",
@@ -1728,7 +1728,7 @@
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "qa_status": "QA_PASS",
    "rights_status": "OWNED_ORIGINAL",
-   "description": "Set up to four commission tiers and a quota bonus, enter each rep's base pay, quota and sales, and see commission paid band by band, quota attainment, total pay and what the plan costs as a share of sales.\nThis calculator applies each rate only to the sales inside its band, then adds an optional flat bonus for reps who reach quota. For every rep it shows quota attainment, commission, bonus, total pay, the effective commission rate and total pay as a share of their sales. The summary shows team totals, how many reps hit quota and what the whole plan costs as a percentage of sales.\nWhat's included\n- Graduated commission: each rate applies only to its own band of sales\n- Up to four tiers plus an optional quota bonus\n- Quota attainment, commission, bonus and total pay per rep\n- Effective commission rate and pay as a share of each rep's sales\n- Team totals, reps at quota and total plan cost as % of sales\n- PDF guide with the formula, a worked example and plan-design tips\nWho it's for\n- Small business owners paying sales staff\n- Sales managers designing or checking a commission plan\n- Agencies paying account managers on revenue\n- Sales reps checking their own commission statement\nYou get: tiered_sales_commission_calculator.xlsx (Plan, Reps, Summary) and this guide.\nWorks in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.\nThis workbook is a calculation tool, not legal, tax, payroll or employment advice. Commission plans are governed by your written agreements and local employment law; check both before paying.",
+   "description": "Set up to four commission tiers and a quota bonus, enter each rep's base pay, quota and sales, and see commission paid band by band, quota attainment, total pay and what the plan costs as a share of sales.\nThis calculator applies each rate only to the sales inside its band, then adds an optional flat bonus for reps who reach quota. For every rep it shows quota attainment, commission, bonus, total pay, the effective commission rate and total pay as a share of their sales. The summary shows team totals, how many reps hit quota and what the whole plan costs as a percentage of sales.\nWhat's included\n- Graduated commission: each rate applies only to its own band of sales\n- Up to four tiers plus an optional quota bonus\n- Quota attainment, commission, bonus and total pay per rep\n- Effective commission rate and pay as a share of each rep's sales\n- Team totals, reps at quota and total plan cost as % of sales\n- PDF guide with the formula, a worked example and plan-design tips\nWho it's for\n- Small business owners paying sales staff\n- Sales managers designing or checking a commission plan\n- Agencies paying account managers on revenue\n- Sales reps checking their own commission statement\nYou get: tiered_sales_commission_calculator.xlsx (Plan, Reps, Summary) and a PDF guide.\nWorks in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.\nThis workbook is a calculation tool, not legal, tax, payroll or employment advice. Commission plans are governed by your written agreements and local employment law; check both before paying.",
    "tags": [
     "payroll",
     "excel template",
@@ -1836,7 +1836,7 @@
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "qa_status": "UNKNOWN",
    "rights_status": "OWNED_ORIGINAL",
-   "description": "Attorneys charge $1,000–2,500 to prepare and file one trademark class, $2,000–5,000 for full-service prosecution. And since January 2025, sloppy DIY filings carry their own price tags: $350 base per class, plus $100 for insufficient information, $200 for free-form descriptions, $200 per extra 1,000 characters — a careless one-class filing costs $550 instead of $350.\nThis kit is the safe DIY path: the money map (full fee schedule + DIY-vs-counsel decision rule), a clearance-search method that actually clears, ID Manual navigation with accepted-vs-fatal examples, filing-basis strategy (use vs intent-to-use with the full cost timeline), specimen rules with a good-vs-fatal gallery (where DIY filings die most), a TEAS filing-day walkthrough with TSDR monitoring cadence, an Office Action response playbook with triage and a response skeleton, post-allowance maintenance to year 10, refusal case studies (argue vs fold), and a four-sheet docket tracker (search log, specimen file, deadlines, fee math).\nBuilt from the USPTO fee schedule and forms, 2025 fee-change analyses, attorney-cost surveys, and a real 2025 Office Action. Practical guide — not legal advice.\nInstant digital download. PDF guide.\nFrom Galaxy Forge — more practical toolkits: https://galaxyaek7-del.github.io/openclaw-factory/customer_site/products.html",
+   "description": "Attorneys charge $1,000–2,500 to prepare and file one trademark class, $2,000–5,000 for full-service prosecution. And since January 2025, sloppy DIY filings carry their own price tags: $350 base per class, plus $100 for insufficient information, $200 for free-form descriptions, $200 per extra 1,000 characters — a careless one-class filing costs $550 instead of $350.\nThis kit is the safe DIY path: the money map (full fee schedule + DIY-vs-counsel decision rule), a clearance-search method that actually clears, ID Manual navigation with accepted-vs-fatal examples, filing-basis strategy (use vs intent-to-use with the full cost timeline), specimen rules with a good-vs-fatal gallery (where DIY filings die most), a TEAS filing-day walkthrough with TSDR monitoring cadence, an Office Action response playbook with triage and a response skeleton, post-allowance maintenance to year 10, refusal case studies (argue vs fold), and a four-sheet docket tracker (search log, specimen file, deadlines, fee math).\nBuilt from the USPTO fee schedule and forms, 2025 fee-change analyses, attorney-cost surveys, and a real 2025 Office Action. Practical guide — not legal advice.\nInstant digital download: PDF guide (with a dated USPTO fee-correction page) and the four-sheet XLSX docket tracker.\nFrom Galaxy Forge — more practical toolkits: https://galaxyaek7-del.github.io/openclaw-factory/customer_site/products.html",
    "tags": [
     "startup",
     "trademark",
@@ -1852,10 +1852,8 @@
     "page_views": "UNKNOWN (no read API used)"
    },
    "eligibility": {
-    "status": "NOT_ELIGIBLE",
-    "reasons": [
-     "delivery audit (GUMROAD_DELIVERY_AUDIT_2026-10-29.json): PROMISES_SPREADSHEET_NOT_ATTACHED; repair before promoting"
-    ]
+    "status": "ELIGIBLE",
+    "reasons": []
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
@@ -2497,7 +2495,7 @@
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "qa_status": "UNKNOWN",
    "rights_status": "OWNED_ORIGINAL",
-   "description": "Your car was repaired after a not-at-fault accident — but its resale value wasn't. That CARFAX flag costs real money at trade-in, and insurers won't volunteer to pay it.\nThis kit is the DIY path between ignoring the money and hiring it done: a two-minute eligibility matrix (fault, ownership, repair status, damage level, state time limits, release status — with red rows that tell you to stop), the evidence pack that wins claims (repair invoice with OEM/aftermarket noted, CARFAX flag, dealer trade-in letters that quantify the gap), valuation with both the 17c floor AND comparable-sales method plus dealer letters (never one formula alone), a copy-paste demand letter skeleton, a four-round negotiation and escalation ladder (adjuster → supervisor + DOI complaint → appraisal clause → small claims), carrier playbooks with counters (denials, lowballs, delay, release traps), the most expensive signature in the file (release review), a comparables methodology for a one-page exhibit, and a small-claims walkthrough.\nBuilt from WSJ/NAIC mechanics, appraiser methodology, and state-law variance (including Georgia's first-party exception), checked September 2026. Practical claims guide — not legal advice.\nInstant digital download. 3-page PDF guide covering the eligibility matrix, evidence pack, 17c and comparable-sales valuation, the demand-letter skeleton, the four-round negotiation and escalation ladder, carrier counters, release review, comparables methodology, and a small-claims walkthrough.\nFrom Galaxy Forge — more practical toolkits: https://galaxyaek7-del.github.io/openclaw-factory/customer_site/products.html",
+   "description": "Your car was repaired after a not-at-fault accident — but its resale value wasn't. That CARFAX flag costs real money at trade-in, and insurers won't volunteer to pay it.\nThis kit is the DIY path between ignoring the money and hiring it done: a two-minute eligibility matrix (fault, ownership, repair status, damage level, state time limits, release status — with red rows that tell you to stop), the evidence pack that wins claims (repair invoice with OEM/aftermarket noted, CARFAX flag, dealer trade-in letters that quantify the gap), valuation with both the 17c floor AND comparable-sales method plus dealer letters (never one formula alone), a copy-paste demand letter skeleton, a four-round negotiation and escalation ladder (adjuster → supervisor + DOI complaint → appraisal clause → small claims), carrier playbooks with counters (denials, lowballs, delay, release traps), the most expensive signature in the file (release review), a comparables methodology for a one-page exhibit, and a small-claims walkthrough.\nBuilt from WSJ/NAIC mechanics, appraiser methodology, and state-law variance (including Georgia's first-party exception), checked September 2026. Practical claims guide — not legal advice.\nInstant digital download. 3-page PDF guide plus a six-sheet XLSX claim workbook, covering the eligibility matrix, evidence pack, 17c and comparable-sales valuation, the demand-letter skeleton, the four-round negotiation and escalation ladder, carrier counters, release review, comparables methodology, and a small-claims walkthrough.\nFrom Galaxy Forge — more practical toolkits: https://galaxyaek7-del.github.io/openclaw-factory/customer_site/products.html",
    "tags": [
     "auto",
     "insurance claim",
@@ -2915,7 +2913,7 @@
     "status": "NOT_ELIGIBLE",
     "reasons": [
      "on HOLD (hold_policy.py): internal quality audit recorded 11 critical content-accuracy findings, including Annex III categories that do not appear in the Act and an incorrect prohibition on high-risk GPAI models. Recorded as an internal finding, not a legal ruling.",
-     "delivery audit (GUMROAD_DELIVERY_AUDIT_2026-10-29.json): PREVIEW_FILE_DELIVERED; repair before promoting"
+     "delivery audit (GUMROAD_DELIVERY_AUDIT_2026-10-31.json): PREVIEW_FILE_DELIVERED; repair before promoting"
     ]
    },
    "evidence": {
@@ -4227,7 +4225,7 @@
     "status": "NOT_ELIGIBLE",
     "reasons": [
      "on HOLD (hold_policy.py): listed as a workbook; the delivered file is a one-page, 331-word PDF with empty tables and outcome claims the content does not support.",
-     "delivery audit (GUMROAD_DELIVERY_AUDIT_2026-10-29.json): PROMISES_SPREADSHEET_NOT_ATTACHED; repair before promoting"
+     "delivery audit (GUMROAD_DELIVERY_AUDIT_2026-10-31.json): PROMISES_SPREADSHEET_NOT_ATTACHED; repair before promoting"
     ]
    },
    "evidence": {
@@ -4625,7 +4623,7 @@
    "eligibility": {
     "status": "NOT_ELIGIBLE",
     "reasons": [
-     "delivery audit (GUMROAD_DELIVERY_AUDIT_2026-10-29.json): PUBLISHED_WITHOUT_DELIVERABLE; repair before promoting"
+     "delivery audit (GUMROAD_DELIVERY_AUDIT_2026-10-31.json): PUBLISHED_WITHOUT_DELIVERABLE; repair before promoting"
     ]
    },
    "evidence": {
@@ -4722,7 +4720,7 @@
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "qa_status": "UNKNOWN",
    "rights_status": "OWNED_ORIGINAL",
-   "description": "EU Late Payment Recovery Kit - $59.\nBuilt for people who need to get this right quickly, with the actual steps in order rather than a general overview.\nWhat you get:\n- A single, focused file you download and use immediately\n- Step-by-step process, so you work in the right order\n- Checklists and prompts for the parts people usually get wrong\n- Plain language, no padding\nWhat this is NOT:\n- Not professional, legal, financial or tax advice\n- No result, outcome or saving is guaranteed\n- Not a substitute for the official rules in your jurisdiction - verify anything specific with the relevant authority\nBuy once. No subscription, no account, no upsell.\nMore Galaxy Forge toolkits: https://galaxyaek7-del.github.io/openclaw-factory/customer_site/products.html\n---\nB2B late-payment recovery for EU freelancers and SMBs: statutory reminder ladder, fee math, invoice tracker. Practical guide, not legal advice.",
+   "description": "EU Late Payment Recovery Kit - $59.\nBuilt for people who need to get this right quickly, with the actual steps in order rather than a general overview.\nWhat you get:\n- A short PDF guide plus a working XLSX calculator workbook (invoice tracker, notice ladder)\n- Step-by-step process, so you work in the right order\n- Checklists and prompts for the parts people usually get wrong\n- Plain language, no padding\nWhat this is NOT:\n- Not professional, legal, financial or tax advice\n- No result, outcome or saving is guaranteed\n- Not a substitute for the official rules in your jurisdiction - verify anything specific with the relevant authority\nBuy once. No subscription, no account, no upsell.\nMore Galaxy Forge toolkits: https://galaxyaek7-del.github.io/openclaw-factory/customer_site/products.html\n---\nB2B late-payment recovery for EU freelancers and SMBs: statutory reminder ladder, fee math, invoice tracker. Practical guide, not legal advice.",
    "tags": [
     "freelancer",
     "invoicing",
@@ -4885,7 +4883,7 @@
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "qa_status": "UNKNOWN",
    "rights_status": "OWNED_ORIGINAL",
-   "description": "Etsy Ads ROI Playbook + Calculator - $39.\nBuilt for people who need to get this right quickly, with the actual steps in order rather than a general overview.\nWhat you get:\n- A single, focused file you download and use immediately\n- Step-by-step process, so you work in the right order\n- Checklists and prompts for the parts people usually get wrong\n- Plain language, no padding\nWhat this is NOT:\n- Not professional, legal, financial or tax advice\n- No result, outcome or saving is guaranteed\n- Not a substitute for the official rules in your jurisdiction - verify anything specific with the relevant authority\nBuy once. No subscription, no account, no upsell.\nMore Galaxy Forge toolkits: https://galaxyaek7-del.github.io/openclaw-factory/customer_site/products.html\n---\nPer-listing Etsy Ads ROI math: kill/watch/promote rules plus tracker. For sellers already running ads. No traffic promises.",
+   "description": "Etsy Ads ROI Playbook + Calculator - $39.\nBuilt for people who need to get this right quickly, with the actual steps in order rather than a general overview.\nWhat you get:\n- A short PDF playbook plus the XLSX calculator workbook (per-listing tracker, readiness check)\n- Step-by-step process, so you work in the right order\n- Checklists and prompts for the parts people usually get wrong\n- Plain language, no padding\nWhat this is NOT:\n- Not professional, legal, financial or tax advice\n- No result, outcome or saving is guaranteed\n- Not a substitute for the official rules in your jurisdiction - verify anything specific with the relevant authority\nBuy once. No subscription, no account, no upsell.\nMore Galaxy Forge toolkits: https://galaxyaek7-del.github.io/openclaw-factory/customer_site/products.html\n---\nPer-listing Etsy Ads ROI math: kill/watch/promote rules plus tracker. For sellers already running ads. No traffic promises.",
    "tags": [
     "marketing",
     "ecommerce",
@@ -5766,7 +5764,7 @@
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "qa_status": "UNKNOWN",
    "rights_status": "OWNED_ORIGINAL",
-   "description": "The DIY compliance route for NON-EU sellers (US, UK, elsewhere) offering consumer products to EU buyers on Etsy, Amazon EU, eBay EU or Shopify. WHAT IT COVERS: Responsible Person route (what the role covers, observed rates, provider selection, per-SKU traps), technical file skeleton + row-by-row risk assessment method, label and packaging specs, Etsy field-by-field guide, Amazon/eBay/Shopify enforcement notes, enforcement-response playbook, category deep-dives, worked 4-week example, marketplace reply skeletons, FAQ. YOU RECEIVE: PDF guide + PDF cost planner (Cost planner / SKU tracker / Listing fields / Enforcement log). Instant download. WHO IT IS FOR: non-EU sellers placing consumer products on the EU market.\nWHO IT IS NOT FOR: EU-established businesses (you use a different route — this kit's Responsible Person chapters do not apply to you); cosmetics/electronics/toys sellers needing lab testing or legal disputes (seek qualified advice). WHAT IT DOES NOT DO: this is a practical self-help guide, not legal advice; no attorney-client relationship; no outcome guaranteed. Buying this kit does not itself make you compliant — compliance comes from your completed documents, not from this purchase. Figures, fees and marketplace fields change — verify current wording before acting. WHY DIY: consultant document work is quoted ~GBP 150-400/product; this kit builds the same artifacts yourself over weekends. One month of protected EU revenue dwarfs $79. CTA: Buy now — instant download. Work the 5-minute decision tree first; if GPSR does not apply to you, do not buy. From Galaxy Forge — more practical toolkits: https://galaxyaek7-del.github.io/openclaw-factory/customer_site/products.html",
+   "description": "The DIY compliance route for NON-EU sellers (US, UK, elsewhere) offering consumer products to EU buyers on Etsy, Amazon EU, eBay EU or Shopify. WHAT IT COVERS: Responsible Person route (what the role covers, observed rates, provider selection, per-SKU traps), technical file skeleton + row-by-row risk assessment method, label and packaging specs, Etsy field-by-field guide, Amazon/eBay/Shopify enforcement notes, enforcement-response playbook, category deep-dives, worked 4-week example, marketplace reply skeletons, FAQ. YOU RECEIVE: PDF guide + XLSX cost planner workbook (Cost planner / SKU tracker / Listing fields / Enforcement log). Instant download. WHO IT IS FOR: non-EU sellers placing consumer products on the EU market.\nWHO IT IS NOT FOR: EU-established businesses (you use a different route — this kit's Responsible Person chapters do not apply to you); cosmetics/electronics/toys sellers needing lab testing or legal disputes (seek qualified advice). WHAT IT DOES NOT DO: this is a practical self-help guide, not legal advice; no attorney-client relationship; no outcome guaranteed. Buying this kit does not itself make you compliant — compliance comes from your completed documents, not from this purchase. Figures, fees and marketplace fields change — verify current wording before acting. WHY DIY: consultant document work is quoted ~GBP 150-400/product; this kit builds the same artifacts yourself over weekends. One month of protected EU revenue dwarfs $79. CTA: Buy now — instant download. Work the 5-minute decision tree first; if GPSR does not apply to you, do not buy. From Galaxy Forge — more practical toolkits: https://galaxyaek7-del.github.io/openclaw-factory/customer_site/products.html",
    "tags": [
     "amazon fba",
     "product safety",
@@ -5782,10 +5780,8 @@
     "page_views": "UNKNOWN (no read API used)"
    },
    "eligibility": {
-    "status": "NOT_ELIGIBLE",
-    "reasons": [
-     "delivery audit (GUMROAD_DELIVERY_AUDIT_2026-10-29.json): PROMISES_MORE_FILES_THAN_ATTACHED; repair before promoting"
-    ]
+    "status": "ELIGIBLE",
+    "reasons": []
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
@@ -5897,7 +5893,7 @@
     "status": "NOT_ELIGIBLE",
     "reasons": [
      "listing state is UPLOAD_COMPLETED, not PUBLIC_LISTING_VERIFIED",
-     "delivery audit (GUMROAD_DELIVERY_AUDIT_2026-10-29.json): PROMISES_SPREADSHEET_NOT_ATTACHED; repair before promoting"
+     "delivery audit (GUMROAD_DELIVERY_AUDIT_2026-10-31.json): PROMISES_SPREADSHEET_NOT_ATTACHED; repair before promoting"
     ]
    },
    "evidence": {
@@ -6388,7 +6384,7 @@
    },
    "evidence": {
     "source": "customer_site/affiliate-program.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -6433,7 +6429,7 @@
    },
    "evidence": {
     "source": "customer_site/affiliate-standing-desks.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -6478,7 +6474,7 @@
    },
    "evidence": {
     "source": "customer_site/b12-access-continuity-organizer.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -6525,7 +6521,7 @@
    },
    "evidence": {
     "source": "customer_site/b12-client-handoff-pack.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -6573,7 +6569,7 @@
    },
    "evidence": {
     "source": "customer_site/b12-digital-declutter-system.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -6618,7 +6614,7 @@
    },
    "evidence": {
     "source": "customer_site/b12-freelancer-rate-calculator.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -6665,7 +6661,7 @@
    },
    "evidence": {
     "source": "customer_site/b12-grant-pipeline-tracker.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -6713,7 +6709,7 @@
    },
    "evidence": {
     "source": "customer_site/b12-home-office-organizer.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -6758,7 +6754,7 @@
    },
    "evidence": {
     "source": "customer_site/b12-meeting-cost-calculator.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -6806,7 +6802,7 @@
    },
    "evidence": {
     "source": "customer_site/b12-moving-house-planner.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -6854,7 +6850,7 @@
    },
    "evidence": {
     "source": "customer_site/b12-pet-sitter-handover-kit.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -6901,7 +6897,7 @@
    },
    "evidence": {
     "source": "customer_site/b12-podcast-guest-kit.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -6946,7 +6942,7 @@
    },
    "evidence": {
     "source": "customer_site/blog-etsy-appeal-evidence.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -6991,7 +6987,7 @@
    },
    "evidence": {
     "source": "customer_site/blog-etsy-appeal-mistakes.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7036,7 +7032,7 @@
    },
    "evidence": {
     "source": "customer_site/blog-etsy-first-24-hours.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7081,7 +7077,7 @@
    },
    "evidence": {
     "source": "customer_site/blog-etsy-temp-vs-permanent.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7126,7 +7122,7 @@
    },
    "evidence": {
     "source": "customer_site/blog-etsy-write-clear-appeal.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7171,7 +7167,7 @@
    },
    "evidence": {
     "source": "customer_site/blog-eu-ai-act-compliance-sme-guide.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7216,7 +7212,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-adobe-affiliate.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7261,7 +7257,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-amazon-associates-affiliate.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7306,7 +7302,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-aweber-advocate-program.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7351,7 +7347,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-brevo-affiliate-program.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7396,7 +7392,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-canva-affiliate.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7441,7 +7437,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-creative-market-affiliate.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7486,7 +7482,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-digitalocean-affiliate-program.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7531,7 +7527,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-diminished-value-claim.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7576,7 +7572,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-envato-affiliate.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7621,7 +7617,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-etsy-affiliate.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7666,7 +7662,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-etsy-marketplace.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7711,7 +7707,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-etsy-suspension-appeal.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7756,7 +7752,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-eudr-sme-deadlines.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7801,7 +7797,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-food-truck-permit-stack.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7846,7 +7842,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-freelancer-scope-control.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7891,7 +7887,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-freelancer-scope-creep.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7936,7 +7932,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-google-workspace-affiliate.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7981,7 +7977,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-gumroad-affiliate.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -8026,7 +8022,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-gumroad-marketplace.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -8071,7 +8067,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-mindfulness-focus-for-founders.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -8116,7 +8112,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-n8n-affiliate.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -8161,7 +8157,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-paddle-partnership.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -8206,7 +8202,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-sales-tax-nexus-rolling-method.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -8251,7 +8247,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-siteground-affiliate-program.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -8296,7 +8292,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-stripe-chargeback-evidence.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -8341,7 +8337,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-subscription-renewal-audit.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -8386,7 +8382,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-systemeio-affiliate.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -8431,7 +8427,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-turo-invoice-dispute.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -8476,7 +8472,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-zapier-affiliate.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -8523,7 +8519,7 @@
    },
    "evidence": {
     "source": "customer_site/service-eu-deadline-briefing.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin"
@@ -8569,7 +8565,7 @@
    },
    "evidence": {
     "source": "customer_site/service-kdp-typesetting.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin"
@@ -8615,7 +8611,7 @@
    },
    "evidence": {
     "source": "customer_site/service-verified-lead-lists.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin"
@@ -8659,7 +8655,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-13-week-cash-flow-forecast.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -8704,7 +8700,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-business-mileage-log-deduction-tracker.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -8749,7 +8745,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-car-buy-vs-lease-calculator.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -8794,7 +8790,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-client-pipeline-proposal-tracker.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -8839,7 +8835,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-customer-lifetime-value-cac-calculator.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -8884,7 +8880,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-debt-payoff-planner.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -8929,7 +8925,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-employee-true-cost-calculator.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -8974,7 +8970,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-etsy-shopify-product-profit-calculator.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -9019,7 +9015,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-event-budget-ticket-breakeven-planner.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -9064,7 +9060,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-food-truck-cost-estimator.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -9109,7 +9105,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-freelance-project-profitability-tracker.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -9154,7 +9150,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-inventory-reorder-point-tracker.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -9199,7 +9195,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-membership-subscription-mrr-churn-forecaster.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -9244,7 +9240,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-price-increase-impact-calculator.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -9289,7 +9285,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-pto-accrual-leave-balance-tracker.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -9334,7 +9330,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-quarterly-tax-set-aside-planner.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -9379,7 +9375,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-refinance-break-even-calculator.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -9424,7 +9420,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-renovation-budget-quote-comparison.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -9469,7 +9465,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-rent-vs-buy-home-calculator.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -9514,7 +9510,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-rental-property-deal-analyzer.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -9559,7 +9555,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-saas-waste-estimator.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -9604,7 +9600,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-safe-conversion-dilution-calculator.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -9649,7 +9645,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-service-pricing-break-even-calculator.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -9694,7 +9690,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-shift-schedule-labor-cost-planner.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -9739,7 +9735,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-sinking-funds-emergency-fund-planner.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -9784,7 +9780,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-solar-panel-payback-savings-calculator.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -9829,7 +9825,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-startup-runway-burn-planner.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -9874,7 +9870,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-wedding-budget-vendor-payment-planner.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -9919,7 +9915,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-zero-based-monthly-budget-planner.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -9965,7 +9961,7 @@
    },
    "evidence": {
     "source": "affiliate.registry (data/commission_opportunities.jsonl)",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -10011,7 +10007,7 @@
    },
    "evidence": {
     "source": "affiliate.registry (data/commission_opportunities.jsonl)",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -10057,7 +10053,7 @@
    },
    "evidence": {
     "source": "affiliate.registry (data/commission_opportunities.jsonl)",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -10103,7 +10099,7 @@
    },
    "evidence": {
     "source": "affiliate.registry (data/commission_opportunities.jsonl)",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -10149,7 +10145,7 @@
    },
    "evidence": {
     "source": "affiliate.registry (data/commission_opportunities.jsonl)",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -10195,7 +10191,7 @@
    },
    "evidence": {
     "source": "affiliate.registry (data/commission_opportunities.jsonl)",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -10241,7 +10237,7 @@
    },
    "evidence": {
     "source": "affiliate.registry (data/commission_opportunities.jsonl)",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -10287,7 +10283,7 @@
    },
    "evidence": {
     "source": "affiliate.registry (data/commission_opportunities.jsonl)",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -10333,7 +10329,7 @@
    },
    "evidence": {
     "source": "affiliate.registry (data/commission_opportunities.jsonl)",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -10379,7 +10375,7 @@
    },
    "evidence": {
     "source": "affiliate.registry (data/commission_opportunities.jsonl)",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -10425,7 +10421,7 @@
    },
    "evidence": {
     "source": "affiliate.registry (data/commission_opportunities.jsonl)",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -10471,7 +10467,7 @@
    },
    "evidence": {
     "source": "affiliate.registry (data/commission_opportunities.jsonl)",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -10517,7 +10513,7 @@
    },
    "evidence": {
     "source": "affiliate.registry (data/commission_opportunities.jsonl)",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -10563,7 +10559,7 @@
    },
    "evidence": {
     "source": "affiliate.registry (data/commission_opportunities.jsonl)",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -10609,7 +10605,7 @@
    },
    "evidence": {
     "source": "affiliate.registry (data/commission_opportunities.jsonl)",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -10655,7 +10651,7 @@
    },
    "evidence": {
     "source": "affiliate.registry (data/commission_opportunities.jsonl)",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -10701,7 +10697,7 @@
    },
    "evidence": {
     "source": "affiliate.registry (data/commission_opportunities.jsonl)",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "linkedin",
@@ -10748,7 +10744,7 @@
    },
    "evidence": {
     "source": "video_studio/projects/pilot_a_cashflow_short.json + rights manifest",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "tiktok",
@@ -10795,7 +10791,7 @@
    },
    "evidence": {
     "source": "video_studio/projects/pilot_b_cap_rate_explainer.json + rights manifest",
-    "verified_at": "2026-10-31T12:01:51+00:00"
+    "verified_at": "2026-10-31T12:21:09+00:00"
    },
    "platforms": [
     "tiktok",
@@ -10830,12 +10826,12 @@
    "media_asset": 2
   },
   "by_eligibility": {
-   "ELIGIBLE": 174,
-   "NOT_ELIGIBLE": 35,
+   "ELIGIBLE": 176,
+   "NOT_ELIGIBLE": 33,
    "NEEDS_REVIEW": 5
   },
   "eligible_by_arm": {
-   "digital_products": 137,
+   "digital_products": 139,
    "affiliate": 2,
    "education_content": 35
   }

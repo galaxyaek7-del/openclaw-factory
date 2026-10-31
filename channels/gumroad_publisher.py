@@ -766,7 +766,7 @@ def _update_product_write_and_verify(token, product_id, updates,
 
 def update_product_file(token, product_id, file_path, verify_delay_seconds=1.0,
                          verify_attempts=3, upload_fn=None, get_product_fn=None,
-                         upload_scope_id=None):
+                         upload_scope_id=None, processing_wait_seconds=90.0, processing_poll_seconds=10.0):
     """Replace a product's attached deliverable with a real local file, then
     PROVE it actually attached before returning as if it succeeded.
 
@@ -849,9 +849,22 @@ def update_product_file(token, product_id, file_path, verify_delay_seconds=1.0,
 
     reread = None
     sizes_seen = []
-    for attempt in range(1, verify_attempts + 1):
-        if verify_delay_seconds:
-            time.sleep(verify_delay_seconds * attempt)
+    # 2026-10-31: four of five live bundle attaches reported VERIFICATION_FAILED
+    # with sizes [[None], [None], [None]], yet a read a minute later showed every
+    # file attached at the exact size. A file entry whose size is still None is
+    # being processed: after the normal attempts, keep polling it for up to
+    # processing_wait_seconds. A wrong, non-None size still fails at once.
+    delays = [verify_delay_seconds * a for a in range(1, verify_attempts + 1)]
+    extra = int(processing_wait_seconds // processing_poll_seconds) if processing_poll_seconds else 0
+    attempt = 0
+    while attempt < len(delays) + extra:
+        processing = bool(sizes_seen) and None in sizes_seen[-1]
+        if attempt >= len(delays) and not processing:
+            break
+        delay = delays[attempt] if attempt < len(delays) else processing_poll_seconds
+        attempt += 1
+        if delay:
+            time.sleep(delay)
         try:
             reread = read_product(token, product_id)
         except Exception as e:
@@ -872,7 +885,7 @@ def update_product_file(token, product_id, file_path, verify_delay_seconds=1.0,
 
     raise RuntimeError(
         f"VERIFICATION_FAILED: update_product_file's attach for {product_id} reported success, "
-        f"but the expected {expected_size}-byte file never appeared across {verify_attempts} "
+        f"but the expected {expected_size}-byte file never appeared across {len(sizes_seen)} "
         f"re-read attempt(s) (sizes seen per attempt: {sizes_seen})"
     )
 

@@ -41,6 +41,14 @@ class TestClassify(unittest.TestCase):
                           [{"filetype": "pdf", "size": 18_208}]))
         self.assertIn("PROMISES_MORE_FILES_THAN_ATTACHED", r["issues"])
 
+    def test_one_zip_bundle_for_several_promised_files_is_unverified_not_broken(self):
+        # 2026-10-31: the repaired GPSR listing promises a PDF guide and an XLSX
+        # planner, both inside one 20 KB bundle ZIP.
+        r = classify(prod("YOU RECEIVE: PDF guide + XLSX cost planner workbook (Cost planner / SKU tracker).",
+                          [{"filetype": "zip", "size": 20_209}]))
+        self.assertNotIn("PROMISES_MORE_FILES_THAN_ATTACHED", r["issues"])
+        self.assertIn("ZIP_CONTENTS_UNVERIFIED", r["issues"])
+
     def test_thin_paid_deliverable(self):
         r = classify(prod("A guide.", [{"filetype": "pdf", "size": 3_726}]))
         self.assertIn("THIN_DELIVERABLE", r["issues"])

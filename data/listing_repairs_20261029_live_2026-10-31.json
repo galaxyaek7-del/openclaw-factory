@@ -1,0 +1,685 @@
+{
+ "generated_at": "2026-10-31T12:10:24.749535+00:00",
+ "mode": "LIVE",
+ "actions": [
+  {
+   "slug": "vkqogv",
+   "kind": "attach_bundle",
+   "product_id": "KMNGNgO5gS85H_JppnygIg==",
+   "name": "Trademark DIY Filing Action Kit",
+   "bundle": {
+    "path": "books\\repairs_20261029\\trademark_diy_filing_kit_bundle.zip",
+    "bytes": 17728,
+    "sha256": "1d5c05304d105b3510f7cdb52be9cd05bf8f024b10f071f4d378180e4f525c67",
+    "members": [
+     "trademark_diy_filing_kit.pdf",
+     "trademark_filing_tracker.xlsx"
+    ],
+    "member_file_tests": {
+     "books/trademark_diy_filing_kit_v2.pdf": "PASS",
+     "books/trademark_filing_tracker.xlsx": "PASS"
+    },
+    "ok": true
+   },
+   "live_file_sizes": [
+    12383
+   ],
+   "already_applied": false,
+   "result": "PASS"
+  },
+  {
+   "slug": "fetmu",
+   "kind": "attach_bundle",
+   "product_id": "VPYaNkAdv7Yocko-lIJsZQ==",
+   "name": "GPSR EU Seller Action Kit",
+   "bundle": {
+    "path": "books\\repairs_20261029\\gpsr_eu_seller_action_kit_bundle.zip",
+    "bytes": 20209,
+    "sha256": "36fa0de1a2c32523934bbf7a8d59f89529fdf4b041a952d86167da927247b021",
+    "members": [
+     "gpsr_eu_seller_action_kit.pdf",
+     "gpsr_eu_seller_cost_planner.xlsx"
+    ],
+    "member_file_tests": {
+     "backups/catalog_audit_2026-10-14/VPYaNkAdv7Yocko-lIJsZQ_0.pdf": "PASS",
+     "books/gpsr_eu_seller_cost_planner.xlsx": "PASS"
+    },
+    "ok": true
+   },
+   "live_file_sizes": [
+    18208
+   ],
+   "already_applied": false,
+   "result": "FAILED",
+   "reason": "RuntimeError: VERIFICATION_FAILED: update_product_file's attach for VPYaNkAdv7Yocko-lIJsZQ== reported success, but the expected 20209-byte file never appeared across 3 re-read attempt(s) (sizes seen per attempt: [[None], [None], [None]])",
+   "verified_after": {
+    "at": "2026-10-31",
+    "by": "GET /v2/products/:id",
+    "result": "ATTACHED_AT_EXACT_SIZE",
+    "note": "the re-read during the run saw size None (still processing); a read about a minute later showed the bundle attached at the exact byte size; a dry run then reported ALREADY_APPLIED"
+   }
+  },
+  {
+   "slug": "ciowwm",
+   "kind": "attach_bundle",
+   "product_id": "8Vlc3zY6AkxU4DCe7IRVDA==",
+   "name": "EU Late Payment Recovery Kit",
+   "bundle": {
+    "path": "books\\repairs_20261029\\eu_late_payment_recovery_kit_bundle.zip",
+    "bytes": 21276,
+    "sha256": "941103da6b38d12781ef8d9f5cf0696ebb151360a7749faee805c0c5dacad854",
+    "members": [
+     "eu_late_payment_recovery_kit.pdf",
+     "eu_late_payment_calculator.xlsx"
+    ],
+    "member_file_tests": {
+     "factory_workspace/sprint14/eu_late_payment_recovery_kit.pdf": "PASS",
+     "books/eu_late_payment_calculator.xlsx": "PASS"
+    },
+    "ok": true
+   },
+   "live_file_sizes": [
+    3863
+   ],
+   "already_applied": false,
+   "result": "FAILED",
+   "reason": "RuntimeError: VERIFICATION_FAILED: update_product_file's attach for 8Vlc3zY6AkxU4DCe7IRVDA== reported success, but the expected 21276-byte file never appeared across 3 re-read attempt(s) (sizes seen per attempt: [[None], [None], [None]])",
+   "verified_after": {
+    "at": "2026-10-31",
+    "by": "GET /v2/products/:id",
+    "result": "ATTACHED_AT_EXACT_SIZE",
+    "note": "the re-read during the run saw size None (still processing); a read about a minute later showed the bundle attached at the exact byte size; a dry run then reported ALREADY_APPLIED"
+   }
+  },
+  {
+   "slug": "hasjmp",
+   "kind": "attach_bundle",
+   "product_id": "ZFXJttaaGoJvEE10JOXbWg==",
+   "name": "Etsy Ads ROI Playbook + Calculator",
+   "bundle": {
+    "path": "books\\repairs_20261029\\etsy_ads_roi_playbook_bundle.zip",
+    "bytes": 21925,
+    "sha256": "f7b10ee5f9803004e61646b8f556a8fe3873104a9303b61797767e609a54572b",
+    "members": [
+     "etsy_ads_roi_playbook.pdf",
+     "etsy_ads_roi_calculator.xlsx"
+    ],
+    "member_file_tests": {
+     "factory_workspace/sprint14/etsy_ads_roi_playbook.pdf": "PASS",
+     "books/etsy_ads_roi_calculator.xlsx": "PASS"
+    },
+    "ok": true
+   },
+   "live_file_sizes": [
+    3480
+   ],
+   "already_applied": false,
+   "result": "FAILED",
+   "reason": "RuntimeError: VERIFICATION_FAILED: update_product_file's attach for ZFXJttaaGoJvEE10JOXbWg== reported success, but the expected 21925-byte file never appeared across 3 re-read attempt(s) (sizes seen per attempt: [[None], [None], [None]])",
+   "verified_after": {
+    "at": "2026-10-31",
+    "by": "GET /v2/products/:id",
+    "result": "ATTACHED_AT_EXACT_SIZE",
+    "note": "the re-read during the run saw size None (still processing); a read about a minute later showed the bundle attached at the exact byte size; a dry run then reported ALREADY_APPLIED"
+   }
+  },
+  {
+   "slug": "dyjavs",
+   "kind": "attach_bundle",
+   "product_id": "f542PZ92SUPOjV9F5GJh-Q==",
+   "name": "Diminished Value Claim Kit",
+   "bundle": {
+    "path": "books\\repairs_20261029\\diminished_value_claim_kit_bundle.zip",
+    "bytes": 22034,
+    "sha256": "432a26c01a388637da67e38bf11f8fae684103f9ab6393d4a33dfe66c4a53c2c",
+    "members": [
+     "diminished_value_claim_kit.pdf",
+     "diminished_value_claim_pack.xlsx"
+    ],
+    "member_file_tests": {
+     "backups/catalog_audit_2026-10-14/f542PZ92SUPOjV9F5GJh-Q_0.pdf": "PASS",
+     "books/diminished_value_claim_pack.xlsx": "PASS"
+    },
+    "ok": true
+   },
+   "live_file_sizes": [
+    9630
+   ],
+   "already_applied": false,
+   "result": "FAILED",
+   "reason": "RuntimeError: VERIFICATION_FAILED: update_product_file's attach for f542PZ92SUPOjV9F5GJh-Q== reported success, but the expected 22034-byte file never appeared across 3 re-read attempt(s) (sizes seen per attempt: [[None], [None], [None]])",
+   "verified_after": {
+    "at": "2026-10-31",
+    "by": "GET /v2/products/:id",
+    "result": "ATTACHED_AT_EXACT_SIZE",
+    "note": "the re-read during the run saw size None (still processing); a read about a minute later showed the bundle attached at the exact byte size; a dry run then reported ALREADY_APPLIED"
+   }
+  },
+  {
+   "slug": "bqnvfq",
+   "kind": "update_description",
+   "product_id": "CL0s234DG4r2udkxHr7kLA==",
+   "name": "Car Buy vs Lease Calculator: Total Cost Over the Same Period",
+   "published": true,
+   "old_sha256": "2f6f457d7e411a90b0dd31f288aeccba0d5d1622d2359a89c8317f8c9851179e",
+   "changes": [
+    [
+     " and this guide.",
+     " and a PDF guide."
+    ]
+   ],
+   "result": "PASS"
+  },
+  {
+   "slug": "ciowwm",
+   "kind": "update_description",
+   "product_id": "8Vlc3zY6AkxU4DCe7IRVDA==",
+   "name": "EU Late Payment Recovery Kit",
+   "published": true,
+   "old_sha256": "b77ef61cdf4ce2d844ed2d5bec43706a55c9e9a8ad84fd50374943e795e10ca4",
+   "changes": [
+    [
+     "A single, focused file you download and use immediately",
+     "A short PDF guide plus a working XLSX calculator workbook (invoice tracker, notice ladder)"
+    ]
+   ],
+   "result": "PASS"
+  },
+  {
+   "slug": "ckwqjc",
+   "kind": "update_description",
+   "product_id": "2ghb4qzdl5JhAKGeXF0akg==",
+   "name": "Refinance Break-Even & Loan Comparison Calculator",
+   "published": true,
+   "old_sha256": "3eb2c95079e11d44ddbb315e4b58a645e97bef1d502b4ef913a155582b8940e8",
+   "changes": [
+    [
+     " and this guide.",
+     " and a PDF guide."
+    ]
+   ],
+   "result": "PASS"
+  },
+  {
+   "slug": "czhxhu",
+   "kind": "update_description",
+   "product_id": "Hb8TH-s7cxGstm4QEEgVQQ==",
+   "name": "Service Business Pricing & Break-Even Calculator",
+   "published": true,
+   "old_sha256": "72573352b988440059ef0c21028fe5c57719d466f13de60921213b54008168e9",
+   "changes": [
+    [
+     " and this guide.",
+     " and a PDF guide."
+    ]
+   ],
+   "result": "PASS"
+  },
+  {
+   "slug": "dhtppr",
+   "kind": "update_description",
+   "product_id": "8XdiDpEEqLAH9Ga2tySC7g==",
+   "name": "PTO Accrual & Leave Balance Tracker for Small Teams",
+   "published": true,
+   "old_sha256": "1ed7b2031705c36d92ab157722b03ca450550d7c4b217f627b733674a01f190c",
+   "changes": [
+    [
+     " and this guide.",
+     " and a PDF guide."
+    ]
+   ],
+   "result": "PASS"
+  },
+  {
+   "slug": "dliccs",
+   "kind": "update_description",
+   "product_id": "1t5RKMmSW9x7m0p2rsepnQ==",
+   "name": "13-Week Cash Flow Forecast for Small Business",
+   "published": true,
+   "old_sha256": "440da468533975ea5eb52bfb737d5006da362438b1c9f08ef128efe126a089a5",
+   "changes": [
+    [
+     " and this guide.",
+     " and a PDF guide."
+    ]
+   ],
+   "result": "PASS"
+  },
+  {
+   "slug": "dyjavs",
+   "kind": "update_description",
+   "product_id": "f542PZ92SUPOjV9F5GJh-Q==",
+   "name": "Diminished Value Claim Kit",
+   "published": true,
+   "old_sha256": "62eecbb594a6174b692b842716cf258b4e8ed36b20ffa6debfb068e6e352a860",
+   "changes": [
+    [
+     "3-page PDF guide covering",
+     "3-page PDF guide plus a six-sheet XLSX claim workbook, covering"
+    ]
+   ],
+   "result": "PASS"
+  },
+  {
+   "slug": "ebuszz",
+   "kind": "update_description",
+   "product_id": "lcJ2lwjpD3HR5am_3bfptA==",
+   "name": "Debt Payoff Planner (Avalanche or Snowball)",
+   "published": true,
+   "old_sha256": "bb03ac4191e0d543f27819a16d6f688790c63b1c981353672a9e74e31ce1befe",
+   "changes": [
+    [
+     " and this guide.",
+     " and a PDF guide."
+    ]
+   ],
+   "result": "PASS"
+  },
+  {
+   "slug": "fdjqyp",
+   "kind": "update_description",
+   "product_id": "-wmI77eNf-3TzDfGBe1Jgg==",
+   "name": "Employee True Cost Calculator (US Small Business)",
+   "published": true,
+   "old_sha256": "4738c1aacfeba1f96f06d3a5b5b2d587f167faeb9b4753a6060950d2442bc593",
+   "changes": [
+    [
+     " and this guide.",
+     " and a PDF guide."
+    ]
+   ],
+   "result": "PASS"
+  },
+  {
+   "slug": "fetmu",
+   "kind": "update_description",
+   "product_id": "VPYaNkAdv7Yocko-lIJsZQ==",
+   "name": "GPSR EU Seller Action Kit",
+   "published": true,
+   "old_sha256": "0996972fb93589e4e9fa388304a1027064097eb7ddead346cbba3b84b8384566",
+   "changes": [
+    [
+     "PDF cost planner",
+     "XLSX cost planner workbook"
+    ]
+   ],
+   "result": "PASS"
+  },
+  {
+   "slug": "ffsehk",
+   "kind": "update_description",
+   "product_id": "38WirAIvIlaJbaiYsQ9FAA==",
+   "name": "SAFE Conversion & Dilution Calculator (Post-Money SAFEs)",
+   "published": true,
+   "old_sha256": "9e1a6e3a48eaf37aaf98abfeb044b76fafc487c3577d58e869421083c329dd58",
+   "changes": [
+    [
+     " and this guide.",
+     " and a PDF guide."
+    ]
+   ],
+   "result": "PASS"
+  },
+  {
+   "slug": "ghszog",
+   "kind": "update_description",
+   "product_id": "S0eTeiZhhVFonDvm2mFb_g==",
+   "name": "Home Renovation Budget & Contractor Quote Comparison",
+   "published": true,
+   "old_sha256": "2a0d3cdcc876c98639b11ca14d217b4823c52fa86aae9013dd5da82eac8a7275",
+   "changes": [
+    [
+     " and this guide.",
+     " and a PDF guide."
+    ]
+   ],
+   "result": "PASS"
+  },
+  {
+   "slug": "gwwpri",
+   "kind": "update_description",
+   "product_id": "eJhjR5fM5Br17ppT_fYw5Q==",
+   "name": "Rent vs Buy Home Calculator: Net Worth Year by Year",
+   "published": true,
+   "old_sha256": "8c19900178ad225559b5b567eca856a80ac132346440ac4a1d922354ec777d59",
+   "changes": [
+    [
+     " and this guide.",
+     " and a PDF guide."
+    ]
+   ],
+   "result": "PASS"
+  },
+  {
+   "slug": "hasjmp",
+   "kind": "update_description",
+   "product_id": "ZFXJttaaGoJvEE10JOXbWg==",
+   "name": "Etsy Ads ROI Playbook + Calculator",
+   "published": true,
+   "old_sha256": "466bbbcd3a43bf2aae95a68786a8c873eda12eac876068a399a3cd1960bc7767",
+   "changes": [
+    [
+     "A single, focused file you download and use immediately",
+     "A short PDF playbook plus the XLSX calculator workbook (per-listing tracker, readiness check)"
+    ]
+   ],
+   "result": "PASS"
+  },
+  {
+   "slug": "jorsyy",
+   "kind": "update_description",
+   "product_id": "cLKKwcQ6QCCKWcdYXBA65Q==",
+   "name": "Event Budget & Ticket Break-Even Planner",
+   "published": true,
+   "old_sha256": "2d3015fcc3c5af2889651218fc8b4d2024c62230efbf65e8ca7d10d38f290f06",
+   "changes": [
+    [
+     " and this guide.",
+     " and a PDF guide."
+    ]
+   ],
+   "result": "PASS"
+  },
+  {
+   "slug": "jydqg",
+   "kind": "update_description",
+   "product_id": "fJ-hUH0SGHvrCtR_H5XLAA==",
+   "name": "Inventory Reorder Point & Stock Tracker",
+   "published": true,
+   "old_sha256": "7b485459197b92840d9772293effd95f553bf9120be9493217fd6ccc498b7783",
+   "changes": [
+    [
+     " and this guide.",
+     " and a PDF guide."
+    ]
+   ],
+   "result": "PASS"
+  },
+  {
+   "slug": "kftdyp",
+   "kind": "update_description",
+   "product_id": "Hv3bUT3g3eIlpN3gaZs1DA==",
+   "name": "Restaurant Menu Engineering Worksheet (Stars, Plowhorses, Puzzles, Dogs)",
+   "published": true,
+   "old_sha256": "a4f7924be949a34e7497cab2d47e3c29f976e8de8fca72fac1dbce64287d25e2",
+   "changes": [
+    [
+     " and this guide.",
+     " and a PDF guide."
+    ]
+   ],
+   "result": "PASS"
+  },
+  {
+   "slug": "khqbui",
+   "kind": "update_description",
+   "product_id": "a_83LYQwi12HMW7O8uiisg==",
+   "name": "Tiered Sales Commission Calculator for Small Sales Teams",
+   "published": true,
+   "old_sha256": "8ae802aaf0660c95953fd5ae6f0a4ddaceb7715779efe268b122659821d08817",
+   "changes": [
+    [
+     " and this guide.",
+     " and a PDF guide."
+    ]
+   ],
+   "result": "PASS"
+  },
+  {
+   "slug": "kidohv",
+   "kind": "update_description",
+   "product_id": "gt5WvCt8cwo9khRvVDINBg==",
+   "name": "Wedding Budget & Vendor Payment Planner",
+   "published": true,
+   "old_sha256": "479e9012892826569fa69269a1a0a37cdca4da01cf4d5b3d1fa116710a986105",
+   "changes": [
+    [
+     " and this guide.",
+     " and a PDF guide."
+    ]
+   ],
+   "result": "PASS"
+  },
+  {
+   "slug": "krrtdf",
+   "kind": "update_description",
+   "product_id": "UDcPST0OQGjcOK87hFo5kg==",
+   "name": "Sinking Funds & Emergency Fund Planner",
+   "published": true,
+   "old_sha256": "8cac27d4244cad97bbc46b803cfb09d8428f0d97696fc35129514dff5624ac90",
+   "changes": [
+    [
+     " and this guide.",
+     " and a PDF guide."
+    ]
+   ],
+   "result": "PASS"
+  },
+  {
+   "slug": "mcwusn",
+   "kind": "update_description",
+   "product_id": "49bs32IwUFlq4jv-tIei1w==",
+   "name": "Startup Runway & Burn Planner",
+   "published": true,
+   "old_sha256": "b61afb1f5ced6726f216f4a258c8dc9c1a933a7242b802a03903797ec134bf43",
+   "changes": [
+    [
+     " and this guide.",
+     " and a PDF guide."
+    ]
+   ],
+   "result": "PASS"
+  },
+  {
+   "slug": "mfpqin",
+   "kind": "update_description",
+   "product_id": "JyKW6Ok1C3Ha1fjAjc8G9w==",
+   "name": "Rental Property Deal Analyzer",
+   "published": true,
+   "old_sha256": "79cc960f4db3034040f357807c3838620b03e817c28b3e87a3c8d6a43f1403a5",
+   "changes": [
+    [
+     " and this guide.",
+     " and a PDF guide."
+    ]
+   ],
+   "result": "PASS"
+  },
+  {
+   "slug": "ntbvq",
+   "kind": "update_description",
+   "product_id": "sJSccVv73KZuXMHiI9yobA==",
+   "name": "Etsy & Shopify Product Profit Calculator",
+   "published": true,
+   "old_sha256": "37cf08a23154f966edb9b96d0e7bbf75035c7ff2848bce5fc26028f5fc4ee16a",
+   "changes": [
+    [
+     " and this guide.",
+     " and a PDF guide."
+    ]
+   ],
+   "result": "PASS"
+  },
+  {
+   "slug": "qevzns",
+   "kind": "update_description",
+   "product_id": "dvU4mMSDmnRL7TmKL_Sedg==",
+   "name": "Client Pipeline & Proposal Tracker",
+   "published": true,
+   "old_sha256": "117838dc84b54080bf023590d4cc21c97c55ce831e8fa095ff509957e7e06884",
+   "changes": [
+    [
+     " and this guide.",
+     " and a PDF guide."
+    ]
+   ],
+   "result": "PASS"
+  },
+  {
+   "slug": "qhmtd",
+   "kind": "update_description",
+   "product_id": "54huoJb9O_0cNw082vIZpg==",
+   "name": "Membership & Subscription MRR and Churn Forecaster",
+   "published": true,
+   "old_sha256": "3ac13b1d3cb4a31d7d379b29d081a017d31b88fd505c7e195721dd5db399c675",
+   "changes": [
+    [
+     " and this guide.",
+     " and a PDF guide."
+    ]
+   ],
+   "result": "PASS"
+  },
+  {
+   "slug": "rlgdc",
+   "kind": "update_description",
+   "product_id": "-3jJcVkCfNPUKv8h7uQyDg==",
+   "name": "Business Mileage Log & Deduction Tracker (US)",
+   "published": true,
+   "old_sha256": "b9c7af01e6b790fac9035a6fefbfd05e0f43353802db24e4d15c0e26856fc18f",
+   "changes": [
+    [
+     " and this guide.",
+     " and a PDF guide."
+    ]
+   ],
+   "result": "PASS"
+  },
+  {
+   "slug": "sfcpyb",
+   "kind": "update_description",
+   "product_id": "yc_cbXmlKOtJfNndSsezYA==",
+   "name": "Price Increase Impact Calculator",
+   "published": true,
+   "old_sha256": "9d14cec005efeefb073c4e0b9bd00fcbc4a374710c636b254601765c11594a0c",
+   "changes": [
+    [
+     " and this guide.",
+     " and a PDF guide."
+    ]
+   ],
+   "result": "PASS"
+  },
+  {
+   "slug": "ucgjwf",
+   "kind": "update_description",
+   "product_id": "Pe6E3FUlWedlcUMhec-2jg==",
+   "name": "Shift Schedule & Labor Cost Planner",
+   "published": true,
+   "old_sha256": "f040dc9d4cc383bdcf25ad0fef7a1cd973d18be69abf0800d0eb1704aed2943a",
+   "changes": [
+    [
+     " and this guide.",
+     " and a PDF guide."
+    ]
+   ],
+   "result": "PASS"
+  },
+  {
+   "slug": "uubnbi",
+   "kind": "update_description",
+   "product_id": "P43t_52yRtWP4_s4D_Ed0g==",
+   "name": "Zero-Based Monthly Budget Planner",
+   "published": true,
+   "old_sha256": "fe18e89314f03b4839273c9a82ef6460609e76518c365703a3a75ed3d1f1a148",
+   "changes": [
+    [
+     " and this guide.",
+     " and a PDF guide."
+    ]
+   ],
+   "result": "PASS"
+  },
+  {
+   "slug": "vkqogv",
+   "kind": "update_description",
+   "product_id": "KMNGNgO5gS85H_JppnygIg==",
+   "name": "Trademark DIY Filing Action Kit",
+   "published": true,
+   "old_sha256": "74492ce730dd8f853c98395183725d6653df45bfdc9d209852c14fe97825e666",
+   "changes": [
+    [
+     "Instant digital download. PDF guide.",
+     "Instant digital download: PDF guide (with a dated USPTO fee-correction page) and the four-sheet XLSX docket tracker."
+    ]
+   ],
+   "result": "PASS"
+  },
+  {
+   "slug": "xiimbr",
+   "kind": "update_description",
+   "product_id": "lcQ9eEXpJLX09C_3n76ZBQ==",
+   "name": "Freelance Project Profitability & Effective Hourly Rate Tracker",
+   "published": true,
+   "old_sha256": "f0b8a098efbb13ca90f3c767b5eb921a3d147a69035ec358b0a44e7ac6f6515c",
+   "changes": [
+    [
+     " and this guide.",
+     " and a PDF guide."
+    ]
+   ],
+   "result": "PASS"
+  },
+  {
+   "slug": "xmbbls",
+   "kind": "update_description",
+   "product_id": "GHzrD5U78JUlmKFXMeQmfg==",
+   "name": "Customer Lifetime Value & CAC Payback Calculator",
+   "published": true,
+   "old_sha256": "03801774eb4e03378046686ebdfa1e16bbc9291bd7efefc7de900e4d2aee0f78",
+   "changes": [
+    [
+     " and this guide.",
+     " and a PDF guide."
+    ]
+   ],
+   "result": "PASS"
+  },
+  {
+   "slug": "ydgbnh",
+   "kind": "update_description",
+   "product_id": "_-vV2F76nlPPhIhCXeIyog==",
+   "name": "Self-Employed Quarterly Tax Set-Aside Planner (US, 2026)",
+   "published": true,
+   "old_sha256": "b35e1a26dda2cffe6b27c317646f5f20974c006b97297b6660279fbf5a48ab83",
+   "changes": [
+    [
+     " and this guide.",
+     " and a PDF guide."
+    ]
+   ],
+   "result": "PASS"
+  },
+  {
+   "slug": "zbvxmr",
+   "kind": "update_description",
+   "product_id": "sRyzz1NDSQMGNuszNIsDsw==",
+   "name": "Solar Panel Payback & 25-Year Savings Calculator",
+   "published": true,
+   "old_sha256": "9c31a671c43d64cb14693a65b883ab53f53386986544d652b69043d698761464",
+   "changes": [
+    [
+     " and this guide.",
+     " and a PDF guide."
+    ]
+   ],
+   "result": "PASS"
+  },
+  {
+   "slug": "zhgrkk",
+   "kind": "update_description",
+   "product_id": "Gd1kA2f2SHxSJTMfoFTEMw==",
+   "name": "Roommate & Shared House Bill Splitter (Equal, Income or Room Size)",
+   "published": true,
+   "old_sha256": "711a149142a9355dc6fc457a88eb8b9646014b28963b785653815e2e151e3cc8",
+   "changes": [
+    [
+     " and this guide.",
+     " and a PDF guide."
+    ]
+   ],
+   "result": "PASS"
+  }
+ ],
+ "note": "Live run 2026-10-31 (founder approved in chat). 35 description updates PASS; 5 bundles attached (1 verified in-run, 4 verified by a later read)."
+}

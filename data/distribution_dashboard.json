@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-31T12:02:24+00:00",
+ "generated_at": "2026-10-31T12:21:09+00:00",
  "operational": {
   "offers": {
    "total": 214,
@@ -18,12 +18,12 @@
     "media_asset": 2
    },
    "by_eligibility": {
-    "ELIGIBLE": 174,
-    "NOT_ELIGIBLE": 35,
+    "ELIGIBLE": 176,
+    "NOT_ELIGIBLE": 33,
     "NEEDS_REVIEW": 5
    },
    "eligible_by_arm": {
-    "digital_products": 137,
+    "digital_products": 139,
     "affiliate": 2,
     "education_content": 35
    }
@@ -32,18 +32,17 @@
    "program approval is NOT_APPLIED; no approved affiliate link": 17,
    "product page for a product that is not on sale (page says (proposed))": 5,
    "page is not on origin/main, so it is not public": 4,
-   "delivery audit (GUMROAD_DELIVERY_AUDIT_2026-10-29.json): PROMISES_SPREADSHEET_NOT_ATTACHED; repair before promoting": 3,
    "listing state is UPLOAD_COMPLETED, not PUBLIC_LISTING_VERIFIED": 3,
    "service: delivery capacity and terms need founder confirmation before promotion": 3,
    "duplicate live title shared with ['GR-0fa92aeb1a', 'GR-ab323215ab']": 2,
+   "delivery audit (GUMROAD_DELIVERY_AUDIT_2026-10-31.json): PROMISES_SPREADSHEET_NOT_ATTACHED; repair before promoting": 2,
    "rights UNRESOLVED": 2,
    "listing state is READY_FOR_AUTHORIZATION, not PUBLIC_LISTING_VERIFIED": 1,
    "no listing description available to draw facts from": 1,
    "on HOLD (hold_policy.py): internal quality audit recorded 11 critical content-accuracy findings, including Annex III categories that do not appear in the Act and an incorrect prohibition on high-risk GPAI models. Recorded as an internal finding, not a legal ruling.": 1,
-   "delivery audit (GUMROAD_DELIVERY_AUDIT_2026-10-29.json): PREVIEW_FILE_DELIVERED; repair before promoting": 1,
+   "delivery audit (GUMROAD_DELIVERY_AUDIT_2026-10-31.json): PREVIEW_FILE_DELIVERED; repair before promoting": 1,
    "on HOLD (hold_policy.py): listed as a workbook; the delivered file is a one-page, 331-word PDF with empty tables and outcome claims the content does not support.": 1,
-   "delivery audit (GUMROAD_DELIVERY_AUDIT_2026-10-29.json): PUBLISHED_WITHOUT_DELIVERABLE; repair before promoting": 1,
-   "delivery audit (GUMROAD_DELIVERY_AUDIT_2026-10-29.json): PROMISES_MORE_FILES_THAN_ATTACHED; repair before promoting": 1,
+   "delivery audit (GUMROAD_DELIVERY_AUDIT_2026-10-31.json): PUBLISHED_WITHOUT_DELIVERABLE; repair before promoting": 1,
    "product page for a product that is not on sale (page says (approved, not yet listed))": 1,
    "product page for a product that is not on sale (page says (proposed, not yet listed))": 1
   },

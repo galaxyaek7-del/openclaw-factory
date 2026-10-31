@@ -783,6 +783,47 @@ class TestUpdateProductFile(unittest.TestCase):
             )
         self.assertEqual(result, now_correct)
 
+    def _attach(self, rereads, **kw):
+        calls = []
+
+        def read(token, pid):
+            calls.append(1)
+            return next(rereads)
+        with patch.object(gp.requests, "request", return_value=self._put_ok()), \
+             patch.object(gp.time, "sleep") as slept:
+            try:
+                return gp.update_product_file(
+                    "fake-token", "p1", self.file_path, verify_delay_seconds=1.0, verify_attempts=3,
+                    upload_fn=lambda token, path: "https://signed.example/upload-url",
+                    get_product_fn=read, **kw), calls, slept
+            except RuntimeError as e:
+                return e, calls, slept
+
+    def test_a_file_still_processing_is_polled_longer_before_failing(self):
+        """Live 2026-10-31: four bundle attaches showed size None on all three
+        quick re-reads (about 6 s) and were attached at the exact size a minute
+        later. A None size now keeps being polled, up to processing_wait_seconds."""
+        processing = {"id": "p1", "files": [{"size": None}]}
+        done = {"id": "p1", "files": [{"size": self.expected_size}]}
+        result, calls, slept = self._attach(iter([processing] * 6 + [done]))
+        self.assertEqual(result, done)
+        self.assertEqual(len(calls), 7)
+        self.assertEqual([c.args[0] for c in slept.call_args_list][:4], [1.0, 2.0, 3.0, 10.0])
+
+    def test_a_file_that_never_finishes_processing_still_fails_in_bounded_time(self):
+        processing = {"id": "p1", "files": [{"size": None}]}
+        err, calls, slept = self._attach(iter([processing] * 50), processing_wait_seconds=90.0, processing_poll_seconds=10.0)
+        self.assertIsInstance(err, RuntimeError)
+        self.assertIn("VERIFICATION_FAILED", str(err))
+        self.assertEqual(len(calls), 3 + 9)
+        self.assertIn("across 12 re-read attempt(s)", str(err))
+
+    def test_a_wrong_size_is_not_given_extra_time(self):
+        wrong = {"id": "p1", "files": [{"size": 999999}]}
+        err, calls, _ = self._attach(iter([wrong] * 50))
+        self.assertIn("VERIFICATION_FAILED", str(err))
+        self.assertEqual(len(calls), 3)
+
     def test_sent_url_is_never_compared_against_the_reread_resigned_url(self):
         """The re-read URL is always re-signed by Gumroad (different query
         string every time) -- this must never be treated as a mismatch as

@@ -67,7 +67,14 @@ def classify(product):
     if received:
         n_promised = len(re.findall(r"\bpdf\b|\bxlsx\b|\bcsv\b|\btemplate\b|\bplanner\b", received.group(1), re.I))
         if n_promised > len(files) and len(files) <= 1:
-            issues.append("PROMISES_MORE_FILES_THAN_ATTACHED")
+            # One ZIP can carry every promised file (the repaired bundles of
+            # 2026-10-31 do); the API cannot list its contents, so that case is
+            # "unverified", not a broken promise.
+            if set(types) & ARCHIVE_TYPES:
+                if "ZIP_CONTENTS_UNVERIFIED" not in issues:
+                    issues.append("ZIP_CONTENTS_UNVERIFIED")
+            else:
+                issues.append("PROMISES_MORE_FILES_THAN_ATTACHED")
     if any("preview" in str(f.get("name") or "").lower() for f in files):
         issues.append("PREVIEW_FILE_DELIVERED")
     return {

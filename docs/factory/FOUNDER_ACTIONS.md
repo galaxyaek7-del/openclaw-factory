@@ -18,7 +18,11 @@ The command refuses on its own if the window, approval, revision or auth
 freshness does not hold. Success: each product prints `PASS` with a URL.
 After the approvals expire, new ones are needed (the dry run lists what is missing).
 
-### Making publishing automatic (one-time)
+### Making publishing automatic: ON since 2026-10-31 (your answer in chat)
+
+`GF_AUTO_PUBLISH_APPROVED=true` is in `.env` and the loop was restarted. Approving a product is
+now your only step; the text below describes how it works.
+
 
 Add `GF_AUTO_PUBLISH_APPROVED=true` to `.env`. From then on the factory loop publishes,
 every tick, each product you have approved, as soon as Gumroad's 24-hour window has
@@ -59,7 +63,12 @@ content we have withdrawn. The API cannot unpublish; in the Gumroad dashboard,
 open each product and unpublish it. The decision queue drops the item by itself
 once the daily registry rebuild sees them unpublished.
 
-## 2. Repair the live listings that deliver less than they describe
+## 2. Repair the live listings that deliver less than they describe: DONE 2026-10-31
+
+Run live with your approval in chat: 35 descriptions corrected, and 5 listings now carry the
+bundle they describe (vkqogv, fetmu, ciowwm, hasjmp, dyjavs), each read back at its exact
+byte size. Record: `data/listing_repairs_20261029_live_2026-10-31.json`. A dry run now
+reports nothing left to apply. Kept for reference:
 
 ```
 python scripts/apply_listing_repairs_20261029.py          # dry run: shows every change
