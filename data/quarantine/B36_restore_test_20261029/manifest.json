@@ -1,0 +1,18 @@
+{
+ "created_at": "2026-10-29T07:30:35.754865+00:00",
+ "authority": "founder, 2026-10-29",
+ "rules": {
+  "recovery_actions.jsonl": "tests/test_restore_file_from_git.js (before 2026-10-29 it wrote to the live ledger)"
+ },
+ "files": {
+  "recovery_actions.jsonl": {
+   "status": "MOVED",
+   "rows_before": 135,
+   "rows_moved": 120,
+   "rows_after": 15,
+   "sha256_before": "c566c07d7fa862b6b4d02d97168752fe36d47ca9dddc4e06e5a0438036f56dca",
+   "sha256_after": "b23af3a27b7fe194df6288548d3fdf70fbf66c161695f44de8cd2246950e0e7f"
+  }
+ },
+ "images": []
+}

@@ -1,0 +1,36 @@
+{
+ "created_at": "2026-10-29T07:25:17.062664+00:00",
+ "authority": "founder, 2026-10-29",
+ "rules": {
+  "recovery_actions.jsonl": "tests/test_autonomous_commerce_ops.py fixture (component webhook, error 'e')",
+  "arm5_attribution.jsonl": "tests/test_attribution_engine.py fixture (source 'src', evidence 'h')",
+  "distribution_events.jsonl": "tests/test_distribution_engine.py fixture (distributions created for product PRD-001)"
+ },
+ "files": {
+  "recovery_actions.jsonl": {
+   "status": "MOVED",
+   "rows_before": 190,
+   "rows_moved": 55,
+   "rows_after": 135,
+   "sha256_before": "0e8655ca68cfc98066b9c927ed359a48c3e913539277cf94cbd5e08bdae85778",
+   "sha256_after": "c566c07d7fa862b6b4d02d97168752fe36d47ca9dddc4e06e5a0438036f56dca"
+  },
+  "arm5_attribution.jsonl": {
+   "status": "MOVED",
+   "rows_before": 43,
+   "rows_moved": 29,
+   "rows_after": 14,
+   "sha256_before": "b5a07d7859f0310ad9cfa879f8d0020d850148d5b501b272f88ab911edbc81aa",
+   "sha256_after": "59c0fc5db7a73d1da681b9ee44f32b16302b07e706d7c8a1d476b038cd5be586"
+  },
+  "distribution_events.jsonl": {
+   "status": "MOVED",
+   "rows_before": 286,
+   "rows_moved": 230,
+   "rows_after": 56,
+   "sha256_before": "72e757e70a2cfd13167f11b4733cfebf86f1fd6c0d96f49dd597254480ece46c",
+   "sha256_after": "d45748648e1477b07c58ae43758a8bd17ccb812c90e345a8906593e98c0adee2"
+  }
+ },
+ "images": []
+}

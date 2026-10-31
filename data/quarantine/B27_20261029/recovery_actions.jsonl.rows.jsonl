@@ -1,0 +1,1 @@
+{"line": 191, "reason": "tests/test_autonomous_commerce_ops.py fixture (error 'e')", "row": {"event_type": "autonomous_commerce_failure", "component": "webhook", "error": "e", "retry": 0, "fallback": "manual", "recoverable": false, "status": "HUMAN_GATE", "timestamp": "2026-10-29T00:19:26.891879+00:00"}}

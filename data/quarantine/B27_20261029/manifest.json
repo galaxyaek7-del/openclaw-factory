@@ -1,0 +1,100 @@
+{
+ "created_at": "2026-10-29T07:24:23.553747+00:00",
+ "authority": "founder, 2026-10-29",
+ "rules": {
+  "design_audit.jsonl": "1-second burst from tests/test_canva_e2e.py / test_canva_failures.py (DesignPipeline has no non-test caller)",
+  "design_candidates.jsonl": "same burst",
+  "design_approvals.jsonl": "same burst",
+  "distribution_events.jsonl": "tests/test_distribution_engine.py fixture (PRD-001, asset1.pdf)",
+  "recovery_actions.jsonl": "tests/test_autonomous_commerce_ops.py fixture (error 'e')",
+  "arm5_attribution.jsonl": "tests/test_attribution_engine.py fixture (source 'src', evidence 'h')"
+ },
+ "files": {
+  "design_audit.jsonl": {
+   "status": "MOVED",
+   "rows_before": 2792,
+   "rows_moved": 31,
+   "rows_after": 2761,
+   "sha256_before": "7902a0e5eddf9107e5598436bc7744bd5c7b5967197b4848081912971696808b",
+   "sha256_after": "810db83a7b347dc26a687ae70f449ccb4cb5374b6e7dcd2c3eb61694cad2f00a"
+  },
+  "design_candidates.jsonl": {
+   "status": "MOVED",
+   "rows_before": 810,
+   "rows_moved": 9,
+   "rows_after": 801,
+   "sha256_before": "5f3a4677a53983e33e978d36fb6351b133c721828304bbc26b98716b012f1c6e",
+   "sha256_after": "45a7d1c1dc43763af486c796f11b7dd3045c3582286b46f0655f787ec615bec9"
+  },
+  "design_approvals.jsonl": {
+   "status": "MOVED",
+   "rows_before": 1074,
+   "rows_moved": 12,
+   "rows_after": 1062,
+   "sha256_before": "fe07ddda35d980046edfe7638c7cd8c1b632c8ad49d1b90013d81772703611b3",
+   "sha256_after": "564d10d6163e3b964c3bc854f477bb59787f52e8de0dc1d5b2d44d37a3e2e84b"
+  },
+  "distribution_events.jsonl": {
+   "status": "MOVED",
+   "rows_before": 291,
+   "rows_moved": 5,
+   "rows_after": 286,
+   "sha256_before": "a7983e3660e441a553fd953953b87472aee8d20543dc78f5f3bbd1b3189bc831",
+   "sha256_after": "72e757e70a2cfd13167f11b4733cfebf86f1fd6c0d96f49dd597254480ece46c"
+  },
+  "recovery_actions.jsonl": {
+   "status": "MOVED",
+   "rows_before": 191,
+   "rows_moved": 1,
+   "rows_after": 190,
+   "sha256_before": "6c5dac838f27e628f7d50672e52a574a0483e384e98b1003614df637e38bf517",
+   "sha256_after": "0e8655ca68cfc98066b9c927ed359a48c3e913539277cf94cbd5e08bdae85778"
+  },
+  "arm5_attribution.jsonl": {
+   "status": "MOVED",
+   "rows_before": 44,
+   "rows_moved": 1,
+   "rows_after": 43,
+   "sha256_before": "39ef7138aa201b4cf981adeaede397db7b336f8c29c4884b6fefe79223cd05aa",
+   "sha256_after": "b5a07d7859f0310ad9cfa879f8d0020d850148d5b501b272f88ab911edbc81aa"
+  }
+ },
+ "images": [
+  {
+   "from": "data/design_output/3b1735d2f9340d99_candidate_0.png",
+   "to": "data/quarantine/B27_20261029/design_output/3b1735d2f9340d99_candidate_0.png"
+  },
+  {
+   "from": "data/design_output/3b1735d2f9340d99_candidate_1.png",
+   "to": "data/quarantine/B27_20261029/design_output/3b1735d2f9340d99_candidate_1.png"
+  },
+  {
+   "from": "data/design_output/3b1735d2f9340d99_candidate_2.png",
+   "to": "data/quarantine/B27_20261029/design_output/3b1735d2f9340d99_candidate_2.png"
+  },
+  {
+   "from": "data/design_output/e01537b440efd943_candidate_0.png",
+   "to": "data/quarantine/B27_20261029/design_output/e01537b440efd943_candidate_0.png"
+  },
+  {
+   "from": "data/design_output/e01537b440efd943_candidate_1.png",
+   "to": "data/quarantine/B27_20261029/design_output/e01537b440efd943_candidate_1.png"
+  },
+  {
+   "from": "data/design_output/e01537b440efd943_candidate_2.png",
+   "to": "data/quarantine/B27_20261029/design_output/e01537b440efd943_candidate_2.png"
+  },
+  {
+   "from": "data/design_output/fa464324fe93523e_candidate_0.png",
+   "to": "data/quarantine/B27_20261029/design_output/fa464324fe93523e_candidate_0.png"
+  },
+  {
+   "from": "data/design_output/fa464324fe93523e_candidate_1.png",
+   "to": "data/quarantine/B27_20261029/design_output/fa464324fe93523e_candidate_1.png"
+  },
+  {
+   "from": "data/design_output/fa464324fe93523e_candidate_2.png",
+   "to": "data/quarantine/B27_20261029/design_output/fa464324fe93523e_candidate_2.png"
+  }
+ ]
+}
