@@ -38,7 +38,20 @@ def _write_trends():
     return linkage.write_state()
 
 
-def run_once(today=None, state_path=STATE, runner=None, arms_writer=None, trends_writer=None):
+def _write_offers():
+    # Distribution offers (social_distribution/offers.py) are derived from the
+    # registry just rebuilt: new live products become offers, held listings and
+    # broken delivery promises become NOT_ELIGIBLE. Offers and the distribution
+    # dashboard only; no draft is created (drafting stays a deliberate step).
+    from social_distribution import campaigns, dashboard, offers, platforms
+    doc = offers.build()
+    offers.write(doc)
+    dashboard.write(dashboard.build(doc, campaigns.Jobs(ledger=campaigns.LEDGER).jobs(), platforms.readiness(),
+                                    dashboard.real_metrics()))
+    return doc["summary"]
+
+
+def run_once(today=None, state_path=STATE, runner=None, arms_writer=None, trends_writer=None, offers_writer=None):
     import product_registry
     today = today or datetime.now(timezone.utc).date().isoformat()
     try:
@@ -71,6 +84,12 @@ def run_once(today=None, state_path=STATE, runner=None, arms_writer=None, trends
         trends_writer()
     except Exception as e:  # pragma: no cover - reported, not raised
         arms_note += f"; trend state not written ({type(e).__name__})"
+    if offers_writer is None:
+        offers_writer = _write_offers if runner is None else (lambda: None)
+    try:
+        offers_writer()
+    except Exception as e:  # pragma: no cover - reported, not raised
+        arms_note += f"; distribution offers not written ({type(e).__name__})"
     dc = summary["drift_counts"]
     issues = {k: v for k, v in dc.items() if v}
     detail = (f"{summary['products']} products {summary['states']}, sales {summary['sales_total']}; "
