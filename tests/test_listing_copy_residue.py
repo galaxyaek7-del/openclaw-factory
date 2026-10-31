@@ -34,6 +34,8 @@ NOT_COPY = {
                                      "(base64 ids look like fused tokens)",
     "docs/factory/LISTING_REPAIR_PREFLIGHT_2026-10-29.md": "engineering preflight report quoting Gumroad "
                                                            "product ids (base64) next to each repair",
+    "data/listing_repairs_20261029_live_2026-10-31.json": "record of the live repair run keyed by Gumroad "
+                                                          "product ids (base64); descriptions were dropped",
 }
 
 
