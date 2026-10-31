@@ -95,6 +95,30 @@ test('delivery truth: buyer-facing issues are listed, archive opacity is counted
   assert.equal(d.stale, false);
 });
 
+test('a "$0+" listing with no file counts as paid and gets its own unpublish item', () => {
+  // 2026-10-31: /l/owtmpe was live at "$0+" with no file; price_usd 0 had kept it out of every count.
+  const root = factory({
+    'reports/GUMROAD_DELIVERY_AUDIT_2026-10-31.json': {
+      generated_at: '2026-10-31T12:00:00Z',
+      rows: [
+        { slug: 'owtmpe', published: true, price_usd: 0, pay_what_you_want: true, issues: ['PUBLISHED_WITHOUT_DELIVERABLE'] },
+        { slug: 'iaiyt', published: true, price_usd: 0, pay_what_you_want: true, issues: ['PREVIEW_FILE_DELIVERED'] },
+        { slug: 'kit', published: true, price_usd: 49, issues: ['PROMISES_SPREADSHEET_NOT_ATTACHED'] },
+        { slug: 'free', published: true, price_usd: 0, pay_what_you_want: false, issues: ['PUBLISHED_WITHOUT_DELIVERABLE'] },
+      ],
+    },
+    'data/hold_products.json': { products: { iaiyt: { product_id: 'P1' } } },
+  });
+  const d = cf.delivery(root, new Date('2026-10-31T13:00:00Z'));
+  assert.deepEqual(d.nothing_delivered, ['owtmpe']);
+  assert.equal(d.serious_paid, 3);
+  const q = cf.founderQueue({ products: [] }, d, null, root);
+  const titles = q.map(x => x.title);
+  assert.ok(titles.some(t => /Unpublish 1 live listing\(s\) that deliver no file: owtmpe/.test(t)));
+  // The repair item names only what no other item covers (not the held iaiyt, not owtmpe).
+  assert.ok(titles.some(t => /Repair 1 paid listing\(s\) .*: kit$/.test(t)));
+});
+
 test('an archive whose attached size equals its built bundle is verified; a size mismatch is not', () => {
   const root = factory({
     'books/b/M1.json': { files: { bundle: { bytes: 18002 } } },

@@ -82,6 +82,8 @@ def classify(product):
         "name": product.get("name"),
         "published": bool(product.get("published")),
         "price_usd": (product.get("price") or 0) / 100,
+        # "$0+" listings: a buyer can still choose to pay (2026-10-31: owtmpe, iaiyt, wteork).
+        "pay_what_you_want": bool(product.get("customizable_price")),
         "attached_types": types,
         "attached_bytes": sum(int(f.get("size") or 0) for f in files),
         "promise_terms": sorted({p.lower() for p in promise}),

@@ -63,6 +63,9 @@ content we have withdrawn. The API cannot unpublish; in the Gumroad dashboard,
 open each product and unpublish it. The decision queue drops the item by itself
 once the daily registry rebuild sees them unpublished.
 
+Same for `/l/owtmpe` ("[Unavailable] AI Workflow QA & Stress Test"): live at "$0+" with no file
+attached, so a buyer can pay and receive nothing (found 2026-10-31).
+
 ## 2. Repair the live listings that deliver less than they describe: DONE 2026-10-31
 
 Run live with your approval in chat: 35 descriptions corrected, and 5 listings now carry the

@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-31T12:20:43.393589+00:00",
+ "generated_at": "2026-10-31T14:29:27.724763+00:00",
  "method": "GET /v2/products + /v2/products/:id",
  "products": 115,
  "published": 112,
@@ -16,6 +16,7 @@
    "name": "Tiered Sales Commission Calculator for Small Sales Teams",
    "published": true,
    "price_usd": 12.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "zip"
    ],
@@ -36,6 +37,7 @@
    "name": "Roommate & Shared House Bill Splitter (Equal, Income or Room Size)",
    "published": true,
    "price_usd": 7.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "zip"
    ],
@@ -56,6 +58,7 @@
    "name": "Restaurant Menu Engineering Worksheet (Stars, Plowhorses, Puzzles, Dogs)",
    "published": true,
    "price_usd": 19.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "zip"
    ],
@@ -76,6 +79,7 @@
    "name": "Freelance Project Profitability & Effective Hourly Rate Tracker",
    "published": true,
    "price_usd": 12.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "zip"
    ],
@@ -96,6 +100,7 @@
    "name": "Membership & Subscription MRR and Churn Forecaster",
    "published": true,
    "price_usd": 15.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "zip"
    ],
@@ -116,6 +121,7 @@
    "name": "Event Budget & Ticket Break-Even Planner",
    "published": true,
    "price_usd": 12.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "zip"
    ],
@@ -136,6 +142,7 @@
    "name": "PTO Accrual & Leave Balance Tracker for Small Teams",
    "published": true,
    "price_usd": 12.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "zip"
    ],
@@ -156,6 +163,7 @@
    "name": "Rent vs Buy Home Calculator: Net Worth Year by Year",
    "published": true,
    "price_usd": 12.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "zip"
    ],
@@ -176,6 +184,7 @@
    "name": "Solar Panel Payback & 25-Year Savings Calculator",
    "published": true,
    "price_usd": 12.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "zip"
    ],
@@ -196,6 +205,7 @@
    "name": "SAFE Conversion & Dilution Calculator (Post-Money SAFEs)",
    "published": true,
    "price_usd": 19.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "zip"
    ],
@@ -216,6 +226,7 @@
    "name": "Caregiver Command Kit: Emergency, Medication, and Appointment Organizer",
    "published": true,
    "price_usd": 16.99,
+   "pay_what_you_want": false,
    "attached_types": [
     "zip"
    ],
@@ -236,6 +247,7 @@
    "name": "Grant Endgame: No-Cost Extension & Unspent Funds Kit",
    "published": true,
    "price_usd": 19.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "zip"
    ],
@@ -256,6 +268,7 @@
    "name": "Renovation Allowance & Change-Order Control",
    "published": true,
    "price_usd": 15.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "zip"
    ],
@@ -275,6 +288,7 @@
    "name": "Employee True Cost Calculator (US Small Business)",
    "published": true,
    "price_usd": 15.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "zip"
    ],
@@ -295,6 +309,7 @@
    "name": "Sinking Funds & Emergency Fund Planner",
    "published": true,
    "price_usd": 9.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "zip"
    ],
@@ -315,6 +330,7 @@
    "name": "Business Mileage Log & Deduction Tracker (US)",
    "published": true,
    "price_usd": 9.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "zip"
    ],
@@ -335,6 +351,7 @@
    "name": "Shift Schedule & Labor Cost Planner",
    "published": true,
    "price_usd": 14.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "zip"
    ],
@@ -355,6 +372,7 @@
    "name": "Customer Lifetime Value & CAC Payback Calculator",
    "published": true,
    "price_usd": 15.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "zip"
    ],
@@ -375,6 +393,7 @@
    "name": "Price Increase Impact Calculator",
    "published": true,
    "price_usd": 12.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "zip"
    ],
@@ -395,6 +414,7 @@
    "name": "Home Renovation Budget & Contractor Quote Comparison",
    "published": true,
    "price_usd": 14.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "zip"
    ],
@@ -415,6 +435,7 @@
    "name": "Wedding Budget & Vendor Payment Planner",
    "published": true,
    "price_usd": 12.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "zip"
    ],
@@ -435,6 +456,7 @@
    "name": "Car Buy vs Lease Calculator: Total Cost Over the Same Period",
    "published": true,
    "price_usd": 12.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "zip"
    ],
@@ -455,6 +477,7 @@
    "name": "Refinance Break-Even & Loan Comparison Calculator",
    "published": true,
    "price_usd": 15.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "zip"
    ],
@@ -475,6 +498,7 @@
    "name": "Zero-Based Monthly Budget Planner",
    "published": true,
    "price_usd": 9.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "zip"
    ],
@@ -495,6 +519,7 @@
    "name": "Startup Runway & Burn Planner",
    "published": true,
    "price_usd": 15.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "zip"
    ],
@@ -515,6 +540,7 @@
    "name": "Client Pipeline & Proposal Tracker",
    "published": true,
    "price_usd": 14.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "zip"
    ],
@@ -535,6 +561,7 @@
    "name": "Inventory Reorder Point & Stock Tracker",
    "published": true,
    "price_usd": 15.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "zip"
    ],
@@ -555,6 +582,7 @@
    "name": "Service Business Pricing & Break-Even Calculator",
    "published": true,
    "price_usd": 15.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "zip"
    ],
@@ -575,6 +603,7 @@
    "name": "Etsy & Shopify Product Profit Calculator",
    "published": true,
    "price_usd": 12.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "zip"
    ],
@@ -594,6 +623,7 @@
    "name": "Self-Employed Quarterly Tax Set-Aside Planner (US, 2026)",
    "published": true,
    "price_usd": 12.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "zip"
    ],
@@ -614,6 +644,7 @@
    "name": "Debt Payoff Planner (Avalanche or Snowball)",
    "published": true,
    "price_usd": 12.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "zip"
    ],
@@ -634,6 +665,7 @@
    "name": "Rental Property Deal Analyzer",
    "published": true,
    "price_usd": 24.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "zip"
    ],
@@ -654,6 +686,7 @@
    "name": "13-Week Cash Flow Forecast for Small Business",
    "published": true,
    "price_usd": 19.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "zip"
    ],
@@ -674,6 +707,7 @@
    "name": "Founder Access Continuity Organizer",
    "published": true,
    "price_usd": 8.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "xlsx",
     "pdf"
@@ -693,6 +727,7 @@
    "name": "Meeting Cost & ROI Calculator",
    "published": true,
    "price_usd": 11.99,
+   "pay_what_you_want": false,
    "attached_types": [
     "xlsx",
     "pdf"
@@ -712,6 +747,7 @@
    "name": "Freelancer Rate & Raise Calculator",
    "published": true,
    "price_usd": 14.99,
+   "pay_what_you_want": false,
    "attached_types": [
     "xlsx"
    ],
@@ -733,6 +769,7 @@
    "name": "Etsy Suspension: Triage + Appeal Bundle (Both Steps, 25+ Pages)",
    "published": true,
    "price_usd": 79.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "zip"
    ],
@@ -752,6 +789,7 @@
    "name": "Etsy Policy Triage: Find Your Exact Violation in 15 Minutes",
    "published": true,
    "price_usd": 49.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "pdf"
    ],
@@ -765,6 +803,7 @@
    "name": "The 5-Minute Context Reset Playbook",
    "published": true,
    "price_usd": 15.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "pdf"
    ],
@@ -778,6 +817,7 @@
    "name": "[Unavailable] AI Workflow QA & Stress Test - one agent, reviewed before you demo it to a client",
    "published": true,
    "price_usd": 0.0,
+   "pay_what_you_want": true,
    "attached_types": [],
    "attached_bytes": 0,
    "promise_terms": [],
@@ -791,6 +831,7 @@
    "name": "Verified B2B Lead Lists (200-lead batch)",
    "published": false,
    "price_usd": 99.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "pdf"
    ],
@@ -810,6 +851,7 @@
    "name": "Landlord Move-In Inspection Pack",
    "published": true,
    "price_usd": 49.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "zip"
    ],
@@ -823,6 +865,7 @@
    "name": "Cottage Food Compliance Kit",
    "published": true,
    "price_usd": 49.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "zip"
    ],
@@ -836,6 +879,7 @@
    "name": "Homebuyer Inspection Action Kit",
    "published": true,
    "price_usd": 29.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "zip"
    ],
@@ -849,6 +893,7 @@
    "name": "Dental Insurance Verification Kit",
    "published": true,
    "price_usd": 59.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "zip"
    ],
@@ -862,6 +907,7 @@
    "name": "Real Estate Transaction Deadline Kit",
    "published": true,
    "price_usd": 29.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "zip"
    ],
@@ -875,6 +921,7 @@
    "name": "Fleet Maintenance and Damage Documentation Bundle",
    "published": true,
    "price_usd": 49.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "zip"
    ],
@@ -892,6 +939,7 @@
    "name": "Salon Commission Pay Kit",
    "published": true,
    "price_usd": 39.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "zip"
    ],
@@ -905,6 +953,7 @@
    "name": "Restaurant Food Cost Control Kit",
    "published": true,
    "price_usd": 49.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "zip"
    ],
@@ -923,6 +972,7 @@
    "name": "EU Green Claims Review Kit",
    "published": true,
    "price_usd": 69.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "zip"
    ],
@@ -936,6 +986,7 @@
    "name": "EUDR Due Diligence Starter",
    "published": true,
    "price_usd": 69.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "zip"
    ],
@@ -949,6 +1000,7 @@
    "name": "Food Truck Permit Navigator",
    "published": true,
    "price_usd": 59.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "zip"
    ],
@@ -962,6 +1014,7 @@
    "name": "Handbook Acknowledgment Tracker",
    "published": true,
    "price_usd": 49.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "zip"
    ],
@@ -975,6 +1028,7 @@
    "name": "DTC Returns Abuse Playbook: Fair Tiered Policy with Graduated Responses",
    "published": true,
    "price_usd": 59.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "zip"
    ],
@@ -988,6 +1042,7 @@
    "name": "Landlord Rent Ledger: Court-Ready Records for Self-Managing Owners",
    "published": true,
    "price_usd": 49.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "zip"
    ],
@@ -1001,6 +1056,7 @@
    "name": "DSAR Response Kit ($59)",
    "published": true,
    "price_usd": 59.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "zip"
    ],
@@ -1018,6 +1074,7 @@
    "name": "Freelancer Scope Control Kit",
    "published": true,
    "price_usd": 19.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "zip"
    ],
@@ -1037,6 +1094,7 @@
    "name": "Clinic No-Show Reduction Kit",
    "published": true,
    "price_usd": 59.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "zip"
    ],
@@ -1050,6 +1108,7 @@
    "name": "PCI SAQ Readiness Kit for Small Merchants",
    "published": true,
    "price_usd": 59.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "zip"
    ],
@@ -1063,6 +1122,7 @@
    "name": "Sales Tax Nexus Tracker",
    "published": true,
    "price_usd": 79.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "zip"
    ],
@@ -1076,6 +1136,7 @@
    "name": "Subscription Renewal Compliance Kit",
    "published": true,
    "price_usd": 69.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "zip"
    ],
@@ -1089,6 +1150,7 @@
    "name": "Newsletter Deliverability & Inbox Placement System",
    "published": true,
    "price_usd": 49.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "zip"
    ],
@@ -1102,6 +1164,7 @@
    "name": "Employee Offboarding & Access-Revocation System",
    "published": true,
    "price_usd": 49.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "zip"
    ],
@@ -1115,6 +1178,7 @@
    "name": "Vendor Onboarding & 1099-Readiness Pack for US Small Business",
    "published": true,
    "price_usd": 49.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "zip"
    ],
@@ -1128,6 +1192,7 @@
    "name": "B2B Late-Payment Collections Operating System",
    "published": true,
    "price_usd": 59.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "zip"
    ],
@@ -1141,6 +1206,7 @@
    "name": "SaaS Spend & Renewal Audit System for Small Teams",
    "published": true,
    "price_usd": 49.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "zip"
    ],
@@ -1154,6 +1220,7 @@
    "name": "Creator Brand-Deal Management System",
    "published": true,
    "price_usd": 49.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "zip"
    ],
@@ -1172,6 +1239,7 @@
    "name": "Tech Job Offer Evaluation & Negotiation System",
    "published": true,
    "price_usd": 49.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "zip"
    ],
@@ -1185,6 +1253,7 @@
    "name": "Commercial Lease CAM & Operating-Expense Audit Kit",
    "published": true,
    "price_usd": 59.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "zip"
    ],
@@ -1198,6 +1267,7 @@
    "name": "Home-Service Quoting & Deposit Protection System",
    "published": true,
    "price_usd": 49.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "zip"
    ],
@@ -1211,6 +1281,7 @@
    "name": "Short-Term Rental Damage Claim Evidence Kit (Airbnb & VRBO)",
    "published": true,
    "price_usd": 49.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "zip"
    ],
@@ -1224,6 +1295,7 @@
    "name": "EU AI Act Audit Logging Kit",
    "published": true,
    "price_usd": 29.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "pdf"
    ],
@@ -1237,6 +1309,7 @@
    "name": "Legal Case Research Automation for Solo Attorneys",
    "published": true,
    "price_usd": 29.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "pdf"
    ],
@@ -1250,6 +1323,7 @@
    "name": "SOC 2 Compliance Automation Guide for Startups",
    "published": true,
    "price_usd": 29.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "pdf"
    ],
@@ -1263,6 +1337,7 @@
    "name": "AI Agent Blueprint for Small SaaS CloudOps Automation",
    "published": true,
    "price_usd": 29.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "pdf"
    ],
@@ -1276,6 +1351,7 @@
    "name": "Severance Agreement Review Checklist",
    "published": true,
    "price_usd": 29.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "pdf"
    ],
@@ -1289,6 +1365,7 @@
    "name": "Security Deposit Demand Kit for Tenants",
    "published": true,
    "price_usd": 29.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "pdf"
    ],
@@ -1302,6 +1379,7 @@
    "name": "Mechanics Lien Filing Kit for Contractors",
    "published": true,
    "price_usd": 29.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "pdf"
    ],
@@ -1315,6 +1393,7 @@
    "name": "Stripe Chargeback Defense Kit for Digital Sellers",
    "published": true,
    "price_usd": 29.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "pdf"
    ],
@@ -1328,6 +1407,7 @@
    "name": "Etsy Suspension Appeal Kit",
    "published": true,
    "price_usd": 29.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "zip"
    ],
@@ -1345,6 +1425,7 @@
    "name": "CCPA Compliance Action Kit for Small Business",
    "published": true,
    "price_usd": 29.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "pdf"
    ],
@@ -1358,6 +1439,7 @@
    "name": "Digital-Product Refund Policy Pack",
    "published": true,
    "price_usd": 29.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "pdf"
    ],
@@ -1373,6 +1455,7 @@
    "name": "SaaS Churn Email Pack",
    "published": true,
    "price_usd": 39.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "pdf"
    ],
@@ -1388,6 +1471,7 @@
    "name": "Freelancer Scope-Creep Contract Kit",
    "published": true,
    "price_usd": 29.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "pdf"
    ],
@@ -1403,6 +1487,7 @@
    "name": "Battery & WEEE Mini-Guide for Sellers",
    "published": true,
    "price_usd": 29.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "pdf"
    ],
@@ -1418,6 +1503,7 @@
    "name": "Food-Contact Materials Starter",
    "published": true,
    "price_usd": 39.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "pdf"
    ],
@@ -1433,6 +1519,7 @@
    "name": "Toy Safety File Starter (EN 71 Lens)",
    "published": true,
    "price_usd": 29.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "pdf"
    ],
@@ -1448,6 +1535,7 @@
    "name": "EU Cosmetics Responsible Person Guide",
    "published": true,
    "price_usd": 69.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "pdf"
    ],
@@ -1463,6 +1551,7 @@
    "name": "Etsy Ads ROI Playbook + Calculator",
    "published": true,
    "price_usd": 39.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "zip"
    ],
@@ -1481,6 +1570,7 @@
    "name": "Amazon FBA Reconciliation Workbook",
    "published": true,
    "price_usd": 0.0,
+   "pay_what_you_want": true,
    "attached_types": [
     "pdf"
    ],
@@ -1498,6 +1588,7 @@
    "name": "EU Late Payment Recovery Kit",
    "published": true,
    "price_usd": 59.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "zip"
    ],
@@ -1516,6 +1607,7 @@
    "name": "ADA Demand-Letter Response & Triage Kit",
    "published": true,
    "price_usd": 69.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "pdf"
    ],
@@ -1531,6 +1623,7 @@
    "name": "Diminished Value Claim Kit",
    "published": true,
    "price_usd": 59.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "zip"
    ],
@@ -1550,6 +1643,7 @@
    "name": "EU Packaging EPR Action Kit",
    "published": true,
    "price_usd": 69.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "pdf"
    ],
@@ -1563,6 +1657,7 @@
    "name": "Vendor Questionnaire Response Kit",
    "published": true,
    "price_usd": 89.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "pdf"
    ],
@@ -1576,6 +1671,7 @@
    "name": "STR Direct Booking Revenue Kit",
    "published": true,
    "price_usd": 59.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "pdf"
    ],
@@ -1589,6 +1685,7 @@
    "name": "Trademark DIY Filing Action Kit",
    "published": true,
    "price_usd": 69.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "zip"
    ],
@@ -1607,6 +1704,7 @@
    "name": "FTC Consumer Review Rule Compliance Kit",
    "published": true,
    "price_usd": 69.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "pdf"
    ],
@@ -1620,6 +1718,7 @@
    "name": "Restaurant Health Inspection Readiness Kit",
    "published": true,
    "price_usd": 49.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "pdf"
    ],
@@ -1633,6 +1732,7 @@
    "name": "Turo Guest Dispute Toolkit",
    "published": true,
    "price_usd": 29.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "pdf"
    ],
@@ -1646,6 +1746,7 @@
    "name": "GPSR EU Seller Action Kit",
    "published": true,
    "price_usd": 79.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "zip"
    ],
@@ -1664,12 +1765,15 @@
    "name": "UK Deposit Recovery Action Pack",
    "published": true,
    "price_usd": 29.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "zip"
    ],
    "attached_bytes": 9198,
    "promise_terms": [
-    "excel"
+    "-sheet",
+    "excel",
+    "workbook"
    ],
    "you_receive": null,
    "issues": [
@@ -1682,6 +1786,7 @@
    "name": "Section 8 Notice Validity System (England)",
    "published": true,
    "price_usd": 59.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "zip"
    ],
@@ -1695,6 +1800,7 @@
    "name": "Suspended Seller First-Appeal POA System",
    "published": true,
    "price_usd": 39.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "pdf"
    ],
@@ -1710,6 +1816,7 @@
    "name": "Gulf Job-Landing ATS CV System",
    "published": true,
    "price_usd": 29.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "pdf"
    ],
@@ -1725,6 +1832,7 @@
    "name": "GCC Contractor Payment Command System (V2 Bundle)",
    "published": true,
    "price_usd": 399.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "zip"
    ],
@@ -1742,6 +1850,7 @@
    "name": "GCC Contractor Payment Command System",
    "published": true,
    "price_usd": 49.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "pdf"
    ],
@@ -1757,6 +1866,7 @@
    "name": "Freelancer Payment Protection & Scope-Control Toolkit",
    "published": true,
    "price_usd": 49.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "pdf"
    ],
@@ -1772,6 +1882,7 @@
    "name": "EU AI Act Compliance Quickstart Checklist",
    "published": true,
    "price_usd": 19.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "pdf"
    ],
@@ -1787,6 +1898,7 @@
    "name": "EU AI Act Transparency & AI Literacy Quickstart Checklist",
    "published": true,
    "price_usd": 9.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "pdf"
    ],
@@ -1802,6 +1914,7 @@
    "name": "GALAXY FORGE API TEST — DO NOT BUY — DELETE ME",
    "published": false,
    "price_usd": 1.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "txt"
    ],
@@ -1817,6 +1930,7 @@
    "name": "Mindfulness Journal for Stress Relief",
    "published": true,
    "price_usd": 7.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "pdf"
    ],
@@ -1830,6 +1944,7 @@
    "name": "The 5-Minute Context Reset Playbook",
    "published": true,
    "price_usd": 15.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "pdf"
    ],
@@ -1843,6 +1958,7 @@
    "name": "Automated Contract Review System for Legal Departments",
    "published": false,
    "price_usd": 327.0,
+   "pay_what_you_want": false,
    "attached_types": [
     "pdf"
    ],
@@ -1856,6 +1972,7 @@
    "name": "EU AI Act Compliance Toolkit — Practical Templates & Implementation Guide for SMEs",
    "published": true,
    "price_usd": 0.0,
+   "pay_what_you_want": true,
    "attached_types": [
     "pdf",
     "pdf"
