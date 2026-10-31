@@ -84,8 +84,27 @@ class ProblemSignals(unittest.TestCase):
         def boom(url):
             raise OSError("down")
         r = self.run_(boom)
-        self.assertEqual("ran", r["action"])
+        self.assertEqual("unreachable", r["action"])
         self.assertEqual([], records.read_jsonl("sources.jsonl", self.d))
+
+    def test_a_run_where_every_call_failed_does_not_close_the_weekly_gate(self):
+        from datetime import timedelta
+
+        def boom(url):
+            raise OSError("getaddrinfo failed")
+        self.run_(FakeFetch({}))  # a real run on NOW
+        later = NOW + timedelta(days=8)
+        r = tps.run(now=later, fetch=boom, sleep=lambda s: None, base_dir=self.d, if_due=True)
+        self.assertEqual("unreachable", r["action"])
+        soon = tps.run(now=later + timedelta(minutes=20), fetch=FakeFetch({}), sleep=lambda s: None,
+                       base_dir=self.d, if_due=True)
+        self.assertEqual("none", soon["action"])
+        ok = tps.run(now=later + timedelta(hours=2), fetch=FakeFetch({}), sleep=lambda s: None,
+                     base_dir=self.d, if_due=True)
+        self.assertEqual("ran", ok["action"])
+        done = tps.run(now=later + timedelta(hours=3), fetch=FakeFetch({}), sleep=lambda s: None,
+                       base_dir=self.d, if_due=True)
+        self.assertEqual("none", done["action"])
 
     def test_if_due_guard(self):
         self.run_(FakeFetch({}))

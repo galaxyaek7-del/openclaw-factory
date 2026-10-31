@@ -34,6 +34,7 @@ API = "https://api.stackexchange.com/2.3/search/advanced"
 RUN_STATE = os.path.join(ROOT, "data", "trend_to_product", "problem_signals_run.json")
 WINDOW_YEARS = 5
 DUE_DAYS = 7
+RETRY_AFTER_SECONDS = 3600  # after a run in which every call failed
 QUOTA_FLOOR = 50
 PAUSE_S = 0.5
 
@@ -198,15 +199,30 @@ def run(if_due=False, now=None, fetch=None, sleep=time.sleep, base_dir=None, sta
     state_path = state_path or (os.path.join(base_dir, "problem_signals_run.json") if base_dir else RUN_STATE)
     try:
         with open(state_path, encoding="utf-8") as f:
-            last = json.load(f).get("day")
+            prev = json.load(f)
     except (OSError, ValueError):
-        last = None
+        prev = {}
+    last = prev.get("day")
     if if_due and last and (now.date() - datetime.strptime(last, "%Y-%m-%d").date()).days < DUE_DAYS:
         return {"action": "none", "detail": f"last run {last}; due every {DUE_DAYS} days"}
+    failed_at = prev.get("last_failed_at")
+    if if_due and failed_at and (now - datetime.fromisoformat(failed_at)).total_seconds() < RETRY_AFTER_SECONDS:
+        return {"action": "none", "detail": f"every call failed at {failed_at}; retrying after an hour"}
     log = collect(now, fetch, sleep, base_dir)
-    log["rescored"] = rescore_topics(log, base_dir)
     os.makedirs(os.path.dirname(state_path), exist_ok=True)
     tmp = state_path + ".tmp"
+    errors = sum(len(t.get("errors") or []) for t in log["topics"].values())
+    if log["calls"] and errors >= log["calls"]:
+        # Every call failed (network outage, API down): this is not a run. The
+        # previous run's state is kept, so the weekly gate stays open and the
+        # step retries at most hourly instead of waiting seven days.
+        prev.update({"last_failed_at": now.isoformat(timespec="seconds"), "last_failed_calls": log["calls"],
+                     "last_failed_errors": [e for t in log["topics"].values() for e in t.get("errors") or []][:5]})
+        with open(tmp, "w", encoding="utf-8") as f:
+            json.dump(prev, f, ensure_ascii=False, indent=1)
+        os.replace(tmp, state_path)
+        return {"action": "unreachable", "calls": log["calls"], "detail": "every call failed; retrying after an hour"}
+    log["rescored"] = rescore_topics(log, base_dir)
     with open(tmp, "w", encoding="utf-8") as f:
         json.dump(log, f, ensure_ascii=False, indent=1)
     os.replace(tmp, state_path)
