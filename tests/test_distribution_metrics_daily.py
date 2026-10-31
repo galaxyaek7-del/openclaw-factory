@@ -45,6 +45,23 @@ class DailyGate(unittest.TestCase):
         self.assertIn("42 platform-reported views", out["detail"])
         self.assertIn("not verified human visits", out["detail"])
 
+    def test_a_reading_with_no_readable_article_is_retried_hourly(self):
+        from datetime import datetime, timezone
+        write(self.ledger, {"timestamp": "2026-10-31T00:04:24+00:00", "views": {},
+                            "views_status": {"a": "ERROR_URLError", "b": "ERROR_URLError"}})
+        called = []
+
+        def poll():
+            called.append(1)
+            write(self.ledger, {"timestamp": "2026-10-31T01:10:00+00:00",
+                                "views": {"a": 3, "b": 4}, "views_status": {"a": "ok", "b": "ok"}})
+        soon = dmd.run_once(ledger=self.ledger, poll=poll, now=datetime(2026, 10, 31, 0, 40, tzinfo=timezone.utc))
+        self.assertEqual((soon["action"], called), ("none", []))
+        later = dmd.run_once(ledger=self.ledger, poll=poll, now=datetime(2026, 10, 31, 1, 10, tzinfo=timezone.utc))
+        self.assertEqual(later["action"], "recorded")
+        done = dmd.run_once(ledger=self.ledger, poll=poll, now=datetime(2026, 10, 31, 9, tzinfo=timezone.utc))
+        self.assertEqual((done["action"], len(called)), ("none", 1))
+
     def test_poller_that_appends_nothing_is_a_failure(self):
         write(self.ledger, {"timestamp": "2026-10-09T15:00:00+00:00"})
         out = dmd.run_once(today="2026-10-29", ledger=self.ledger, poll=lambda: None)
