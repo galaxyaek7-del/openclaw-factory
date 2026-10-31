@@ -92,6 +92,34 @@ class FeeMonitor(unittest.TestCase):
         self.assertEqual(nxt["action"], "changed")
         self.assertIn("7205 325.00->350.00", nxt["detail"])
 
+    def test_a_network_failure_is_retried_hourly_the_same_day(self):
+        sys.path.insert(0, str(ROOT / "scripts"))
+        import uspto_fee_monitor_daily as daily
+        from datetime import datetime, timezone
+        html = page(("Section 8 declaration", "325.00", "7205", "425.00", "6205"),
+                    ("Base application", "350.00", "7017", "n/a", "n/a"))
+        t = datetime(2026, 10, 31, 0, 4, tzinfo=timezone.utc)
+        orig = m.fetch
+        m.fetch = lambda *a, **k: (_ for _ in ()).throw(OSError("offline"))
+        try:
+            self.assertEqual(daily.once(now=t, log=self.log, releases=self.releases)["action"], "unreadable")
+            self.assertEqual(daily.once(now=t.replace(minute=30), log=self.log, releases=self.releases)["action"], "none")
+        finally:
+            m.fetch = orig
+        later = daily.once(now=t.replace(hour=1, minute=10), log=self.log, page_html=html, releases=self.releases)
+        self.assertEqual(later["action"], "unchanged")
+        self.assertEqual(daily.once(now=t.replace(hour=5), log=self.log, page_html=html, releases=self.releases)["action"], "none")
+
+    def test_a_page_that_cannot_be_matched_counts_as_the_days_check(self):
+        sys.path.insert(0, str(ROOT / "scripts"))
+        import uspto_fee_monitor_daily as daily
+        from datetime import datetime, timezone
+        t = datetime(2026, 11, 2, 0, 4, tzinfo=timezone.utc)
+        first = daily.once(now=t, log=self.log, page_html="<html>no table</html>", releases=self.releases)
+        self.assertEqual(first["action"], "unreadable")
+        again = daily.once(now=t.replace(hour=3), log=self.log, page_html="<html>no table</html>", releases=self.releases)
+        self.assertEqual(again["action"], "none")
+
     def test_the_log_is_git_ignored(self):
         import subprocess
         r = subprocess.run(["git", "check-ignore", "-q", "--no-index", "data/uspto_fee_monitor.jsonl"], cwd=ROOT)
