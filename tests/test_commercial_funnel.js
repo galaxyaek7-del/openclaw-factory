@@ -176,8 +176,21 @@ test('founder queue shows when publication approvals expire, or that they have l
   let q = cf.founderQueue(ready, null, null, factory(appr('2026-11-02T00:00:00Z')), now)[0];
   assert.equal(q.deadline, '2026-11-01T20:56:00Z');
   assert.match(q.why, /expire 2026-11-01T20:56:00Z \(in about 48 h\)/);
-  q = cf.founderQueue(ready, null, null, factory(appr('2026-10-30T00:00:00Z')), now)[0];
-  assert.match(q.why, /approval missing or expired for B16-009: re-approve/);
+  assert.match(q.command, /--batch batch16 --live .*--only B16-008 B16-009$/);
+  // One lapsed approval is its own item and does not hide the other's deadline.
+  const split = cf.founderQueue(ready, null, null, factory(appr('2026-10-30T00:00:00Z')), now);
+  assert.equal(split.length, 2);
+  assert.match(split[0].title, /Publish 1 .*: B16-008$/);
+  assert.equal(split[0].deadline, '2026-11-01T20:56:00Z');
+  assert.match(split[1].title, /Approve 1 .*: B16-009$/);
+  assert.match(split[1].why, /approval missing or expired for B16-009: re-approve/);
+  assert.match(split[1].command, /approve_products\.py --batch batch16 --only B16-009 /);
+  // Products from two batches get one command per batch, never "<batch>".
+  const two = { products: [...ready.products, { internal_id: 'B17-001', primary_state: 'READY_FOR_AUTHORIZATION' }] };
+  const mixed = cf.founderQueue(two, null, null, factory(appr('2026-11-02T00:00:00Z')), now);
+  assert.equal(mixed.length, 2);
+  assert.match(mixed[1].command, /--batch batch17 --only B17-001 /);
+  assert.ok(!mixed.some(x => x.command.includes('<batch>')));
   q = cf.founderQueue(ready, null, null, factory(), now)[0];
   assert.equal(q.deadline, null);
   assert.match(q.why, /waiting only for a live run$/);
