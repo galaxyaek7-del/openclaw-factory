@@ -105,6 +105,36 @@ class TestScenarios(Base):
         self.assertFalse(d["qa"]["passed"])
         self.assertEqual(prioritize.plan([o]), [])
 
+    def test_02b_held_product_is_never_eligible(self):
+        # 2026-10-31: /l/iaiyt and /l/wteork were on HOLD yet ELIGIBLE and queued as pins.
+        reg = registry()
+        reg["products"][0]["url"] = "https://aekraft.gumroad.com/l/iaiyt"
+        o = offers.product_offers(reg, LIVE)[0]
+        o["platforms"], o["language"] = offers.PLATFORMS_BY_TYPE[o["type"]], "en"
+        self.assertEqual(o["eligibility"]["status"], "NOT_ELIGIBLE")
+        self.assertIn("on HOLD", " ".join(o["eligibility"]["reasons"]))
+        self.assertEqual(prioritize.plan([o]), [])
+        from social_distribution import metricool
+        with self.assertRaises(metricool.PostRejected):
+            metricool.build_pinterest_review_post(offer=o, board_id="b1", when_local="2026-11-02T10:00:00",
+                                                  tz="Europe/Paris", reviewers="r@example.com", approval_system="any",
+                                                  brand_record={"brand_id": 1, "connected_networks": {"pinterest": "x"}},
+                                                  expected_brand_id=1)
+
+    def test_02c_listing_that_breaks_its_delivery_promise_is_not_promoted(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as d:
+            (Path(d) / "reports").mkdir()
+            (Path(d) / "reports" / "GUMROAD_DELIVERY_AUDIT_2026-10-29.json").write_text(json.dumps({"rows": [
+                {"slug": "cash", "issues": ["PROMISES_SPREADSHEET_NOT_ATTACHED"]},
+                {"slug": "other", "issues": ["ZIP_CONTENTS_UNVERIFIED", "THIN_DELIVERABLE"]}]}), encoding="utf-8")
+            issues = offers.delivery_issues(d)
+        self.assertEqual(list(issues), ["cash"])  # unopened ZIPs and short files are not a broken promise
+        o = offers.product_offers(registry(), LIVE, issues)[0]
+        self.assertEqual(o["eligibility"]["status"], "NOT_ELIGIBLE")
+        self.assertIn("PROMISES_SPREADSHEET_NOT_ATTACHED", " ".join(o["eligibility"]["reasons"]))
+        self.assertEqual(offers.product_offers(registry(), LIVE, {})[0]["eligibility"]["status"], "ELIGIBLE")
+
     def test_03_invalid_destination_url(self):
         for bad in (None, "http://insecure.example.com/x", "ftp://x"):
             with self.assertRaises(tracking.TrackingError):

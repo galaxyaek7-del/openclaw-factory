@@ -1,6 +1,6 @@
 {
  "schema": 1,
- "generated_at": "2026-10-29T16:07:37+00:00",
+ "generated_at": "2026-10-31T12:01:51+00:00",
  "offers": [
   {
    "offer_id": "B13-001",
@@ -41,7 +41,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -99,7 +99,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -159,7 +159,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -213,7 +213,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -267,7 +267,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -321,7 +321,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -375,7 +375,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -429,7 +429,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -483,7 +483,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -537,7 +537,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -591,7 +591,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -645,7 +645,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -699,7 +699,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -753,7 +753,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -807,7 +807,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -861,7 +861,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -915,7 +915,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -969,7 +969,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -1023,7 +1023,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -1077,7 +1077,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -1131,7 +1131,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -1185,7 +1185,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -1239,7 +1239,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -1288,7 +1288,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -1337,7 +1337,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -1386,7 +1386,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -1435,7 +1435,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -1484,7 +1484,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -1533,7 +1533,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -1582,7 +1582,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -1607,6 +1607,174 @@
    "type": "digital_product",
    "subtype": "digital_download",
    "title": "Restaurant Menu Engineering Worksheet (Stars, Plowhorses, Puzzles, Dogs)",
+   "problem": "Enter each dish's price, plate cost and units sold, and the worksheet classifies every item by contribution margin and popularity using the standard menu-engineering method, with food cost % and menu mix.",
+   "audience": "restaurant, excel template, food cost",
+   "url": "https://aekraft.gumroad.com/l/kftdyp",
+   "price_cents": 1900,
+   "currency": "USD",
+   "availability": "LIVE",
+   "primary_state": "PUBLIC_LISTING_VERIFIED",
+   "qa_status": "QA_PASS",
+   "rights_status": "OWNED_ORIGINAL",
+   "description": "Enter each dish's price, plate cost and units sold, and the worksheet classifies every item by contribution margin and popularity using the standard menu-engineering method, with food cost % and menu mix.\nThis worksheet applies the standard Kasavana and Smith approach. An item is popular when its share of the menu mix reaches 70% of an equal share (with 20 items, 70% of 5% = 3.5%), and profitable when its contribution margin is at or above the menu's weighted average. That gives four classes: Stars (popular and profitable), Plowhorses (popular, low margin), Puzzles (profitable, unpopular) and Dogs (neither).\nWhat's included\n- Classifies every dish as Star, Plowhorse, Puzzle or Dog\n- Standard 70% popularity rule and weighted-average contribution margin\n- Food cost % and total contribution per item\n- Menu mix % from your point-of-sale counts\n- Count of items in each class for the whole section\n- PDF guide with the method, a worked example and what to do with each class\nWho it's for\n- Restaurant and cafe owners\n- Chefs and kitchen managers reviewing a menu\n- Food truck and catering operators\n- Hospitality students and consultants\nYou get: restaurant_menu_engineering_worksheet.xlsx (Menu, Summary) and this guide.\nWorks in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.\nThis workbook is an analysis tool, not financial or business advice. Its results depend on accurate plate costs and sales counts from your own records.",
+   "tags": [
+    "restaurant",
+    "excel template",
+    "food cost",
+    "menu pricing",
+    "menu engineering",
+    "cafe owner"
+   ],
+   "sales_count": 0,
+   "cover_url": "https://public-files.gumroad.com/ijn2yn332t52iv9fpr2koynhzy99",
+   "measurement": {
+    "destination": "gumroad",
+    "sales_referrer": "OBSERVED per sale via Gumroad sales API",
+    "page_views": "UNKNOWN (no read API used)"
+   },
+   "eligibility": {
+    "status": "ELIGIBLE",
+    "reasons": []
+   },
+   "evidence": {
+    "source": "data/product_registry.json + Gumroad GET /v2/products",
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
+   },
+   "platforms": [
+    "linkedin",
+    "x",
+    "instagram",
+    "tiktok"
+   ],
+   "prohibited_claims": [
+    "income or earnings promises",
+    "guaranteed results",
+    "invented testimonials or reviews",
+    "invented statistics or customer counts",
+    "best-selling / #1 / trusted-by claims",
+    "fake scarcity or deadlines",
+    "legal, tax or financial advice framed as personal advice"
+   ],
+   "language": "en"
+  },
+  {
+   "offer_id": "B16-009",
+   "arm": "digital_products",
+   "type": "digital_product",
+   "subtype": "digital_download",
+   "title": "Roommate & Shared House Bill Splitter (Equal, Income or Room Size)",
+   "problem": "Split rent, utilities and shared costs between up to five housemates, choosing for each bill whether it is shared equally, by income or by room size, and see who owes whom at the end of the month.",
+   "audience": "budget, roommate, excel template",
+   "url": "https://aekraft.gumroad.com/l/zhgrkk",
+   "price_cents": 700,
+   "currency": "USD",
+   "availability": "LIVE",
+   "primary_state": "PUBLIC_LISTING_VERIFIED",
+   "qa_status": "QA_PASS",
+   "rights_status": "OWNED_ORIGINAL",
+   "description": "Split rent, utilities and shared costs between up to five housemates, choosing for each bill whether it is shared equally, by income or by room size, and see who owes whom at the end of the month.\nThis splitter lets you set a split method for each bill: Equal, Income (in proportion to each housemate's income) or Room size (in proportion to each room's floor area). It records who actually paid each bill, then works out what each housemate owed, what they paid, and the net balance: positive means they are owed money, negative means they owe.\nWhat's included\n- Split each bill Equal, by Income or by Room size\n- Up to five housemates and 60 bills\n- Records who paid each bill and works out net balances\n- Positive balance = owed money, negative = owes money; nets add to zero\n- Flags misspelled payer names and unknown split methods\n- PDF guide with the formulas, a worked example and a settle-up tip\nWho it's for\n- Students and young professionals in shared houses\n- Couples splitting costs by income\n- Co-living and house-share organisers\n- Anyone tired of settle-up arguments\nYou get: roommate_shared_bill_splitter.xlsx (Housemates, Bills, Balances) and this guide.\nWorks in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.\nThis workbook is a budgeting tool, not legal or financial advice. It does not replace a written tenancy or house-share agreement.",
+   "tags": [
+    "budget",
+    "roommate",
+    "excel template",
+    "bill splitter",
+    "shared expenses",
+    "house share"
+   ],
+   "sales_count": 0,
+   "cover_url": "https://public-files.gumroad.com/29ak2d94d7lvcigoprz7v0z34odc",
+   "measurement": {
+    "destination": "gumroad",
+    "sales_referrer": "OBSERVED per sale via Gumroad sales API",
+    "page_views": "UNKNOWN (no read API used)"
+   },
+   "eligibility": {
+    "status": "ELIGIBLE",
+    "reasons": []
+   },
+   "evidence": {
+    "source": "data/product_registry.json + Gumroad GET /v2/products",
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
+   },
+   "platforms": [
+    "linkedin",
+    "x",
+    "instagram",
+    "tiktok"
+   ],
+   "prohibited_claims": [
+    "income or earnings promises",
+    "guaranteed results",
+    "invented testimonials or reviews",
+    "invented statistics or customer counts",
+    "best-selling / #1 / trusted-by claims",
+    "fake scarcity or deadlines",
+    "legal, tax or financial advice framed as personal advice"
+   ],
+   "language": "en"
+  },
+  {
+   "offer_id": "B16-010",
+   "arm": "digital_products",
+   "type": "digital_product",
+   "subtype": "digital_download",
+   "title": "Tiered Sales Commission Calculator for Small Sales Teams",
+   "problem": "Set up to four commission tiers and a quota bonus, enter each rep's base pay, quota and sales, and see commission paid band by band, quota attainment, total pay and what the plan costs as a share of sales.",
+   "audience": "payroll, excel template, sales team",
+   "url": "https://aekraft.gumroad.com/l/khqbui",
+   "price_cents": 1200,
+   "currency": "USD",
+   "availability": "LIVE",
+   "primary_state": "PUBLIC_LISTING_VERIFIED",
+   "qa_status": "QA_PASS",
+   "rights_status": "OWNED_ORIGINAL",
+   "description": "Set up to four commission tiers and a quota bonus, enter each rep's base pay, quota and sales, and see commission paid band by band, quota attainment, total pay and what the plan costs as a share of sales.\nThis calculator applies each rate only to the sales inside its band, then adds an optional flat bonus for reps who reach quota. For every rep it shows quota attainment, commission, bonus, total pay, the effective commission rate and total pay as a share of their sales. The summary shows team totals, how many reps hit quota and what the whole plan costs as a percentage of sales.\nWhat's included\n- Graduated commission: each rate applies only to its own band of sales\n- Up to four tiers plus an optional quota bonus\n- Quota attainment, commission, bonus and total pay per rep\n- Effective commission rate and pay as a share of each rep's sales\n- Team totals, reps at quota and total plan cost as % of sales\n- PDF guide with the formula, a worked example and plan-design tips\nWho it's for\n- Small business owners paying sales staff\n- Sales managers designing or checking a commission plan\n- Agencies paying account managers on revenue\n- Sales reps checking their own commission statement\nYou get: tiered_sales_commission_calculator.xlsx (Plan, Reps, Summary) and this guide.\nWorks in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.\nThis workbook is a calculation tool, not legal, tax, payroll or employment advice. Commission plans are governed by your written agreements and local employment law; check both before paying.",
+   "tags": [
+    "payroll",
+    "excel template",
+    "sales team",
+    "quota",
+    "commission plan",
+    "sales commission"
+   ],
+   "sales_count": 0,
+   "cover_url": "https://public-files.gumroad.com/0kw9w6o9m0h9lazxonc1uh846s3g",
+   "measurement": {
+    "destination": "gumroad",
+    "sales_referrer": "OBSERVED per sale via Gumroad sales API",
+    "page_views": "UNKNOWN (no read API used)"
+   },
+   "eligibility": {
+    "status": "ELIGIBLE",
+    "reasons": []
+   },
+   "evidence": {
+    "source": "data/product_registry.json + Gumroad GET /v2/products",
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
+   },
+   "platforms": [
+    "linkedin",
+    "x",
+    "instagram",
+    "tiktok"
+   ],
+   "prohibited_claims": [
+    "income or earnings promises",
+    "guaranteed results",
+    "invented testimonials or reviews",
+    "invented statistics or customer counts",
+    "best-selling / #1 / trusted-by claims",
+    "fake scarcity or deadlines",
+    "legal, tax or financial advice framed as personal advice"
+   ],
+   "language": "en"
+  },
+  {
+   "offer_id": "B17-001",
+   "arm": "digital_products",
+   "type": "digital_product",
+   "subtype": "digital_download",
+   "title": "European Accessibility Act Penalty Exposure Checker (10 EU Countries)",
    "problem": "",
    "audience": "UNKNOWN",
    "url": null,
@@ -1634,111 +1802,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
-   },
-   "platforms": [
-    "linkedin",
-    "x",
-    "instagram",
-    "tiktok"
-   ],
-   "prohibited_claims": [
-    "income or earnings promises",
-    "guaranteed results",
-    "invented testimonials or reviews",
-    "invented statistics or customer counts",
-    "best-selling / #1 / trusted-by claims",
-    "fake scarcity or deadlines",
-    "legal, tax or financial advice framed as personal advice"
-   ],
-   "language": "en"
-  },
-  {
-   "offer_id": "B16-009",
-   "arm": "digital_products",
-   "type": "digital_product",
-   "subtype": "digital_download",
-   "title": "Roommate & Shared House Bill Splitter (Equal, Income or Room Size)",
-   "problem": "",
-   "audience": "UNKNOWN",
-   "url": null,
-   "price_cents": 700,
-   "currency": "USD",
-   "availability": "UNPUBLISHED",
-   "primary_state": "READY_FOR_AUTHORIZATION",
-   "qa_status": "QA_PASS",
-   "rights_status": "OWNED_ORIGINAL",
-   "description": "",
-   "tags": [],
-   "sales_count": 0,
-   "cover_url": null,
-   "measurement": {
-    "destination": "gumroad",
-    "sales_referrer": "OBSERVED per sale via Gumroad sales API",
-    "page_views": "UNKNOWN (no read API used)"
-   },
-   "eligibility": {
-    "status": "NOT_ELIGIBLE",
-    "reasons": [
-     "listing state is READY_FOR_AUTHORIZATION, not PUBLIC_LISTING_VERIFIED",
-     "no listing description available to draw facts from"
-    ]
-   },
-   "evidence": {
-    "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
-   },
-   "platforms": [
-    "linkedin",
-    "x",
-    "instagram",
-    "tiktok"
-   ],
-   "prohibited_claims": [
-    "income or earnings promises",
-    "guaranteed results",
-    "invented testimonials or reviews",
-    "invented statistics or customer counts",
-    "best-selling / #1 / trusted-by claims",
-    "fake scarcity or deadlines",
-    "legal, tax or financial advice framed as personal advice"
-   ],
-   "language": "en"
-  },
-  {
-   "offer_id": "B16-010",
-   "arm": "digital_products",
-   "type": "digital_product",
-   "subtype": "digital_download",
-   "title": "Tiered Sales Commission Calculator for Small Sales Teams",
-   "problem": "",
-   "audience": "UNKNOWN",
-   "url": null,
-   "price_cents": 1200,
-   "currency": "USD",
-   "availability": "UNPUBLISHED",
-   "primary_state": "READY_FOR_AUTHORIZATION",
-   "qa_status": "QA_PASS",
-   "rights_status": "OWNED_ORIGINAL",
-   "description": "",
-   "tags": [],
-   "sales_count": 0,
-   "cover_url": null,
-   "measurement": {
-    "destination": "gumroad",
-    "sales_referrer": "OBSERVED per sale via Gumroad sales API",
-    "page_views": "UNKNOWN (no read API used)"
-   },
-   "eligibility": {
-    "status": "NOT_ELIGIBLE",
-    "reasons": [
-     "listing state is READY_FOR_AUTHORIZATION, not PUBLIC_LISTING_VERIFIED",
-     "no listing description available to draw facts from"
-    ]
-   },
-   "evidence": {
-    "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -1788,12 +1852,14 @@
     "page_views": "UNKNOWN (no read API used)"
    },
    "eligibility": {
-    "status": "ELIGIBLE",
-    "reasons": []
+    "status": "NOT_ELIGIBLE",
+    "reasons": [
+     "delivery audit (GUMROAD_DELIVERY_AUDIT_2026-10-29.json): PROMISES_SPREADSHEET_NOT_ATTACHED; repair before promoting"
+    ]
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -1848,7 +1914,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -1902,7 +1968,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -1956,7 +2022,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -2011,7 +2077,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -2071,7 +2137,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -2124,7 +2190,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -2180,7 +2246,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -2233,7 +2299,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -2286,7 +2352,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -2339,7 +2405,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -2397,7 +2463,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -2451,7 +2517,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -2509,7 +2575,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -2563,7 +2629,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -2617,7 +2683,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -2673,7 +2739,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -2727,7 +2793,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -2782,7 +2848,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -2846,12 +2912,15 @@
     "page_views": "UNKNOWN (no read API used)"
    },
    "eligibility": {
-    "status": "ELIGIBLE",
-    "reasons": []
+    "status": "NOT_ELIGIBLE",
+    "reasons": [
+     "on HOLD (hold_policy.py): internal quality audit recorded 11 critical content-accuracy findings, including Annex III categories that do not appear in the Act and an incorrect prohibition on high-risk GPAI models. Recorded as an internal finding, not a legal ruling.",
+     "delivery audit (GUMROAD_DELIVERY_AUDIT_2026-10-29.json): PREVIEW_FILE_DELIVERED; repair before promoting"
+    ]
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -2904,7 +2973,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -2955,7 +3024,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -3017,7 +3086,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -3071,7 +3140,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -3124,7 +3193,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -3182,7 +3251,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -3242,7 +3311,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -3295,7 +3364,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -3348,7 +3417,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -3401,7 +3470,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -3454,7 +3523,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -3509,7 +3578,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -3563,7 +3632,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -3616,7 +3685,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -3670,7 +3739,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -3724,7 +3793,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -3779,7 +3848,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -3833,7 +3902,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -3890,7 +3959,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -3943,7 +4012,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -3996,7 +4065,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -4051,7 +4120,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -4105,7 +4174,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -4155,12 +4224,15 @@
     "page_views": "UNKNOWN (no read API used)"
    },
    "eligibility": {
-    "status": "ELIGIBLE",
-    "reasons": []
+    "status": "NOT_ELIGIBLE",
+    "reasons": [
+     "on HOLD (hold_policy.py): listed as a workbook; the delivered file is a one-page, 331-word PDF with empty tables and outcome claims the content does not support.",
+     "delivery audit (GUMROAD_DELIVERY_AUDIT_2026-10-29.json): PROMISES_SPREADSHEET_NOT_ATTACHED; repair before promoting"
+    ]
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -4219,7 +4291,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -4273,7 +4345,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -4333,7 +4405,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -4389,7 +4461,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -4447,7 +4519,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -4502,7 +4574,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -4551,12 +4623,14 @@
     "page_views": "UNKNOWN (no read API used)"
    },
    "eligibility": {
-    "status": "ELIGIBLE",
-    "reasons": []
+    "status": "NOT_ELIGIBLE",
+    "reasons": [
+     "delivery audit (GUMROAD_DELIVERY_AUDIT_2026-10-29.json): PUBLISHED_WITHOUT_DELIVERABLE; repair before promoting"
+    ]
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -4614,7 +4688,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -4669,7 +4743,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -4724,7 +4798,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -4777,7 +4851,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -4832,7 +4906,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -4885,7 +4959,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -4938,7 +5012,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -4998,7 +5072,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -5053,7 +5127,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -5108,7 +5182,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -5161,7 +5235,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -5212,7 +5286,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -5269,7 +5343,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -5322,7 +5396,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -5377,7 +5451,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -5432,7 +5506,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -5491,7 +5565,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -5546,7 +5620,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -5604,7 +5678,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -5658,7 +5732,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -5708,12 +5782,14 @@
     "page_views": "UNKNOWN (no read API used)"
    },
    "eligibility": {
-    "status": "ELIGIBLE",
-    "reasons": []
+    "status": "NOT_ELIGIBLE",
+    "reasons": [
+     "delivery audit (GUMROAD_DELIVERY_AUDIT_2026-10-29.json): PROMISES_MORE_FILES_THAN_ATTACHED; repair before promoting"
+    ]
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -5768,7 +5844,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -5820,12 +5896,13 @@
    "eligibility": {
     "status": "NOT_ELIGIBLE",
     "reasons": [
-     "listing state is UPLOAD_COMPLETED, not PUBLIC_LISTING_VERIFIED"
+     "listing state is UPLOAD_COMPLETED, not PUBLIC_LISTING_VERIFIED",
+     "delivery audit (GUMROAD_DELIVERY_AUDIT_2026-10-29.json): PROMISES_SPREADSHEET_NOT_ATTACHED; repair before promoting"
     ]
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -5885,7 +5962,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -5938,7 +6015,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -5991,7 +6068,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -6046,7 +6123,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -6101,7 +6178,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -6156,7 +6233,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -6210,7 +6287,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -6264,7 +6341,7 @@
    },
    "evidence": {
     "source": "data/product_registry.json + Gumroad GET /v2/products",
-    "verified_at": "2026-10-29T12:21:32.588341+00:00"
+    "verified_at": "2026-10-31T11:54:27.657973+00:00"
    },
    "platforms": [
     "linkedin",
@@ -6311,7 +6388,7 @@
    },
    "evidence": {
     "source": "customer_site/affiliate-program.html + git ls-tree origin/main",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -6356,7 +6433,7 @@
    },
    "evidence": {
     "source": "customer_site/affiliate-standing-desks.html + git ls-tree origin/main",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -6401,7 +6478,7 @@
    },
    "evidence": {
     "source": "customer_site/b12-access-continuity-organizer.html + git ls-tree origin/main",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -6448,7 +6525,7 @@
    },
    "evidence": {
     "source": "customer_site/b12-client-handoff-pack.html + git ls-tree origin/main",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -6496,7 +6573,7 @@
    },
    "evidence": {
     "source": "customer_site/b12-digital-declutter-system.html + git ls-tree origin/main",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -6541,7 +6618,7 @@
    },
    "evidence": {
     "source": "customer_site/b12-freelancer-rate-calculator.html + git ls-tree origin/main",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -6588,7 +6665,7 @@
    },
    "evidence": {
     "source": "customer_site/b12-grant-pipeline-tracker.html + git ls-tree origin/main",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -6636,7 +6713,7 @@
    },
    "evidence": {
     "source": "customer_site/b12-home-office-organizer.html + git ls-tree origin/main",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -6681,7 +6758,7 @@
    },
    "evidence": {
     "source": "customer_site/b12-meeting-cost-calculator.html + git ls-tree origin/main",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -6729,7 +6806,7 @@
    },
    "evidence": {
     "source": "customer_site/b12-moving-house-planner.html + git ls-tree origin/main",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -6777,7 +6854,7 @@
    },
    "evidence": {
     "source": "customer_site/b12-pet-sitter-handover-kit.html + git ls-tree origin/main",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -6824,7 +6901,7 @@
    },
    "evidence": {
     "source": "customer_site/b12-podcast-guest-kit.html + git ls-tree origin/main",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -6869,7 +6946,7 @@
    },
    "evidence": {
     "source": "customer_site/blog-etsy-appeal-evidence.html + git ls-tree origin/main",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -6914,7 +6991,7 @@
    },
    "evidence": {
     "source": "customer_site/blog-etsy-appeal-mistakes.html + git ls-tree origin/main",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -6959,7 +7036,7 @@
    },
    "evidence": {
     "source": "customer_site/blog-etsy-first-24-hours.html + git ls-tree origin/main",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7004,7 +7081,7 @@
    },
    "evidence": {
     "source": "customer_site/blog-etsy-temp-vs-permanent.html + git ls-tree origin/main",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7049,7 +7126,7 @@
    },
    "evidence": {
     "source": "customer_site/blog-etsy-write-clear-appeal.html + git ls-tree origin/main",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7094,7 +7171,7 @@
    },
    "evidence": {
     "source": "customer_site/blog-eu-ai-act-compliance-sme-guide.html + git ls-tree origin/main",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7139,7 +7216,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-adobe-affiliate.html + git ls-tree origin/main",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7184,7 +7261,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-amazon-associates-affiliate.html + git ls-tree origin/main",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7229,7 +7306,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-aweber-advocate-program.html + git ls-tree origin/main",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7274,7 +7351,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-brevo-affiliate-program.html + git ls-tree origin/main",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7319,7 +7396,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-canva-affiliate.html + git ls-tree origin/main",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7364,7 +7441,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-creative-market-affiliate.html + git ls-tree origin/main",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7409,7 +7486,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-digitalocean-affiliate-program.html + git ls-tree origin/main",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7454,7 +7531,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-diminished-value-claim.html + git ls-tree origin/main",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7499,7 +7576,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-envato-affiliate.html + git ls-tree origin/main",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7544,7 +7621,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-etsy-affiliate.html + git ls-tree origin/main",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7589,7 +7666,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-etsy-marketplace.html + git ls-tree origin/main",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7634,7 +7711,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-etsy-suspension-appeal.html + git ls-tree origin/main",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7679,7 +7756,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-eudr-sme-deadlines.html + git ls-tree origin/main",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7724,7 +7801,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-food-truck-permit-stack.html + git ls-tree origin/main",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7769,7 +7846,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-freelancer-scope-control.html + git ls-tree origin/main",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7814,7 +7891,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-freelancer-scope-creep.html + git ls-tree origin/main",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7859,7 +7936,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-google-workspace-affiliate.html + git ls-tree origin/main",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7904,7 +7981,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-gumroad-affiliate.html + git ls-tree origin/main",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7949,7 +8026,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-gumroad-marketplace.html + git ls-tree origin/main",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7994,7 +8071,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-mindfulness-focus-for-founders.html + git ls-tree origin/main",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -8039,7 +8116,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-n8n-affiliate.html + git ls-tree origin/main",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -8084,7 +8161,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-paddle-partnership.html + git ls-tree origin/main",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -8129,7 +8206,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-sales-tax-nexus-rolling-method.html + git ls-tree origin/main",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -8174,7 +8251,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-siteground-affiliate-program.html + git ls-tree origin/main",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -8219,7 +8296,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-stripe-chargeback-evidence.html + git ls-tree origin/main",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -8264,7 +8341,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-subscription-renewal-audit.html + git ls-tree origin/main",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -8309,7 +8386,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-systemeio-affiliate.html + git ls-tree origin/main",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -8354,7 +8431,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-turo-invoice-dispute.html + git ls-tree origin/main",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -8399,7 +8476,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-zapier-affiliate.html + git ls-tree origin/main",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -8446,7 +8523,7 @@
    },
    "evidence": {
     "source": "customer_site/service-eu-deadline-briefing.html + git ls-tree origin/main",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin"
@@ -8492,7 +8569,7 @@
    },
    "evidence": {
     "source": "customer_site/service-kdp-typesetting.html + git ls-tree origin/main",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin"
@@ -8538,7 +8615,7 @@
    },
    "evidence": {
     "source": "customer_site/service-verified-lead-lists.html + git ls-tree origin/main",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin"
@@ -8582,7 +8659,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-13-week-cash-flow-forecast.html + git ls-tree origin/main",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -8627,7 +8704,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-business-mileage-log-deduction-tracker.html + git ls-tree origin/main",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -8672,7 +8749,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-car-buy-vs-lease-calculator.html + git ls-tree origin/main",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -8717,7 +8794,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-client-pipeline-proposal-tracker.html + git ls-tree origin/main",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -8762,7 +8839,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-customer-lifetime-value-cac-calculator.html + git ls-tree origin/main",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -8807,7 +8884,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-debt-payoff-planner.html + git ls-tree origin/main",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -8852,7 +8929,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-employee-true-cost-calculator.html + git ls-tree origin/main",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -8897,7 +8974,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-etsy-shopify-product-profit-calculator.html + git ls-tree origin/main",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -8942,7 +9019,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-event-budget-ticket-breakeven-planner.html + git ls-tree origin/main",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -8987,7 +9064,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-food-truck-cost-estimator.html + git ls-tree origin/main",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -9032,7 +9109,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-freelance-project-profitability-tracker.html + git ls-tree origin/main",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -9077,7 +9154,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-inventory-reorder-point-tracker.html + git ls-tree origin/main",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -9122,7 +9199,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-membership-subscription-mrr-churn-forecaster.html + git ls-tree origin/main",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -9167,7 +9244,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-price-increase-impact-calculator.html + git ls-tree origin/main",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -9212,7 +9289,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-pto-accrual-leave-balance-tracker.html + git ls-tree origin/main",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -9257,7 +9334,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-quarterly-tax-set-aside-planner.html + git ls-tree origin/main",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -9302,7 +9379,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-refinance-break-even-calculator.html + git ls-tree origin/main",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -9347,7 +9424,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-renovation-budget-quote-comparison.html + git ls-tree origin/main",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -9392,7 +9469,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-rent-vs-buy-home-calculator.html + git ls-tree origin/main",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -9437,7 +9514,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-rental-property-deal-analyzer.html + git ls-tree origin/main",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -9482,7 +9559,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-saas-waste-estimator.html + git ls-tree origin/main",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -9527,7 +9604,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-safe-conversion-dilution-calculator.html + git ls-tree origin/main",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -9572,7 +9649,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-service-pricing-break-even-calculator.html + git ls-tree origin/main",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -9617,7 +9694,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-shift-schedule-labor-cost-planner.html + git ls-tree origin/main",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -9662,7 +9739,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-sinking-funds-emergency-fund-planner.html + git ls-tree origin/main",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -9707,7 +9784,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-solar-panel-payback-savings-calculator.html + git ls-tree origin/main",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -9752,7 +9829,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-startup-runway-burn-planner.html + git ls-tree origin/main",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -9797,7 +9874,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-wedding-budget-vendor-payment-planner.html + git ls-tree origin/main",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -9842,7 +9919,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-zero-based-monthly-budget-planner.html + git ls-tree origin/main",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -9888,7 +9965,7 @@
    },
    "evidence": {
     "source": "affiliate.registry (data/commission_opportunities.jsonl)",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -9934,7 +10011,7 @@
    },
    "evidence": {
     "source": "affiliate.registry (data/commission_opportunities.jsonl)",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -9980,7 +10057,7 @@
    },
    "evidence": {
     "source": "affiliate.registry (data/commission_opportunities.jsonl)",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -10026,7 +10103,7 @@
    },
    "evidence": {
     "source": "affiliate.registry (data/commission_opportunities.jsonl)",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -10072,7 +10149,7 @@
    },
    "evidence": {
     "source": "affiliate.registry (data/commission_opportunities.jsonl)",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -10118,7 +10195,7 @@
    },
    "evidence": {
     "source": "affiliate.registry (data/commission_opportunities.jsonl)",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -10164,7 +10241,7 @@
    },
    "evidence": {
     "source": "affiliate.registry (data/commission_opportunities.jsonl)",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -10210,7 +10287,7 @@
    },
    "evidence": {
     "source": "affiliate.registry (data/commission_opportunities.jsonl)",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -10256,7 +10333,7 @@
    },
    "evidence": {
     "source": "affiliate.registry (data/commission_opportunities.jsonl)",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -10302,7 +10379,7 @@
    },
    "evidence": {
     "source": "affiliate.registry (data/commission_opportunities.jsonl)",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -10348,7 +10425,7 @@
    },
    "evidence": {
     "source": "affiliate.registry (data/commission_opportunities.jsonl)",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -10394,7 +10471,7 @@
    },
    "evidence": {
     "source": "affiliate.registry (data/commission_opportunities.jsonl)",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -10440,7 +10517,7 @@
    },
    "evidence": {
     "source": "affiliate.registry (data/commission_opportunities.jsonl)",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -10486,7 +10563,7 @@
    },
    "evidence": {
     "source": "affiliate.registry (data/commission_opportunities.jsonl)",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -10532,7 +10609,7 @@
    },
    "evidence": {
     "source": "affiliate.registry (data/commission_opportunities.jsonl)",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -10578,7 +10655,7 @@
    },
    "evidence": {
     "source": "affiliate.registry (data/commission_opportunities.jsonl)",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -10624,7 +10701,7 @@
    },
    "evidence": {
     "source": "affiliate.registry (data/commission_opportunities.jsonl)",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "linkedin",
@@ -10671,7 +10748,7 @@
    },
    "evidence": {
     "source": "video_studio/projects/pilot_a_cashflow_short.json + rights manifest",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "tiktok",
@@ -10718,7 +10795,7 @@
    },
    "evidence": {
     "source": "video_studio/projects/pilot_b_cap_rate_explainer.json + rights manifest",
-    "verified_at": "2026-10-29T16:07:37+00:00"
+    "verified_at": "2026-10-31T12:01:51+00:00"
    },
    "platforms": [
     "tiktok",
@@ -10737,28 +10814,28 @@
   }
  ],
  "summary": {
-  "total": 213,
+  "total": 214,
   "by_arm": {
-   "digital_products": 154,
+   "digital_products": 155,
    "affiliate": 19,
    "education_content": 35,
    "services": 3,
    "video": 2
   },
   "by_type": {
-   "digital_product": 115,
+   "digital_product": 116,
    "content_asset": 76,
    "service": 3,
    "affiliate_offer": 17,
    "media_asset": 2
   },
   "by_eligibility": {
-   "ELIGIBLE": 176,
-   "NOT_ELIGIBLE": 32,
+   "ELIGIBLE": 174,
+   "NOT_ELIGIBLE": 35,
    "NEEDS_REVIEW": 5
   },
   "eligible_by_arm": {
-   "digital_products": 139,
+   "digital_products": 137,
    "affiliate": 2,
    "education_content": 35
   }

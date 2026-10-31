@@ -1,29 +1,29 @@
 {
- "generated_at": "2026-10-29T16:07:37+00:00",
+ "generated_at": "2026-10-31T12:02:24+00:00",
  "operational": {
   "offers": {
-   "total": 213,
+   "total": 214,
    "by_arm": {
-    "digital_products": 154,
+    "digital_products": 155,
     "affiliate": 19,
     "education_content": 35,
     "services": 3,
     "video": 2
    },
    "by_type": {
-    "digital_product": 115,
+    "digital_product": 116,
     "content_asset": 76,
     "service": 3,
     "affiliate_offer": 17,
     "media_asset": 2
    },
    "by_eligibility": {
-    "ELIGIBLE": 176,
-    "NOT_ELIGIBLE": 32,
+    "ELIGIBLE": 174,
+    "NOT_ELIGIBLE": 35,
     "NEEDS_REVIEW": 5
    },
    "eligible_by_arm": {
-    "digital_products": 139,
+    "digital_products": 137,
     "affiliate": 2,
     "education_content": 35
    }
@@ -32,12 +32,18 @@
    "program approval is NOT_APPLIED; no approved affiliate link": 17,
    "product page for a product that is not on sale (page says (proposed))": 5,
    "page is not on origin/main, so it is not public": 4,
-   "listing state is READY_FOR_AUTHORIZATION, not PUBLIC_LISTING_VERIFIED": 3,
-   "no listing description available to draw facts from": 3,
+   "delivery audit (GUMROAD_DELIVERY_AUDIT_2026-10-29.json): PROMISES_SPREADSHEET_NOT_ATTACHED; repair before promoting": 3,
    "listing state is UPLOAD_COMPLETED, not PUBLIC_LISTING_VERIFIED": 3,
    "service: delivery capacity and terms need founder confirmation before promotion": 3,
    "duplicate live title shared with ['GR-0fa92aeb1a', 'GR-ab323215ab']": 2,
    "rights UNRESOLVED": 2,
+   "listing state is READY_FOR_AUTHORIZATION, not PUBLIC_LISTING_VERIFIED": 1,
+   "no listing description available to draw facts from": 1,
+   "on HOLD (hold_policy.py): internal quality audit recorded 11 critical content-accuracy findings, including Annex III categories that do not appear in the Act and an incorrect prohibition on high-risk GPAI models. Recorded as an internal finding, not a legal ruling.": 1,
+   "delivery audit (GUMROAD_DELIVERY_AUDIT_2026-10-29.json): PREVIEW_FILE_DELIVERED; repair before promoting": 1,
+   "on HOLD (hold_policy.py): listed as a workbook; the delivered file is a one-page, 331-word PDF with empty tables and outcome claims the content does not support.": 1,
+   "delivery audit (GUMROAD_DELIVERY_AUDIT_2026-10-29.json): PUBLISHED_WITHOUT_DELIVERABLE; repair before promoting": 1,
+   "delivery audit (GUMROAD_DELIVERY_AUDIT_2026-10-29.json): PROMISES_MORE_FILES_THAN_ATTACHED; repair before promoting": 1,
    "product page for a product that is not on sale (page says (approved, not yet listed))": 1,
    "product page for a product that is not on sale (page says (proposed, not yet listed))": 1
   },
@@ -89,8 +95,9 @@
    }
   },
   "jobs_by_state": {
-   "QA_PASSED": 18,
-   "QA_FAILED": 10
+   "STALE": 2,
+   "QA_FAILED": 10,
+   "QA_PASSED": 16
   },
   "jobs_by_platform": {
    "linkedin": 9,
@@ -109,8 +116,6 @@
    "video rights UNRESOLVED": 2
   },
   "awaiting_approval": [
-   "SJ-6cebab7f3406",
-   "SJ-c019cc276857",
    "SJ-c4066cda8acd",
    "SJ-c027af691793",
    "SJ-9e6a41c8224a",
@@ -138,7 +143,7 @@
   "note": "Traffic to the public site is unmeasured (GitHub Pages has no beacon receiver). Gumroad sales carry their own referrer; no social-attributed sale exists."
  },
  "next_actions": [
-  "Founder: review 18 QA-passed drafts and approve the ones to post (manual hand-off).",
+  "Founder: review 16 QA-passed drafts and approve the ones to post (manual hand-off).",
   "LinkedIn: no app or credentials on this machine.",
   "TikTok: connected through Metricool; BLOCKED_NEEDS_BOARD: permission is now an ask rule (founder, 2026-10-23); two review-flow attempts on 2026-10-24 were rejected by validation before creating anything.",
   "Instagram: no app or credentials on this machine.",

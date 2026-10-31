@@ -19,6 +19,12 @@ import re
 import subprocess
 from datetime import datetime, timezone
 from pathlib import Path
+import sys
+
+_ROOT = str(Path(__file__).resolve().parent.parent)
+if _ROOT not in sys.path:
+    sys.path.insert(0, _ROOT)
+import hold_policy  # noqa: E402  (the one source of truth for products that must not be promoted)
 
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "data" / "distribution_offers.json"
@@ -75,7 +81,28 @@ def _eligibility(reasons_block, reasons_review=()):
 
 
 # ---- digital products (Gumroad) -------------------------------------------
-def product_offers(registry: dict, live: list) -> list:
+# Delivery-audit issues that mean the buyer receives less than the listing
+# promises: such a listing must be repaired before it is promoted. ZIP contents
+# not yet opened and a short deliverable are not, by themselves, a broken promise.
+DELIVERY_BLOCKING = ("PUBLISHED_WITHOUT_DELIVERABLE", "PROMISES_SPREADSHEET_NOT_ATTACHED",
+                     "PROMISES_MORE_FILES_THAN_ATTACHED", "PREVIEW_FILE_DELIVERED")
+
+
+def delivery_issues(root=ROOT) -> dict:
+    """slug -> blocking issues, from the newest reports/GUMROAD_DELIVERY_AUDIT_<date>.json."""
+    reports = sorted(Path(root, "reports").glob("GUMROAD_DELIVERY_AUDIT_*.json"))
+    if not reports:
+        return {}
+    doc = _read(reports[-1], {})
+    out = {}
+    for r in doc.get("rows") or []:
+        bad = [i for i in r.get("issues") or [] if i in DELIVERY_BLOCKING]
+        if bad and r.get("slug"):
+            out[r["slug"]] = {"issues": bad, "report": reports[-1].name}
+    return out
+
+
+def product_offers(registry: dict, live: list, delivery: dict | None = None) -> list:
     by_gid = {p["id"]: p for p in live or []}
     titles = {}
     for r in registry.get("products", []):
@@ -90,6 +117,14 @@ def product_offers(registry: dict, live: list) -> list:
             block.append(f"listing state is {r.get('primary_state')}, not PUBLIC_LISTING_VERIFIED")
         if not desc:
             block.append("no listing description available to draw facts from")
+        slug = (r.get("url") or "").rstrip("/").rsplit("/", 1)[-1]
+        if slug and hold_policy.is_on_hold(slug):
+            # A held product must never be promoted, whatever its listing state
+            # (2026-10-31: both held listings were ELIGIBLE and queued as pins).
+            block.append(f"on HOLD (hold_policy.py): {hold_policy.hold_reason(slug)}")
+        if slug and slug in (delivery or {}):
+            d = delivery[slug]
+            block.append(f"delivery audit ({d['report']}): {', '.join(d['issues'])}; repair before promoting")
         if len(titles[r["title"].strip().lower()]) > 1:
             review.append(f"duplicate live title shared with {sorted(titles[r['title'].strip().lower()])}")
         out.append({
@@ -244,7 +279,7 @@ def build(registry=None, live=None, root=ROOT, published=None, affiliate_records
     if live is None:
         import product_registry
         live = product_registry.fetch_live()  # read-only GET
-    offers = (product_offers(registry, live) + site_offers(root, published, registry) + affiliate_offers(affiliate_records)
+    offers = (product_offers(registry, live, delivery_issues(root)) + site_offers(root, published, registry) + affiliate_offers(affiliate_records)
               + media_offers(root))
     for o in offers:
         o["platforms"] = PLATFORMS_BY_TYPE.get(o["type"], [])
