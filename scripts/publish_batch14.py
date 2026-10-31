@@ -585,6 +585,7 @@ def publish_one(man, token, *, gp, write_scope, ledger, cover_url_fn, approvals,
         "file_path": str(bundle),
         "description": man["qa"]["listing"]["description_html"],
         "expected_sha256": man["files"]["bundle"]["sha256"],
+        "tags": list(man.get("tags") or []),
     }
     product = gp.create_product(token, spec, upload_scope_id=scope.scope_id)
     pid = product.get("id")
@@ -627,6 +628,20 @@ def publish_one(man, token, *, gp, write_scope, ledger, cover_url_fn, approvals,
         if rec.get("url")
         else False
     )
+    # 2026-10-30: the audit checks the manifest's tags, not the created
+    # listing. create_product used to drop them silently, so a PASS could
+    # describe a listing with zero tags (three real B16 products were
+    # published that way). Prove the listing carries them, and repair once
+    # through the already-verifying update path if it does not.
+    tags = [t.strip() for t in (man.get("tags") or []) if isinstance(t, str) and t.strip()]
+    if tags and set(got.get("tags") or []) != set(tags):
+        try:
+            got = gp.update_product(token, pid, {"tags": tags})
+            rec["steps"]["tags"] = "ok"
+        except Exception as exc:
+            rec["steps"]["tags"] = f"FAILED: {str(exc)[:160]}"
+    else:
+        rec["steps"]["tags"] = "ok"
     result = SimpleNamespace(
         ok=rec["steps"]["published"] and rec["steps"]["public_page"],
         platform="gumroad",
@@ -639,7 +654,11 @@ def publish_one(man, token, *, gp, write_scope, ledger, cover_url_fn, approvals,
         SimpleNamespace(title=man["title"], source_id=man["id"], product_type="xlsx_tool_bundle"),
         result,
     )
-    rec["status"] = "PASS" if result.ok and rec["steps"]["cover"] == "ok" else "BLOCKED"
+    rec["status"] = (
+        "PASS"
+        if result.ok and rec["steps"]["cover"] == "ok" and rec["steps"].get("tags") == "ok"
+        else "BLOCKED"
+    )
     if rec["status"] != "PASS":
         rec["error"] = rec.get("error") or "post-publish verification did not fully pass"
     return rec

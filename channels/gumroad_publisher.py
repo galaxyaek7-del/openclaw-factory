@@ -497,6 +497,18 @@ def create_product(token, product_spec, *, upload_scope_id=None):
         "customizable_price": "false",
         "files[][url]": file_url
     }
+    # 2026-10-30: tags/taxonomy were previously accepted in a spec and silently
+    # dropped, so every listing created through this path landed with zero tags
+    # while the publisher's audit reported "tags present" (it reads the
+    # manifest, not the created listing). Forward them when supplied; callers
+    # still verify persistence after the create.
+    tags = product_spec.get("tags")
+    if tags:
+        cleaned = [str(t).strip() for t in tags if str(t).strip()]
+        if cleaned:
+            data["tags[]"] = cleaned
+    if product_spec.get("taxonomy_id") is not None:
+        data["taxonomy_id"] = product_spec["taxonomy_id"]
     try:
         r = requests.post(f"{GUMROAD_API_BASE}/products", data=data, timeout=120)
         r.raise_for_status()

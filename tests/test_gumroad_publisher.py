@@ -196,6 +196,73 @@ class TestRetryOnTransientFailure(unittest.TestCase):
         finally:
             os.unlink(tmp.name)
 
+    def test_create_product_forwards_tags_and_taxonomy_when_given(self):
+        """Regression: tags were accepted in a spec and silently dropped, so
+        every listing created through this path landed untagged while the
+        publisher's audit reported tags present (it reads the manifest, not
+        the created listing). Three real B16 products shipped that way on
+        2026-10-30."""
+        import tempfile, os
+        tmp = tempfile.NamedTemporaryFile(suffix=".pdf", delete=False)
+        tmp.write(b"%PDF-1.4 fake")
+        tmp.close()
+
+        presign = _fake_response(status_code=200, json_data={
+            "success": True, "upload_id": "u1", "key": "k1",
+            "parts": [{"part_number": 1, "presigned_url": "https://s3/part1"}],
+        })
+        put_resp = _fake_response(status_code=200)
+        put_resp.headers = {"ETag": '"etag-1"'}
+        complete_ok = _fake_response(status_code=200, json_data={
+            "success": True, "file_url": "https://s3/final.pdf"})
+        create_ok = _fake_response(status_code=200, json_data={
+            "success": True, "product": {"id": "p1"}})
+
+        try:
+            with patch.object(gp.requests, "request", side_effect=[presign, put_resp]), \
+                 patch.object(gp.time, "sleep"), \
+                 patch.object(gp.requests, "post",
+                              side_effect=[complete_ok, create_ok]) as mock_post:
+                gp.create_product("fake-token", {
+                    "title": "Test", "price_cents": 999, "file_path": tmp.name,
+                    "tags": ["menu engineering", " restaurant ", ""],
+                    "taxonomy_id": 266,
+                }, upload_scope_id=_upload_scope(tmp.name))
+            sent = mock_post.call_args_list[1].kwargs["data"]
+            self.assertEqual(sent["tags[]"], ["menu engineering", "restaurant"])
+            self.assertEqual(sent["taxonomy_id"], 266)
+        finally:
+            os.unlink(tmp.name)
+
+    def test_create_product_sends_no_tag_fields_when_none_are_given(self):
+        import tempfile, os
+        tmp = tempfile.NamedTemporaryFile(suffix=".pdf", delete=False)
+        tmp.write(b"%PDF-1.4 fake")
+        tmp.close()
+        presign = _fake_response(status_code=200, json_data={
+            "success": True, "upload_id": "u1", "key": "k1",
+            "parts": [{"part_number": 1, "presigned_url": "https://s3/part1"}],
+        })
+        put_resp = _fake_response(status_code=200)
+        put_resp.headers = {"ETag": '"etag-1"'}
+        complete_ok = _fake_response(status_code=200, json_data={
+            "success": True, "file_url": "https://s3/final.pdf"})
+        create_ok = _fake_response(status_code=200, json_data={
+            "success": True, "product": {"id": "p1"}})
+        try:
+            with patch.object(gp.requests, "request", side_effect=[presign, put_resp]), \
+                 patch.object(gp.time, "sleep"), \
+                 patch.object(gp.requests, "post",
+                              side_effect=[complete_ok, create_ok]) as mock_post:
+                gp.create_product("fake-token", {
+                    "title": "Test", "price_cents": 999, "file_path": tmp.name,
+                }, upload_scope_id=_upload_scope(tmp.name))
+            sent = mock_post.call_args_list[1].kwargs["data"]
+            self.assertNotIn("tags[]", sent)
+            self.assertNotIn("taxonomy_id", sent)
+        finally:
+            os.unlink(tmp.name)
+
 
 class TestTokenNeverLeaksInErrors(unittest.TestCase):
     def test_safe_err_redacts_token_from_exception_text(self):

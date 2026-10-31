@@ -129,12 +129,14 @@ def approval_for(man, **overrides):
 class FakeGumroad:
     NEW_PRODUCT = "NEW_PRODUCT"
 
-    def __init__(self, readback=None, published=True, create_error=None, fail_first=False):
+    def __init__(self, readback=None, published=True, create_error=None, fail_first=False,
+                 update_error=None):
         self.calls = []
         self.readback = readback
         self.published = published
         self.create_error = create_error
         self.fail_first = fail_first
+        self.update_error = update_error
         self.create_count = 0
 
     def create_product(self, token, spec, upload_scope_id=None):
@@ -147,8 +149,17 @@ class FakeGumroad:
     def get_product(self, token, pid):
         self.calls.append(("get", pid))
         base = {"name": "Test Tool", "price": 1500, "published": self.published,
-                "short_url": "https://x.gumroad.com/l/t", "covers": []}
+                "short_url": "https://x.gumroad.com/l/t", "covers": [],
+                "tags": list((self.readback or {}).get("tags") or [])}
         return dict(base, **(self.readback or {}))
+
+    def update_product(self, token, pid, updates):
+        self.calls.append(("update", tuple(sorted(updates))))
+        if self.update_error:
+            raise RuntimeError(self.update_error)
+        if "tags" in updates:
+            self.readback = dict(self.readback or {}, tags=list(updates["tags"]))
+        return self.get_product(token, pid)
 
     def enable_product(self, token, pid):
         self.calls.append(("enable", pid))
@@ -251,6 +262,20 @@ class TestPublishOne(unittest.TestCase):
         self.assertIn(("cover", "https://c/B14-099.png"), gp.calls)
         self.assertFalse(f.events[0][1].dry_run)
         self.assertTrue(f.events[0][1].ok)
+
+    def test_tags_from_the_manifest_are_written_and_verified(self):
+        gp = FakeGumroad()
+        rec, _f, m = self.run_one(gp)
+        self.assertEqual(rec["status"], "PASS", rec)
+        self.assertEqual(rec["steps"]["tags"], "ok")
+        self.assertIn(("update", ("tags",)), gp.calls)
+        self.assertEqual(set(gp.readback["tags"]), set(m["tags"]))
+
+    def test_a_failed_tag_write_blocks_the_product(self):
+        gp = FakeGumroad(update_error="VERIFICATION_FAILED: tags did not persist")
+        rec, _f, _m = self.run_one(gp)
+        self.assertEqual(rec["status"], "BLOCKED", rec)
+        self.assertIn("FAILED", rec["steps"]["tags"])
 
     def test_missing_approval_blocks_before_any_write(self):
         gp = FakeGumroad()
@@ -372,8 +397,9 @@ class TestRunBatch(unittest.TestCase):
         self.assertEqual(len(results), 2)
         self.assertEqual([r["status"] for r in results], ["BLOCKED", "PASS"])
         self.assertIn("10 products per day", results[0]["status_reason"])
-        self.assertEqual(len(gp.calls), 4)
+        self.assertEqual(len(gp.calls), 6)
         self.assertEqual([c[0] for c in gp.calls].count("create"), 2)
+        self.assertEqual([c[0] for c in gp.calls].count("update"), 1)
         self.assertEqual(len(f.events), 1)
 
     def test_dry_run_never_calls_gumroad_even_with_live_flag(self):
