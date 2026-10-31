@@ -48,6 +48,9 @@ def _write_offers():
     offers.write(doc)
     dashboard.write(dashboard.build(doc, campaigns.Jobs(ledger=campaigns.LEDGER).jobs(), platforms.readiness(),
                                     dashboard.real_metrics()))
+    # A newly eligible product gets its Pinterest pin image (existing pins untouched).
+    import build_pin_images
+    doc["summary"]["pins_rendered"] = build_pin_images.add_missing()
     return doc["summary"]
 
 

@@ -119,6 +119,17 @@ def build(offers_path=ROOT / "data" / "distribution_offers.json", out_dir=OUT_DI
             "fonts": "Bitstream Vera (reportlab bundle)", "pins": pins}
 
 
+def add_missing(offers_path=ROOT / "data" / "distribution_offers.json", manifest=MANIFEST, out_dir=OUT_DIR, fetch=None):
+    """Render pins only for eligible products that have none; existing entries are kept as they are."""
+    old = json.loads(Path(manifest).read_text(encoding="utf-8")) if Path(manifest).exists() else {"pins": {}}
+    m = build(Path(offers_path), out_dir=out_dir, fetch=fetch, skip=set(old["pins"]))
+    if m["pins"]:
+        old["pins"].update(m["pins"])
+        old["generated_at"] = m["generated_at"]
+        Path(manifest).write_text(json.dumps(old, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
+    return sorted(m["pins"])
+
+
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--offers", default=str(ROOT / "data" / "distribution_offers.json"))
@@ -126,13 +137,8 @@ if __name__ == "__main__":
                     help="render only eligible products with no pin yet; existing pins and entries are left as they are")
     a = ap.parse_args()
     if a.only_missing:
-        old = json.loads(MANIFEST.read_text(encoding="utf-8")) if MANIFEST.exists() else {"pins": {}}
-        m = build(Path(a.offers), skip=set(old["pins"]))
-        added = sorted(m["pins"])
-        old["pins"].update(m["pins"])
-        old["generated_at"], m = m["generated_at"], old
+        print(json.dumps({"rendered": add_missing(Path(a.offers))}, indent=1))
     else:
         m = build(Path(a.offers))
-        added = sorted(m["pins"])
-    MANIFEST.write_text(json.dumps(m, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
-    print(json.dumps({"pins": len(m["pins"]), "rendered": added}, indent=1))
+        MANIFEST.write_text(json.dumps(m, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
+        print(json.dumps({"pins": len(m["pins"]), "rendered": sorted(m["pins"])}, indent=1))

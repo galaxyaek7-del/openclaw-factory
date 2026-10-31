@@ -41,6 +41,30 @@ class RegistryDailyOffers(unittest.TestCase):
         self.assertEqual(out["action"], "ok")
         self.assertIn("distribution offers not written (OSError)", out["detail"])
 
+    def test_pins_are_added_only_for_eligible_products_without_one(self):
+        import io
+        import build_pin_images as bpi
+        from PIL import Image
+        d = Path(self.dir.name)
+        offer = lambda oid, status="ELIGIBLE": {"offer_id": oid, "type": "digital_product", "title": f"Tool {oid}",
+                                                "description": "Plans the thing.", "price_cents": 1900,
+                                                "cover_url": f"https://x/{oid}.png", "eligibility": {"status": status}}
+        (d / "offers.json").write_text(json.dumps({"offers": [offer("A"), offer("B"), offer("H", "NOT_ELIGIBLE")]}),
+                                       encoding="utf-8")
+        old = {"generated_at": "2026-10-20", "pins": {"A": {"sha256": "keep-me"}}}
+        (d / "pins.json").write_text(json.dumps(old), encoding="utf-8")
+        buf = io.BytesIO()
+        Image.new("RGB", (1280, 720), (20, 40, 80)).save(buf, "PNG")
+        fetched = []
+        added = bpi.add_missing(d / "offers.json", d / "pins.json", d / "out",
+                                fetch=lambda u: fetched.append(u) or buf.getvalue())
+        self.assertEqual(added, ["B"])
+        self.assertEqual(fetched, ["https://x/B.png"])
+        m = json.loads((d / "pins.json").read_text(encoding="utf-8"))
+        self.assertEqual(m["pins"]["A"], {"sha256": "keep-me"})
+        self.assertTrue((d / "out" / "b.jpg").is_file())
+        self.assertEqual(bpi.add_missing(d / "offers.json", d / "pins.json", d / "out", fetch=lambda u: 1 / 0), [])
+
     def test_the_live_writer_never_drafts(self):
         import inspect
         src = inspect.getsource(rd._write_offers)
