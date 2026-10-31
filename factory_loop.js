@@ -5382,6 +5382,11 @@ async function runTick() {
     // data/_backups/local-<date>/, restore-checked; secrets never copied.
     markStep('local_data_backup');
     actions.push({ step: 'local_data_backup', ...(await runOnceScript('backup_local_data.py', { timeoutMs: 5 * 60 * 1000 })) });
+    // 2026-10-31: once a day, read-only protection check (live-write switch,
+    // secrets in tracked files, paid files in the public repo, backup restores,
+    // disk space, withdrawn listings still live); failures reach the decision queue.
+    markStep('company_protection_check');
+    actions.push({ step: 'company_protection_check', ...(await runOnceScript('company_protection_check.py', { timeoutMs: 5 * 60 * 1000 })) });
     markStep('kids_youtube_publish');
     actions.push({ step: 'kids_youtube_publish', ...(await runOnceScript('kids_youtube_publish_daily.py', { timeoutMs: 20 * 60 * 1000 })) });
     // 2026-10-29: tool pages for newly published products (site_publish sends

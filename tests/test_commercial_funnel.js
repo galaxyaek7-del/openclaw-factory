@@ -119,6 +119,15 @@ test('a "$0+" listing with no file counts as paid and gets its own unpublish ite
   assert.ok(titles.some(t => /Repair 1 paid listing\(s\) .*: kit$/.test(t)));
 });
 
+test('failing protection checks reach the queue once, without repeating the held-listings item', () => {
+  const pc = { failing: ['disk_space', 'payable_withdrawn'], results: { disk_space: { detail: '2.2 GB free (minimum 5 GB)' } } };
+  const q = cf.founderQueue({ products: [] }, null, null, factory({ 'data/company_protection.json': pc }));
+  assert.equal(q.length, 1);
+  assert.match(q[0].title, /Protection: 1 check\(s\) failing: disk_space$/);
+  assert.match(q[0].why, /2\.2 GB free/);
+  assert.equal(cf.founderQueue({ products: [] }, null, null, factory({ 'data/company_protection.json': { failing: [] } })).length, 0);
+});
+
 test('an archive whose attached size equals its built bundle is verified; a size mismatch is not', () => {
   const root = factory({
     'books/b/M1.json': { files: { bundle: { bytes: 18002 } } },
