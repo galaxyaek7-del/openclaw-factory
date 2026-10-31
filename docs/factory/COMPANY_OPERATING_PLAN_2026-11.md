@@ -21,7 +21,8 @@ and its live accounts on that date unless marked otherwise.
 1. **Reach buyers (unlocks everything else).** Founder steps, each a few minutes:
    create the Pinterest board "Small Business Finance Tools" (pin images exist for 109 products; the queue was last built with 99);
    install the free analytics token (`FOUNDER_ACTIONS.md` section 6); approve the 6 QA-passed
-   drafts. After that the loop can publish pins on its own schedule and measure visits.
+   drafts. After that the loop prepares one scheduled pin a day for your one-click review in Metricool,
+   and visits are measured.
 2. **Measure, then raise value from evidence.** Once visits and clicks are recorded, the
    factory ranks products by visits, conversion and refunds; it expands only listings with
    demand (the thin-listing plan's trigger) and builds new products in the categories that
