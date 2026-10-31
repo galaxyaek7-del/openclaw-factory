@@ -28,7 +28,10 @@ files themselves are paid content and are not in this repository. Sales on every
 
 ## Repairs
 
-1. **Disclose what is delivered (ready, needs your approval).** The eleven "component list" and
+1. **Disclose what is delivered: DONE 2026-10-31** (your approval in chat; 11 PASS, each listing
+   read back: line present once, price unchanged; a later dry run reports ALREADY_APPLIED for all
+   eleven; the live record is local, `data/thin_listing_disclosures_20261031_live.json`, and backed up
+   daily). Originally: The eleven "component list" and
    "generic page" listings get the line the honest four already carry, with page and word counts
    measured from the live file:
    `python scripts/apply_thin_listing_disclosures_20261031.py` (dry run, report in
