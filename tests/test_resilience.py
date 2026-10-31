@@ -111,6 +111,8 @@ class TestMarketplacePublishFailureIsolation(unittest.TestCase):
         outcomes = distributor.distribute(
             _fake_product(), dry_run=False, ledger_path=self.ledger_path,
             protection_state_path=self.protection_state_path,
+            quality_gate=lambda *a, **k: {"allowed": True, "blocked_by": None,
+                                          "reason": "test allow"},
         )
         healthy_arm.publish.assert_called_once()
         etsy_outcome = next(o for o in outcomes if o["arm"] == "etsy")
@@ -189,6 +191,9 @@ class TestUncleanShutdownRecoveryClassification(unittest.TestCase):
     def test_stale_lock_with_nothing_in_flight_is_a_real_safe_auto_recovery(self):
         result = startup_check.check_startup_safety(was_stale_lock=True, state_path=self.state_path, timeline_path=self.timeline_path)
         self.assertEqual(result["classification"], "RECOVERING")
+        state = factory_state.load_state(self.state_path)
+        self.assertFalse(state["recovery_info"]["interrupted"])
+        self.assertIn("nothing was in flight", state["recovery_info"]["reason"])
 
     def test_stale_lock_mid_risky_publish_step_fails_closed(self):
         factory_state.set_current_task("golden_hunter_tick", step="hunt", path=self.state_path)
@@ -198,10 +203,15 @@ class TestUncleanShutdownRecoveryClassification(unittest.TestCase):
     def test_recovery_info_is_really_persisted_not_just_returned(self):
         """The classification isn't just an in-memory return value -- it's
         a real, durable record a later `GET /health`/founder review can
-        actually see."""
+        actually see. Uses the case that genuinely needs a founder decision:
+        2026-10-31, a stale lock with nothing in flight no longer sets the
+        flag (only resolve_recovery() clears it, and with no task there is
+        nothing to finish -- it stayed true for 15 hours and ~90 ticks)."""
+        factory_state.set_current_task("golden_hunter_tick", step="hunt", path=self.state_path)
         startup_check.check_startup_safety(was_stale_lock=True, state_path=self.state_path, timeline_path=self.timeline_path)
         state = factory_state.load_state(self.state_path)
         self.assertTrue(state["recovery_info"]["interrupted"])
+        self.assertIn("hunt", state["recovery_info"]["reason"])
 
     def test_resolve_recovery_really_clears_the_persisted_flag(self):
         startup_check.check_startup_safety(was_stale_lock=True, state_path=self.state_path, timeline_path=self.timeline_path)

@@ -88,8 +88,17 @@ def check_startup_safety(was_stale_lock, state_path=None, timeline_path=None):
 def _record_recovery_info(classification, reason, current_task, path):
     try:
         state = factory_state.load_state(path)
+        # 2026-10-31: "nothing was in flight" is not an interrupted state.
+        # Only resolve_recovery() clears this flag, and it is called when the
+        # formerly in-flight task finishes -- with no task there is nothing to
+        # finish, so the flag stayed true forever (live: set 2026-10-30T20:33,
+        # still true 15 hours and ~90 clean ticks later, permanently reporting
+        # an interrupted factory to department_health/blueprint_status). The
+        # crash itself is still recorded in evidence/reason, and a real
+        # in-flight task keeps the flag true exactly as before.
         state["recovery_info"] = {
-            "interrupted": classification != "HEALTHY",
+            "interrupted": classification == "NEEDS_CONFIRMATION"
+            or (classification == "RECOVERING" and current_task is not None),
             "detected_at": datetime.now(timezone.utc).isoformat(),
             "evidence": f"stale lock reclaimed; current_task={current_task!r}",
             "reason": reason,

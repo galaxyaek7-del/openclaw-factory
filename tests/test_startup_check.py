@@ -93,6 +93,19 @@ class TestCheckStartupSafety(unittest.TestCase):
         self.assertTrue(state["recovery_info"]["interrupted"])
         self.assertIsNotNone(state["recovery_info"]["detected_at"])
 
+    def test_stale_lock_with_no_in_flight_task_is_recorded_but_not_interrupted(self):
+        """Regression (2026-10-31): only resolve_recovery() clears the flag, and
+        it fires when the formerly in-flight task finishes. With no task there
+        is nothing to finish, so a real crash left interrupted=true for 15
+        hours and ~90 clean ticks. The crash is still recorded."""
+        result = startup_check.check_startup_safety(True, state_path=self.state_path,
+                                                    timeline_path=self.timeline_path)
+        self.assertEqual(result["classification"], "RECOVERING")
+        state = factory_state.load_state(self.state_path)
+        self.assertFalse(state["recovery_info"]["interrupted"])
+        self.assertIsNotNone(state["recovery_info"]["detected_at"])
+        self.assertIn("nothing was in flight", state["recovery_info"]["reason"])
+
     def test_clean_start_never_touches_recovery_info(self):
         result = startup_check.check_startup_safety(False, state_path=self.state_path, timeline_path=self.timeline_path)
         self.assertEqual(result["classification"], "HEALTHY")
