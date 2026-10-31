@@ -1,4 +1,4 @@
-# Galaxy Forge: company portfolio (updated 2026-10-30)
+# Galaxy Forge: company portfolio (updated 2026-10-31)
 
 Galaxy Forge is the company; the factory is its executive engine; the eight doctrine arms are
 its commercial engines. This page is the human-readable view. The live data is computed by
@@ -11,7 +11,7 @@ dashboard disagree, the dashboard is current. Evidence classes: OBSERVED, DERIVE
 
 | Directive arm | Doctrine arm | Implemented today |
 |---|---|---|
-| A Digital products | `digital_products` | 115 products in the registry, 109 live on Gumroad; batch pipeline with independent formula checks; per-product publication gate with expiring approvals; delivery audit; listing-repair script (dry run passes against the live listings) |
+| A Digital products | `digital_products` | 116 products in the registry, 109 live on Gumroad, 4 built and QA-passed awaiting publication (B16-008..010, and B17-001, a nine-country EAA penalty workbook built from the research arm's register); batch pipeline with independent formula checks; per-product publication gate with expiring approvals; delivery audit; listing-repair script (dry run passes against the live listings) |
 | B Productized services | `productized_ai_services` | accessibility quick-check (`services/accessibility_check/`): fixed WCAG 2.2 rules, files or named URLs, never claims compliance; our own 118 pages: 0 errors, 22 warnings; repair script for our site prepared |
 | C Micro-B2B | `micro_b2b` | catalogue clean-up engine (CSV and XLSX, ambiguous dates and mixed currencies flagged); Merchant Center feed preflight (CSV, TSV, RSS/Atom XML; rules cited from Google's spec; hostile XML refused) |
 | D Research | `research_data_services` | EAA penalty register (9 countries, each figure tied to its legal text; two vendor figures contradicted); USPTO trademark fee table, checked daily against the official schedule |
@@ -47,7 +47,7 @@ been recorded in any arm.
 
 | Arm | Founder action | Then measured by |
 |---|---|---|
-| Digital products | publish B16-008..010 (approvals expire 2026-11-01 20:56 UTC); run the listing repairs; post EXP-B16-007-LI-01 | sales; LinkedIn link clicks |
+| Digital products | publish B16-008..010 (approvals expire 2026-11-01 20:56 UTC); approve and publish B17-001; run the listing repairs; post EXP-B16-007-LI-01 | sales; LinkedIn link clicks |
 | Micro-B2B, research, AI operations, productized services | approve publishing the draft pages | e-mail inquiries recorded in the queue |
 | Productized services | approve the accessibility repair of our own site | before/after report |
 | Children's media | show the ep01 animatic to 3-8 parents, record answers | `record_feedback.py --summary` |
