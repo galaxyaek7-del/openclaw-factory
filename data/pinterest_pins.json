@@ -1119,6 +1119,136 @@
    "source_cover": "https://public-files.gumroad.com/p0awjfc43o3wgel96x5r0nftz2f9",
    "title": "EU Cosmetics Responsible Person Guide",
    "price_cents": 6900
+  },
+  "B16-001": {
+   "file": "customer_site/assets/pins/b16-001.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b16-001.jpg",
+   "sha256": "e2c1dd8b60c3a9bb6b5e8fc64205f4d026ed4b7679415670ed98b80214af1036",
+   "bytes": 131668,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/iyj3yjkk18oq4id9vubw0rrrdxwu",
+   "title": "SAFE Conversion & Dilution Calculator (Post-Money SAFEs)",
+   "price_cents": 1900
+  },
+  "B16-002": {
+   "file": "customer_site/assets/pins/b16-002.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b16-002.jpg",
+   "sha256": "51da60c2d3d99427d5b019ab3cca201e29da247fa07f8f3bfc4c89ae8b53a0d4",
+   "bytes": 123865,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/60elfuumn9o3o85om2rh48manhk7",
+   "title": "Solar Panel Payback & 25-Year Savings Calculator",
+   "price_cents": 1200
+  },
+  "B16-003": {
+   "file": "customer_site/assets/pins/b16-003.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b16-003.jpg",
+   "sha256": "b6b5a4597681085f0f8db4d211ad664444b66ce92ae7b7bedd986394290018a1",
+   "bytes": 131534,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/ir1w4npos1q9pebsun0pmh8ppwtq",
+   "title": "Rent vs Buy Home Calculator: Net Worth Year by Year",
+   "price_cents": 1200
+  },
+  "B16-004": {
+   "file": "customer_site/assets/pins/b16-004.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b16-004.jpg",
+   "sha256": "eaa3466e2fd0850d168ee835db4a513a63c294999400551e2185ffda7dd9206b",
+   "bytes": 126441,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/owas7qf529zf3mw3y0d7c2zstrb9",
+   "title": "PTO Accrual & Leave Balance Tracker for Small Teams",
+   "price_cents": 1200
+  },
+  "B16-005": {
+   "file": "customer_site/assets/pins/b16-005.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b16-005.jpg",
+   "sha256": "3761511fbf446cf8c166aea10575d86fb14e1de3264c6bb25547502245acfa8e",
+   "bytes": 128340,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/qzf061509asz5p30nn1ujkwyveoe",
+   "title": "Event Budget & Ticket Break-Even Planner",
+   "price_cents": 1200
+  },
+  "B16-006": {
+   "file": "customer_site/assets/pins/b16-006.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b16-006.jpg",
+   "sha256": "4392e3cfebda31afc36c0ccddff7de1b34f3d452459d1721cde88f597e0e032b",
+   "bytes": 131660,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/bffotftwfmlycqvzyqm7082x9rkf",
+   "title": "Membership & Subscription MRR and Churn Forecaster",
+   "price_cents": 1500
+  },
+  "B16-007": {
+   "file": "customer_site/assets/pins/b16-007.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b16-007.jpg",
+   "sha256": "c65905800983d8a475fcfac0c02cd07f52e9cbdca5c5b875d0993d784f0fe047",
+   "bytes": 138019,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/y85a8mfm3pmxsnlimm8kewo4iebp",
+   "title": "Freelance Project Profitability & Effective Hourly Rate Tracker",
+   "price_cents": 1200
+  },
+  "B16-008": {
+   "file": "customer_site/assets/pins/b16-008.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b16-008.jpg",
+   "sha256": "09700d21b414749ec383a7afdb3f860100fcfa69eb7bc4482b5a7b810e233f5c",
+   "bytes": 154638,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/ijn2yn332t52iv9fpr2koynhzy99",
+   "title": "Restaurant Menu Engineering Worksheet (Stars, Plowhorses, Puzzles, Dogs)",
+   "price_cents": 1900
+  },
+  "B16-009": {
+   "file": "customer_site/assets/pins/b16-009.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b16-009.jpg",
+   "sha256": "8af397da0e72b7a09b8730a92d96a17ce6d1110b8346b41412dd439de64547ee",
+   "bytes": 133080,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/29ak2d94d7lvcigoprz7v0z34odc",
+   "title": "Roommate & Shared House Bill Splitter (Equal, Income or Room Size)",
+   "price_cents": 700
+  },
+  "B16-010": {
+   "file": "customer_site/assets/pins/b16-010.jpg",
+   "public_url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b16-010.jpg",
+   "sha256": "6586f8a2f7472fdce118b146ea6f50eaab2a0faa4ebc139a4a800521d56a9257",
+   "bytes": 133494,
+   "size": [
+    1000,
+    1500
+   ],
+   "source_cover": "https://public-files.gumroad.com/0kw9w6o9m0h9lazxonc1uh846s3g",
+   "title": "Tiered Sales Commission Calculator for Small Sales Teams",
+   "price_cents": 1200
   }
  }
 }

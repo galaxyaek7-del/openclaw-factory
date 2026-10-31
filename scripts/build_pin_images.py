@@ -94,7 +94,7 @@ def render(offer: dict, cover: Image.Image) -> Image.Image:
     return img
 
 
-def build(offers_path=ROOT / "data" / "distribution_offers.json", out_dir=OUT_DIR, fetch=None):
+def build(offers_path=ROOT / "data" / "distribution_offers.json", out_dir=OUT_DIR, fetch=None, skip=()):
     fetch = fetch or (lambda u: urllib.request.urlopen(urllib.request.Request(u, headers={"User-Agent": "Mozilla/5.0"}),
                                                        timeout=60).read())
     doc = json.loads(Path(offers_path).read_text(encoding="utf-8"))
@@ -102,6 +102,8 @@ def build(offers_path=ROOT / "data" / "distribution_offers.json", out_dir=OUT_DI
     pins = {}
     for o in doc["offers"]:
         if o["type"] != "digital_product" or o["eligibility"]["status"] != "ELIGIBLE" or not o.get("cover_url"):
+            continue
+        if o["offer_id"] in skip:
             continue
         cover = Image.open(io.BytesIO(fetch(o["cover_url"])))
         img = render(o, cover)
@@ -120,7 +122,17 @@ def build(offers_path=ROOT / "data" / "distribution_offers.json", out_dir=OUT_DI
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--offers", default=str(ROOT / "data" / "distribution_offers.json"))
+    ap.add_argument("--only-missing", action="store_true",
+                    help="render only eligible products with no pin yet; existing pins and entries are left as they are")
     a = ap.parse_args()
-    m = build(Path(a.offers))
+    if a.only_missing:
+        old = json.loads(MANIFEST.read_text(encoding="utf-8")) if MANIFEST.exists() else {"pins": {}}
+        m = build(Path(a.offers), skip=set(old["pins"]))
+        added = sorted(m["pins"])
+        old["pins"].update(m["pins"])
+        old["generated_at"], m = m["generated_at"], old
+    else:
+        m = build(Path(a.offers))
+        added = sorted(m["pins"])
     MANIFEST.write_text(json.dumps(m, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
-    print(json.dumps({"pins": len(m["pins"]), "ids": sorted(m["pins"])}, indent=1))
+    print(json.dumps({"pins": len(m["pins"]), "rendered": added}, indent=1))
