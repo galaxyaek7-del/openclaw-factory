@@ -215,3 +215,4 @@ seeds/**/*.xlsx
 data/thin_listing_disclosures_*.json
 # 2026-10-31 daily protection check result (local state)
 data/company_protection.json
+data/discoverability_*.json
