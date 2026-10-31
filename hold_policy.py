@@ -38,7 +38,11 @@ Enforcement attempted, in order, on 2026-10-28:
      data/hold_mitigation_2026-10-28.json so the state is restorable.
 
 Both listings therefore remain published (founder must unpublish them in the
-dashboard) but can no longer take money. HOLD_PRODUCTS below is still the one
+dashboard). CORRECTION 2026-10-31: a live re-read shows both listings with
+customizable_price true and formatted_price "$0+": at $0 Gumroad offers
+pay-what-you-want, so a buyer CAN still pay any amount. The $0 mitigation does
+not stop money; only unpublishing does. The CEO decision queue
+(lib/commercial_funnel.js) lists every held product that is still published. HOLD_PRODUCTS below is still the one
 source of truth; data/hold_products.json is a generated copy for the
 JavaScript storefront, and tests/test_hold_policy_catalog.js fails if the two
 ever drift or if a held product is offered at a non-zero price.

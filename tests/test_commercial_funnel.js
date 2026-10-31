@@ -166,6 +166,22 @@ test('founder queue names both copies of a duplicate live listing', () => {
   assert.equal(cf.founderQueue({ products: [], drift: { duplicate_live_titles: [] } }, null, null, factory()).length, 0);
 });
 
+test('founder queue lists held products that are still live, and whether they can take money', () => {
+  const holds = { 'data/hold_products.json': { products: { iaiyt: { product_id: 'P1' }, wteork: { product_id: 'P2' } } } };
+  const reg = { products: [
+    { internal_id: 'GR-1', external_ids: { gumroad: 'P1' }, published: true, price_cents: 0, customizable_price: true, url: 'https://x/l/iaiyt' },
+    { internal_id: 'GR-2', external_ids: { gumroad: 'P2' }, published: true, price_cents: 0, customizable_price: false, url: 'https://x/l/wteork' },
+    { internal_id: 'GR-3', external_ids: { gumroad: 'P3' }, published: true, price_cents: 900, url: 'https://x/l/ok' }] };
+  const q = cf.founderQueue(reg, null, null, factory(holds));
+  assert.equal(q.length, 1);
+  assert.match(q[0].title, /Unpublish 2 listing\(s\) on hold that are still live: https:\/\/x\/l\/iaiyt, https:\/\/x\/l\/wteork/);
+  assert.match(q[0].why, /1 can still take money \("\$0\+", pay what you want\)/);
+  // Once unpublished (or not held), the item disappears by itself.
+  const gone = { products: reg.products.map(p => ({ ...p, published: false })) };
+  assert.equal(cf.founderQueue(gone, null, null, factory(holds)).length, 0);
+  assert.equal(cf.founderQueue(reg, null, null, factory()).length, 0);
+});
+
 test('founder queue shows when publication approvals expire, or that they have lapsed', () => {
   const ready = { products: [{ internal_id: 'B16-008', primary_state: 'READY_FOR_AUTHORIZATION' },
     { internal_id: 'B16-009', primary_state: 'READY_FOR_AUTHORIZATION' }] };

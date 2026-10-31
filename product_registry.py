@@ -253,6 +253,8 @@ def build(live, catalog_rows, manifests, publish_results, previous=None, page_ch
         products.append({
             "internal_id": iid, "external_ids": {"gumroad": gid}, "title": p.get("name"),
             "price_cents": p.get("price"), "published": published, "url": p.get("short_url"),
+            # True means "$0+" style pay-what-you-want: a $0 price still takes money.
+            "customizable_price": p.get("customizable_price"),
             "sales_count": sales, "sales_usd_cents": int(p.get("sales_usd_cents") or 0),  # as Gumroad reports it (gross)
             "first_published_at": first_publish_for(gid, iid, publish_history),
             "manifest": man["_path"] if man else None, "primary_state": state,

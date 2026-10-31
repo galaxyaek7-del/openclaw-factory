@@ -1,11 +1,13 @@
-# Founder actions (updated 2026-10-29)
+# Founder actions (updated 2026-10-31)
 
 Everything below is prepared and tested. Each step needs you because it writes
 to an external account, creates an account, or touches data only you may
 decide on. Run the commands from `C:\openclaw-dasgboard` (in Claude Code,
 prefix with `!`).
 
-## 1. Publish the last three batch-16 products (approvals renewed, valid until 2026-11-01 20:56 UTC)
+## 1. Publish the last three batch-16 products: DONE 2026-10-31 11:36 UTC (all three live)
+
+Kept for reference; the command below is the one that was run.
 
 ```
 python scripts/publish_batch14.py --batch batch16 --live --approvals data/publication_approvals.json --only B16-008 B16-009 B16-010
@@ -47,6 +49,15 @@ python scripts/publish_batch14.py --batch batch17 --live --approvals data/public
 
 Gumroad allows 10 new products per rolling 24 hours; publish B16-008..010 first,
 their approvals expire sooner.
+
+## 1b. Unpublish the two listings on hold (urgent, dashboard only)
+
+`/l/iaiyt` (EU AI Act Compliance Toolkit) and `/l/wteork` (Amazon FBA
+Reconciliation Workbook) were withdrawn for content defects on 2026-10-28 and
+set to $0. Gumroad shows both as "$0+": a buyer can still pay any amount for
+content we have withdrawn. The API cannot unpublish; in the Gumroad dashboard,
+open each product and unpublish it. The decision queue drops the item by itself
+once the daily registry rebuild sees them unpublished.
 
 ## 2. Repair the live listings that deliver less than they describe
 
