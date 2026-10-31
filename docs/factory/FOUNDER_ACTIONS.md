@@ -33,10 +33,11 @@ switch the loop only reports approved products as ready.
 
 ### New: B17-001, EAA Penalty Exposure Checker ($19, built 2026-10-31)
 
-A workbook giving the statutory maximum EAA penalty in nine EU countries for the
-buyer's turnover and size, each figure tied to its article and official source.
-QA: 21 recalc checks plus 24 on two other input sets, guide, cover, listing all
-PASS; the dry run holds only on your approval. To approve, then publish:
+A workbook giving the statutory maximum EAA penalty in ten EU countries for the
+buyer's turnover and size, each figure tied to its article and official source
+(register release 2026-10-31). QA: 23 recalc checks plus 44 on two other input
+sets, guide, cover, listing all PASS; the dry run holds only on your approval.
+To approve, then publish:
 
 ```
 python scripts/approve_products.py --batch batch17 --only B17-001 --reference "<your note>"          # preview
