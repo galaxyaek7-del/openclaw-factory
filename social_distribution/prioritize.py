@@ -56,6 +56,8 @@ def plan(offers: list, *, n=6, per_arm=2, recent_offer_ids=frozenset(), sales_by
     scored = sorted((s for s in scored if s["score"] is not None), key=lambda s: (-s["score"], s["offer_id"]))
     picked, per = [], {}
     for s in scored:
+        if len(picked) >= n:  # checked first: n=0 must pick nothing (it used to pick one)
+            break
         if per.get(s["arm"], 0) >= per_arm:
             continue
         if accept is not None and not accept(s["offer_id"]):

@@ -384,6 +384,8 @@ class TestRegressions(unittest.TestCase):
         self.assertEqual(sum(1 for p in picked if p["arm"] == "digital_products"), 2)
         self.assertIn("SITE-guide-scope", [p["offer_id"] for p in picked])
         self.assertEqual(prioritize.plan(os_, accept=lambda oid: False), [])
+        self.assertEqual(prioritize.plan(os_, n=0), [])  # used to return one offer
+        self.assertEqual(len(prioritize.plan(os_, n=1, per_arm=2)), 1)
         s = prioritize.score(os_[0])
         self.assertEqual(s["factors"]["demand_evidence"], 0)
         self.assertTrue(any("demand evidence" in u for u in s["uncertainty"]))

@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-31T12:21:09+00:00",
+ "generated_at": "2026-10-31T12:27:28+00:00",
  "operational": {
   "offers": {
    "total": 214,
@@ -95,23 +95,23 @@
   },
   "jobs_by_state": {
    "STALE": 2,
-   "QA_FAILED": 10,
-   "QA_PASSED": 16
+   "QA_FAILED": 16,
+   "QA_PASSED": 22
   },
   "jobs_by_platform": {
-   "linkedin": 9,
-   "x": 9,
-   "instagram": 5,
-   "tiktok": 5
+   "linkedin": 12,
+   "x": 12,
+   "instagram": 8,
+   "tiktok": 8
   },
   "jobs_by_arm": {
-   "digital_products": 20,
+   "digital_products": 32,
    "affiliate": 4,
    "education_content": 4
   },
   "qa_failure_reasons": {
-   "Instagram needs rendered JPEG images; only slide text exists": 5,
-   "TikTok needs a rendered video; none exists for this offer": 3,
+   "Instagram needs rendered JPEG images; only slide text exists": 8,
+   "TikTok needs a rendered video; none exists for this offer": 6,
    "video rights UNRESOLVED": 2
   },
   "awaiting_approval": [
@@ -130,7 +130,13 @@
    "SJ-6a55bf152a2e",
    "SJ-faee23e43fd4",
    "SJ-72586ec7a01c",
-   "SJ-b022d861eb3b"
+   "SJ-b022d861eb3b",
+   "SJ-7f2d5881f758",
+   "SJ-ff009c646918",
+   "SJ-cbc17e785c3c",
+   "SJ-264fe2c31b5b",
+   "SJ-ca3bdf9ca832",
+   "SJ-244f2ffa99b3"
   ],
   "stuck_or_retrying": [],
   "published_verified": [],
@@ -142,7 +148,7 @@
   "note": "Traffic to the public site is unmeasured (GitHub Pages has no beacon receiver). Gumroad sales carry their own referrer; no social-attributed sale exists."
  },
  "next_actions": [
-  "Founder: review 16 QA-passed drafts and approve the ones to post (manual hand-off).",
+  "Founder: review 22 QA-passed drafts and approve the ones to post (manual hand-off).",
   "LinkedIn: no app or credentials on this machine.",
   "TikTok: connected through Metricool; BLOCKED_NEEDS_BOARD: permission is now an ask rule (founder, 2026-10-23); two review-flow attempts on 2026-10-24 were rejected by validation before creating anything.",
   "Instagram: no app or credentials on this machine.",

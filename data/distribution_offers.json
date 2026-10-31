@@ -1,6 +1,6 @@
 {
  "schema": 1,
- "generated_at": "2026-10-31T12:21:09+00:00",
+ "generated_at": "2026-10-31T12:27:28+00:00",
  "offers": [
   {
    "offer_id": "B13-001",
@@ -6384,7 +6384,7 @@
    },
    "evidence": {
     "source": "customer_site/affiliate-program.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -6429,7 +6429,7 @@
    },
    "evidence": {
     "source": "customer_site/affiliate-standing-desks.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -6474,7 +6474,7 @@
    },
    "evidence": {
     "source": "customer_site/b12-access-continuity-organizer.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -6521,7 +6521,7 @@
    },
    "evidence": {
     "source": "customer_site/b12-client-handoff-pack.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -6569,7 +6569,7 @@
    },
    "evidence": {
     "source": "customer_site/b12-digital-declutter-system.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -6614,7 +6614,7 @@
    },
    "evidence": {
     "source": "customer_site/b12-freelancer-rate-calculator.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -6661,7 +6661,7 @@
    },
    "evidence": {
     "source": "customer_site/b12-grant-pipeline-tracker.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -6709,7 +6709,7 @@
    },
    "evidence": {
     "source": "customer_site/b12-home-office-organizer.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -6754,7 +6754,7 @@
    },
    "evidence": {
     "source": "customer_site/b12-meeting-cost-calculator.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -6802,7 +6802,7 @@
    },
    "evidence": {
     "source": "customer_site/b12-moving-house-planner.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -6850,7 +6850,7 @@
    },
    "evidence": {
     "source": "customer_site/b12-pet-sitter-handover-kit.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -6897,7 +6897,7 @@
    },
    "evidence": {
     "source": "customer_site/b12-podcast-guest-kit.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -6942,7 +6942,7 @@
    },
    "evidence": {
     "source": "customer_site/blog-etsy-appeal-evidence.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -6987,7 +6987,7 @@
    },
    "evidence": {
     "source": "customer_site/blog-etsy-appeal-mistakes.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7032,7 +7032,7 @@
    },
    "evidence": {
     "source": "customer_site/blog-etsy-first-24-hours.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7077,7 +7077,7 @@
    },
    "evidence": {
     "source": "customer_site/blog-etsy-temp-vs-permanent.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7122,7 +7122,7 @@
    },
    "evidence": {
     "source": "customer_site/blog-etsy-write-clear-appeal.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7167,7 +7167,7 @@
    },
    "evidence": {
     "source": "customer_site/blog-eu-ai-act-compliance-sme-guide.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7212,7 +7212,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-adobe-affiliate.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7257,7 +7257,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-amazon-associates-affiliate.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7302,7 +7302,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-aweber-advocate-program.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7347,7 +7347,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-brevo-affiliate-program.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7392,7 +7392,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-canva-affiliate.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7437,7 +7437,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-creative-market-affiliate.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7482,7 +7482,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-digitalocean-affiliate-program.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7527,7 +7527,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-diminished-value-claim.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7572,7 +7572,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-envato-affiliate.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7617,7 +7617,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-etsy-affiliate.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7662,7 +7662,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-etsy-marketplace.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7707,7 +7707,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-etsy-suspension-appeal.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7752,7 +7752,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-eudr-sme-deadlines.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7797,7 +7797,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-food-truck-permit-stack.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7842,7 +7842,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-freelancer-scope-control.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7887,7 +7887,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-freelancer-scope-creep.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7932,7 +7932,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-google-workspace-affiliate.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -7977,7 +7977,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-gumroad-affiliate.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -8022,7 +8022,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-gumroad-marketplace.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -8067,7 +8067,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-mindfulness-focus-for-founders.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -8112,7 +8112,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-n8n-affiliate.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -8157,7 +8157,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-paddle-partnership.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -8202,7 +8202,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-sales-tax-nexus-rolling-method.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -8247,7 +8247,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-siteground-affiliate-program.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -8292,7 +8292,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-stripe-chargeback-evidence.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -8337,7 +8337,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-subscription-renewal-audit.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -8382,7 +8382,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-systemeio-affiliate.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -8427,7 +8427,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-turo-invoice-dispute.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -8472,7 +8472,7 @@
    },
    "evidence": {
     "source": "customer_site/guide-zapier-affiliate.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -8519,7 +8519,7 @@
    },
    "evidence": {
     "source": "customer_site/service-eu-deadline-briefing.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin"
@@ -8565,7 +8565,7 @@
    },
    "evidence": {
     "source": "customer_site/service-kdp-typesetting.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin"
@@ -8611,7 +8611,7 @@
    },
    "evidence": {
     "source": "customer_site/service-verified-lead-lists.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin"
@@ -8655,7 +8655,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-13-week-cash-flow-forecast.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -8700,7 +8700,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-business-mileage-log-deduction-tracker.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -8745,7 +8745,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-car-buy-vs-lease-calculator.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -8790,7 +8790,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-client-pipeline-proposal-tracker.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -8835,7 +8835,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-customer-lifetime-value-cac-calculator.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -8880,7 +8880,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-debt-payoff-planner.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -8925,7 +8925,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-employee-true-cost-calculator.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -8970,7 +8970,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-etsy-shopify-product-profit-calculator.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -9015,7 +9015,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-event-budget-ticket-breakeven-planner.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -9060,7 +9060,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-food-truck-cost-estimator.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -9105,7 +9105,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-freelance-project-profitability-tracker.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -9150,7 +9150,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-inventory-reorder-point-tracker.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -9195,7 +9195,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-membership-subscription-mrr-churn-forecaster.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -9240,7 +9240,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-price-increase-impact-calculator.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -9285,7 +9285,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-pto-accrual-leave-balance-tracker.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -9330,7 +9330,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-quarterly-tax-set-aside-planner.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -9375,7 +9375,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-refinance-break-even-calculator.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -9420,7 +9420,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-renovation-budget-quote-comparison.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -9465,7 +9465,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-rent-vs-buy-home-calculator.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -9510,7 +9510,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-rental-property-deal-analyzer.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -9555,7 +9555,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-saas-waste-estimator.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -9600,7 +9600,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-safe-conversion-dilution-calculator.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -9645,7 +9645,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-service-pricing-break-even-calculator.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -9690,7 +9690,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-shift-schedule-labor-cost-planner.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -9735,7 +9735,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-sinking-funds-emergency-fund-planner.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -9780,7 +9780,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-solar-panel-payback-savings-calculator.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -9825,7 +9825,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-startup-runway-burn-planner.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -9870,7 +9870,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-wedding-budget-vendor-payment-planner.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -9915,7 +9915,7 @@
    },
    "evidence": {
     "source": "customer_site/tool-zero-based-monthly-budget-planner.html + git ls-tree origin/main",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -9961,7 +9961,7 @@
    },
    "evidence": {
     "source": "affiliate.registry (data/commission_opportunities.jsonl)",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -10007,7 +10007,7 @@
    },
    "evidence": {
     "source": "affiliate.registry (data/commission_opportunities.jsonl)",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -10053,7 +10053,7 @@
    },
    "evidence": {
     "source": "affiliate.registry (data/commission_opportunities.jsonl)",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -10099,7 +10099,7 @@
    },
    "evidence": {
     "source": "affiliate.registry (data/commission_opportunities.jsonl)",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -10145,7 +10145,7 @@
    },
    "evidence": {
     "source": "affiliate.registry (data/commission_opportunities.jsonl)",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -10191,7 +10191,7 @@
    },
    "evidence": {
     "source": "affiliate.registry (data/commission_opportunities.jsonl)",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -10237,7 +10237,7 @@
    },
    "evidence": {
     "source": "affiliate.registry (data/commission_opportunities.jsonl)",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -10283,7 +10283,7 @@
    },
    "evidence": {
     "source": "affiliate.registry (data/commission_opportunities.jsonl)",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -10329,7 +10329,7 @@
    },
    "evidence": {
     "source": "affiliate.registry (data/commission_opportunities.jsonl)",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -10375,7 +10375,7 @@
    },
    "evidence": {
     "source": "affiliate.registry (data/commission_opportunities.jsonl)",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -10421,7 +10421,7 @@
    },
    "evidence": {
     "source": "affiliate.registry (data/commission_opportunities.jsonl)",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -10467,7 +10467,7 @@
    },
    "evidence": {
     "source": "affiliate.registry (data/commission_opportunities.jsonl)",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -10513,7 +10513,7 @@
    },
    "evidence": {
     "source": "affiliate.registry (data/commission_opportunities.jsonl)",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -10559,7 +10559,7 @@
    },
    "evidence": {
     "source": "affiliate.registry (data/commission_opportunities.jsonl)",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -10605,7 +10605,7 @@
    },
    "evidence": {
     "source": "affiliate.registry (data/commission_opportunities.jsonl)",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -10651,7 +10651,7 @@
    },
    "evidence": {
     "source": "affiliate.registry (data/commission_opportunities.jsonl)",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -10697,7 +10697,7 @@
    },
    "evidence": {
     "source": "affiliate.registry (data/commission_opportunities.jsonl)",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "linkedin",
@@ -10744,7 +10744,7 @@
    },
    "evidence": {
     "source": "video_studio/projects/pilot_a_cashflow_short.json + rights manifest",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "tiktok",
@@ -10791,7 +10791,7 @@
    },
    "evidence": {
     "source": "video_studio/projects/pilot_b_cap_rate_explainer.json + rights manifest",
-    "verified_at": "2026-10-31T12:21:09+00:00"
+    "verified_at": "2026-10-31T12:27:28+00:00"
    },
    "platforms": [
     "tiktok",
