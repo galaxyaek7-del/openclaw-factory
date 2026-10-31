@@ -211,3 +211,5 @@ seeds/**/*.pdf
 seeds/**/*.docx
 seeds/**/*.xlsx
 /demo_cookbook.pdf
+# 2026-10-31 thin-listing disclosure report: full descriptions keyed by product ids
+data/thin_listing_disclosures_*.json
