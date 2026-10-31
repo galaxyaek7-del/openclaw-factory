@@ -2,6 +2,7 @@
 accessibility quick-check, EAA penalty register. Synthetic inputs and temp
 files; the committed demo outputs are checked for reproducibility."""
 import csv
+import importlib.util
 import json
 import os
 import sys
@@ -10,11 +11,21 @@ import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-sys.path.insert(0, str(ROOT / "services" / "feed_preflight"))
-sys.path.insert(0, str(ROOT / "services" / "accessibility_check"))
 sys.path.insert(0, str(ROOT))
-import preflight as pf  # noqa: E402
-import check as a11y  # noqa: E402
+
+
+def _load(name, path):
+    # Loaded from the file under a unique name: kids_studio/publishing has its
+    # own preflight.py, and whichever test imported the bare name first won.
+    spec = importlib.util.spec_from_file_location(name, path)
+    mod = importlib.util.module_from_spec(spec)
+    sys.modules[name] = mod
+    spec.loader.exec_module(mod)
+    return mod
+
+
+pf = _load("gf_feed_preflight", ROOT / "services" / "feed_preflight" / "preflight.py")
+a11y = _load("gf_accessibility_check", ROOT / "services" / "accessibility_check" / "check.py")
 
 
 def feed(*rows, cols=("id", "title", "description", "link", "image_link", "availability", "price", "gtin", "brand",
