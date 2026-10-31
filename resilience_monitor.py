@@ -121,10 +121,16 @@ def _classify_publish_protection(state_path=None):
     for arm_name, arm in status["arms"].items():
         risk_score = _as_number(arm.get("risk_score"))
         consecutive_failures = _as_number(arm.get("consecutive_failures"))
+        # 2026-10-31: a failure streak that predates the recency window is audit
+        # history, not present risk -- publish_protection.py already zeroes its
+        # contribution to risk_score. Judging it here on the raw count too would
+        # keep X at "critical" forever (7 failures last touched 2026-10-03, no
+        # queued post since, so nothing could ever clear it).
+        stale_streak = bool(arm.get("stale_failure_streak"))
         # An unknown dimension must not manufacture severity, and must not
         # suppress a real one either -- each is judged only on its own evidence.
-        high_failure = consecutive_failures is not None and consecutive_failures >= 3
-        any_failure = consecutive_failures is not None and consecutive_failures >= 1
+        high_failure = not stale_streak and consecutive_failures is not None and consecutive_failures >= 3
+        any_failure = not stale_streak and consecutive_failures is not None and consecutive_failures >= 1
         high_risk = risk_score is not None and risk_score >= 70
         medium_risk = risk_score is not None and risk_score >= 40
         if high_failure or high_risk:
@@ -137,7 +143,8 @@ def _classify_publish_protection(state_path=None):
             f"publish_protection:{arm_name}", severity,
             f"{arm_name}: risk_score={risk_score if risk_score is not None else 'UNKNOWN'}, "
             f"consecutive_failures={consecutive_failures if consecutive_failures is not None else 'UNKNOWN'}, "
-            f"currently_allowed={arm['currently_allowed']}",
+            f"currently_allowed={arm['currently_allowed']}"
+            + (", stale_failure_streak=True (past incident, not present risk)" if stale_streak else ""),
             arm,
         ))
     return findings

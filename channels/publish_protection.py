@@ -67,6 +67,15 @@ PLATFORM_PROFILES = {
 _CONSECUTIVE_FAILURE_THRESHOLD = 3
 _FAILURE_COOLDOWN_MINUTES = 60
 
+# A failure streak only describes *present* risk while the arm is still being
+# attempted. X's real 7-failure streak was last touched 2026-10-03 and, with no
+# queued post since, produced risk_score 60 (critical in resilience_monitor) on
+# every tick for four weeks -- an alert no real action could ever clear, because
+# `consecutive_failures` only resets on a success and the arm was never tried
+# again. The streak stays recorded (it is audit history); only its contribution
+# to the current risk score expires after this window.
+_FAILURE_RECENCY_HOURS = 24
+
 # Founder Protection (Global Trust & Resilience Layer, Round 4,
 # 2026-07-29): the founder's explicit, resolved choice -- proven arms
 # with a real publish track record predating this module keep their
@@ -159,6 +168,23 @@ def _roll_buckets(record, now):
         record["hour_bucket"] = hour_key
         record["publishes_this_hour"] = 0
     return record
+
+
+def _failure_streak_is_stale(record, now):
+    """True when this arm's recorded failure streak predates the recency
+    window, i.e. it describes a past incident, not present risk. Fail-safe
+    direction: a missing, naive, or unparseable timestamp keeps counting --
+    an unreadable clock is never evidence that an incident is old."""
+    last_publish_at = record.get("last_publish_at")
+    if not last_publish_at or not record.get("consecutive_failures"):
+        return False
+    try:
+        last_dt = datetime.fromisoformat(last_publish_at)
+        if last_dt.tzinfo is None:
+            return False
+        return (now - last_dt) > timedelta(hours=_FAILURE_RECENCY_HOURS)
+    except (ValueError, TypeError):
+        return False
 
 
 def check_publish_allowed(arm_name, state_path=None, now=None,
@@ -281,7 +307,10 @@ def check_publish_allowed(arm_name, state_path=None, now=None,
 
     day_pct = (record["publishes_today"] / profile["max_per_day"]) if profile["max_per_day"] else 0
     hour_pct = (record["publishes_this_hour"] / profile["max_per_hour"]) if profile["max_per_hour"] else 0
-    failure_component = min(record["consecutive_failures"], _CONSECUTIVE_FAILURE_THRESHOLD) / _CONSECUTIVE_FAILURE_THRESHOLD
+    stale_failure_streak = _failure_streak_is_stale(record, now)
+    failure_component = 0.0 if stale_failure_streak else (
+        min(record["consecutive_failures"], _CONSECUTIVE_FAILURE_THRESHOLD) / _CONSECUTIVE_FAILURE_THRESHOLD
+    )
     risk_score = round(100 * max(day_pct, hour_pct, failure_component) * 0.6)
 
     if risk_score >= HIGH_RISK_SCORE_THRESHOLD and not record.get("elevated_risk_approved_at"):
@@ -291,7 +320,8 @@ def check_publish_allowed(arm_name, state_path=None, now=None,
             "risk_score": risk_score, "cooldown_until": None, "counts": counts,
         }
 
-    return {"allowed": True, "reason": None, "risk_score": risk_score, "cooldown_until": None, "counts": counts}
+    return {"allowed": True, "reason": None, "risk_score": risk_score, "cooldown_until": None,
+            "counts": counts, "stale_failure_streak": stale_failure_streak}
 
 
 def note_publish_outcome(arm_name, success, state_path=None, now=None):
@@ -390,6 +420,7 @@ def list_publish_protection_status(state_path=None, now=None):
             "cooldown_until": record.get("cooldown_until"),
             "last_publish_at": record.get("last_publish_at"),
             "risk_score": gate["risk_score"],
+            "stale_failure_streak": gate.get("stale_failure_streak", False),
             "currently_allowed": gate["allowed"],
             "has_ever_published_successfully": record.get("has_ever_published_successfully", False),
             "first_publish_approved": record.get("first_publish_approved", False),

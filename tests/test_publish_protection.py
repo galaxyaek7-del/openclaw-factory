@@ -236,6 +236,67 @@ class TestFounderProtectionElevatedRisk(BaseProtectionTest):
         self.assertIsNone(state["arms"]["gumroad"]["elevated_risk_approved_at"])
 
 
+class TestStaleFailureStreak(BaseProtectionTest):
+    """2026-10-31: a failure streak only counts as present risk while the arm
+    is still being attempted. X's real 7-failure streak was last touched
+    2026-10-03 and reported risk_score 60 (critical) on every tick for four
+    weeks with no queued post to ever clear it -- `consecutive_failures` only
+    resets on a success, and the arm was never tried again."""
+
+    _BASE = datetime(2026, 10, 3, 7, 0, tzinfo=timezone.utc)
+
+    def _seven_failures(self, arm="x"):
+        # x is not a proven arm, so its first real publish needs the founder
+        # approval the live state already carries (first_publish_approved:
+        # true); without it the gate stops at that check and never reaches
+        # risk scoring.
+        pp.approve_first_publish(arm, state_path=self.state_path)
+        for _ in range(7):
+            pp.note_publish_outcome(arm, False, state_path=self.state_path, now=self._BASE)
+        return pp._load_state(self.state_path)["arms"][arm]
+
+    def test_a_four_week_old_streak_contributes_no_present_risk(self):
+        self._seven_failures()
+        later = self._BASE + timedelta(days=28)
+        result = pp.check_publish_allowed("x", state_path=self.state_path, now=later)
+        self.assertTrue(result["allowed"])
+        self.assertEqual(result["risk_score"], 0)
+        self.assertTrue(result["stale_failure_streak"])
+
+    def test_the_streak_itself_is_still_recorded_for_audit(self):
+        self._seven_failures()
+        later = self._BASE + timedelta(days=28)
+        pp.check_publish_allowed("x", state_path=self.state_path, now=later)
+        record = pp._load_state(self.state_path)["arms"]["x"]
+        self.assertEqual(record["consecutive_failures"], 7)
+        self.assertFalse(record["has_ever_published_successfully"])
+
+    def test_a_recent_streak_still_counts(self):
+        pp.note_publish_outcome("paddle", False, state_path=self.state_path, now=self._BASE)
+        result = pp.check_publish_allowed(
+            "paddle", state_path=self.state_path, now=self._BASE + timedelta(minutes=10))
+        self.assertFalse(result["stale_failure_streak"])
+        self.assertEqual(result["risk_score"], 20)  # 1 of 3 failures * 0.6
+
+    def test_a_naive_timestamp_keeps_counting(self):
+        state = pp._load_state(self.state_path)
+        state["arms"]["paddle"] = dict(
+            pp._default_arm_record(), consecutive_failures=3,
+            last_publish_at="2026-10-03T07:00:00",  # no tzinfo
+            has_ever_published_successfully=True)
+        pp._save_state(state, self.state_path)
+        result = pp.check_publish_allowed(
+            "paddle", state_path=self.state_path, now=self._BASE + timedelta(days=28))
+        self.assertFalse(result["stale_failure_streak"])
+
+    def test_status_view_exposes_the_stale_flag(self):
+        self._seven_failures()
+        view = pp.list_publish_protection_status(
+            state_path=self.state_path, now=self._BASE + timedelta(days=28))
+        self.assertTrue(view["arms"]["x"]["stale_failure_streak"])
+        self.assertEqual(view["arms"]["x"]["risk_score"], 0)
+
+
 class TestCorruptOrMissingState(BaseProtectionTest):
     def test_missing_file_never_raises(self):
         # _temp_path() in setUp already ensures the file does not exist.

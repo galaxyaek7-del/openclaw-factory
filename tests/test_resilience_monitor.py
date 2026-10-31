@@ -92,6 +92,33 @@ class TestClassifyPublishProtection(unittest.TestCase):
         self.assertEqual(arm_finding["severity"], "critical")
 
     @patch("channels.publish_protection.list_publish_protection_status")
+    def test_a_stale_failure_streak_does_not_manufacture_severity(self, mock_status):
+        # 2026-10-31: X's real 7-failure streak was last touched 2026-10-03 and
+        # reported "critical" on every tick for four weeks; publish_protection
+        # now zeroes its risk contribution and flags it stale, and the monitor
+        # must not re-inflate it from the raw count.
+        mock_status.return_value = {
+            "arms": {"x": {"risk_score": 0, "consecutive_failures": 7,
+                           "currently_allowed": True, "stale_failure_streak": True}},
+            "global": {"emergency_stopped": False, "emergency_reason": None},
+        }
+        findings = rm._classify_publish_protection()
+        arm_finding = next(f for f in findings if f["area"] == "publish_protection:x")
+        self.assertEqual(arm_finding["severity"], "informational")
+        self.assertIn("stale_failure_streak=True", arm_finding["detail"])
+
+    @patch("channels.publish_protection.list_publish_protection_status")
+    def test_a_recent_failure_streak_is_still_critical(self, mock_status):
+        mock_status.return_value = {
+            "arms": {"x": {"risk_score": 60, "consecutive_failures": 7,
+                           "currently_allowed": True, "stale_failure_streak": False}},
+            "global": {"emergency_stopped": False, "emergency_reason": None},
+        }
+        findings = rm._classify_publish_protection()
+        arm_finding = next(f for f in findings if f["area"] == "publish_protection:x")
+        self.assertEqual(arm_finding["severity"], "critical")
+
+    @patch("channels.publish_protection.list_publish_protection_status")
     def test_healthy_arm_is_informational(self, mock_status):
         mock_status.return_value = {
             "arms": {"gumroad": {"risk_score": 5, "consecutive_failures": 0, "currently_allowed": True}},
