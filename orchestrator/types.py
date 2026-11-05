@@ -34,9 +34,10 @@ class ExecutionResult:
     idempotency_key: str
     output: Dict[str, Any]
     error: Optional[str] = None
+    run_id: Optional[str] = None
 
     def to_dict(self):
-        return {
+        record = {
             "engine": self.engine,
             "status": self.status,
             "started_at": self.started_at,
@@ -46,3 +47,9 @@ class ExecutionResult:
             "output": self.output,
             "error": self.error,
         }
+        # Phase 2B (ADR-245): the run identity is additive and omitted
+        # entirely when absent -- a legacy ExecutionResult (run_id=None)
+        # must serialize byte-identically to before this field existed.
+        if self.run_id is not None:
+            record["run_id"] = self.run_id
+        return record

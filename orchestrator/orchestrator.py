@@ -51,7 +51,9 @@ from decision_engine import ranking as decision_ranking
 from recovery import snapshot
 
 from orchestrator import engines  # noqa: F401 — import triggers auto-registration
+import durable_telemetry
 from orchestrator import retry, timeline
+from orchestrator import run_id as run_id_module
 from orchestrator.registry import get_engines
 from orchestrator.types import DUPLICATE_SENSITIVE_STAGES, EXECUTION_ORDER, ExecutionResult
 
@@ -94,18 +96,21 @@ def _enrich_with_real_competition(niche, external_signal, max_results, competito
     return enriched
 
 
-def _skip(stage_name, idempotency_key, reason, timeline_path):
+def _skip(stage_name, idempotency_key, reason, timeline_path, run_id=None, telemetry_path=None):
     now = datetime.now(timezone.utc).isoformat()
     status = "SKIPPED_DUPLICATE" if "duplicate" in reason.lower() else "SKIPPED_NOT_APPLICABLE"
     result = ExecutionResult(
         engine=stage_name, status=status, started_at=now, finished_at=now,
         attempts=0, idempotency_key=idempotency_key, output={"reason": reason}, error=None,
+        run_id=run_id,
     )
     timeline.append_execution(result, path=timeline_path)
+    if telemetry_path is not None:
+        durable_telemetry.append_stage_outcome(result, source="orchestrator", path=telemetry_path)
     return result
 
 
-def _run_stage(stage_name, fn, context, idempotency_key, timeline_path, max_attempts, state_path=None):
+def _run_stage(stage_name, fn, context, idempotency_key, timeline_path, max_attempts, state_path=None, run_id=None, telemetry_path=None):
     # Operational Resilience Architecture §3/§4 (Phase A, 2026-07-18):
     # set_current_task() is the "in-flight, not yet resolved" evidence
     # startup recovery needs — orchestrator/timeline.py alone only records
@@ -139,9 +144,11 @@ def _run_stage(stage_name, fn, context, idempotency_key, timeline_path, max_atte
     result = ExecutionResult(
         engine=stage_name, status=("FAILED" if error else "SUCCESS"), started_at=started_at,
         finished_at=finished_at, attempts=attempts, idempotency_key=idempotency_key,
-        output=output or {}, error=error,
+        output=output or {}, error=error, run_id=run_id,
     )
     timeline.append_execution(result, path=timeline_path)
+    if telemetry_path is not None:
+        durable_telemetry.append_stage_outcome(result, source="orchestrator", path=telemetry_path)
 
     factory_state.clear_current_task(path=state_path)
     if not error:
@@ -154,7 +161,8 @@ def run_cycle(niche, external_signal=None, tier="tier4", max_results=10,
               execute_production=False, max_attempts=3, timeline_path=None,
               decisions_path=None, analysis_db_file=None, outcomes_path=None,
               ladder=None, state_path=None, existing_decision=None,
-              competitor_db_file=None, ledger_path=None, competitor_history_file=None):
+              competitor_db_file=None, ledger_path=None, competitor_history_file=None,
+              run_id=None, telemetry_path=None):
     """Runs the full coordinated pipeline for ONE opportunity signal.
 
     existing_decision (Strategic Phase, 2026-07-19): a real Decision dict
@@ -234,6 +242,8 @@ def run_cycle(niche, external_signal=None, tier="tier4", max_results=10,
         "decisions_path": decisions_path, "analysis_db_file": analysis_db_file,
         "outcomes_path": outcomes_path, "ladder": ladder, "ledger_path": ledger_path,
     }
+    resolved_run_id = run_id_module.resolve_run_id(run_id)
+
     engines_map = get_engines()
     results = []
 
@@ -243,28 +253,28 @@ def run_cycle(niche, external_signal=None, tier="tier4", max_results=10,
         if existing_decision is not None and stage_name in ("market_intelligence", "decision"):
             if stage_name == "decision":
                 context["decision_result"] = existing_decision
-            results.append(_skip(stage_name, idempotency_key, "reusing an existing decision (existing_decision given) — not re-evaluated", timeline_path))
+            results.append(_skip(stage_name, idempotency_key, "reusing an existing decision (existing_decision given) — not re-evaluated", timeline_path, run_id=resolved_run_id, telemetry_path=telemetry_path))
             continue
 
         if stage_name in ("production", "publishing"):
             if not execute_production:
-                results.append(_skip(stage_name, idempotency_key, "execute_production=False", timeline_path))
+                results.append(_skip(stage_name, idempotency_key, "execute_production=False", timeline_path, run_id=resolved_run_id, telemetry_path=telemetry_path))
                 continue
             decision_status = (context.get("decision_result") or {}).get("status")
             if decision_status != "ACCEPTED":
-                results.append(_skip(stage_name, idempotency_key, f"decision status is {decision_status!r}, not ACCEPTED", timeline_path))
+                results.append(_skip(stage_name, idempotency_key, f"decision status is {decision_status!r}, not ACCEPTED", timeline_path, run_id=resolved_run_id, telemetry_path=telemetry_path))
                 continue
 
         if stage_name in DUPLICATE_SENSITIVE_STAGES and timeline.has_succeeded(idempotency_key, path=timeline_path):
-            results.append(_skip(stage_name, idempotency_key, "already succeeded — duplicate execution prevented", timeline_path))
+            results.append(_skip(stage_name, idempotency_key, "already succeeded — duplicate execution prevented", timeline_path, run_id=resolved_run_id, telemetry_path=telemetry_path))
             continue
 
         engine_fn = engines_map.get(stage_name)
         if engine_fn is None:
-            results.append(_skip(stage_name, idempotency_key, "no engine registered for this stage", timeline_path))
+            results.append(_skip(stage_name, idempotency_key, "no engine registered for this stage", timeline_path, run_id=resolved_run_id, telemetry_path=telemetry_path))
             continue
 
-        result = _run_stage(stage_name, engine_fn, context, idempotency_key, timeline_path, max_attempts, state_path=state_path)
+        result = _run_stage(stage_name, engine_fn, context, idempotency_key, timeline_path, max_attempts, state_path=state_path, run_id=resolved_run_id, telemetry_path=telemetry_path)
         results.append(result)
         context[f"{stage_name}_result"] = result.output
 
@@ -303,6 +313,7 @@ def _cli_run_ladder_opportunity():
 
     ladder = payload.get("ladder")
     tier = payload.get("tier", "tier4")
+    caller_run_id = payload.get("run_id")
 
     from decision_engine import store as decision_store
     accepted = [d for d in decision_store.find_decisions_by_niche(niche) if d.get("status") == "ACCEPTED"]
@@ -315,7 +326,7 @@ def _cli_run_ladder_opportunity():
         return
     existing_decision = accepted[-1]  # most recent real decision for this niche
 
-    results = run_cycle(niche, ladder=ladder, tier=tier, execute_production=True, existing_decision=existing_decision)
+    results = run_cycle(niche, ladder=ladder, tier=tier, execute_production=True, existing_decision=existing_decision, run_id=caller_run_id, telemetry_path=durable_telemetry.DEFAULT_TELEMETRY_PATH)
     by_stage = {r.engine: r for r in results}
     production_result = by_stage.get("production")
     publishing_result = by_stage.get("publishing")
