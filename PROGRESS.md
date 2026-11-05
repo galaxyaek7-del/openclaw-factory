@@ -44,7 +44,7 @@ Rules of this file: facts marked OBSERVED were checked this session; nothing is 
 | T5 | F8: commit hygiene, commit only own files per task | ongoing |
 | T6 | Re-run protection check; confirm only founder-owned items remain | TODO |
 | T7 | Next engineering backlog items that are not founder-blocked (B7 site pages for 5 products, B9, B11) | TODO |
-| T9 | Diagnose the 3 failing tests in section 4 (profit_oracle text check, visual QA verdict) | TODO |
+| T9 | Diagnose the 3 failing tests in section 4 | DONE: the 2 visual QA tests had a stale fixture (3-colour cover vs the committed adapter's `cover_has_imagery` check, which is right); fixed in the untracked `tests/test_visual_qa.py`, 18 pass, left uncommitted because the file is untracked. The `profit_oracle` text test fails because of someone else's uncommitted D8 fail-closed change in `profit_oracle.py` (`_score_margin(niche, platform=...)`): update that test when that change is committed |
 | T8 | Founder list: refresh `docs/factory/FOUNDER_ACTIONS.md` with F1, F2, F5, F6, F9 | TODO |
 
 ## 4. Stuck ("عالق") and failures not from this work
