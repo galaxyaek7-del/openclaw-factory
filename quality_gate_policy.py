@@ -455,6 +455,7 @@ def quality_gate_allowed(source_id: str, product=None, arm_name: Optional[str] =
                       artifact_version=artifact_version,
                       release=release, config_hash=config_hash,
                       model_id=model_id, run_id=run_id)
+    g2 = _apply_standing_authorization(g2, product, product_type, arm_name)
 
     # Gating-adjacent evidence citation (B remediation): pure read over
     # tool_invocations.jsonl — additive, never a gate. allowed boolean
@@ -504,6 +505,35 @@ def quality_gate_allowed(source_id: str, product=None, arm_name: Optional[str] =
         "blocked_by": None,
         "reason": "Gate 1 PASS and Gate 2 PASS",
     }
+
+
+def _apply_standing_authorization(g2: dict, product, product_type, arm_name) -> dict:
+    """Founder order 2026-11-05 (option 1): when Gate 2 has NO sign-off at all (MISSING), a quoted,
+    bounded, revocable founder STANDING authorization (standing_authorization.py) may stand in for it.
+    Any recorded decision (BLOCK, REVOKED, STALE, MISMATCH, even APPROVED) is returned untouched, so a
+    real founder verdict is never overridden. The verdict says openly where the pass came from."""
+    if g2.get("passed") or g2.get("status") != "MISSING":
+        return g2
+    try:
+        import standing_authorization as sa
+        platform = {"gumroad_arm": "gumroad", "gumroad": "gumroad"}.get(str(arm_name or "").lower(), str(arm_name or "").lower() or "gumroad")
+        ptype = product_type or getattr(product, "product_type", None)
+        cov = sa.covers(product=product, product_type=ptype, platform=platform)
+    except Exception:
+        return g2
+    if not cov.get("covered"):
+        out = dict(g2)
+        out["standing_authorization"] = {"covered": False, "reason": cov.get("reason")}
+        return out
+    out = dict(g2)
+    out.update({
+        "passed": True, "status": "ok", "decision": "APPROVED_STANDING",
+        "reviewer": "standing:%s" % cov.get("authorization_id"),
+        "notes": "Gate 2 satisfied by the founder's standing authorization, not a per-product sign-off: %s" % cov.get("reference"),
+        "reason": cov.get("reason"),
+        "standing_authorization": {"covered": True, "authorization_id": cov.get("authorization_id")},
+    })
+    return out
 
 
 def _circuit_allows(state_path: Optional[Path] = None) -> bool:
