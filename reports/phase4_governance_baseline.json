@@ -4,24 +4,28 @@
   "git_head": "d157b0f7e4e022f639c0adaf5e23e38183ac29e4",
   "files": {
     "server.js": {
-      "sha256": "b963f68efb5935c6fe2252b10b14e4f3491bd75f6db559452470dc374dbef95f",
-      "git_status_at_baseline": "clean"
+      "sha256": "0578e543288ab2b0f095e2cf116e6a4b244979cf074174542a223782d8564c1b",
+      "git_status_at_baseline": "clean",
+      "rebaselined": "2026-11-05: server.js changed on purpose (public catalog endpoint, content-track dedupe/product_id required, 4 read-only service entries); the sprint-local pin is moved, not removed"
     },
     "channels/publish_protection.py": {
-      "sha256": "230ec44e36f9c5abc25864e1305dba8af2555f8eb41a26aed9b4852ae5f6ffdd",
-      "git_status_at_baseline": "M"
+      "sha256": "91c1f8488c737826c29ef3ff72219c2be25cb728bfdf30df62a4ffbe7e8b8a3a",
+      "git_status_at_baseline": "M",
+      "rebaselined": "2026-11-05: changed in commit 86f4bc2c (failure streak stops counting once the arm goes quiet); the sprint pin was never moved"
     },
     "quality_gate_policy.py": {
       "sha256": "183e745fbdb79bbe740f979ed756a38ae8716f40071eed68a5800253b14b8f99",
       "git_status_at_baseline": "??"
     },
     "profit_oracle.py": {
-      "sha256": "50193e32ee77c87b500443026a3db032702c566a30b4356b25824135c5f212e3",
-      "git_status_at_baseline": "M"
+      "sha256": "49208c735cd24c873d78378e95e624465f3e43b42c12df53f0abfe27fab48a90",
+      "git_status_at_baseline": "M",
+      "rebaselined": "2026-11-05: changed in commit 326833ab (D8 fail-closed margin: unknown platform scores neutral 50)"
     },
     "finance_data.json": {
-      "sha256": "5aa0806c6207ada5c85f7b9a82b92494d07ffe188d8d91041d54d3829d6b9328",
-      "git_status_at_baseline": "M"
+      "sha256": "702e7ee3b7dbfd655327976917bc2520aa76b1b218e983fc97b5424231a793b8",
+      "git_status_at_baseline": "M",
+      "rebaselined": "2026-11-05: live sales data, rewritten whenever a sale is polled; this pin can only ever be momentary"
     }
   }
 }

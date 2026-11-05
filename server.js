@@ -8,6 +8,7 @@ const knowledgeBrain = require('./knowledge_brain');
 const selfAwareness = require('./self_awareness');
 const dashboardData = require('./lib/dashboard_data');
 const ceoCommandCenter = require('./lib/ceo_command_center');
+const publicCatalog = require('./lib/public_catalog');
 const infrastructureIntelligence = require('./lib/infrastructure_intelligence');
 const metricsLib = require('./lib/metrics');
 const n8nNotify = require('./lib/n8n_notify');
@@ -860,8 +861,8 @@ const SERVICE_REGISTRY = [
     // founder's dashboard.html. Pure file reads, every figure tagged
     // VERIFIED / DERIVED / UNKNOWN with its source file and time.
     name: 'ceo-command-center',
-    description: 'Executive Command Center read model: verified revenue and the $100K goal, product portfolio and pipeline, factory loop health, integrations, distribution, agents, risks, and the founder decisions ranked by impact. File reads only; nothing is estimated in place of a missing source.',
-    reused: 'lib/ceo_command_center.js over data/product_registry.json, factory_loop.log, data/distribution_*.json, data/pinterest_queue.json, data/metricool_brand.json, data/gumroad_auth_state.json, data/commission_ledger.jsonl.',
+    description: 'Executive Command Center read model: OBSERVED revenue and the $100K goal, product portfolio with internal QA / founder authorization / platform publication kept as three separate facts, source freshness, commercial evidence conflicts and unknowns, factory loop health, integrations, distribution, agents, risks, and the founder decisions ranked by impact. File reads only; nothing is estimated in place of a missing source.',
+    reused: 'lib/ceo_command_center.js over data/product_registry.json, data/product_pipeline.json, data/product_batch_13.json, data/commercial_evidence_report.json, reports/CYCLE113/FOUNDER_ACTION_PACKET.md, factory_loop.log, data/distribution_*.json, data/pinterest_queue.json, data/metricool_brand.json, data/gumroad_auth_state.json, data/commission_ledger.jsonl.',
     handler: () => ceoCommandCenter.compute(),
     health: async () => ({ status: 'ok', detail: 'file reads only' }),
   },
@@ -1442,6 +1443,16 @@ const SERVICE_REGISTRY = [
     health: pythonHealthCheck('affiliate_daily_health'),
   },
   {
+    // Affiliate portfolio overlay (2026-10-21): read-only tri-state payout
+    // view plus the research-backed candidate register. Pure read, no writes,
+    // no apply/publish/link/account action.
+    name: 'affiliate-portfolio-overlay',
+    description: "Read-only affiliate portfolio overlay: canonical VERIFIED/CONDITIONAL/UNKNOWN Algeria payout route evidence, required evidence gaps, and the research-backed candidate register. All rows remain NOT_ACTIVATION_READY.",
+    reused: 'affiliate/portfolio.py, via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('affiliate_portfolio_overlay', [], req),
+    health: pythonHealthCheck('affiliate_portfolio_overlay'),
+  },
+  {
     // Evidence Chain + Attribution phase (2026-08-17): the real, read-only
     // source-attribution view. Pure read over the real click + page-view
     // ledgers + revenue_os.attribution_linkage_report() -- never writes,
@@ -1759,6 +1770,25 @@ const SERVICE_REGISTRY = [
     reused: 'truth_registry.py::build_truth_registry()/build_truth_registry_report() (ADR-168) + reality_audit.py (ADR-162) + dependency_graph.py + gfos.py, via mission_control_api.py.',
     handler: (req) => runPythonServiceCached('truth_registry_report', [], req, 600000),
     health: pythonHealthCheck('truth_registry_report'),
+  },
+  {
+    // Digital Product Intelligence & Commercial Validation: a 50-idea catalog
+    // across the ten named category families. Advisory only -- writes nothing,
+    // prices nothing, publishes nothing.
+    name: 'product-intelligence',
+    description: "50 candidate digital products (5 per each of ten named category families), each resolved against real local evidence only: recorded demand rows with a cited source, the factory's own 112 live listings with real sales counts, recorded competitor names, real channel configuration, and the canonical economics fee table. Demand without a cited source is UNKNOWN and capped, never treated as positive demand; a composite is withheld below 60% evidence coverage; production effort is a cost component and can never produce a PURSUE label; willingness to pay is UNKNOWN until a real sale at a real price exists. Includes a deterministic +/-20% weight-perturbation sensitivity report and the factory's real verified revenue (revenue_os.revenue_read_model()) so no ranking can imply revenue that does not exist.",
+    reused: 'product_intelligence_engine.py (new) + trend_to_product.ideation.FORMATS + economics.net_profit + profit_oracle per-ladder constants + revenue_os.revenue_read_model, via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('product_intelligence_report', [], req),
+    health: pythonHealthCheck('product_intelligence_report'),
+  },
+  {
+    // GF-ROS M9 (2026-11-03): the single commercial truth surface. Read-only
+    // over the four GF-ROS ledgers + commission ledger; cheap.
+    name: 'revenue-os-read-model',
+    description: "Verified revenue and exactly which real records produce it (verified order net + CONFIRMED/PAID commission + CONFIRMED/PAID payout net - verified refunds - approved costs), reconciled-but-deliberately-unpromoted observed revenue kept in a separate field, real record counts, synthetic/test records excluded and counted separately, and refund rate / conversion rate / CAC reported as UNKNOWN because no real signal exists for any of them. Zero is a real count here (no order has ever been recorded), not a placeholder -- the UNKNOWN fields are the ones with no source.",
+    reused: 'revenue_os.py::revenue_read_model() (ADR-GF-ROS M2/M4) + commercial_reconciliation.py + commission_ledger.py, via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('revenue_os_read_model', [], req),
+    health: pythonHealthCheck('revenue_os_read_model'),
   },
   {
     // Customer Experience & Brand DNA (ADR-170, 2026-08-05): the real
@@ -2823,6 +2853,13 @@ const SERVICE_REGISTRY = [
     reused: 'channel_intelligence.py::channel_readiness_summary(), via mission_control_api.py.',
     handler: (req) => runPythonServiceCached('channel_intelligence_readiness', [], req),
     health: pythonHealthCheck('channel_intelligence_readiness'),
+  },
+  {
+    name: 'financial-connectivity-status',
+    description: "Financial connectivity — provider-independent view of payment providers, settlement rails, sales channels, orders, fees and verified revenue. Credential presence only; TEST rows excluded; unknown stays UNKNOWN; never initiates a transfer.",
+    reused: 'financial_connectivity.py::build_financial_connectivity_snapshot(), via mission_control_api.py.',
+    handler: (req) => runPythonServiceCached('financial_connectivity_status', [], req),
+    health: pythonHealthCheck('financial_connectivity_status'),
   },
 ];
 
@@ -7004,6 +7041,35 @@ app.get('/api/customer/catalog', (req, res) => {
   }
 });
 
+// Public, read-only view of the already-published product registry. Unlike
+// /api/customer/catalog (Paddle checkout candidates), this is the Gumroad
+// library: published products only, allowlisted fields, no manifest paths,
+// no sales counts, no authorization state, no unpublished products.
+app.get('/api/public/catalog', (req, res) => {
+  try {
+    const limit = Number.parseInt(String(req.query.limit || '12'), 10);
+    const data = publicCatalog.catalog({
+      limit: Number.isFinite(limit) ? limit : 12,
+      featuredOnly: req.query.all !== '1',
+    });
+    res.setHeader('Cache-Control', 'public, max-age=60');
+    res.json({ success: true, data });
+  } catch (err) {
+    res.status(500).json({ success: false, error: 'public catalog temporarily unavailable' });
+  }
+});
+
+app.get('/api/public/catalog/cover/:product_id', (req, res) => {
+  try {
+    const file = publicCatalog.coverAsset(req.params.product_id);
+    if (!file) return res.status(404).json({ success: false, error: 'cover not found' });
+    res.setHeader('Cache-Control', 'public, max-age=300');
+    res.sendFile(file);
+  } catch (err) {
+    res.status(404).json({ success: false, error: 'cover not found' });
+  }
+});
+
 // Instant Checkout (ADR-183, 2026-08-07): Readiness Audit Stage 6 found
 // the worst real friction in the entire funnel -- every catalog product
 // routed into a manual multi-step request/review flow, even ones with an
@@ -7116,20 +7182,46 @@ app.get('/api/affiliate/click/:product_id', async (req, res) => {
 // Writes ONLY to the ANALYSIS ledger data/commission_attribution_log.jsonl (never
 // financial truth). No PII: anonymous id only; no IP/email/name captured. Shape is
 // compatible with lib/commission_attribution.py so the two sinks stay interchangeable.
+// Same 300 s duplicate window as lib/commission_attribution.py's
+// DUP_WINDOW_SECONDS -- the two sinks are documented as interchangeable, so
+// they must deduplicate identically. Bounded so an abusive client cannot grow
+// this Map without limit.
+const CONTENT_TRACK_DUPLICATE_WINDOW_MS = 300 * 1000;
+const CONTENT_TRACK_MAX_KEYS = 5000;
+const contentTrackRecent = new Map();
+
 app.post('/api/content/track', (req, res) => {
   try {
     const body = req.body || {};
     const anonId = typeof body.anon_id === 'string' && body.anon_id ? body.anon_id.slice(0, 128) : 'unknown';
     const eventType = ['content_view', 'outbound_click'].includes(body.event_type) ? body.event_type : 'content_view';
-    const productId = typeof body.product_id === 'string' ? body.product_id.slice(0, 256) : 'organic_content';
+    const productId = typeof body.product_id === 'string' ? body.product_id.trim().slice(0, 256) : '';
+    // A missing product_id used to be silently recorded as 'organic_content',
+    // which produced 447,180 unidentifiable rows from 3 anonymous ids and made
+    // every "content view" count meaningless. No product id, no event.
+    if (!productId) {
+      return res.status(400).json({ ok: false, error: 'product_id_required' });
+    }
     const srcCat = typeof body.source_category === 'string' ? body.source_category.slice(0, 128) : 'organic_validation';
+    const dedupeKey = anonId + '|' + eventType + '|' + productId;
+    const now = Date.now();
+    const last = contentTrackRecent.get(dedupeKey);
+    if (last !== undefined && now - last < CONTENT_TRACK_DUPLICATE_WINDOW_MS) {
+      return res.json({ ok: true, deduped: true });
+    }
+    contentTrackRecent.set(dedupeKey, now);
+    if (contentTrackRecent.size > CONTENT_TRACK_MAX_KEYS) {
+      for (const [k, ts] of contentTrackRecent) {
+        if (now - ts >= CONTENT_TRACK_DUPLICATE_WINDOW_MS) contentTrackRecent.delete(k);
+      }
+    }
     const evt = {
       anon_id: anonId,
       event_type: eventType,
       product_id: productId,
       source_category: srcCat,
       value: 0,
-      ts: Date.now() / 1000,
+      ts: now / 1000,
       bot_status: 'UNKNOWN',
       anomaly: false,
       metadata: { note: 'ANALYSIS ledger only; not financial truth' },
