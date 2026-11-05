@@ -683,7 +683,7 @@ async function pollSales(reachable) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', ...internalAuthHeaders() },
       body: JSON.stringify({}),
-    }, 30000, 'api-sales-poll');
+    }, 60000, 'api-sales-poll'); // 2026-11-05: above the server's own 45s kill, so a slow poll ends as a clean server error instead of a client abort (3 aborts in 24h)
     const data = await res.json();
 
     if (!data.success) {
@@ -4375,7 +4375,8 @@ async function maybeResumeFreelancerGrant() {
   return { action: result.action, detail: `تم رصد منحة Freelancer — إجراء الاستئناف: ${result.action}` };
 }
 
-function runFreelancerStateMonitor({ timeoutMs = 60000, pythonPath } = {}) {
+function runFreelancerStateMonitor({ timeoutMs = 150000, // 2026-11-05: measured ~62s (network bound, 0.4s CPU); 60s killed it twice a day
+   pythonPath } = {}) {
   return new Promise((resolve) => {
     let python;
     try {
