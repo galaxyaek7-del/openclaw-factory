@@ -27,6 +27,10 @@ from datetime import datetime, timezone
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+# Bumped when parsing semantics change. Part of the dedup key: the same
+# file parsed by a different version is re-parsed, never served stale.
+PARSER_VERSION = "1.1.0"
+
 COLUMN_ALIASES = {
     "date": ("date", "day"),
     "product": ("product", "product name", "product_name", "name"),
@@ -61,6 +65,26 @@ def _num(value):
         return 0.0
 
 
+def _valid_date(value):
+    """Strict ISO-ish date check (YYYY-MM-DD...). A date that cannot be
+    parsed is counted, never silently trusted — the row still aggregates
+    (sums are unaffected by the label), but the count says so."""
+    try:
+        datetime.fromisoformat(str(value or "").strip()[:10])
+        return True
+    except ValueError:
+        return False
+
+
+def _sha256_file(path):
+    import hashlib
+    h = hashlib.sha256()
+    with open(path, "rb") as f:
+        for chunk in iter(lambda: f.read(65536), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+
 def _map(fieldnames, aliases):
     lower = {f.strip().lower(): f for f in (fieldnames or []) if f}
     mapping = {}
@@ -92,10 +116,13 @@ class GumroadCSVParser:
 
     def _aggregate(self, reader, cols):
         summary = {"total_views": 0, "total_sales": 0, "total_revenue": 0.0, "total_refunds": 0,
-                   "products": {}, "date_range": {"start": None, "end": None}}
+                   "products": {}, "date_range": {"start": None, "end": None},
+                   "rejected_rows": 0, "rejected_sample": [], "invalid_dates": 0}
         rows = []
         for row in reader:
             rec = {k: (row.get(src) or "").strip() for k, src in cols.items()}
+            if not _valid_date(rec.get("date")):
+                summary["invalid_dates"] += 1
             views, sales = int(_num(rec.get("views"))), int(_num(rec.get("sales")))
             revenue, refunds = _num(rec.get("revenue")), int(_num(rec.get("refunds")))
             summary["total_views"] += views
@@ -112,15 +139,20 @@ class GumroadCSVParser:
 
     def _sales(self, reader, cols):
         summary = {"total_views": None, "views_note": "not in a sales export",
-                   "total_sales": 0, "total_revenue": 0.0, "total_refunds": 0,
-                   "products": {}, "date_range": {"start": None, "end": None},
-                   "top_referrers": None, "utm_campaigns": None}
+                     "total_sales": 0, "total_revenue": 0.0, "total_refunds": 0,
+                     "products": {}, "date_range": {"start": None, "end": None},
+                     "top_referrers": None, "utm_campaigns": None,
+                     "rejected_rows": 0, "rejected_sample": [], "invalid_dates": 0}
         refs, utms = Counter(), Counter()
         rows = []
+        rejected = []
         for row in reader:
             rec = {k: (row.get(src) or "").strip() for k, src in cols.items()}
             if not rec.get("purchase_id"):
+                rejected.append("row without purchase_id skipped")
                 continue
+            if not _valid_date(rec.get("date")):
+                summary["invalid_dates"] += 1
             refunded = rec.get("refunded", "").lower() in TRUTHY
             price = _num(rec.get("price"))
             summary["total_sales"] += 1
@@ -139,11 +171,49 @@ class GumroadCSVParser:
         if "referrer" in cols:
             summary["top_referrers"] = refs.most_common(10)
             summary["utm_campaigns"] = dict(utms)
+        summary["rejected_rows"] = len(rejected)
+        summary["rejected_sample"] = rejected[:5]
         return summary, rows
+
+    def _imports_path(self):
+        return os.path.join(os.path.dirname(self.parsed_path), "gumroad_imports.jsonl")
+
+    def _already_imported(self, sha):
+        """Deterministic dedup: (file-sha, parser-version) already parsed
+        and its parsed file still present => do not re-parse. A new parser
+        version re-parses (semantics may have changed)."""
+        try:
+            with open(self._imports_path(), encoding="utf-8") as f:
+                for line in f:
+                    try:
+                        rec = json.loads(line)
+                    except ValueError:
+                        continue
+                    if rec.get("source_sha256") == sha and rec.get("parser_version") == PARSER_VERSION:
+                        if os.path.exists(self.parsed_path):
+                            with open(self.parsed_path, encoding="utf-8") as pf:
+                                parsed = json.load(pf)
+                            if parsed.get("source_sha256") == sha:
+                                return parsed
+        except OSError:
+            pass
+        return None
+
+    def _record_import(self, sha, csv_path):
+        with open(self._imports_path(), "a", encoding="utf-8") as f:
+            f.write(json.dumps({"source_sha256": sha, "parser_version": PARSER_VERSION,
+                                "file": csv_path, "parsed_at": _now(),
+                                "parsed_file": self.parsed_path}) + "\n")
 
     def parse_export(self, csv_path: str) -> dict:
         if not os.path.exists(csv_path):
             return {"status": "FILE_NOT_FOUND", "path": csv_path, "data": None}
+        sha = _sha256_file(csv_path)
+        cached = self._already_imported(sha)
+        if cached is not None:
+            cached = dict(cached)
+            cached["status"] = "ALREADY_IMPORTED"
+            return cached
         with open(csv_path, encoding="utf-8-sig", newline="") as f:
             reader = csv.DictReader(f)
             sales_cols = _map(reader.fieldnames, SALES_ALIASES)
@@ -161,6 +231,7 @@ class GumroadCSVParser:
                         "missing_columns": [c for c in REQUIRED_COLUMNS if c not in agg_cols],
                         "found_columns": reader.fieldnames, "data": None, "format_verified": False}
         results = {"status": "PARSED", "layout": layout, "source": "gumroad_csv_export", "file": csv_path,
+                   "source_sha256": sha, "parser_version": PARSER_VERSION,
                    "parsed_at": _now(), "evidence_type": "REAL", "format_verified": False,
                    "has_views": summary["total_views"] is not None,
                    "column_mapping": cols, "summary": summary, "rows": rows}
@@ -169,6 +240,7 @@ class GumroadCSVParser:
         with open(tmp, "w", encoding="utf-8") as f:
             json.dump(results, f, indent=2, ensure_ascii=False)
         os.replace(tmp, self.parsed_path)
+        self._record_import(sha, csv_path)
         return results
 
     def latest_export_file(self):

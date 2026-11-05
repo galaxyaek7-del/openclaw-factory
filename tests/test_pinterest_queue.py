@@ -79,6 +79,23 @@ class TestQueue(unittest.TestCase):
         self.assertNotIn("What's included", t)
         self.assertLessEqual(len(t), 500)
 
+    def test_pin_text_drops_sentences_quoting_other_amounts(self):
+        o = dict(offers_doc()["offers"][0])
+        o["description"] = ("Attorneys charge $1,000-2,500 per class. "
+                            "This kit organizes the first 30 days.")
+        t = pq.pin_text(o)
+        self.assertNotIn("$1,000", t)                     # would make the builder reject the pin
+        self.assertIn("organizes the first 30 days", t)    # the usable sentence is kept
+        self.assertTrue(t.endswith("$19, one-time purchase."))
+
+    def test_pin_text_falls_back_to_title_when_every_sentence_is_dropped(self):
+        o = dict(offers_doc()["offers"][0])
+        o["description"] = "Save $12,000 a year."
+        t = pq.pin_text(o)
+        self.assertTrue(t.startswith("13-Week Cash Flow Forecast"))
+        self.assertNotIn("$12,000", t)
+        self.assertTrue(t.endswith("$19, one-time purchase."))
+
     def test_ready_items_one_per_day_b14_001_first(self):
         q = self.run_q()
         self.assertEqual([i["offer_id"] for i in q["items"]], ["B14-001", "B14-002"])

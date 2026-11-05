@@ -57,6 +57,55 @@ class TestBKL004GumroadCSV(unittest.TestCase):
         bad.write_text("foo,bar\n1,2\n", encoding="utf-8")
         self.assertEqual(self.p.parse_export(str(bad))["status"], "FORMAT_UNRECOGNIZED")
 
+    def test_skipped_rows_are_counted_not_silent(self):
+        csv_path = self.tmp / "exports" / "sales.csv"
+        csv_path.write_text(
+            "Purchase ID,Item Name,Purchase Date,Sale Price ($),Refunded?\n"
+            "A-1,Etsy Bundle,2026-10-01,$79.00,no\n"
+            ",Etsy Bundle,2026-10-02,$79.00,no\n"
+            "A-2,Etsy Bundle,not-a-date,$10.00,no\n", encoding="utf-8")
+        r = self.p.parse_export(str(csv_path))
+        self.assertEqual(r["status"], "PARSED")
+        self.assertEqual(r["layout"], "SALES_EXPORT")
+        s = r["summary"]
+        self.assertEqual(s["total_sales"], 2)
+        self.assertEqual(s["rejected_rows"], 1)
+        self.assertTrue(s["rejected_sample"])
+        self.assertEqual(s["invalid_dates"], 1)
+        self.assertIsNone(s["total_views"])   # unavailable, never 0
+
+    def test_invalid_dates_counted_in_aggregate(self):
+        csv_path = self.tmp / "exports" / "agg.csv"
+        csv_path.write_text(
+            "Date,Product,Views,Sales,Revenue,Refunds\n"
+            "2026-10-01,Etsy Bundle,12,1,$79.00,0\n"
+            "yesterday,Etsy Bundle,8,0,$0.00,0\n", encoding="utf-8")
+        r = self.p.parse_export(str(csv_path))
+        s = r["summary"]
+        self.assertEqual((s["total_views"], s["total_sales"]), (20, 1))
+        self.assertEqual(s["invalid_dates"], 1)
+        self.assertEqual(s["rejected_rows"], 0)
+
+    def test_duplicate_import_is_deterministic(self):
+        csv_path = self.tmp / "exports" / "dup.csv"
+        csv_path.write_text(
+            "Date,Product,Views,Sales,Revenue,Refunds\n"
+            "2026-10-01,Etsy Bundle,12,1,$79.00,0\n", encoding="utf-8")
+        first = self.p.parse_export(str(csv_path))
+        self.assertEqual(first["status"], "PARSED")
+        self.assertIn("source_sha256", first)
+        self.assertEqual(first["parser_version"], M.PARSER_VERSION)
+        second = self.p.parse_export(str(csv_path))
+        self.assertEqual(second["status"], "ALREADY_IMPORTED")
+        self.assertEqual(second["summary"], first["summary"])
+        # Changed content re-parses (different sha).
+        csv_path.write_text(
+            "Date,Product,Views,Sales,Revenue,Refunds\n"
+            "2026-10-01,Etsy Bundle,13,1,$79.00,0\n", encoding="utf-8")
+        third = self.p.parse_export(str(csv_path))
+        self.assertEqual(third["status"], "PARSED")
+        self.assertEqual(third["summary"]["total_views"], 13)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -32,6 +32,22 @@ TZ = "Europe/Paris"
 REVIEWER = "aekgalaxy47@gmail.com"  # the founder's own Metricool login (brand owner)
 
 
+def _mentions_other_amount(sentence: str, price_cents) -> bool:
+    """True if the sentence carries a dollar amount that is not this product's price.
+
+    metricool.build_pinterest_review_post rejects any pin text containing a $amount
+    that does not equal the offer price, so a sentence quoting a third party's cost
+    ("$350 base per class", "settlements $5K-20K") would make the whole pin
+    unpublishable. Such a sentence is dropped rather than weakening that guard: a
+    number that is not the price is also the kind of claim the offer's own
+    prohibited_claims exclude.
+    """
+    for amount in re.findall(r"\$\s?(\d[\d,]*(?:\.\d{2})?)", sentence):
+        if price_cents is None or abs(float(amount.replace(",", "")) * 100 - price_cents) > 0.5:
+            return True
+    return False
+
+
 def pin_text(offer: dict) -> str:
     """The listing's own opening sentences plus its price, within Pinterest's 500."""
     price = f"${offer['price_cents'] / 100:.2f}".replace(".00", "")
@@ -39,6 +55,8 @@ def pin_text(offer: dict) -> str:
     sents = [s.strip() for s in re.split(r"(?<=[.!?])\s+", (offer.get("description") or "").split("\n")[0]) if s.strip()]
     out = ""
     for s in sents:
+        if _mentions_other_amount(s, offer.get("price_cents")):
+            continue
         if len(out) + len(s) + 1 + len(tail) > 450:
             break
         out = (out + " " + s).strip()
