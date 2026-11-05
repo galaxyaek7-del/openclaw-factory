@@ -210,6 +210,36 @@ class AttributionAndRerankTests(unittest.TestCase):
         self.assertEqual(b[0], "CO-b")  # big click surge for CO-b flips the order
 
 
+class GateSignalCacheTests(unittest.TestCase):
+    def setUp(self):
+        fde._clear_gate_cache()
+
+    def tearDown(self):
+        fde._clear_gate_cache()
+
+    def test_blocking_gates_reuse_one_live_check(self):
+        gate = {"gate_id": "GATE-X", "status": "BLOCKING"}
+        with mock.patch(
+            "autonomous_commerce_ops.human_gate_orchestrator",
+            return_value={"gates": [gate]},
+        ) as orchestrator:
+            first = fde._blocking_gates()
+            second = fde._blocking_gates()
+        self.assertEqual(first, [gate])
+        self.assertEqual(second, [gate])
+        self.assertEqual(orchestrator.call_count, 1)
+
+    def test_clearing_gate_cache_forces_a_fresh_check(self):
+        with mock.patch(
+            "autonomous_commerce_ops.human_gate_orchestrator",
+            return_value={"gates": [{"gate_id": "GATE-X", "status": "BLOCKING"}]},
+        ) as orchestrator:
+            fde._blocking_gates()
+            fde._clear_gate_cache()
+            fde._blocking_gates()
+        self.assertEqual(orchestrator.call_count, 2)
+
+
 class ExistingArmIntegrationTests(unittest.TestCase):
     def test_ceo_loop_has_first_dollar_lens(self):
         import revenue_os

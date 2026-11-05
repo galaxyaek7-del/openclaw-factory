@@ -95,6 +95,37 @@ def record_publish_attempt(product, result, ledger_path=None, risk_score=None, p
     return append_event(event, ledger_path=ledger_path)
 
 
+_SALE_ID_KEYS = ("id", "sale_id", "transaction_id", "order_id", "external_transaction_id")
+
+
+def _sale_transaction_id(sale):
+    """The platform's own identifier for a sale, or None. Only an identifier
+    the platform actually reported is used — never a hash of the payload,
+    which would collapse two genuinely distinct sales with identical shape
+    into one."""
+    if not isinstance(sale, dict):
+        return None
+    for key in _SALE_ID_KEYS:
+        value = sale.get(key)
+        if isinstance(value, (str, int)) and not isinstance(value, bool):
+            text = str(value).strip()
+            if text:
+                return text
+    return None
+
+
+def _already_recorded_sale(platform, transaction_id, ledger_path=None):
+    """The previously recorded sale event for (platform, transaction_id), or
+    None. Read-only; never rewrites history. Used by revenue_trend() to count
+    one real sale once even when the platform delivered it more than once."""
+    for event in read_events(event_type="sale", ledger_path=ledger_path):
+        if event.get("platform") != platform:
+            continue
+        if _sale_transaction_id(event.get("raw") or {}) == transaction_id:
+            return event
+    return None
+
+
 def record_sale(platform: str, sale: dict, ledger_path=None, niche=None,
                  country=None, channel=None, campaign=None, partner=None, customer_segment=None) -> dict:
     """Append one real sale as reported by a platform's get_sales(). The raw
@@ -129,7 +160,15 @@ def record_sale(platform: str, sale: dict, ledger_path=None, niche=None,
     platform, explicitly mark it as UNKNOWN. Never invent attribution" —
     a caller that does have a real value passes it; one that doesn't
     simply omits the field, and any reader must treat an absent field as
-    UNKNOWN, never as $0/none/default."""
+    UNKNOWN, never as $0/none/default.
+
+    Duplicates (2026-10-28): this ledger stays append-only — a retried poll
+    or a replayed webhook appends its raw event again, exactly as before, so
+    the audit trail keeps every arrival. Deduplication is a read-time concern:
+    reconcile_ledger_to_finance() already keys finance rows by
+    source_ledger_key, and revenue_trend() now skips a repeated
+    (platform, identifier) pair, so one real sale is never counted twice even
+    if it was delivered twice."""
     event = {
         "event_type": "sale",
         "platform": platform,
@@ -365,10 +404,22 @@ def revenue_trend(now=None, ledger_path=None):
     recent_amount = 0.0
     recent_count = 0
 
+    seen_sale_ids = set()
+
     for event in read_events(event_type="sale", ledger_path=ledger_path):
         amount = _extract_sale_amount(event.get("raw") or {}, event.get("platform"))
         if amount is None:
             continue
+        # A platform may deliver the same sale more than once (retried poll,
+        # replayed webhook). The ledger keeps every arrival on purpose; this
+        # view counts one real sale once. Only a platform-reported identifier
+        # is trusted -- a sale with none is never collapsed by guesswork.
+        transaction_id = _sale_transaction_id(event.get("raw") or {})
+        if transaction_id is not None:
+            dedupe_key = (event.get("platform"), transaction_id)
+            if dedupe_key in seen_sale_ids:
+                continue
+            seen_sale_ids.add(dedupe_key)
         try:
             dt = datetime.fromisoformat((event.get("timestamp") or "").replace("Z", "+00:00"))
         except ValueError:

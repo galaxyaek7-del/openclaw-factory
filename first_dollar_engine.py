@@ -26,6 +26,8 @@ Design rules honored here:
 from __future__ import annotations
 
 import json
+import threading
+import time
 from datetime import datetime, timezone
 from typing import Dict, List, Optional
 
@@ -435,13 +437,40 @@ def _real_click_counts() -> Dict[str, int]:
     return by_opp
 
 
+_GATE_CACHE_TTL_SECONDS = 30.0
+_gate_cache_lock = threading.Lock()
+_gate_cache: Dict[str, object] = {"expires_at": 0.0, "gates": None}
+
+
+def _clear_gate_cache() -> None:
+    with _gate_cache_lock:
+        _gate_cache["expires_at"] = 0.0
+        _gate_cache["gates"] = None
+
+
 def _blocking_gates() -> List[dict]:
-    """Real BLOCKING human gates from the gate orchestrator."""
+    """Real BLOCKING human gates from the gate orchestrator.
+
+    The orchestrator performs live Gumroad/Paddle readiness checks, so calling
+    it once per rank (and rank is composed by the CEO loop, founder queue and
+    orchestrator) turned one read-only status request into six live network
+    passes. Cache the result briefly so one cycle pays for it once; callers
+    that need a guaranteed-fresh view call human_gate_orchestrator directly.
+    """
+    now = time.monotonic()
+    with _gate_cache_lock:
+        cached = _gate_cache["gates"]
+        if cached is not None and now < float(_gate_cache["expires_at"]):
+            return list(cached)  # type: ignore[arg-type]
     try:
         from autonomous_commerce_ops import human_gate_orchestrator
-        return [g for g in human_gate_orchestrator()["gates"] if g.get("status") == "BLOCKING"]
+        gates = [g for g in human_gate_orchestrator()["gates"] if g.get("status") == "BLOCKING"]
     except Exception:
-        return []
+        gates = []
+    with _gate_cache_lock:
+        _gate_cache["gates"] = tuple(gates)
+        _gate_cache["expires_at"] = time.monotonic() + _GATE_CACHE_TTL_SECONDS
+    return gates
 
 
 def rank_first_dollar(top_n: int = 10,

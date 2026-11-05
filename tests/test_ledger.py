@@ -367,5 +367,66 @@ class TestRecordSaleAttribution(unittest.TestCase):
         self.assertNotIn("campaign", recorded)
 
 
+class TestDuplicateSaleReporting(unittest.TestCase):
+    """A retried poll or replayed webhook must never double-count revenue.
+    Added 2026-10-28 after revenue_operating_system.py disclosed the gap.
+
+    The ledger itself stays append-only (test_proof_of_payment_negative.py
+    documents that contract): every arrival is preserved, and deduplication
+    happens in the read views that report money."""
+
+    def setUp(self):
+        self.ledger_path = _temp_path(".jsonl")
+        self.finance_path = _temp_path(".json")
+
+    def tearDown(self):
+        for p in (self.ledger_path, self.finance_path):
+            if os.path.exists(p):
+                os.remove(p)
+
+    def _lines(self):
+        with open(self.ledger_path, encoding="utf-8") as f:
+            return [json.loads(l) for l in f if l.strip()]
+
+    def test_ledger_preserves_every_arrival(self):
+        ledger.record_sale("gumroad", {"id": "sale_1", "price": "19.99"}, ledger_path=self.ledger_path)
+        ledger.record_sale("gumroad", {"id": "sale_1", "price": "19.99"}, ledger_path=self.ledger_path)
+        self.assertEqual(len(self._lines()), 2)
+
+    def test_revenue_trend_counts_a_redelivered_sale_once(self):
+        ledger.record_sale("gumroad", {"id": "sale_1", "price": "19.99"}, ledger_path=self.ledger_path)
+        ledger.record_sale("gumroad", {"id": "sale_1", "price": "19.99"}, ledger_path=self.ledger_path)
+        trend = ledger.revenue_trend(ledger_path=self.ledger_path)
+        self.assertEqual(trend["total_sales_count"], 1)
+        self.assertEqual(trend["total_revenue_usd"], 19.99)
+
+    def test_revenue_trend_keeps_same_id_on_different_platforms(self):
+        ledger.record_sale("gumroad", {"id": "1", "price": "10.00"}, ledger_path=self.ledger_path)
+        ledger.record_sale("paddle", {"id": "1", "details": {"totals": {"grand_total": "2000"}}}, ledger_path=self.ledger_path)
+        trend = ledger.revenue_trend(ledger_path=self.ledger_path)
+        self.assertEqual(trend["total_sales_count"], 2)
+        self.assertEqual(trend["total_revenue_usd"], 30.0)
+
+    def test_revenue_trend_never_collapses_sales_without_an_identifier(self):
+        ledger.record_sale("gumroad", {"price": "10.00"}, ledger_path=self.ledger_path)
+        ledger.record_sale("gumroad", {"price": "10.00"}, ledger_path=self.ledger_path)
+        trend = ledger.revenue_trend(ledger_path=self.ledger_path)
+        self.assertEqual(trend["total_sales_count"], 2)
+
+    def test_alternate_identifier_fields_are_recognised(self):
+        self.assertEqual(ledger._sale_transaction_id({"transaction_id": "txn_9"}), "txn_9")
+        self.assertEqual(ledger._sale_transaction_id({"order_id": "o_1"}), "o_1")
+        self.assertEqual(ledger._sale_transaction_id({"external_transaction_id": "e_1"}), "e_1")
+        self.assertIsNone(ledger._sale_transaction_id({"price": "10.00"}))
+        self.assertIsNone(ledger._sale_transaction_id({"id": True}))
+
+    def test_redelivered_sale_reconciles_to_finance_once(self):
+        ledger.record_sale("gumroad", {"id": "sale_1", "price": "19.99"}, ledger_path=self.ledger_path)
+        ledger.record_sale("gumroad", {"id": "sale_1", "price": "19.99"}, ledger_path=self.ledger_path)
+        result = ledger.reconcile_ledger_to_finance(ledger_path=self.ledger_path, finance_path=self.finance_path)
+        self.assertEqual(result["reconciled"], 1)
+        self.assertEqual(result["total_sales"], 19.99)
+
+
 if __name__ == "__main__":
     unittest.main()
