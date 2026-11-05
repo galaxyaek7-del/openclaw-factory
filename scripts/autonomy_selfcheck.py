@@ -120,11 +120,13 @@ def collect(root: Path = ROOT, env=None, health_fn=None, gate_fn=None, autostart
                       "real buyers"))
 
     # 9 alerts
-    tg = bool(env.get("TELEGRAM_BOT_TOKEN")) and bool(env.get("OPENCLAW_TELEGRAM_CHAT_ID"))
+    bound = bool((_json(root / "data" / "telegram_binding.json", {}) or {}).get("chat_id"))
+    chat_ok = bool(env.get("OPENCLAW_TELEGRAM_CHAT_ID")) or bound
+    tg = bool(env.get("TELEGRAM_BOT_TOKEN")) and chat_ok
     rows.append(stage(9, "alerts to the founder", "OK" if tg else "BLOCKED",
                       "token %s, chat id %s" % ("set" if env.get("TELEGRAM_BOT_TOKEN") else "missing",
-                                                "set" if env.get("OPENCLAW_TELEGRAM_CHAT_ID") else "missing"),
-                      "founder: docs/factory/TELEGRAM_SETUP.md"))
+                                                "set" if chat_ok else "missing"),
+                      "founder: send the pairing code to the bot (docs/factory/TELEGRAM_SETUP.md)"))
 
     # 10 persistence
     try:

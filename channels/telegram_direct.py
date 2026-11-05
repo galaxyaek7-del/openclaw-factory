@@ -47,13 +47,22 @@ def _load_env_value(name, env_path=None):
     return None
 
 
+def bound_chat_id(path=None):
+    """Chat id stored by scripts/telegram_bind.py (one-time pairing code); used only when .env has none."""
+    try:
+        import json
+        return str(json.loads(Path(path or FACTORY_DIR / "data" / "telegram_binding.json").read_text(encoding="utf-8"))["chat_id"])
+    except (OSError, ValueError, KeyError):
+        return None
+
+
 def send_telegram_message(text, env_path=None, timeout=15):
     """Sends `text` to the founder's real Telegram chat. Returns
     {"sent": bool, "message_id": int|None, "error": str|None} — never
     raises. Missing config is reported as an error, not a crash, same
     honesty-over-silence discipline as every other channel adapter."""
     token = _load_env_value("TELEGRAM_BOT_TOKEN", env_path)
-    chat_id = _load_env_value("OPENCLAW_TELEGRAM_CHAT_ID", env_path)
+    chat_id = _load_env_value("OPENCLAW_TELEGRAM_CHAT_ID", env_path) or bound_chat_id()
     if not token or not chat_id:
         return {"sent": False, "message_id": None, "error": "TELEGRAM_BOT_TOKEN or OPENCLAW_TELEGRAM_CHAT_ID not configured"}
 

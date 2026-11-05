@@ -5473,6 +5473,10 @@ async function runTick() {
     // alert (Telegram, or the local fallback ledger when no chat id is set).
     markStep('autonomy_daily');
     actions.push({ step: 'autonomy_daily', ...(await runOnceScript('autonomy_daily.py', { timeoutMs: 3 * 60 * 1000 })) });
+    // 2026-11-05: looks for the founder's one-time pairing code (scripts/telegram_bind.py --issue);
+    // binds the chat that sent it. No code issued or already bound: a no-op.
+    markStep('telegram_bind');
+    actions.push({ step: 'telegram_bind', ...(await runOnceScript('telegram_bind.py', { timeoutMs: 60 * 1000 })) });
     // 2026-10-29: weekly GET-only audit of what each live listing delivers
     // (the dashboard's delivery truth went stale after 8 days of hand runs).
     markStep('delivery_audit');

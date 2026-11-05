@@ -216,3 +216,7 @@ seeds/**/*.xlsx
 data/thin_listing_disclosures_*.json
 data/company_protection.json
 data/discoverability_*.json
+
+# Telegram pairing (chat id and one-time code hash)
+data/telegram_binding.json
+data/telegram_pairing.json
