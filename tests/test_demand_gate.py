@@ -45,6 +45,17 @@ class DemandGateTests(unittest.TestCase):
         self.assertEqual(1, r["signals"]["SALE"])
         self.assertEqual(dg.DEFAULT_DAILY_CAP, r["daily_cap"])
 
+    def test_a_polled_sale_in_finance_data_opens_it_without_waiting_for_the_daily_registry(self):
+        _write(self.root, "finance_data.json", json.dumps({"sales": [{"amount": 15, "platform": "gumroad"}]}))
+        r = self.ev()
+        self.assertTrue(r["open"])
+        self.assertEqual(1, r["signals"]["SALE"])
+
+    def test_test_sales_in_finance_data_never_count(self):
+        _write(self.root, "finance_data.json", json.dumps({"sales": [
+            {"amount": 1, "environment": "TEST"}, {"amount": 2, "simulation": True}, {"amount": 3, "note": "synthetic probe"}]}))
+        self.assertFalse(self.ev()["open"])
+
     def test_sales_on_unpublished_rows_do_not_count(self):
         _write(self.root, "data/product_registry.json", json.dumps({"products": [{"published": False, "sales_count": 5}]}))
         self.assertFalse(self.ev()["open"])

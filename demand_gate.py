@@ -8,7 +8,8 @@ bottleneck, so automatic production must follow demand, not precede it.
 
 The gate is OPEN when at least one REAL demand signal exists in the factory's own ledgers:
 
-  SALE            a published product with sales_count > 0 (data/product_registry.json)
+  SALE            a published product with sales_count > 0 (data/product_registry.json, rebuilt daily)
+                  or a non-test sale in finance_data.json (written by the sales poll within one tick)
   EXTERNAL_CLICK  an affiliate click that could come from an outside person
                   (affiliate_commerce.click_classification, possible_human > 0)
   BUYER_INTEREST  an inbound interest row that is not a test (customer_interest.jsonl)
@@ -73,6 +74,25 @@ def sales_signal(root: Path):
     return sum(int(x.get("sales_count") or 0) for x in reg.get("products", []) if x.get("published"))
 
 
+def finance_signal(root: Path):
+    """A sale the poller reconciled into finance_data.json (rewritten on every polled sale, so it
+    reaches the gate within one tick, while product_registry.json is rebuilt once a day).
+    Entries marked test/synthetic/simulation never count."""
+    try:
+        doc = json.loads((root / "finance_data.json").read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return 0
+    n = 0
+    for sale in doc.get("sales") or []:
+        if not isinstance(sale, dict):
+            continue
+        flags = " ".join(str(sale.get(k) or "") for k in ("environment", "source", "note", "status")).upper()
+        if sale.get("synthetic") is True or sale.get("simulation") is True or any(w in flags for w in ("TEST", "SIMULATION", "SYNTHETIC")):
+            continue
+        n += 1
+    return n
+
+
 def external_click_signal(root: Path, ledger_path=None):
     try:
         sys.path.insert(0, str(root))
@@ -111,7 +131,7 @@ def evaluate(root=None, environ=None, now=None):
     root = Path(root) if root else ROOT
     env = os.environ if environ is None else environ
     signals = {
-        "SALE": sales_signal(root),
+        "SALE": max(sales_signal(root), finance_signal(root)),
         "EXTERNAL_CLICK": external_click_signal(root),
         "BUYER_INTEREST": buyer_interest_signal(root),
         "MARKET_DEMAND": market_demand_signal(root),
