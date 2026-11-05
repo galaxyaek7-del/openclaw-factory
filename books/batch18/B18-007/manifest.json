@@ -1,0 +1,97 @@
+{
+ "id": "B18-007",
+ "slug": "store-opening-feasibility-break-even-model",
+ "title": "Brick-and-Mortar Store Opening Feasibility & Break-Even Model",
+ "price_cents": 3900,
+ "files": {
+  "workbook": {
+   "path": "books/batch18/B18-007/store_opening_feasibility_break_even_model.xlsx",
+   "bytes": 11341,
+   "sha256": "09247ff9a2fed679cb35b0f35ec854ef2a948f14a138e1239fd50cfb506bdfc2"
+  },
+  "guide": {
+   "path": "books/batch18/B18-007/store_opening_feasibility_break_even_model_guide.pdf",
+   "bytes": 12824,
+   "sha256": "634f83ac72d7b88adb94dfda8cfa61469e00517c386b61632d50aa49ffbd9fb6"
+  },
+  "cover": {
+   "path": "books/covers/B18-007.png",
+   "bytes": 57698,
+   "sha256": "0bb408eb01ced3a7e299cf461c8e0349d52f33f75775e7d0af9a975cedbb3a15"
+  },
+  "bundle": {
+   "path": "books/batch18/B18-007/store_opening_feasibility_break_even_model_bundle.zip",
+   "bytes": 20359,
+   "sha256": "e9a70506162cdafc9d7f0f2a0513edc3571d982c38fecad5f1f55540793f99ce"
+  }
+ },
+ "qa": {
+  "file_test": {
+   "status": "PASS",
+   "problems": []
+  },
+  "recalc": {
+   "engine": "lib/xlsx_eval.py vs independent Python model",
+   "checked": 205,
+   "failed": []
+  },
+  "guide": {
+   "pages": 6,
+   "title_found": true,
+   "disclaimer_found": true
+  },
+  "cover": {
+   "size": [
+    1280,
+    720
+   ]
+  },
+  "brand": {
+   "passed": true,
+   "failed_checks": [],
+   "listing_chars": 1639
+  },
+  "bundle": {
+   "files": [
+    "store-opening-feasibility-break-even-model/README.txt",
+    "store-opening-feasibility-break-even-model/store_opening_feasibility_break_even_model.xlsx",
+    "store-opening-feasibility-break-even-model/store_opening_feasibility_break_even_model_guide.pdf"
+   ],
+   "corrupt_member": null
+  },
+  "ok": true,
+  "listing": {
+   "description_html": "<p>Total up what opening a shop really costs, ramp the sales over 24 months, and see the break-even sales, the first profitable month, the payback month and the cash you must have before you sign the lease.</p><p>You enter the build-out, inventory, deposits and other startup costs, the sales you expect when the shop is mature, how long the ramp takes and the percentage of mature sales you will make in month one, plus gross margin, rent, payroll and other costs.</p><p><strong>What's included</strong></p><ul><li>Startup cost total with contingency and a working-capital reserve</li><li>24-month sales ramp, gross profit, variable and fixed costs</li><li>Break-even sales per month and as a share of mature sales</li><li>First profitable month, payback month and the deepest cash hole</li><li>Year-two profit and return on the total funding</li><li>A guide with scenarios, a lease-signing checklist, a routine and an FAQ</li></ul><p><strong>Who it's for</strong></p><ul><li>First-time shop, cafe, boutique and studio owners</li><li>Franchise and pop-up operators evaluating a second location</li><li>Business-plan writers and loan applicants who need a defensible break-even</li><li>Landlords&#x27; tenants negotiating rent-free months and fit-out allowances</li></ul><p><strong>You get:</strong> store_opening_feasibility_break_even_model.xlsx (Inputs, Months, Summary) and a PDF guide.</p><p>Works in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.</p><p><em>This workbook is a calculation tool, not business, lending, legal or financial advice. Every output depends on the estimates you enter; retail sales ramps are uncertain and most new shops need more cash and more time than planned. Verify your costs with quotes and your lease terms with a lawyer.</em></p>"
+  }
+ },
+ "category": "Business & Finance",
+ "tags": [
+  "store opening",
+  "break even",
+  "startup costs",
+  "retail",
+  "feasibility",
+  "excel template"
+ ],
+ "currency": "USD",
+ "pricing_evidence": {
+  "basis": "INTERNAL ONLY. No external listing price was read for this batch (NOT MEASURED). The price follows the factory's own catalogue tiers: $9-24 single-purpose calculators (batches 14-17, 0 sales) and $29-99 compliance kits. This product is a multi-sheet model with a long guide, so it is placed above the calculators.",
+  "external_observations": [],
+  "internal_comparables": [
+   {
+    "id": "B14-009",
+    "price_cents": 1500
+   },
+   {
+    "id": "B16-005",
+    "price_cents": 1200
+   },
+   {
+    "id": "B14-001",
+    "price_cents": 1900
+   }
+  ],
+  "rationale": "$39: a 24-month feasibility model with a long guide; placed above the $9-24 single-purpose calculators and with the factory's other multi-sheet models.",
+  "demand": "WAITING FOR REAL DATA: the account has 0 sales on 112 listings, so no price here is validated by buyers."
+ }
+}

@@ -1,0 +1,97 @@
+{
+ "id": "B18-009",
+ "slug": "wholesale-price-waterfall-channel-margin",
+ "title": "Wholesale Price Waterfall & Channel Margin Stack Calculator",
+ "price_cents": 2900,
+ "files": {
+  "workbook": {
+   "path": "books/batch18/B18-009/wholesale_price_waterfall_channel_margin.xlsx",
+   "bytes": 14033,
+   "sha256": "ebc3f03fd78f7e5719160730bb915f9f12f487210a985cdde95ae09603b70c2a"
+  },
+  "guide": {
+   "path": "books/batch18/B18-009/wholesale_price_waterfall_channel_margin_guide.pdf",
+   "bytes": 12060,
+   "sha256": "e7e3e5f631f25fb85d845d4d0dae33d570f1aaf526d1c1e35a12bfefbfbf4ab6"
+  },
+  "cover": {
+   "path": "books/covers/B18-009.png",
+   "bytes": 62602,
+   "sha256": "3033c6216a541dcede2b4495d70e9df53248397debe025ff53eb49bc687899ce"
+  },
+  "bundle": {
+   "path": "books/batch18/B18-009/wholesale_price_waterfall_channel_margin_bundle.zip",
+   "bytes": 21337,
+   "sha256": "e356d64cacaf7d430ec3bbde92c8b4d2b84bd3826b0600056299e0db3cdf0868"
+  }
+ },
+ "qa": {
+  "file_test": {
+   "status": "PASS",
+   "problems": []
+  },
+  "recalc": {
+   "engine": "lib/xlsx_eval.py vs independent Python model",
+   "checked": 84,
+   "failed": []
+  },
+  "guide": {
+   "pages": 6,
+   "title_found": true,
+   "disclaimer_found": true
+  },
+  "cover": {
+   "size": [
+    1280,
+    720
+   ]
+  },
+  "brand": {
+   "passed": true,
+   "failed_checks": [],
+   "listing_chars": 1806
+  },
+  "bundle": {
+   "files": [
+    "wholesale-price-waterfall-channel-margin/README.txt",
+    "wholesale-price-waterfall-channel-margin/wholesale_price_waterfall_channel_margin.xlsx",
+    "wholesale-price-waterfall-channel-margin/wholesale_price_waterfall_channel_margin_guide.pdf"
+   ],
+   "corrupt_member": null
+  },
+  "ok": true,
+  "listing": {
+   "description_html": "<p>Work back from your unit cost through your wholesale price, the distributor and the retailer to the shelf price, and test whether your planned retail price leaves you a margin in every channel.</p><p>This calculator takes the margin each channel needs and works the price back from your cost: your wholesale price, the distributor&#x27;s price, and the retail price needed for everyone to earn their margin. It then compares that required retail price with the one you plan to charge and tells you whether your margin survives, is squeezed, or turns into a loss.</p><p><strong>What's included</strong></p><ul><li>Price waterfall: unit cost to your wholesale price, distributor price and required retail price</li><li>Your margin at your planned retail price, with a plain verdict for each product</li><li>Profit per unit wholesale versus direct, and the order-size ratio between them</li><li>Quick check that splits any shelf price into retailer, distributor and your shares</li><li>Up to 30 products; summary of products that work, are squeezed or lose money</li><li>A guide with scenarios, a price-list checklist, a routine and an FAQ</li></ul><p><strong>Who it's for</strong></p><ul><li>Makers, food and beverage brands, cosmetics and goods brands starting to sell wholesale</li><li>Founders preparing a price list for retailers or distributors</li><li>Product managers setting MSRP for a new line</li><li>Buyers and sales reps who need to explain a price quickly</li></ul><p><strong>You get:</strong> wholesale_price_waterfall_channel_margin.xlsx (Settings, Products, Summary) and a PDF guide.</p><p>Works in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.</p><p><em>This workbook is a pricing calculation tool, not legal, tax or competition-law advice. Retail price floors and resale price maintenance are restricted in some jurisdictions. Check your distribution and retail agreements before you set or enforce prices.</em></p>"
+  }
+ },
+ "category": "Business & Finance",
+ "tags": [
+  "wholesale pricing",
+  "margin stack",
+  "msrp",
+  "distributor",
+  "retail pricing",
+  "excel template"
+ ],
+ "currency": "USD",
+ "pricing_evidence": {
+  "basis": "INTERNAL ONLY. No external listing price was read for this batch (NOT MEASURED). The price follows the factory's own catalogue tiers: $9-24 single-purpose calculators (batches 14-17, 0 sales) and $29-99 compliance kits. This product is a multi-sheet model with a long guide, so it is placed above the calculators.",
+  "external_observations": [],
+  "internal_comparables": [
+   {
+    "id": "B15-006",
+    "price_cents": 1200
+   },
+   {
+    "id": "B14-005",
+    "price_cents": 1200
+   },
+   {
+    "id": "B14-006",
+    "price_cents": 1500
+   }
+  ],
+  "rationale": "$29: a channel-pricing model with a long guide; the factory's closest products are the $12 price-increase and $12 Etsy profit calculators, and this one adds three channels, a verdict and a direct-versus-wholesale comparison.",
+  "demand": "WAITING FOR REAL DATA: the account has 0 sales on 112 listings, so no price here is validated by buyers."
+ }
+}

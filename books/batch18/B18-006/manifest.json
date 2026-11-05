@@ -1,0 +1,97 @@
+{
+ "id": "B18-006",
+ "slug": "retirement-drawdown-stress-test",
+ "title": "Retirement Drawdown Stress Test: Sequence-of-Returns Scenarios",
+ "price_cents": 3900,
+ "files": {
+  "workbook": {
+   "path": "books/batch18/B18-006/retirement_drawdown_stress_test.xlsx",
+   "bytes": 12704,
+   "sha256": "2917ece43b0482451880a677424db9443f58bd253162445b2dfe4cc801f9ba09"
+  },
+  "guide": {
+   "path": "books/batch18/B18-006/retirement_drawdown_stress_test_guide.pdf",
+   "bytes": 12020,
+   "sha256": "b9226fe8265525ce41e3cc0ae9086f398000c77cbd653a11f9bb32ed19fa3c02"
+  },
+  "cover": {
+   "path": "books/covers/B18-006.png",
+   "bytes": 44257,
+   "sha256": "d6d4043522efd1f6f30cd14c5d17d7982f1b1ee78e6ce27fc14e14c091a8f4e5"
+  },
+  "bundle": {
+   "path": "books/batch18/B18-006/retirement_drawdown_stress_test_bundle.zip",
+   "bytes": 20186,
+   "sha256": "714d9225d8565e8249b30914f8395da052c3fb573eefd355ceb75760ca0a2050"
+  }
+ },
+ "qa": {
+  "file_test": {
+   "status": "PASS",
+   "problems": []
+  },
+  "recalc": {
+   "engine": "lib/xlsx_eval.py vs independent Python model",
+   "checked": 395,
+   "failed": []
+  },
+  "guide": {
+   "pages": 6,
+   "title_found": true,
+   "disclaimer_found": true
+  },
+  "cover": {
+   "size": [
+    1280,
+    720
+   ]
+  },
+  "brand": {
+   "passed": true,
+   "failed_checks": [],
+   "listing_chars": 1814
+  },
+  "bundle": {
+   "files": [
+    "retirement-drawdown-stress-test/README.txt",
+    "retirement-drawdown-stress-test/retirement_drawdown_stress_test.xlsx",
+    "retirement-drawdown-stress-test/retirement_drawdown_stress_test_guide.pdf"
+   ],
+   "corrupt_member": null
+  },
+  "ok": true,
+  "listing": {
+   "description_html": "<p>Run the same retirement spending through a steady market, an early crash and a late crash, year by year with inflation, Social Security and a pension, and see how long the money lasts.</p><p>This workbook runs one plan through three scenarios you control: a steady market, an early crash (a large loss in year one and a smaller one in year two), and a late crash (a large loss in year twenty). Spending rises with inflation, Social Security starts at the age you choose, a pension reduces the withdrawal, and the table shows the balance year by year for 35 years.</p><p><strong>What's included</strong></p><ul><li>Three scenarios on one plan: steady market, early crash, late crash</li><li>35-year projection with inflation-adjusted spending, Social Security and a pension</li><li>Year-by-year balance and withdrawal for each scenario</li><li>Years the money lasts, the age it runs out and the starting withdrawal rate</li><li>All crash sizes, timing, spending and benefit ages are editable inputs</li><li>A guide with scenarios, a stress-test checklist, a routine and an FAQ</li></ul><p><strong>Who it's for</strong></p><ul><li>People within ten years of retirement and retirees reviewing their plan</li><li>Advisers and coaches who want a transparent illustration for clients</li><li>Early-retirement planners testing a lower or higher withdrawal rate</li><li>Couples comparing what changes if Social Security starts earlier or later</li></ul><p><strong>You get:</strong> retirement_drawdown_stress_test.xlsx (Inputs, Projection, Summary) and a PDF guide.</p><p>Works in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.</p><p><em>This workbook is a calculation tool, not investment, retirement, tax or financial-planning advice. It models three fixed, hypothetical return paths, not forecasts, and ignores taxes, fees, health shocks and changes in spending. Discuss your plan with a qualified, fiduciary adviser before acting.</em></p>"
+  }
+ },
+ "category": "Business & Finance",
+ "tags": [
+  "retirement",
+  "drawdown",
+  "sequence risk",
+  "stress test",
+  "withdrawal rate",
+  "excel template"
+ ],
+ "currency": "USD",
+ "pricing_evidence": {
+  "basis": "INTERNAL ONLY. No external listing price was read for this batch (NOT MEASURED). The price follows the factory's own catalogue tiers: $9-24 single-purpose calculators (batches 14-17, 0 sales) and $29-99 compliance kits. This product is a multi-sheet model with a long guide, so it is placed above the calculators.",
+  "external_observations": [],
+  "internal_comparables": [
+   {
+    "id": "B15-010",
+    "price_cents": 900
+   },
+   {
+    "id": "B16-003",
+    "price_cents": 1200
+   },
+   {
+    "id": "B14-003",
+    "price_cents": 1200
+   }
+  ],
+  "rationale": "$39: a retirement stress-test model with a long guide; placed above the $9-24 savings calculators because it carries three scenarios and a 35-year projection.",
+  "demand": "WAITING FOR REAL DATA: the account has 0 sales on 112 listings, so no price here is validated by buyers."
+ }
+}

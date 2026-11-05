@@ -478,7 +478,7 @@
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
     "published_on_platform": true,
-    "in_catalog": false
+    "in_catalog": true
    }
   },
   {
@@ -498,7 +498,7 @@
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
     "published_on_platform": true,
-    "in_catalog": false
+    "in_catalog": true
    }
   },
   {
@@ -518,7 +518,7 @@
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
     "published_on_platform": true,
-    "in_catalog": false
+    "in_catalog": true
    }
   },
   {
@@ -538,7 +538,7 @@
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
     "published_on_platform": true,
-    "in_catalog": false
+    "in_catalog": true
    }
   },
   {
@@ -558,7 +558,7 @@
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
     "published_on_platform": true,
-    "in_catalog": false
+    "in_catalog": true
    }
   },
   {
@@ -578,7 +578,7 @@
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
     "published_on_platform": true,
-    "in_catalog": false
+    "in_catalog": true
    }
   },
   {
@@ -598,7 +598,7 @@
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
     "published_on_platform": true,
-    "in_catalog": false
+    "in_catalog": true
    }
   },
   {
@@ -618,7 +618,7 @@
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
     "published_on_platform": true,
-    "in_catalog": false
+    "in_catalog": true
    }
   },
   {
@@ -638,7 +638,7 @@
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
     "published_on_platform": true,
-    "in_catalog": false
+    "in_catalog": true
    }
   },
   {
@@ -658,13 +658,13 @@
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
     "published_on_platform": true,
-    "in_catalog": false
+    "in_catalog": true
    }
   },
   {
    "internal_id": "B17-001",
    "external_ids": {},
-   "title": "European Accessibility Act Penalty Exposure Checker (10 EU Countries)",
+   "title": "European Accessibility Act Penalty Exposure Checker (11 EU Countries)",
    "price_cents": 1900,
    "published": false,
    "url": null,
@@ -675,6 +675,206 @@
    "primary_state": "READY_FOR_AUTHORIZATION",
    "flags": {
     "published_on_platform": false,
+    "in_catalog": false
+   }
+  },
+  {
+   "internal_id": "B18-001",
+   "external_ids": {
+    "gumroad": "rGawgyq6wdy3gVyJtYIt0A=="
+   },
+   "title": "Contractor Job Costing & WIP Schedule (Over/Under Billing)",
+   "price_cents": 4900,
+   "published": true,
+   "url": "https://aekraft.gumroad.com/l/ytaqjk",
+   "customizable_price": false,
+   "sales_count": 0,
+   "sales_usd_cents": 0,
+   "first_published_at": "2026-11-05T17:18:39.973894+00:00",
+   "manifest": "books/batch18/B18-001/manifest.json",
+   "primary_state": "PUBLIC_LISTING_VERIFIED",
+   "flags": {
+    "published_on_platform": true,
+    "in_catalog": false
+   }
+  },
+  {
+   "internal_id": "B18-002",
+   "external_ids": {
+    "gumroad": "SB6uFVyyMlDxQ48J0VjElQ=="
+   },
+   "title": "Owner-Operator Cost per Mile & Load Profitability Model",
+   "price_cents": 3900,
+   "published": true,
+   "url": "https://aekraft.gumroad.com/l/ryzoro",
+   "customizable_price": false,
+   "sales_count": 0,
+   "sales_usd_cents": 0,
+   "first_published_at": "2026-11-05T17:19:50.504684+00:00",
+   "manifest": "books/batch18/B18-002/manifest.json",
+   "primary_state": "PUBLIC_LISTING_VERIFIED",
+   "flags": {
+    "published_on_platform": true,
+    "in_catalog": false
+   }
+  },
+  {
+   "internal_id": "B18-003",
+   "external_ids": {
+    "gumroad": "EY005HMHYVRKNTNobJE6nA=="
+   },
+   "title": "Small Business Valuation & Offer Price Model (SDE, DCF, Assets)",
+   "price_cents": 4900,
+   "published": true,
+   "url": "https://aekraft.gumroad.com/l/duzghq",
+   "customizable_price": false,
+   "sales_count": 0,
+   "sales_usd_cents": 0,
+   "first_published_at": "2026-11-05T17:20:13.091709+00:00",
+   "manifest": "books/batch18/B18-003/manifest.json",
+   "primary_state": "PUBLIC_LISTING_VERIFIED",
+   "flags": {
+    "published_on_platform": true,
+    "in_catalog": false
+   }
+  },
+  {
+   "internal_id": "B18-004",
+   "external_ids": {
+    "gumroad": "mHmzqPL-dpRO1DeOKX2Usg=="
+   },
+   "title": "Agency Utilization & Capacity Planner (Billable Hours, Bench Cost, Hiring Trigger)",
+   "price_cents": 3900,
+   "published": true,
+   "url": "https://aekraft.gumroad.com/l/atynt",
+   "customizable_price": false,
+   "sales_count": 0,
+   "sales_usd_cents": 0,
+   "first_published_at": "2026-11-05T17:20:38.243701+00:00",
+   "manifest": "books/batch18/B18-004/manifest.json",
+   "primary_state": "PUBLIC_LISTING_VERIFIED",
+   "flags": {
+    "published_on_platform": true,
+    "in_catalog": false
+   }
+  },
+  {
+   "internal_id": "B18-005",
+   "external_ids": {
+    "gumroad": "a73yg1D_lYvLTbLnNfqPMA=="
+   },
+   "title": "Equipment Lease vs Buy Model with MACRS Depreciation & Tax Shield (US)",
+   "price_cents": 3900,
+   "published": true,
+   "url": "https://aekraft.gumroad.com/l/pgoxt",
+   "customizable_price": false,
+   "sales_count": 0,
+   "sales_usd_cents": 0,
+   "first_published_at": "2026-11-05T17:21:03.437120+00:00",
+   "manifest": "books/batch18/B18-005/manifest.json",
+   "primary_state": "PUBLIC_LISTING_VERIFIED",
+   "flags": {
+    "published_on_platform": true,
+    "in_catalog": false
+   }
+  },
+  {
+   "internal_id": "B18-006",
+   "external_ids": {
+    "gumroad": "C10Z6GX6T227HNi19EiF9A=="
+   },
+   "title": "Retirement Drawdown Stress Test: Sequence-of-Returns Scenarios",
+   "price_cents": 3900,
+   "published": true,
+   "url": "https://aekraft.gumroad.com/l/rwrcw",
+   "customizable_price": false,
+   "sales_count": 0,
+   "sales_usd_cents": 0,
+   "first_published_at": "2026-11-05T17:21:26.481205+00:00",
+   "manifest": "books/batch18/B18-006/manifest.json",
+   "primary_state": "PUBLIC_LISTING_VERIFIED",
+   "flags": {
+    "published_on_platform": true,
+    "in_catalog": false
+   }
+  },
+  {
+   "internal_id": "B18-007",
+   "external_ids": {
+    "gumroad": "k4fC9pxwdFbLDFVBNbHwWA=="
+   },
+   "title": "Brick-and-Mortar Store Opening Feasibility & Break-Even Model",
+   "price_cents": 3900,
+   "published": true,
+   "url": "https://aekraft.gumroad.com/l/ogypx",
+   "customizable_price": false,
+   "sales_count": 0,
+   "sales_usd_cents": 0,
+   "first_published_at": "2026-11-05T17:21:49.457550+00:00",
+   "manifest": "books/batch18/B18-007/manifest.json",
+   "primary_state": "PUBLIC_LISTING_VERIFIED",
+   "flags": {
+    "published_on_platform": true,
+    "in_catalog": false
+   }
+  },
+  {
+   "internal_id": "B18-008",
+   "external_ids": {
+    "gumroad": "VTSGPxu8ih-e8XYrPyl97Q=="
+   },
+   "title": "Small Farm Crop Enterprise Budget & Break-Even Planner",
+   "price_cents": 2900,
+   "published": true,
+   "url": "https://aekraft.gumroad.com/l/zzudjn",
+   "customizable_price": false,
+   "sales_count": 0,
+   "sales_usd_cents": 0,
+   "first_published_at": "2026-11-05T17:22:13.081871+00:00",
+   "manifest": "books/batch18/B18-008/manifest.json",
+   "primary_state": "PUBLIC_LISTING_VERIFIED",
+   "flags": {
+    "published_on_platform": true,
+    "in_catalog": false
+   }
+  },
+  {
+   "internal_id": "B18-009",
+   "external_ids": {
+    "gumroad": "DzFb6-McvT_0vyUgwApD8A=="
+   },
+   "title": "Wholesale Price Waterfall & Channel Margin Stack Calculator",
+   "price_cents": 2900,
+   "published": true,
+   "url": "https://aekraft.gumroad.com/l/yzmmz",
+   "customizable_price": false,
+   "sales_count": 0,
+   "sales_usd_cents": 0,
+   "first_published_at": "2026-11-05T17:22:39.509176+00:00",
+   "manifest": "books/batch18/B18-009/manifest.json",
+   "primary_state": "PUBLIC_LISTING_VERIFIED",
+   "flags": {
+    "published_on_platform": true,
+    "in_catalog": false
+   }
+  },
+  {
+   "internal_id": "B18-010",
+   "external_ids": {
+    "gumroad": "v3k2GBK351pOpEKfuJ_qSw=="
+   },
+   "title": "Digital Course Launch Break-Even Model (Pessimistic, Base, Optimistic)",
+   "price_cents": 2900,
+   "published": true,
+   "url": "https://aekraft.gumroad.com/l/joytjk",
+   "customizable_price": false,
+   "sales_count": 0,
+   "sales_usd_cents": 0,
+   "first_published_at": "2026-11-05T17:23:02.628057+00:00",
+   "manifest": "books/batch18/B18-010/manifest.json",
+   "primary_state": "PUBLIC_LISTING_VERIFIED",
+   "flags": {
+    "published_on_platform": true,
     "in_catalog": false
    }
   },
@@ -1212,7 +1412,7 @@
    "sales_usd_cents": 0,
    "first_published_at": "2026-09-26T00:48:44.128352+00:00",
    "manifest": null,
-   "primary_state": "PUBLIC_LISTING_VERIFIED",
+   "primary_state": "UPLOAD_COMPLETED",
    "flags": {
     "published_on_platform": true,
     "in_catalog": true
@@ -2319,20 +2519,20 @@
    }
   }
  ],
- "generated_at": "2026-10-31T11:54:27.657973+00:00",
+ "generated_at": "2026-11-05T17:23:23.542757+00:00",
  "source": "Gumroad GET /v2/products (read-only) + data/catalog.json + batch manifests + publish results",
  "drift": {
   "live_missing_from_catalog": [
-   "B16-001",
-   "B16-002",
-   "B16-003",
-   "B16-004",
-   "B16-005",
-   "B16-006",
-   "B16-007",
-   "B16-008",
-   "B16-009",
-   "B16-010"
+   "B18-001",
+   "B18-002",
+   "B18-003",
+   "B18-004",
+   "B18-005",
+   "B18-006",
+   "B18-007",
+   "B18-008",
+   "B18-009",
+   "B18-010"
   ],
   "catalog_rows_not_live": [],
   "manifest_live_mismatch": [],

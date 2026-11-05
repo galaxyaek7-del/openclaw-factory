@@ -1,0 +1,97 @@
+{
+ "id": "B18-003",
+ "slug": "small-business-valuation-offer-model",
+ "title": "Small Business Valuation & Offer Price Model (SDE, DCF, Assets)",
+ "price_cents": 4900,
+ "files": {
+  "workbook": {
+   "path": "books/batch18/B18-003/small_business_valuation_offer_model.xlsx",
+   "bytes": 9126,
+   "sha256": "83a890b3eb56f0aec1e766a5ef4e6507be5c7e5820710d03d194e85a3fe129a1"
+  },
+  "guide": {
+   "path": "books/batch18/B18-003/small_business_valuation_offer_model_guide.pdf",
+   "bytes": 13183,
+   "sha256": "6bb563ffbbaeade7dda610d46237824adf534382bdba909a62710639f50f3b92"
+  },
+  "cover": {
+   "path": "books/covers/B18-003.png",
+   "bytes": 51854,
+   "sha256": "9de5e1de7237c501ec11fa7d5f1b191cae08bd529254c06803db23b5747aa7f8"
+  },
+  "bundle": {
+   "path": "books/batch18/B18-003/small_business_valuation_offer_model_bundle.zip",
+   "bytes": 18647,
+   "sha256": "34528c23fda206d1503c08fe827465f8c3119c051cfc98a17b8344a4da3392cf"
+  }
+ },
+ "qa": {
+  "file_test": {
+   "status": "PASS",
+   "problems": []
+  },
+  "recalc": {
+   "engine": "lib/xlsx_eval.py vs independent Python model",
+   "checked": 30,
+   "failed": []
+  },
+  "guide": {
+   "pages": 6,
+   "title_found": true,
+   "disclaimer_found": true
+  },
+  "cover": {
+   "size": [
+    1280,
+    720
+   ]
+  },
+  "brand": {
+   "passed": true,
+   "failed_checks": [],
+   "listing_chars": 1767
+  },
+  "bundle": {
+   "files": [
+    "small-business-valuation-offer-model/README.txt",
+    "small-business-valuation-offer-model/small_business_valuation_offer_model.xlsx",
+    "small-business-valuation-offer-model/small_business_valuation_offer_model_guide.pdf"
+   ],
+   "corrupt_member": null
+  },
+  "ok": true,
+  "listing": {
+   "description_html": "<p>Rebuild a small business&#x27;s seller&#x27;s discretionary earnings, value it three ways, blend the results into an offer range and check that the deal can carry its own debt.</p><p>This model builds SDE line by line, applies a low, middle and high market multiple, runs a five-year discounted cash flow with a terminal value, values the net assets, and blends the three by weights you choose. It then turns the blend into an opening offer, a target and a walk-away price, and tests whether the cash flow can service the loan you would need.</p><p><strong>What's included</strong></p><ul><li>SDE built line by line from net income, owner pay, interest, D&amp;A, one-time costs and perks</li><li>Market value at low, middle and high multiples</li><li>Five-year discounted cash flow with terminal value</li><li>Asset approach and a weighted blend of the three methods</li><li>Opening, target and walk-away offer prices</li><li>Debt-service coverage check for the financed price</li><li>A guide with worked scenarios, a due-diligence checklist, a routine and an FAQ</li></ul><p><strong>Who it's for</strong></p><ul><li>Individuals buying a small business or franchise resale</li><li>Owners estimating what their business could sell for</li><li>Brokers and advisors preparing a first valuation range</li><li>Lenders&#x27; clients who need a debt-service check on a proposed purchase price</li></ul><p><strong>You get:</strong> small_business_valuation_offer_model.xlsx (Inputs, Valuation) and a PDF guide.</p><p>Works in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.</p><p><em>This workbook is a calculation tool, not valuation, investment, tax, legal or lending advice. It is not a certified appraisal. Multiples, discount rates and add-backs are your assumptions, and every figure should be verified against tax returns and financial statements by a qualified professional before you buy, sell or borrow.</em></p>"
+  }
+ },
+ "category": "Business & Finance",
+ "tags": [
+  "business valuation",
+  "sde multiple",
+  "dcf",
+  "buy a business",
+  "offer price",
+  "excel template"
+ ],
+ "currency": "USD",
+ "pricing_evidence": {
+  "basis": "INTERNAL ONLY. No external listing price was read for this batch (NOT MEASURED). The price follows the factory's own catalogue tiers: $9-24 single-purpose calculators (batches 14-17, 0 sales) and $29-99 compliance kits. This product is a multi-sheet model with a long guide, so it is placed above the calculators.",
+  "external_observations": [],
+  "internal_comparables": [
+   {
+    "id": "B14-002",
+    "price_cents": 2400
+   },
+   {
+    "id": "B16-001",
+    "price_cents": 1900
+   },
+   {
+    "id": "GR-742a42d65f",
+    "price_cents": 8900
+   }
+  ],
+  "rationale": "$49: a three-method valuation model with a debt-service test and a long guide; the factory's closest comparables are the $24 Rental Property Deal Analyzer and the $49-59 kits, and this model carries more sheets and analysis than either.",
+  "demand": "WAITING FOR REAL DATA: the account has 0 sales on 112 listings, so no price here is validated by buyers."
+ }
+}

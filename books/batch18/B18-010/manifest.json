@@ -1,0 +1,97 @@
+{
+ "id": "B18-010",
+ "slug": "digital-course-launch-break-even-model",
+ "title": "Digital Course Launch Break-Even Model (Pessimistic, Base, Optimistic)",
+ "price_cents": 2900,
+ "files": {
+  "workbook": {
+   "path": "books/batch18/B18-010/digital_course_launch_break_even_model.xlsx",
+   "bytes": 9455,
+   "sha256": "b2c594005a142a418846ca440cd9610dd805df8bd3493b1a73f461aa87e5b40c"
+  },
+  "guide": {
+   "path": "books/batch18/B18-010/digital_course_launch_break_even_model_guide.pdf",
+   "bytes": 11860,
+   "sha256": "ac842babfa0deed798a57582a571fd9316e7be8cdf2485bb30b6b1c1e875ef27"
+  },
+  "cover": {
+   "path": "books/covers/B18-010.png",
+   "bytes": 48633,
+   "sha256": "2ab7d86414caebd162c342dbfb95fb6e7767abdc034c853c1907c43a43d4ee0f"
+  },
+  "bundle": {
+   "path": "books/batch18/B18-010/digital_course_launch_break_even_model_bundle.zip",
+   "bytes": 17792,
+   "sha256": "fdfd67f9a184598fc2a48133b78a19f2b4a212010414d69f9bac5f10ee21bdd4"
+  }
+ },
+ "qa": {
+  "file_test": {
+   "status": "PASS",
+   "problems": []
+  },
+  "recalc": {
+   "engine": "lib/xlsx_eval.py vs independent Python model",
+   "checked": 43,
+   "failed": []
+  },
+  "guide": {
+   "pages": 6,
+   "title_found": true,
+   "disclaimer_found": true
+  },
+  "cover": {
+   "size": [
+    1280,
+    720
+   ]
+  },
+  "brand": {
+   "passed": true,
+   "failed_checks": [],
+   "listing_chars": 1720
+  },
+  "bundle": {
+   "files": [
+    "digital-course-launch-break-even-model/README.txt",
+    "digital-course-launch-break-even-model/digital_course_launch_break_even_model.xlsx",
+    "digital-course-launch-break-even-model/digital_course_launch_break_even_model_guide.pdf"
+   ],
+   "corrupt_member": null
+  },
+  "ok": true,
+  "listing": {
+   "description_html": "<p>Model a course or digital-product launch from email list and ad spend to buyers, refunds, fees and profit, in three scenarios, and see how many sales you need to break even before you spend a dollar.</p><p>It runs three scenarios side by side (pessimistic, base and optimistic) so you can see the range, not one number. For each it returns the buyers from your list and from paid traffic, gross and net revenue, profit after all costs, the return on ad spend (ROAS), the cost to acquire a paid buyer and the number of buyers you need to break even.</p><p><strong>What's included</strong></p><ul><li>Three scenarios side by side: pessimistic, base and optimistic</li><li>Buyers from your email list and from paid traffic</li><li>Gross and net revenue after refunds and fees; profit after every cost</li><li>ROAS, paid cost per buyer and break-even buyers for each scenario</li><li>A range of outcomes so you can cap the ad budget at a loss you can afford</li><li>A guide with scenarios, a pre-launch checklist, a routine and an FAQ</li></ul><p><strong>Who it's for</strong></p><ul><li>Course creators, coaches and consultants launching a first or next product</li><li>Authors and creators selling digital downloads, memberships or cohorts</li><li>Marketers advising a client on a launch budget</li><li>Anyone deciding whether to spend on ads or only launch to their list</li></ul><p><strong>You get:</strong> digital_course_launch_break_even_model.xlsx (Settings, Scenarios, Summary) and a PDF guide.</p><p>Works in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.</p><p><em>This workbook is a planning tool, not financial, tax, legal or marketing advice. Conversion rates, click costs and refund rates in the examples are illustrative, not benchmarks; your real numbers will differ and an untested launch can lose the whole ad budget.</em></p>"
+  }
+ },
+ "category": "Business & Finance",
+ "tags": [
+  "course launch",
+  "break even",
+  "roas",
+  "digital product",
+  "launch plan",
+  "excel template"
+ ],
+ "currency": "USD",
+ "pricing_evidence": {
+  "basis": "INTERNAL ONLY. No external listing price was read for this batch (NOT MEASURED). The price follows the factory's own catalogue tiers: $9-24 single-purpose calculators (batches 14-17, 0 sales) and $29-99 compliance kits. This product is a multi-sheet model with a long guide, so it is placed above the calculators.",
+  "external_observations": [],
+  "internal_comparables": [
+   {
+    "id": "B15-007",
+    "price_cents": 1500
+   },
+   {
+    "id": "B16-006",
+    "price_cents": 1500
+   },
+   {
+    "id": "B14-009",
+    "price_cents": 1500
+   }
+  ],
+  "rationale": "$29: a launch-planning model with a long guide; the factory's nearest products are the $15 CLV/CAC calculator and the $15 MRR forecaster, and this one adds three scenarios and a break-even buyers target.",
+  "demand": "WAITING FOR REAL DATA: the account has 0 sales on 112 listings, so no price here is validated by buyers."
+ }
+}

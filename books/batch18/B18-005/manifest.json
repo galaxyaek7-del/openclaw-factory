@@ -1,0 +1,97 @@
+{
+ "id": "B18-005",
+ "slug": "equipment-lease-vs-buy-macrs-model",
+ "title": "Equipment Lease vs Buy Model with MACRS Depreciation & Tax Shield (US)",
+ "price_cents": 3900,
+ "files": {
+  "workbook": {
+   "path": "books/batch18/B18-005/equipment_lease_vs_buy_macrs_model.xlsx",
+   "bytes": 10548,
+   "sha256": "a9d65a168a7cf83f61fbce1444b3901d6561e3bc1f81b0cec38406d9172875d9"
+  },
+  "guide": {
+   "path": "books/batch18/B18-005/equipment_lease_vs_buy_macrs_model_guide.pdf",
+   "bytes": 12679,
+   "sha256": "cc34a859e7300932c3783770f4eca6201d013254d56dec78a7df1ec76b3dac5b"
+  },
+  "cover": {
+   "path": "books/covers/B18-005.png",
+   "bytes": 46965,
+   "sha256": "909d254e12a63085b0489671df9c6fbcc4141be5eb092ccb72c06083ebc41f4f"
+  },
+  "bundle": {
+   "path": "books/batch18/B18-005/equipment_lease_vs_buy_macrs_model_bundle.zip",
+   "bytes": 19518,
+   "sha256": "fcc42257cd260825ed5e8b372d373cdcccaf5404b6fae5ce993a7235c6406b84"
+  }
+ },
+ "qa": {
+  "file_test": {
+   "status": "PASS",
+   "problems": []
+  },
+  "recalc": {
+   "engine": "lib/xlsx_eval.py vs independent Python model",
+   "checked": 93,
+   "failed": []
+  },
+  "guide": {
+   "pages": 6,
+   "title_found": true,
+   "disclaimer_found": true
+  },
+  "cover": {
+   "size": [
+    1280,
+    720
+   ]
+  },
+  "brand": {
+   "passed": true,
+   "failed_checks": [],
+   "listing_chars": 1942
+  },
+  "bundle": {
+   "files": [
+    "equipment-lease-vs-buy-macrs-model/README.txt",
+    "equipment-lease-vs-buy-macrs-model/equipment_lease_vs_buy_macrs_model.xlsx",
+    "equipment-lease-vs-buy-macrs-model/equipment_lease_vs_buy_macrs_model_guide.pdf"
+   ],
+   "corrupt_member": null
+  },
+  "ok": true,
+  "listing": {
+   "description_html": "<p>Compare buying with a loan against leasing the same equipment over five years, after tax, with MACRS depreciation, interest deductions, resale proceeds and recapture, discounted to today&#x27;s money.</p><p>This model puts both options on a year-by-year table. For buying it follows the down payment, loan payments split into interest and principal, MACRS depreciation (with an optional first-year expensing share), the tax saved by interest and depreciation, and what you net when you sell, after repaying the loan and paying tax on the sale. For leasing it follows the upfront payment and the monthly payments, which are deductible.</p><p><strong>What's included</strong></p><ul><li>Year-by-year after-tax cash flows for buying with a loan and for leasing</li><li>MACRS depreciation with an optional first-year expensing share</li><li>Loan schedule: payments, interest, balance; tax shield on interest and depreciation</li><li>Resale value, tax on the sale over tax basis, and loan payoff at year 5</li><li>Discounted comparison with the dollar difference and a plain verdict</li><li>A guide with scenarios, a signing checklist, a routine and an FAQ</li></ul><p><strong>Who it's for</strong></p><ul><li>Owners of small businesses buying vehicles, machinery, tools or computers</li><li>Contractors, clinics, restaurants and workshops comparing a lease offer with a loan</li><li>Bookkeepers and advisors preparing a lease-versus-buy memo</li><li>Anyone told that leasing is cheaper &#x27;because of the tax benefits&#x27; and wanting to check</li></ul><p><strong>You get:</strong> equipment_lease_vs_buy_macrs_model.xlsx (Inputs, Years, Summary) and a PDF guide.</p><p>Works in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.</p><p><em>This workbook is a calculation tool, not tax, legal or financial advice. Depreciation rules, Section 179 and bonus limits, state treatment and lease classification change and depend on your situation; the MACRS table must be checked against current IRS Publication 946 and your accountant must confirm the treatment for your business.</em></p>"
+  }
+ },
+ "category": "Business & Finance",
+ "tags": [
+  "lease vs buy",
+  "macrs",
+  "depreciation",
+  "equipment",
+  "tax shield",
+  "excel template"
+ ],
+ "currency": "USD",
+ "pricing_evidence": {
+  "basis": "INTERNAL ONLY. No external listing price was read for this batch (NOT MEASURED). The price follows the factory's own catalogue tiers: $9-24 single-purpose calculators (batches 14-17, 0 sales) and $29-99 compliance kits. This product is a multi-sheet model with a long guide, so it is placed above the calculators.",
+  "external_observations": [],
+  "internal_comparables": [
+   {
+    "id": "B15-001",
+    "price_cents": 1500
+   },
+   {
+    "id": "B15-003",
+    "price_cents": 1200
+   },
+   {
+    "id": "B14-002",
+    "price_cents": 2400
+   }
+  ],
+  "rationale": "$39: a tax-aware decision model with a long guide; placed with the factory's other analytical models and above the $9-24 loan and car calculators.",
+  "demand": "WAITING FOR REAL DATA: the account has 0 sales on 112 listings, so no price here is validated by buyers."
+ }
+}

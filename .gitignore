@@ -131,6 +131,7 @@ data/_backups/
 # data/auth_audit.jsonl and data/ledger_integrity_baseline.json were
 # already listed above.
 .env.*
+!.env.example
 *.env
 *.env.bak
 .env.backup*
@@ -177,6 +178,7 @@ books/_batch14_src/
 books/_batch15_src/
 books/_batch16_src/
 books/_batch17_src/
+books/_batch18_src/
 data/registry_daily_state.json
 data/tool_pages_daily_state.json
 # customer inquiries: names and e-mail addresses (inquiry_intake.py)
@@ -211,8 +213,6 @@ seeds/**/*.pdf
 seeds/**/*.docx
 seeds/**/*.xlsx
 /demo_cookbook.pdf
-# 2026-10-31 thin-listing disclosure report: full descriptions keyed by product ids
 data/thin_listing_disclosures_*.json
-# 2026-10-31 daily protection check result (local state)
 data/company_protection.json
 data/discoverability_*.json

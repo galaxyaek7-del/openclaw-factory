@@ -1,0 +1,97 @@
+{
+ "id": "B18-004",
+ "slug": "agency-utilization-capacity-planner",
+ "title": "Agency Utilization & Capacity Planner (Billable Hours, Bench Cost, Hiring Trigger)",
+ "price_cents": 3900,
+ "files": {
+  "workbook": {
+   "path": "books/batch18/B18-004/agency_utilization_capacity_planner.xlsx",
+   "bytes": 15371,
+   "sha256": "131c1744a349b478c11779bbe64b3e2ffe118a9af3f05181fc6fd656ff766333"
+  },
+  "guide": {
+   "path": "books/batch18/B18-004/agency_utilization_capacity_planner_guide.pdf",
+   "bytes": 11966,
+   "sha256": "9a39bf317bf60b3b7254b48a26923336986ddefd6423a007c83a1747eead8daa"
+  },
+  "cover": {
+   "path": "books/covers/B18-004.png",
+   "bytes": 56226,
+   "sha256": "29be1e58c3ab0867ba3cd03d6a7cd285191c4ebb50b242918bd7d2f105af41e1"
+  },
+  "bundle": {
+   "path": "books/batch18/B18-004/agency_utilization_capacity_planner_bundle.zip",
+   "bytes": 22312,
+   "sha256": "9941f2a705c598fc5419e8205745c12913438ae9de42d1dbc29ed14ac6e2615a"
+  }
+ },
+ "qa": {
+  "file_test": {
+   "status": "PASS",
+   "problems": []
+  },
+  "recalc": {
+   "engine": "lib/xlsx_eval.py vs independent Python model",
+   "checked": 107,
+   "failed": []
+  },
+  "guide": {
+   "pages": 6,
+   "title_found": true,
+   "disclaimer_found": true
+  },
+  "cover": {
+   "size": [
+    1280,
+    720
+   ]
+  },
+  "brand": {
+   "passed": true,
+   "failed_checks": [],
+   "listing_chars": 1543
+  },
+  "bundle": {
+   "files": [
+    "agency-utilization-capacity-planner/README.txt",
+    "agency-utilization-capacity-planner/agency_utilization_capacity_planner.xlsx",
+    "agency-utilization-capacity-planner/agency_utilization_capacity_planner_guide.pdf"
+   ],
+   "corrupt_member": null
+  },
+  "ok": true,
+  "listing": {
+   "description_html": "<p>See each person&#x27;s utilization against their break-even and target, what the unbilled hours cost, and when the pipeline really justifies a hire.</p><p>For every person you enter salary, overhead, weekly hours, a target billable share, the hours actually billed and the bill rate. The planner returns their loaded cost, the utilization at which they break even, their margin, the gap to target, the cost of the hours left unbilled (bench cost) and a status.</p><p><strong>What's included</strong></p><ul><li>Per-person utilization, break-even utilization, margin and status for up to 30 people</li><li>Bench cost: the price of paid hours that were not billed</li><li>Gap to target in hours per week and revenue left on the table</li><li>Hiring signal from spare capacity versus pipeline hours</li><li>Summary of blended utilization, revenue, margin and the people to look at first</li><li>A guide with worked scenarios, a hiring checklist, a routine and an FAQ</li></ul><p><strong>Who it's for</strong></p><ul><li>Design, marketing, development and consulting agency owners</li><li>Operations managers and resource planners</li><li>Freelancer collectives deciding whether to add a team member</li><li>Finance leads building an agency budget</li></ul><p><strong>You get:</strong> agency_utilization_capacity_planner.xlsx (Settings, Team, Summary) and a PDF guide.</p><p>Works in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.</p><p><em>This workbook is a calculation tool, not accounting, HR, employment-law or tax advice. It models billable time and cost; hiring, pay and employment decisions involve legal and personal factors that no spreadsheet captures.</em></p>"
+  }
+ },
+ "category": "Business & Finance",
+ "tags": [
+  "utilization",
+  "agency",
+  "capacity planning",
+  "billable hours",
+  "hiring",
+  "excel template"
+ ],
+ "currency": "USD",
+ "pricing_evidence": {
+  "basis": "INTERNAL ONLY. No external listing price was read for this batch (NOT MEASURED). The price follows the factory's own catalogue tiers: $9-24 single-purpose calculators (batches 14-17, 0 sales) and $29-99 compliance kits. This product is a multi-sheet model with a long guide, so it is placed above the calculators.",
+  "external_observations": [],
+  "internal_comparables": [
+   {
+    "id": "B16-007",
+    "price_cents": 1200
+   },
+   {
+    "id": "B15-008",
+    "price_cents": 1400
+   },
+   {
+    "id": "B14-006",
+    "price_cents": 1500
+   }
+  ],
+  "rationale": "$39: a resource-planning model for service businesses with a long guide, priced with the factory's other multi-sheet business tools above the $9-24 calculators.",
+  "demand": "WAITING FOR REAL DATA: the account has 0 sales on 112 listings, so no price here is validated by buyers."
+ }
+}

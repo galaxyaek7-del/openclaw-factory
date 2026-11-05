@@ -1,0 +1,97 @@
+{
+ "id": "B18-002",
+ "slug": "owner-operator-cost-per-mile-load-profit",
+ "title": "Owner-Operator Cost per Mile & Load Profitability Model",
+ "price_cents": 3900,
+ "files": {
+  "workbook": {
+   "path": "books/batch18/B18-002/owner_operator_cost_per_mile_load_profit.xlsx",
+   "bytes": 14975,
+   "sha256": "bb09d9b3a02c17d71ea7aacc8ff19f3dcf335f72142a7668b60f5628e2b75a7c"
+  },
+  "guide": {
+   "path": "books/batch18/B18-002/owner_operator_cost_per_mile_load_profit_guide.pdf",
+   "bytes": 12227,
+   "sha256": "3e85266f7802ce55c9d7e5c6fae43110f4cff2077bba27585e019957aab011b3"
+  },
+  "cover": {
+   "path": "books/covers/B18-002.png",
+   "bytes": 61333,
+   "sha256": "801c3dcf803ca74fabffb6f2e5886b6e32e4da4a70eebaf9ab6be6be01bd9447"
+  },
+  "bundle": {
+   "path": "books/batch18/B18-002/owner_operator_cost_per_mile_load_profit_bundle.zip",
+   "bytes": 21836,
+   "sha256": "7a5f556e5c8a82029574da39e0db1eda3e122012537f9b4d3acdb2c6e3f4af76"
+  }
+ },
+ "qa": {
+  "file_test": {
+   "status": "PASS",
+   "problems": []
+  },
+  "recalc": {
+   "engine": "lib/xlsx_eval.py vs independent Python model",
+   "checked": 90,
+   "failed": []
+  },
+  "guide": {
+   "pages": 6,
+   "title_found": true,
+   "disclaimer_found": true
+  },
+  "cover": {
+   "size": [
+    1280,
+    720
+   ]
+  },
+  "brand": {
+   "passed": true,
+   "failed_checks": [],
+   "listing_chars": 1493
+  },
+  "bundle": {
+   "files": [
+    "owner-operator-cost-per-mile-load-profit/README.txt",
+    "owner-operator-cost-per-mile-load-profit/owner_operator_cost_per_mile_load_profit.xlsx",
+    "owner-operator-cost-per-mile-load-profit/owner_operator_cost_per_mile_load_profit_guide.pdf"
+   ],
+   "corrupt_member": null
+  },
+  "ok": true,
+  "listing": {
+   "description_html": "<p>Turn your real monthly costs into a cost per mile and a break-even rate per loaded mile, then test every load before you accept it.</p><p>Then you enter each load (loaded miles, empty miles to reach it, linehaul, fuel surcharge and extras) and the sheet shows the revenue, the full cost, the profit, the profit per mile and a clear ACCEPT / MARGINAL / DECLINE verdict.</p><p><strong>What's included</strong></p><ul><li>Costs sheet: fixed costs, variable costs per mile, cost per mile</li><li>Break-even and target rate per loaded mile that account for empty miles</li><li>Load-by-load profit, profit per mile and margin for up to 40 loads</li><li>ACCEPT / MARGINAL / DECLINE verdict against your own numbers</li><li>Summary of the month and profit at planned miles</li><li>A guide with worked scenarios, a routine, a pre-accept checklist and an FAQ</li></ul><p><strong>Who it's for</strong></p><ul><li>Owner-operators and small fleets of one to five trucks</li><li>New authority holders pricing their first loads</li><li>Drivers deciding whether to lease on or run their own authority</li><li>Dispatchers and bookkeepers who negotiate rates for small carriers</li></ul><p><strong>You get:</strong> owner_operator_cost_per_mile_load_profit.xlsx (Costs, Loads, Summary) and a PDF guide.</p><p>Works in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.</p><p><em>This workbook is a calculation tool, not tax, legal, insurance or financial advice. Results are only as good as the costs and miles you enter; freight rates, fuel prices and regulations change, and your own accountant should set your tax treatment.</em></p>"
+  }
+ },
+ "category": "Business & Finance",
+ "tags": [
+  "trucking",
+  "cost per mile",
+  "owner operator",
+  "load profit",
+  "freight",
+  "excel template"
+ ],
+ "currency": "USD",
+ "pricing_evidence": {
+  "basis": "INTERNAL ONLY. No external listing price was read for this batch (NOT MEASURED). The price follows the factory's own catalogue tiers: $9-24 single-purpose calculators (batches 14-17, 0 sales) and $29-99 compliance kits. This product is a multi-sheet model with a long guide, so it is placed above the calculators.",
+  "external_observations": [],
+  "internal_comparables": [
+   {
+    "id": "B14-007",
+    "price_cents": 1500
+   },
+   {
+    "id": "B14-006",
+    "price_cents": 1500
+   },
+   {
+    "id": "GR-9ca0823dac",
+    "price_cents": 4900
+   }
+  ],
+  "rationale": "$39: a multi-sheet decision model with a long guide for a specific trade, placed above the $9-24 calculators and below the $49 WIP schedule.",
+  "demand": "WAITING FOR REAL DATA: the account has 0 sales on 112 listings, so no price here is validated by buyers."
+ }
+}

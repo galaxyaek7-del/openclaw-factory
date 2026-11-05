@@ -1,0 +1,97 @@
+{
+ "id": "B18-008",
+ "slug": "small-farm-crop-enterprise-budget",
+ "title": "Small Farm Crop Enterprise Budget & Break-Even Planner",
+ "price_cents": 2900,
+ "files": {
+  "workbook": {
+   "path": "books/batch18/B18-008/small_farm_crop_enterprise_budget.xlsx",
+   "bytes": 11406,
+   "sha256": "777e8baefb9cb9f9f30be120e5012979abcd22bd842f354c46b02862d17b50a0"
+  },
+  "guide": {
+   "path": "books/batch18/B18-008/small_farm_crop_enterprise_budget_guide.pdf",
+   "bytes": 12153,
+   "sha256": "52bfe6524da2c6841d703df8c7e019cd5893564642ba07537751a6e623f2d439"
+  },
+  "cover": {
+   "path": "books/covers/B18-008.png",
+   "bytes": 47001,
+   "sha256": "4cacac83366cdac38638df40bf7b51f7238bbc98899db4d77128c3ef5d97242a"
+  },
+  "bundle": {
+   "path": "books/batch18/B18-008/small_farm_crop_enterprise_budget_bundle.zip",
+   "bytes": 19786,
+   "sha256": "7725cdd68c1fafed6d366ace393407260eb160697fed294054febde41c763e1d"
+  }
+ },
+ "qa": {
+  "file_test": {
+   "status": "PASS",
+   "problems": []
+  },
+  "recalc": {
+   "engine": "lib/xlsx_eval.py vs independent Python model",
+   "checked": 60,
+   "failed": []
+  },
+  "guide": {
+   "pages": 6,
+   "title_found": true,
+   "disclaimer_found": true
+  },
+  "cover": {
+   "size": [
+    1280,
+    720
+   ]
+  },
+  "brand": {
+   "passed": true,
+   "failed_checks": [],
+   "listing_chars": 1740
+  },
+  "bundle": {
+   "files": [
+    "small-farm-crop-enterprise-budget/README.txt",
+    "small-farm-crop-enterprise-budget/small_farm_crop_enterprise_budget.xlsx",
+    "small-farm-crop-enterprise-budget/small_farm_crop_enterprise_budget_guide.pdf"
+   ],
+   "corrupt_member": null
+  },
+  "ok": true,
+  "listing": {
+   "description_html": "<p>Budget every crop per acre, allocate the farm&#x27;s fixed costs, and see the break-even yield and break-even price for each crop and for the whole farm before you plant.</p><p>This workbook handles up to 15 crops. For each you enter acres, expected yield, price, and the per-acre costs of seed, fertilizer, chemicals, labour, fuel and repairs, and other variable inputs. Whole-farm fixed costs (land payments, insurance, machinery ownership, overhead) are allocated to the crops by acre. The sheet returns revenue, variable costs, contribution margin, net return, the break-even yield and the break-even price, and the margin of safety.</p><p><strong>What's included</strong></p><ul><li>Per-acre budget for up to 15 crops: revenue, variable costs, contribution margin</li><li>Whole-farm fixed costs allocated by acre; net return per crop</li><li>Break-even yield, break-even price and margin of safety for every crop</li><li>Farm summary with best and worst crop per acre</li><li>Easy bad-year testing by changing yield or price</li><li>A guide with scenarios, a planting checklist, a routine and an FAQ</li></ul><p><strong>Who it's for</strong></p><ul><li>Small and diversified grain, vegetable, hay and specialty-crop farms</li><li>Market gardeners and CSA growers comparing crops by return per acre</li><li>Beginning farmers preparing a loan or lease proposal</li><li>Farm advisers and students building enterprise budgets</li></ul><p><strong>You get:</strong> small_farm_crop_enterprise_budget.xlsx (Farm, Crops, Summary) and a PDF guide.</p><p>Works in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.</p><p><em>This workbook is a planning tool, not agricultural, tax, insurance or financial advice. Yields and prices are uncertain and depend on weather, markets and management. Check inputs against your records, your extension service and your lender.</em></p>"
+  }
+ },
+ "category": "Business & Finance",
+ "tags": [
+  "farm budget",
+  "crop budget",
+  "break even",
+  "agriculture",
+  "market garden",
+  "excel template"
+ ],
+ "currency": "USD",
+ "pricing_evidence": {
+  "basis": "INTERNAL ONLY. No external listing price was read for this batch (NOT MEASURED). The price follows the factory's own catalogue tiers: $9-24 single-purpose calculators (batches 14-17, 0 sales) and $29-99 compliance kits. This product is a multi-sheet model with a long guide, so it is placed above the calculators.",
+  "external_observations": [],
+  "internal_comparables": [
+   {
+    "id": "B14-005",
+    "price_cents": 1200
+   },
+   {
+    "id": "B14-007",
+    "price_cents": 1500
+   },
+   {
+    "id": "B16-007",
+    "price_cents": 1200
+   }
+  ],
+  "rationale": "$29: a per-crop planning model with a long guide for a niche (small farms) not covered by the factory's other products; priced between the $9-24 calculators and the $39 models.",
+  "demand": "WAITING FOR REAL DATA: the account has 0 sales on 112 listings, so no price here is validated by buyers."
+ }
+}

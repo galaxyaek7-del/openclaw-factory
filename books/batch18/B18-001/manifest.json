@@ -1,0 +1,97 @@
+{
+ "id": "B18-001",
+ "slug": "contractor-job-costing-wip-schedule",
+ "title": "Contractor Job Costing & WIP Schedule (Over/Under Billing)",
+ "price_cents": 4900,
+ "files": {
+  "workbook": {
+   "path": "books/batch18/B18-001/contractor_job_costing_wip_schedule.xlsx",
+   "bytes": 14830,
+   "sha256": "091a97ced11779a0f2793e4011b591d849e2d3b31d6fd86aaec8368060668297"
+  },
+  "guide": {
+   "path": "books/batch18/B18-001/contractor_job_costing_wip_schedule_guide.pdf",
+   "bytes": 12652,
+   "sha256": "ff053929baa0757bd5b922937e8a56815c92c4223193e97c609ff436e8876e2a"
+  },
+  "cover": {
+   "path": "books/covers/B18-001.png",
+   "bytes": 59386,
+   "sha256": "c919c5afce87f355f75eaea5982e23368e16f6ee53a3a7b1ed0da430f1f0a420"
+  },
+  "bundle": {
+   "path": "books/batch18/B18-001/contractor_job_costing_wip_schedule_bundle.zip",
+   "bytes": 21888,
+   "sha256": "25109e07c1498ee323187dfe5c0484c660ab23654ec0ad220b76406666d30fb1"
+  }
+ },
+ "qa": {
+  "file_test": {
+   "status": "PASS",
+   "problems": []
+  },
+  "recalc": {
+   "engine": "lib/xlsx_eval.py vs independent Python model",
+   "checked": 79,
+   "failed": []
+  },
+  "guide": {
+   "pages": 6,
+   "title_found": true,
+   "disclaimer_found": true
+  },
+  "cover": {
+   "size": [
+    1280,
+    720
+   ]
+  },
+  "brand": {
+   "passed": true,
+   "failed_checks": [],
+   "listing_chars": 1807
+  },
+  "bundle": {
+   "files": [
+    "contractor-job-costing-wip-schedule/README.txt",
+    "contractor-job-costing-wip-schedule/contractor_job_costing_wip_schedule.xlsx",
+    "contractor-job-costing-wip-schedule/contractor_job_costing_wip_schedule_guide.pdf"
+   ],
+   "corrupt_member": null
+  },
+  "ok": true,
+  "listing": {
+   "description_html": "<p>Track every job&#x27;s cost to date, estimated cost to complete and billings, and see earned revenue, over/under billing, projected margin and margin fade on one work-in-progress schedule.</p><p>For every job you enter the contract, approved change orders, cost to date, your honest estimate of the cost still to come, and what you have billed. The workbook computes the percent complete (cost to date / revised total cost), earned revenue, over or under billing, projected gross profit and margin, and how far the margin has faded from the bid.</p><p><strong>What's included</strong></p><ul><li>Work-in-progress schedule for up to 40 jobs, cost-to-cost percent complete</li><li>Earned revenue and over/(under) billing for every job</li><li>Projected gross profit, projected margin and margin fade against the bid</li><li>Loss-job and billing-status flags</li><li>Summary: backlog, net over/under billing, weighted margin, loss jobs, fading jobs</li><li>A guide of 7+ pages with worked scenarios, how to read the schedule, a month-end checklist and an FAQ</li></ul><p><strong>Who it's for</strong></p><ul><li>Remodeling, roofing, electrical, plumbing and general contractors with several jobs open at once</li><li>Owners who bill on milestones or draws and lose track of who is ahead of whom</li><li>Bookkeepers preparing a WIP schedule for a bank, a surety or a year-end CPA</li><li>Anyone pricing the next job who wants to see real margin fade on the last ones</li></ul><p><strong>You get:</strong> contractor_job_costing_wip_schedule.xlsx (Jobs, Summary) and a PDF guide.</p><p>Works in Excel 2016 or later, Excel for Mac and Excel on the web; opens in Google Sheets and LibreOffice.</p><p><em>This workbook is a calculation tool, not accounting, tax, legal or surety advice. It uses the cost-to-cost percentage-of-completion method; your CPA decides which revenue-recognition method applies to your business and your bonding company or lender may require its own format.</em></p>"
+  }
+ },
+ "category": "Business & Finance",
+ "tags": [
+  "job costing",
+  "wip schedule",
+  "contractor",
+  "over under billing",
+  "construction",
+  "excel template"
+ ],
+ "currency": "USD",
+ "pricing_evidence": {
+  "basis": "INTERNAL ONLY. No external listing price was read for this batch (NOT MEASURED). The price follows the factory's own catalogue tiers: $9-24 single-purpose calculators (batches 14-17, 0 sales) and $29-99 compliance kits. This product is a multi-sheet model with a long guide, so it is placed above the calculators.",
+  "external_observations": [],
+  "internal_comparables": [
+   {
+    "id": "B14-001",
+    "price_cents": 1900
+   },
+   {
+    "id": "B14-002",
+    "price_cents": 2400
+   },
+   {
+    "id": "GR-9c3726734b",
+    "price_cents": 5900
+   }
+  ],
+  "rationale": "$49: a multi-sheet WIP model plus a long guide for contractors, placed with the factory's $49-59 kits and above the $9-24 calculators.",
+  "demand": "WAITING FOR REAL DATA: the account has 0 sales on 112 listings, so no price here is validated by buyers."
+ }
+}
