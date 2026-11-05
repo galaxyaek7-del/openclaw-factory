@@ -5,6 +5,9 @@ templates.json -> DOCX, ZIP bundle, manifest, QA. No network. Deterministic."""
 import json, re, sys, zipfile
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+import cohort_contract  # B9: contract manifest + adapter QA (repo root)
+
 ROOT = Path(__file__).resolve().parent
 SRC = ROOT / "src"
 OUT = ROOT / "dist"
@@ -224,6 +227,9 @@ def build_all():
                     "bundle_bytes": zpath.stat().st_size,
                     "files": sorted(f.name for f in pdir.iterdir())}
         (pdir / "manifest.json").write_text(json.dumps(manifest, indent=2), encoding="utf-8")
+        contract = cohort_contract.write_for_product(manifest, pdir, zpath, ROOT.parent)
+        if not contract["qa"]["ok"]:
+            print(f"CONTRACT QA FAIL {pid}: {contract['qa']['problems']}")
         print(f"{pid}: {words} words, {pages} pages, bundle {zpath.stat().st_size//1024} KB")
 
 def qa_all():
@@ -258,6 +264,9 @@ def qa_all():
             print(f"FAIL {pid}: thin guide {man['guide_words']} words"); ok = False
         if man["guide_pages"] < 10:
             print(f"FAIL {pid}: thin PDF {man['guide_pages']} pages"); ok = False
+        crep = cohort_contract.verify_existing(ROOT / "contracts" / f"{pid}.json", ROOT.parent)
+        if not crep["ok"]:
+            print(f"FAIL {pid}: contract QA {crep['problems']}"); ok = False
         zp = ROOT / "dist" / man["bundle"]
         with zipfile.ZipFile(zp) as z:
             names = z.namelist()
