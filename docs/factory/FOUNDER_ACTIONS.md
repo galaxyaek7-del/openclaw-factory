@@ -12,9 +12,7 @@ prefix with `!`).
    `/l/wteork`, `/l/owtmpe`: unpublish in the Gumroad dashboard (see 1b). The protection check
    fails on `payable_withdrawn` until you do.
 3. **No alert reaches you (F5).** The bot token is set; the bot has no chat with you yet. Follow `docs/factory/TELEGRAM_SETUP.md` (7 steps, about 5 minutes; you write to the bot once and put your chat id in `.env`). Until then a dead loop is silent; it was dead for 3.3 days (2026-11-01 to 2026-11-05).
-4. **No autostart for the server and the loop (F2).** Run once, in an elevated PowerShell:
-   `powershell -ExecutionPolicy Bypass -File scripts\install_factory_autostart.ps1`. The agent
-   restarted both under the supervisor, but a reboot or log-off stops them again.
+4. **Autostart (F2): INSTALLED 2026-11-05** (task `GalaxyForge-Factory-Autostart`, at logon +1 min; undo with `Unregister-ScheduledTask -TaskName GalaxyForge-Factory-Autostart -Confirm:$false`). Checked by running it with everything up (no duplicate); a real reboot has not been tried: after your next restart, open http://localhost:3000/health to confirm.
 5. **Demand does not reach the products (F9).** Sales are 0 of 111 live listings. Needs from
    you: a Pinterest board for the queued pins, an analytics receiver, and social credentials
    (backlog B6, B18, B26). Production is not the bottleneck.
