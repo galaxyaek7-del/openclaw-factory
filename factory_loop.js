@@ -5468,6 +5468,11 @@ async function runTick() {
     // approval, revision, price and auth checks still decide every product.
     markStep('publish_approved');
     actions.push({ step: 'publish_approved', ...(await runOnceScript('publish_approved_daily.py', { timeoutMs: 30 * 60 * 1000 })) });
+    // 2026-11-05: once a day, read-only check of every automatic stage
+    // (scripts/autonomy_selfcheck.py); a stage that was OK and stopped raises an
+    // alert (Telegram, or the local fallback ledger when no chat id is set).
+    markStep('autonomy_daily');
+    actions.push({ step: 'autonomy_daily', ...(await runOnceScript('autonomy_daily.py', { timeoutMs: 3 * 60 * 1000 })) });
     // 2026-10-29: weekly GET-only audit of what each live listing delivers
     // (the dashboard's delivery truth went stale after 8 days of hand runs).
     markStep('delivery_audit');
