@@ -92,14 +92,67 @@ const ATTENTION_STREAK_THRESHOLD = 3; // consecutive occurrences before flagging
 // path that builds or lists a product: book/PDF generation (triggerGenerateBook), Golden Hunter
 // auto-production, the daily agent product chain, live distribution, and publish_approved
 // (scripts/publish_approved_daily.py honours the same flag). Nothing is deleted: unset it to resume.
-const PRODUCT_FREEZE = String(process.env.GF_FREEZE_NEW_PRODUCTS || '').toLowerCase() === 'true';
-const LIVE_PUBLISH_ENABLED = process.env.FACTORY_LIVE_PUBLISH === 'true' && !PRODUCT_FREEZE;
+//
+// DEMAND GATE (founder, second order 2026-11-05): with GF_DEMAND_GATED=true the freeze lifts ONLY while
+// demand_gate.py reports real demand (a sale, an outside click, buyer interest, buyer-side market
+// evidence). Fail-closed: if the gate cannot be evaluated, the freeze stays. While it is open at most
+// GF_DEMAND_GATE_DAILY_CAP (default 3) new products are generated per day. Every other gate (QA,
+// publication clearance, central Quality Gate, write gate) still applies on top.
+const PRODUCT_FREEZE_FLAG = String(process.env.GF_FREEZE_NEW_PRODUCTS || '').toLowerCase() === 'true';
+const DEMAND_GATED = String(process.env.GF_DEMAND_GATED || '').toLowerCase() === 'true';
+const DEMAND_GATE_CACHE_MS = 10 * 60 * 1000;
+let demandGateCache = { at: 0, value: null };
+
+function readDemandGate(nowMs = Date.now(), runner = null) {
+  if (demandGateCache.value && nowMs - demandGateCache.at < DEMAND_GATE_CACHE_MS) return demandGateCache.value;
+  let value;
+  try {
+    const run = runner || ((cmd, args, opts) => execFileSync(cmd, args, opts));
+    const out = run(process.platform === 'win32' ? 'python' : 'python3',
+      [path.join(__dirname, 'demand_gate.py'), '--json'],
+      { cwd: __dirname, encoding: 'utf-8', timeout: 20000, windowsHide: true });
+    value = JSON.parse(out);
+    if (typeof value.open !== 'boolean') throw new Error('malformed gate output');
+  } catch (e) {
+    value = { open: false, daily_cap: 0, signals: {}, why: 'demand gate unavailable, staying frozen: ' + String(e.message || e).slice(0, 120), error: true };
+  }
+  demandGateCache = { at: nowMs, value };
+  return value;
+}
+
+function isProductFrozen() {
+  if (!PRODUCT_FREEZE_FLAG) return false;
+  if (!DEMAND_GATED) return true;
+  return !readDemandGate().open;
+}
+
+// One production slot per new product while the gate is open (counter file, one JSON object per UTC day).
+const DEMAND_SLOTS_PATH = process.env.GF_DEMAND_SLOTS_PATH || path.join(__dirname, 'data', 'demand_gate_slots.json');
+function demandSlotsUsedToday(now = new Date()) {
+  try {
+    const doc = JSON.parse(fs.readFileSync(DEMAND_SLOTS_PATH, 'utf-8'));
+    return doc.date === now.toISOString().slice(0, 10) ? Number(doc.used) || 0 : 0;
+  } catch (_) { return 0; }
+}
+function takeDemandSlot(now = new Date()) {
+  // returns true when a slot was taken (or no cap applies), false when today's cap is spent
+  if (!PRODUCT_FREEZE_FLAG || !DEMAND_GATED) return true;
+  const gate = readDemandGate();
+  const used = demandSlotsUsedToday(now);
+  if (!gate.open || used >= (gate.daily_cap || 0)) return false;
+  try {
+    fs.mkdirSync(path.dirname(DEMAND_SLOTS_PATH), { recursive: true });
+    fs.writeFileSync(DEMAND_SLOTS_PATH, JSON.stringify({ date: now.toISOString().slice(0, 10), used: used + 1 }));
+  } catch (_) { return false; }
+  return true;
+}
+function livePublishEnabled() { return process.env.FACTORY_LIVE_PUBLISH === 'true' && !isProductFrozen(); }
 
 // Real automatic production from a Golden Hunter discovery requires this
 // separate, explicit flag — unset (the default) means the bridge always
 // picks the top opportunity and RECORDS what it would produce, but never
 // spends a real Groq call. ADR-009: not set anywhere in this repo/.env.
-const AUTO_PRODUCE_ENABLED = process.env.FACTORY_AUTO_PRODUCE === 'true' && !PRODUCT_FREEZE;
+function autoProduceEnabled() { return process.env.FACTORY_AUTO_PRODUCE === 'true' && !isProductFrozen(); }
 const REPORTS_DIR = path.join(FACTORY_DIR, 'reports');
 const WEEKLY_REPORT_STABLE = path.join(FACTORY_DIR, 'FACTORY_WEEKLY_REPORT.md');
 const OPPORTUNITIES_FILE = path.join(FACTORY_DIR, 'OPPORTUNITIES.md');
@@ -591,7 +644,7 @@ async function triggerDistribute(record) {
     const res = await fetchWithTimeout(`${DASHBOARD_URL}/api/distribute`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', ...internalAuthHeaders() },
-      body: JSON.stringify({ record, dry_run: !LIVE_PUBLISH_ENABLED }),
+      body: JSON.stringify({ record, dry_run: !livePublishEnabled() }),
     }, 140000, 'api-distribute');
     const data = await res.json();
 
@@ -679,9 +732,13 @@ function lowDiskState(checks) {
 function setLowDiskState(state) { lowDisk = state || { active: false, free_gb: null }; }
 
 async function triggerGenerateBook(brief) {
-  if (PRODUCT_FREEZE) {
+  if (isProductFrozen()) {
     return { ok: false, frozen: true,
       detail: 'تجميد المنتجات الجديدة (GF_FREEZE_NEW_PRODUCTS=true): لا توليد كتب/منتجات' };
+  }
+  if (!takeDemandSlot()) {
+    return { ok: false, frozen: true,
+      detail: 'بوابة الطلب: استُنفد سقف اليوم من المنتجات الجديدة (GF_DEMAND_GATE_DAILY_CAP)' };
   }
   if (lowDisk.active) {
     return { ok: false, low_disk: true,
@@ -1248,7 +1305,7 @@ async function huntGolden(reachable) {
 
   const brief = await briefFromGoldenOpportunity(top);
 
-  if (!AUTO_PRODUCE_ENABLED) {
+  if (!autoProduceEnabled()) {
     // dry_run: record exactly what WOULD have been produced — zero Groq
     // calls, zero side effects beyond this one log line.
     const rec = appendGoldenHunterEvent({
@@ -4471,7 +4528,7 @@ function runNodeScript(script, { timeoutMs = 2 * 60 * 1000, scriptPath } = {}) {
 // a 5-minute cap per tick; any error is reported, never thrown into the tick.
 let agentChainGroq = null;
 async function runAgentProductChain({ timeoutMs = 5 * 60 * 1000 } = {}) {
-  if (PRODUCT_FREEZE) {
+  if (isProductFrozen()) {
     return { action: 'skipped', detail: 'new products frozen (GF_FREEZE_NEW_PRODUCTS=true)' };
   }
   try {
@@ -5929,7 +5986,7 @@ if (require.main === module) {
 }
 
 module.exports = {
-  runTick, healFinance, healEmptyBooks, healN8n, n8nWatchdogDecision, runN8nWatchdog, lowDiskState, setLowDiskState, hunt, diagnose,
+  isProductFrozen, readDemandGate, takeDemandSlot, runTick, healFinance, healEmptyBooks, healN8n, n8nWatchdogDecision, runN8nWatchdog, lowDiskState, setLowDiskState, hunt, diagnose,
   generateWeeklyReport, maybeGenerateWeeklyReport, weekReportPath, runExportExecutiveReport,
   runEvolutionReport, evolutionReportPath, maybeGenerateDailyEvolutionReport,
   runGalaxyEvolutionReport, galaxyEvolutionReportPath, maybeGenerateMonthlyGalaxyEvolutionReport,

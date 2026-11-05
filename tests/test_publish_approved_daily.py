@@ -82,13 +82,43 @@ class PublishApproved(unittest.TestCase):
     def test_loop_source_gates_every_automatic_producer(self):
         src = (Path(__file__).resolve().parent.parent / "factory_loop.js").read_text(encoding="utf-8")
         self.assertIn("GF_FREEZE_NEW_PRODUCTS", src)
-        for needle in ("process.env.FACTORY_LIVE_PUBLISH === 'true' && !PRODUCT_FREEZE",
-                       "process.env.FACTORY_AUTO_PRODUCE === 'true' && !PRODUCT_FREEZE"):
+        # demand-gated design (founder, second order 2026-11-05): one isProductFrozen() decides
+        for needle in ("process.env.FACTORY_LIVE_PUBLISH === 'true' && !isProductFrozen()",
+                       "process.env.FACTORY_AUTO_PRODUCE === 'true' && !isProductFrozen()"):
             self.assertIn(needle, src)
         for fn in ("async function triggerGenerateBook(", "async function runAgentProductChain("):
             body = src[src.index(fn):]
             first_lines = body.split(chr(10))[:3]
-            self.assertTrue(any("if (PRODUCT_FREEZE)" in l for l in first_lines), fn)
+            self.assertTrue(any("if (isProductFrozen())" in l for l in first_lines), fn)
+
+    def test_gated_freeze_lifts_only_while_the_gate_is_open_and_caps_the_day(self):
+        env = {pad.SWITCH: "true", pad.FREEZE: "true", pad.GATED: "true"}
+        from unittest import mock
+        closed = {"open": False, "daily_cap": 0, "why": "WAITING FOR REAL DATA"}
+        with mock.patch.object(pad, "_demand_gate", return_value=closed):
+            out, pub = self.go(env)
+        self.assertEqual(out["action"], "none")
+        self.assertIn("WAITING FOR REAL DATA", out["detail"])
+        self.assertEqual(pub.calls, [])
+        with mock.patch.object(pad, "_demand_gate", return_value=None):  # gate cannot run: fail closed
+            out, pub = self.go(env)
+        self.assertEqual(out["action"], "none")
+        self.assertEqual(pub.calls, [])
+        opened = {"open": True, "daily_cap": 1, "why": "real demand recorded: SALE"}
+        with mock.patch.object(pad, "_demand_gate", return_value=opened):
+            out, pub = self.go(env)
+        self.assertEqual(out["action"], "published")
+        live = [c for c in pub.calls if "--live" in c]
+        self.assertEqual(len(live), 1)
+        self.assertEqual(len(live[0][live[0].index("--only") + 1:]), 1, "the daily cap limits the batch")
+
+    def test_gate_switch_off_keeps_the_freeze_absolute(self):
+        from unittest import mock
+        opened = {"open": True, "daily_cap": 5, "why": "x"}
+        with mock.patch.object(pad, "_demand_gate", return_value=opened):
+            out, pub = self.go({pad.SWITCH: "true", pad.FREEZE: "true"})
+        self.assertEqual(out["action"], "none")
+        self.assertEqual(pub.calls, [])
 
     def test_already_published_products_are_not_candidates(self):
         groups = pad.candidates(self.registry, self.batches)

@@ -27,7 +27,18 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "scripts"))
 SWITCH = "GF_AUTO_PUBLISH_APPROVED"
 FREEZE = "GF_FREEZE_NEW_PRODUCTS"  # founder freeze 2026-11-05: wins over SWITCH, deletes nothing
+GATED = "GF_DEMAND_GATED"  # founder 2026-11-05 (second order): the freeze lifts only while demand_gate.py is open
 APPROVALS = ROOT / "data" / "publication_approvals.json"
+
+
+def _demand_gate(env):
+    """demand_gate.evaluate() or None when it cannot run: the caller treats None as closed (fail-closed)."""
+    try:
+        sys.path.insert(0, str(ROOT))
+        import demand_gate
+        return demand_gate.evaluate(environ=env)
+    except Exception:
+        return None
 
 
 def _batch_of(manifest, batches):
@@ -66,8 +77,13 @@ def eligible(batch, ids, run=_publisher):
 
 
 def run_once(env=os.environ, registry=None, batches=None, window_used=None, run=_publisher, limit=None):
+    gate_cap = None
     if str(env.get(FREEZE, "")).lower() == "true":
-        return {"action": "none", "detail": f"new products frozen ({FREEZE}=true): nothing is published"}
+        gate = _demand_gate(env) if str(env.get(GATED, "")).lower() == "true" else None
+        if not gate or not gate.get("open"):
+            why = (gate or {}).get("why") or "demand gate not enabled"
+            return {"action": "none", "detail": f"new products frozen ({FREEZE}=true), {why}: nothing is published"}
+        gate_cap = int(gate.get("daily_cap") or 0)
     import publish_batch14 as pb
     batches = batches if batches is not None else pb.BATCHES
     limit = pb.GUMROAD_DAILY_CREATION_LIMIT if limit is None else limit
@@ -86,6 +102,8 @@ def run_once(env=os.environ, registry=None, batches=None, window_used=None, run=
         return {"action": "none", "detail": f"{n_ready} approved product(s) ready; auto-publish is off ({SWITCH})"}
     used = pb.creations_in_window(now_ts=time.time()) if window_used is None else window_used
     room = max(0, limit - used)
+    if gate_cap is not None:
+        room = min(room, gate_cap)
     if not room:
         return {"action": "none", "detail": f"{n_ready} approved product(s) ready; Gumroad window full ({used}/{limit})"}
     published, failed = [], []
