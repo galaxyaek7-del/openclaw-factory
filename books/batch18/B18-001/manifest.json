@@ -6,13 +6,13 @@
  "files": {
   "workbook": {
    "path": "books/batch18/B18-001/contractor_job_costing_wip_schedule.xlsx",
-   "bytes": 14830,
-   "sha256": "091a97ced11779a0f2793e4011b591d849e2d3b31d6fd86aaec8368060668297"
+   "bytes": 14829,
+   "sha256": "bacc54ce99db3e348f744885ebf61c8e8296736489d8f043d42c05744ca9377a"
   },
   "guide": {
    "path": "books/batch18/B18-001/contractor_job_costing_wip_schedule_guide.pdf",
-   "bytes": 12652,
-   "sha256": "ff053929baa0757bd5b922937e8a56815c92c4223193e97c609ff436e8876e2a"
+   "bytes": 14964,
+   "sha256": "0dcaf7c9e1318befc2cb06d939b0bac0e57d839abe1c087c4c05a30c0b600d05"
   },
   "cover": {
    "path": "books/covers/B18-001.png",
@@ -21,8 +21,8 @@
   },
   "bundle": {
    "path": "books/batch18/B18-001/contractor_job_costing_wip_schedule_bundle.zip",
-   "bytes": 21888,
-   "sha256": "25109e07c1498ee323187dfe5c0484c660ab23654ec0ad220b76406666d30fb1"
+   "bytes": 23531,
+   "sha256": "ff502b30cba54af65c9d282e62cb1c2308ec06e6e6ca1d90563e07e9ed58cc71"
   }
  },
  "qa": {
@@ -36,7 +36,7 @@
    "failed": []
   },
   "guide": {
-   "pages": 6,
+   "pages": 7,
    "title_found": true,
    "disclaimer_found": true
   },
@@ -75,8 +75,21 @@
  ],
  "currency": "USD",
  "pricing_evidence": {
-  "basis": "INTERNAL ONLY. No external listing price was read for this batch (NOT MEASURED). The price follows the factory's own catalogue tiers: $9-24 single-purpose calculators (batches 14-17, 0 sales) and $29-99 compliance kits. This product is a multi-sheet model with a long guide, so it is placed above the calculators.",
-  "external_observations": [],
+  "basis": "Two sources. (1) Web searches run on 2026-11-05 through a search index (summaries, not purchases): external_observations, only what a result actually showed; a missing price is null. (2) The factory's own catalogue tiers. No price here is validated by buyers.",
+  "external_observations": [
+   {
+    "url": "https://www.projectmanager.com/blog/wip-report-construction",
+    "price_usd": 0,
+    "note": "free construction WIP report template for Excel",
+    "observed_on": "2026-11-05"
+   },
+   {
+    "url": "https://aafcpa.com/2015/07/29/the-construction-work-in-process-wip-is-a-strategic-tool-not-simply-a-compliance-schedule/",
+    "price_usd": 0,
+    "note": "a CPA firm's sample WIP schedule",
+    "observed_on": "2026-11-05"
+   }
+  ],
   "internal_comparables": [
    {
     "id": "B14-001",
@@ -92,6 +105,7 @@
    }
   ],
   "rationale": "$49: a multi-sheet WIP model plus a long guide for contractors, placed with the factory's $49-59 kits and above the $9-24 calculators.",
-  "demand": "WAITING FOR REAL DATA: the account has 0 sales on 112 listings, so no price here is validated by buyers."
+  "demand": "WAITING FOR REAL DATA: the account has 0 sales on 112 listings, so no price here is validated by buyers.",
+  "market_position": "No paid WIP template with a visible price was found; free templates exist. The $49 is therefore NOT anchored to any observed paid price. The differentiator is over/under billing, fade, loss flags and the guide."
  }
 }

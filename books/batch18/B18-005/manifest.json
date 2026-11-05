@@ -7,12 +7,12 @@
   "workbook": {
    "path": "books/batch18/B18-005/equipment_lease_vs_buy_macrs_model.xlsx",
    "bytes": 10548,
-   "sha256": "a9d65a168a7cf83f61fbce1444b3901d6561e3bc1f81b0cec38406d9172875d9"
+   "sha256": "be8bc10299818e8a414d607b25a2ed8ecdcc4c49f0c1aea19a1041f22cccbdad"
   },
   "guide": {
    "path": "books/batch18/B18-005/equipment_lease_vs_buy_macrs_model_guide.pdf",
-   "bytes": 12679,
-   "sha256": "cc34a859e7300932c3783770f4eca6201d013254d56dec78a7df1ec76b3dac5b"
+   "bytes": 14389,
+   "sha256": "467bbac2d2b452b5b46b1485042659f60d3564d61a698db7caca03cbd66460e7"
   },
   "cover": {
    "path": "books/covers/B18-005.png",
@@ -21,8 +21,8 @@
   },
   "bundle": {
    "path": "books/batch18/B18-005/equipment_lease_vs_buy_macrs_model_bundle.zip",
-   "bytes": 19518,
-   "sha256": "fcc42257cd260825ed5e8b372d373cdcccaf5404b6fae5ce993a7235c6406b84"
+   "bytes": 20916,
+   "sha256": "36f9a5f86a3f58113127f76e050858e803f3d2c50c09e59332c661148c36851a"
   }
  },
  "qa": {
@@ -75,8 +75,21 @@
  ],
  "currency": "USD",
  "pricing_evidence": {
-  "basis": "INTERNAL ONLY. No external listing price was read for this batch (NOT MEASURED). The price follows the factory's own catalogue tiers: $9-24 single-purpose calculators (batches 14-17, 0 sales) and $29-99 compliance kits. This product is a multi-sheet model with a long guide, so it is placed above the calculators.",
-  "external_observations": [],
+  "basis": "Two sources. (1) Web searches run on 2026-11-05 through a search index (summaries, not purchases): external_observations, only what a result actually showed; a missing price is null. (2) The factory's own catalogue tiers. No price here is validated by buyers.",
+  "external_observations": [
+   {
+    "url": "https://flevy.com/browse/marketplace/buy-vs-lease-calculator-model-13005",
+    "price_usd": 45,
+    "note": "Buy vs Lease calculator model (Excel), Flevy",
+    "observed_on": "2026-11-05"
+   },
+   {
+    "url": "https://www.financialaha.com/free-spreadsheet-templates/auto-loans/lease-vs-buy-calculator",
+    "price_usd": 0,
+    "note": "free lease-vs-buy template; a paid version adds break-even",
+    "observed_on": "2026-11-05"
+   }
+  ],
   "internal_comparables": [
    {
     "id": "B15-001",
@@ -92,6 +105,7 @@
    }
   ],
   "rationale": "$39: a tax-aware decision model with a long guide; placed with the factory's other analytical models and above the $9-24 loan and car calculators.",
-  "demand": "WAITING FOR REAL DATA: the account has 0 sales on 112 listings, so no price here is validated by buyers."
+  "demand": "WAITING FOR REAL DATA: the account has 0 sales on 112 listings, so no price here is validated by buyers.",
+  "market_position": "A paid comparable is listed at $45; $39 is below it. The MACRS and recapture treatment is the differentiator."
  }
 }

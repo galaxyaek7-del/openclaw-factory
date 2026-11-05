@@ -7,12 +7,12 @@
   "workbook": {
    "path": "books/batch18/B18-004/agency_utilization_capacity_planner.xlsx",
    "bytes": 15371,
-   "sha256": "131c1744a349b478c11779bbe64b3e2ffe118a9af3f05181fc6fd656ff766333"
+   "sha256": "d3a6230b7c5aa2343ea8f1d7354578b315bb57fb65d1f69c98b002eba324ae7a"
   },
   "guide": {
    "path": "books/batch18/B18-004/agency_utilization_capacity_planner_guide.pdf",
-   "bytes": 11966,
-   "sha256": "9a39bf317bf60b3b7254b48a26923336986ddefd6423a007c83a1747eead8daa"
+   "bytes": 13553,
+   "sha256": "6c1b43eafc1a4d474dd2c5b7e1ac0f9c28ece3b1a0532e94fa92063ef14b58ab"
   },
   "cover": {
    "path": "books/covers/B18-004.png",
@@ -21,8 +21,8 @@
   },
   "bundle": {
    "path": "books/batch18/B18-004/agency_utilization_capacity_planner_bundle.zip",
-   "bytes": 22312,
-   "sha256": "9941f2a705c598fc5419e8205745c12913438ae9de42d1dbc29ed14ac6e2615a"
+   "bytes": 23596,
+   "sha256": "1435819cfb82f8c5b79c205f6becce15991f06aa81d44b3af790ed0a0c4f6dc8"
   }
  },
  "qa": {
@@ -75,8 +75,27 @@
  ],
  "currency": "USD",
  "pricing_evidence": {
-  "basis": "INTERNAL ONLY. No external listing price was read for this batch (NOT MEASURED). The price follows the factory's own catalogue tiers: $9-24 single-purpose calculators (batches 14-17, 0 sales) and $29-99 compliance kits. This product is a multi-sheet model with a long guide, so it is placed above the calculators.",
-  "external_observations": [],
+  "basis": "Two sources. (1) Web searches run on 2026-11-05 through a search index (summaries, not purchases): external_observations, only what a result actually showed; a missing price is null. (2) The factory's own catalogue tiers. No price here is validated by buyers.",
+  "external_observations": [
+   {
+    "url": "https://www.financialaha.com/spreadsheet-templates/freelancers/tiny-agency-capacity/",
+    "price_usd": 39,
+    "note": "Tiny Agency Capacity Spreadsheet Template, 2-5 person services firm (vendor page)",
+    "observed_on": "2026-11-05"
+   },
+   {
+    "url": "https://productive.io/blog/capacity-planning-template/",
+    "price_usd": 0,
+    "note": "free capacity planning template",
+    "observed_on": "2026-11-05"
+   },
+   {
+    "url": "https://www.teamwork.com/templates/team-utilization-tracker/",
+    "price_usd": 0,
+    "note": "free team utilization tracker",
+    "observed_on": "2026-11-05"
+   }
+  ],
   "internal_comparables": [
    {
     "id": "B16-007",
@@ -92,6 +111,7 @@
    }
   ],
   "rationale": "$39: a resource-planning model for service businesses with a long guide, priced with the factory's other multi-sheet business tools above the $9-24 calculators.",
-  "demand": "WAITING FOR REAL DATA: the account has 0 sales on 112 listings, so no price here is validated by buyers."
+  "demand": "WAITING FOR REAL DATA: the account has 0 sales on 112 listings, so no price here is validated by buyers.",
+  "market_position": "A comparable paid template is listed at $39, the same price; free alternatives exist."
  }
 }

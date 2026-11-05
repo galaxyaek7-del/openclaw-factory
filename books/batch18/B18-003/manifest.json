@@ -7,12 +7,12 @@
   "workbook": {
    "path": "books/batch18/B18-003/small_business_valuation_offer_model.xlsx",
    "bytes": 9126,
-   "sha256": "83a890b3eb56f0aec1e766a5ef4e6507be5c7e5820710d03d194e85a3fe129a1"
+   "sha256": "cf730b17af5791709bed42fe53ada3d954e30d053a307678ffa844989bef1b63"
   },
   "guide": {
    "path": "books/batch18/B18-003/small_business_valuation_offer_model_guide.pdf",
-   "bytes": 13183,
-   "sha256": "6bb563ffbbaeade7dda610d46237824adf534382bdba909a62710639f50f3b92"
+   "bytes": 15829,
+   "sha256": "df814533861dc13c416ab0646d62240a01f4ea1505630ecbe3dbc7755dc29b16"
   },
   "cover": {
    "path": "books/covers/B18-003.png",
@@ -21,8 +21,8 @@
   },
   "bundle": {
    "path": "books/batch18/B18-003/small_business_valuation_offer_model_bundle.zip",
-   "bytes": 18647,
-   "sha256": "34528c23fda206d1503c08fe827465f8c3119c051cfc98a17b8344a4da3392cf"
+   "bytes": 20566,
+   "sha256": "c8caaa1023fa91662404944f9a89d8116e1756e8f34adcc56e42e6743d5f3ad8"
   }
  },
  "qa": {
@@ -36,7 +36,7 @@
    "failed": []
   },
   "guide": {
-   "pages": 6,
+   "pages": 7,
    "title_found": true,
    "disclaimer_found": true
   },
@@ -75,8 +75,27 @@
  ],
  "currency": "USD",
  "pricing_evidence": {
-  "basis": "INTERNAL ONLY. No external listing price was read for this batch (NOT MEASURED). The price follows the factory's own catalogue tiers: $9-24 single-purpose calculators (batches 14-17, 0 sales) and $29-99 compliance kits. This product is a multi-sheet model with a long guide, so it is placed above the calculators.",
-  "external_observations": [],
+  "basis": "Two sources. (1) Web searches run on 2026-11-05 through a search index (summaries, not purchases): external_observations, only what a result actually showed; a missing price is null. (2) The factory's own catalogue tiers. No price here is validated by buyers.",
+  "external_observations": [
+   {
+    "url": "https://aykutaytekin.gumroad.com/l/nxjbo",
+    "price_usd": 3,
+    "note": "Gumroad valuation template (DCF, EBITDA multiple, net asset value) at $3",
+    "observed_on": "2026-11-05"
+   },
+   {
+    "url": "https://flevy.com/browse/flevypro/small-business-valuation-model-2405",
+    "price_usd": null,
+    "note": "Flevy small-business valuation model, behind a subscription; price not shown",
+    "observed_on": "2026-11-05"
+   },
+   {
+    "url": "https://www.efinancialmodels.com/?p=658924",
+    "price_usd": null,
+    "note": "paid valuation template guide; price not shown",
+    "observed_on": "2026-11-05"
+   }
+  ],
   "internal_comparables": [
    {
     "id": "B14-002",
@@ -92,6 +111,7 @@
    }
   ],
   "rationale": "$49: a three-method valuation model with a debt-service test and a long guide; the factory's closest comparables are the $24 Rental Property Deal Analyzer and the $49-59 kits, and this model carries more sheets and analysis than either.",
-  "demand": "WAITING FOR REAL DATA: the account has 0 sales on 112 listings, so no price here is validated by buyers."
+  "demand": "WAITING FOR REAL DATA: the account has 0 sales on 112 listings, so no price here is validated by buyers.",
+  "market_position": "The only visible price was $3. $49 is far above it and is the MOST PRICE-EXPOSED of the batch; the justification is the SDE build, three methods, a debt-service test and a long guide, which the $3 listing does not claim."
  }
 }

@@ -6,13 +6,13 @@
  "files": {
   "workbook": {
    "path": "books/batch18/B18-002/owner_operator_cost_per_mile_load_profit.xlsx",
-   "bytes": 14975,
-   "sha256": "bb09d9b3a02c17d71ea7aacc8ff19f3dcf335f72142a7668b60f5628e2b75a7c"
+   "bytes": 14971,
+   "sha256": "e0af920c1ddf3a46ea7f5ba6c5ceed1c2136ce69f4b61733e1c3bbb90eff74ff"
   },
   "guide": {
    "path": "books/batch18/B18-002/owner_operator_cost_per_mile_load_profit_guide.pdf",
-   "bytes": 12227,
-   "sha256": "3e85266f7802ce55c9d7e5c6fae43110f4cff2077bba27585e019957aab011b3"
+   "bytes": 14125,
+   "sha256": "44705d88f10952f8a7124f95745931dbc061def864c67c57fb976bc209e74ac7"
   },
   "cover": {
    "path": "books/covers/B18-002.png",
@@ -21,8 +21,8 @@
   },
   "bundle": {
    "path": "books/batch18/B18-002/owner_operator_cost_per_mile_load_profit_bundle.zip",
-   "bytes": 21836,
-   "sha256": "7a5f556e5c8a82029574da39e0db1eda3e122012537f9b4d3acdb2c6e3f4af76"
+   "bytes": 23370,
+   "sha256": "a69921f47730ce534813f81f77b7948aacb6bb26bbefacb5035eeebbc95274d8"
   }
  },
  "qa": {
@@ -75,8 +75,45 @@
  ],
  "currency": "USD",
  "pricing_evidence": {
-  "basis": "INTERNAL ONLY. No external listing price was read for this batch (NOT MEASURED). The price follows the factory's own catalogue tiers: $9-24 single-purpose calculators (batches 14-17, 0 sales) and $29-99 compliance kits. This product is a multi-sheet model with a long guide, so it is placed above the calculators.",
-  "external_observations": [],
+  "basis": "Two sources. (1) Web searches run on 2026-11-05 through a search index (summaries, not purchases): external_observations, only what a result actually showed; a missing price is null. (2) The factory's own catalogue tiers. No price here is validated by buyers.",
+  "external_observations": [
+   {
+    "url": "https://www.routific.com/blog/how-to-calculate-trucking-cost-per-mile",
+    "price_usd": 0,
+    "note": "free cost-per-mile Excel spreadsheet",
+    "observed_on": "2026-11-05"
+   },
+   {
+    "url": "https://www.shoeboxed.com/blog/trucking-expenses-spreadsheet",
+    "price_usd": 0,
+    "note": "free owner-operator expense spreadsheet",
+    "observed_on": "2026-11-05"
+   },
+   {
+    "url": null,
+    "price_usd": 22.39,
+    "note": "Payhip cost-per-mile and IFTA tool (search index)",
+    "observed_on": "2026-11-05"
+   },
+   {
+    "url": null,
+    "price_usd": 29.0,
+    "note": "Payhip 2026 owner-operator spreadsheet (search index)",
+    "observed_on": "2026-11-05"
+   },
+   {
+    "url": null,
+    "price_usd": 15.0,
+    "note": "Payhip road-freight cost simulation template (search index)",
+    "observed_on": "2026-11-05"
+   },
+   {
+    "url": null,
+    "price_usd": null,
+    "note": "Etsy cost-per-mile and bookkeeping templates roughly CA$17-44 (listings vary by currency and sale)",
+    "observed_on": "2026-11-05"
+   }
+  ],
   "internal_comparables": [
    {
     "id": "B14-007",
@@ -92,6 +129,7 @@
    }
   ],
   "rationale": "$39: a multi-sheet decision model with a long guide for a specific trade, placed above the $9-24 calculators and below the $49 WIP schedule.",
-  "demand": "WAITING FOR REAL DATA: the account has 0 sales on 112 listings, so no price here is validated by buyers."
+  "demand": "WAITING FOR REAL DATA: the account has 0 sales on 112 listings, so no price here is validated by buyers.",
+  "market_position": "Paid templates seen were roughly $15-44; $39 is in the upper part of that range, justified only by the per-load verdict, the empty-mile logic and the longer guide."
  }
 }

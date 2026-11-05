@@ -7,12 +7,12 @@
   "workbook": {
    "path": "books/batch18/B18-007/store_opening_feasibility_break_even_model.xlsx",
    "bytes": 11341,
-   "sha256": "09247ff9a2fed679cb35b0f35ec854ef2a948f14a138e1239fd50cfb506bdfc2"
+   "sha256": "54317cf8b8d5a0433e3f40ebf1806c0022b7238e04870cfd87658e8af7ee421d"
   },
   "guide": {
    "path": "books/batch18/B18-007/store_opening_feasibility_break_even_model_guide.pdf",
-   "bytes": 12824,
-   "sha256": "634f83ac72d7b88adb94dfda8cfa61469e00517c386b61632d50aa49ffbd9fb6"
+   "bytes": 14812,
+   "sha256": "835dbd92209a152bc35f6ad7404d5a0f43569e39a5530057ca471d02faf4d2fa"
   },
   "cover": {
    "path": "books/covers/B18-007.png",
@@ -21,8 +21,8 @@
   },
   "bundle": {
    "path": "books/batch18/B18-007/store_opening_feasibility_break_even_model_bundle.zip",
-   "bytes": 20359,
-   "sha256": "e9a70506162cdafc9d7f0f2a0513edc3571d982c38fecad5f1f55540793f99ce"
+   "bytes": 21738,
+   "sha256": "68517172720dbd701b982bb10f650a90df2751f021f90afea02ad842bdac8352"
   }
  },
  "qa": {
@@ -36,7 +36,7 @@
    "failed": []
   },
   "guide": {
-   "pages": 6,
+   "pages": 7,
    "title_found": true,
    "disclaimer_found": true
   },
@@ -75,8 +75,27 @@
  ],
  "currency": "USD",
  "pricing_evidence": {
-  "basis": "INTERNAL ONLY. No external listing price was read for this batch (NOT MEASURED). The price follows the factory's own catalogue tiers: $9-24 single-purpose calculators (batches 14-17, 0 sales) and $29-99 compliance kits. This product is a multi-sheet model with a long guide, so it is placed above the calculators.",
-  "external_observations": [],
+  "basis": "Two sources. (1) Web searches run on 2026-11-05 through a search index (summaries, not purchases): external_observations, only what a result actually showed; a missing price is null. (2) The factory's own catalogue tiers. No price here is validated by buyers.",
+  "external_observations": [
+   {
+    "url": "https://ckessels.gumroad.com/l/fnqgv",
+    "price_usd": 4.19,
+    "note": "Gumroad break-even model for several products, EUR 4.19",
+    "observed_on": "2026-11-05"
+   },
+   {
+    "url": "https://www.eloquens.com/tool/4n13tVND/finance/retail-financial-model-excel-templates/retail-financial-model",
+    "price_usd": null,
+    "note": "retail startup financial model; price not shown",
+    "observed_on": "2026-11-05"
+   },
+   {
+    "url": "https://shortcut.ai/templates/break-even-analysis-template",
+    "price_usd": 0,
+    "note": "free break-even template",
+    "observed_on": "2026-11-05"
+   }
+  ],
   "internal_comparables": [
    {
     "id": "B14-009",
@@ -92,6 +111,7 @@
    }
   ],
   "rationale": "$39: a 24-month feasibility model with a long guide; placed above the $9-24 single-purpose calculators and with the factory's other multi-sheet models.",
-  "demand": "WAITING FOR REAL DATA: the account has 0 sales on 112 listings, so no price here is validated by buyers."
+  "demand": "WAITING FOR REAL DATA: the account has 0 sales on 112 listings, so no price here is validated by buyers.",
+  "market_position": "Simple break-even tools are free or a few dollars; retail-specific models exist but their prices were not visible. $39 is above every visible price and is price-exposed."
  }
 }

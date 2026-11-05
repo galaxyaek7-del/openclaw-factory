@@ -7,12 +7,12 @@
   "workbook": {
    "path": "books/batch18/B18-008/small_farm_crop_enterprise_budget.xlsx",
    "bytes": 11406,
-   "sha256": "777e8baefb9cb9f9f30be120e5012979abcd22bd842f354c46b02862d17b50a0"
+   "sha256": "592082e666623f8f53280943c4970c69b0a3768706446ff03a608ea6b6feafd8"
   },
   "guide": {
    "path": "books/batch18/B18-008/small_farm_crop_enterprise_budget_guide.pdf",
-   "bytes": 12153,
-   "sha256": "52bfe6524da2c6841d703df8c7e019cd5893564642ba07537751a6e623f2d439"
+   "bytes": 13372,
+   "sha256": "8b9747daffa346edb612a0d7bee4e21d252415e90eb3527dbc1acccac77750f0"
   },
   "cover": {
    "path": "books/covers/B18-008.png",
@@ -21,8 +21,8 @@
   },
   "bundle": {
    "path": "books/batch18/B18-008/small_farm_crop_enterprise_budget_bundle.zip",
-   "bytes": 19786,
-   "sha256": "7725cdd68c1fafed6d366ace393407260eb160697fed294054febde41c763e1d"
+   "bytes": 20769,
+   "sha256": "a23d86c5d6d81c7f197d6ffbac15ed0740e47e7fbbd6c4dc7ef08056f61dd286"
   }
  },
  "qa": {
@@ -75,8 +75,27 @@
  ],
  "currency": "USD",
  "pricing_evidence": {
-  "basis": "INTERNAL ONLY. No external listing price was read for this batch (NOT MEASURED). The price follows the factory's own catalogue tiers: $9-24 single-purpose calculators (batches 14-17, 0 sales) and $29-99 compliance kits. This product is a multi-sheet model with a long guide, so it is placed above the calculators.",
-  "external_observations": [],
+  "basis": "Two sources. (1) Web searches run on 2026-11-05 through a search index (summaries, not purchases): external_observations, only what a result actually showed; a missing price is null. (2) The factory's own catalogue tiers. No price here is validated by buyers.",
+  "external_observations": [
+   {
+    "url": "https://www.alberta.ca/crop-returns-enterprise-analysis-tool",
+    "price_usd": 0,
+    "note": "free Alberta Crop Returns Excel tool",
+    "observed_on": "2026-11-05"
+   },
+   {
+    "url": "https://www.lsuagcenter.com/topics/money_business/farm_business/budgets/enterprise-budget-and-breakeven-analysis-calculator",
+    "price_usd": 0,
+    "note": "free LSU AgCenter enterprise budget and break-even calculator",
+    "observed_on": "2026-11-05"
+   },
+   {
+    "url": "https://finmodelslab.com/products/sorghum-farm-financial-model",
+    "price_usd": null,
+    "note": "paid sorghum farm model; price not shown",
+    "observed_on": "2026-11-05"
+   }
+  ],
   "internal_comparables": [
    {
     "id": "B14-005",
@@ -92,6 +111,7 @@
    }
   ],
   "rationale": "$29: a per-crop planning model with a long guide for a niche (small farms) not covered by the factory's other products; priced between the $9-24 calculators and the $39 models.",
-  "demand": "WAITING FOR REAL DATA: the account has 0 sales on 112 listings, so no price here is validated by buyers."
+  "demand": "WAITING FOR REAL DATA: the account has 0 sales on 112 listings, so no price here is validated by buyers.",
+  "market_position": "Strong free university tools exist (several use macros). $29 is only defensible by polish, a plain-language guide and no macros; this is PRICE-EXPOSED."
  }
 }

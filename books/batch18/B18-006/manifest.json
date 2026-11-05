@@ -7,12 +7,12 @@
   "workbook": {
    "path": "books/batch18/B18-006/retirement_drawdown_stress_test.xlsx",
    "bytes": 12704,
-   "sha256": "2917ece43b0482451880a677424db9443f58bd253162445b2dfe4cc801f9ba09"
+   "sha256": "03ccff7566a0decbbb6fc79cc4fe44354a7938572644b0419142e2df5c6f8f4d"
   },
   "guide": {
    "path": "books/batch18/B18-006/retirement_drawdown_stress_test_guide.pdf",
-   "bytes": 12020,
-   "sha256": "b9226fe8265525ce41e3cc0ae9086f398000c77cbd653a11f9bb32ed19fa3c02"
+   "bytes": 13415,
+   "sha256": "6444d2fb0d5d037285322404012d690a85a6568d6f19576b15c885ac47dfd89e"
   },
   "cover": {
    "path": "books/covers/B18-006.png",
@@ -21,8 +21,8 @@
   },
   "bundle": {
    "path": "books/batch18/B18-006/retirement_drawdown_stress_test_bundle.zip",
-   "bytes": 20186,
-   "sha256": "714d9225d8565e8249b30914f8395da052c3fb573eefd355ceb75760ca0a2050"
+   "bytes": 21311,
+   "sha256": "9e006b2681d49b9c80e175e219ae4fe3c7b750f9f25402148089f3488424d0f2"
   }
  },
  "qa": {
@@ -75,8 +75,27 @@
  ],
  "currency": "USD",
  "pricing_evidence": {
-  "basis": "INTERNAL ONLY. No external listing price was read for this batch (NOT MEASURED). The price follows the factory's own catalogue tiers: $9-24 single-purpose calculators (batches 14-17, 0 sales) and $29-99 compliance kits. This product is a multi-sheet model with a long guide, so it is placed above the calculators.",
-  "external_observations": [],
+  "basis": "Two sources. (1) Web searches run on 2026-11-05 through a search index (summaries, not purchases): external_observations, only what a result actually showed; a missing price is null. (2) The factory's own catalogue tiers. No price here is validated by buyers.",
+  "external_observations": [
+   {
+    "url": "https://payhip.com/b/LCR7D",
+    "price_usd": 5,
+    "note": "FIRE Stress Test Calculator (Excel/Google Sheets), listed at $5 on sale; uses historical S&P 500 returns",
+    "observed_on": "2026-11-05"
+   },
+   {
+    "url": "https://www.financialaha.com/spreadsheet-templates/retirement-financial-planning-projections",
+    "price_usd": 49,
+    "note": "Retirement Financial Planning Projections with 12 what-if scenarios (deterministic)",
+    "observed_on": "2026-11-05"
+   },
+   {
+    "url": "https://earlyretirementnow.com/2018/08/29/google-sheet-updates-swr-series-part-28/comment-page-2/",
+    "price_usd": 0,
+    "note": "free Google Sheet withdrawal-rate toolbox",
+    "observed_on": "2026-11-05"
+   }
+  ],
   "internal_comparables": [
    {
     "id": "B15-010",
@@ -92,6 +111,7 @@
    }
   ],
   "rationale": "$39: a retirement stress-test model with a long guide; placed above the $9-24 savings calculators because it carries three scenarios and a 35-year projection.",
-  "demand": "WAITING FOR REAL DATA: the account has 0 sales on 112 listings, so no price here is validated by buyers."
+  "demand": "WAITING FOR REAL DATA: the account has 0 sales on 112 listings, so no price here is validated by buyers.",
+  "market_position": "Observed prices span $5 to $49. $39 is in the upper half; the cheaper tool uses historical sequences, which this model does not (it uses three fixed hypothetical paths)."
  }
 }

@@ -7,12 +7,12 @@
   "workbook": {
    "path": "books/batch18/B18-010/digital_course_launch_break_even_model.xlsx",
    "bytes": 9455,
-   "sha256": "b2c594005a142a418846ca440cd9610dd805df8bd3493b1a73f461aa87e5b40c"
+   "sha256": "8a94a4d06e77f425e54ba5543a880dbc51177cd55c4f4081d2c4a26dc88a305c"
   },
   "guide": {
    "path": "books/batch18/B18-010/digital_course_launch_break_even_model_guide.pdf",
-   "bytes": 11860,
-   "sha256": "ac842babfa0deed798a57582a571fd9316e7be8cdf2485bb30b6b1c1e875ef27"
+   "bytes": 13446,
+   "sha256": "cfc61a1751f4fc9e321e9944c6ce7b721ba6d705e07f43f389faa021cf7a26ac"
   },
   "cover": {
    "path": "books/covers/B18-010.png",
@@ -21,8 +21,8 @@
   },
   "bundle": {
    "path": "books/batch18/B18-010/digital_course_launch_break_even_model_bundle.zip",
-   "bytes": 17792,
-   "sha256": "fdfd67f9a184598fc2a48133b78a19f2b4a212010414d69f9bac5f10ee21bdd4"
+   "bytes": 19090,
+   "sha256": "fc77f5e897a00390f518ebddd1ae307d718818b84896c1e98f90f9031d452dd9"
   }
  },
  "qa": {
@@ -75,8 +75,21 @@
  ],
  "currency": "USD",
  "pricing_evidence": {
-  "basis": "INTERNAL ONLY. No external listing price was read for this batch (NOT MEASURED). The price follows the factory's own catalogue tiers: $9-24 single-purpose calculators (batches 14-17, 0 sales) and $29-99 compliance kits. This product is a multi-sheet model with a long guide, so it is placed above the calculators.",
-  "external_observations": [],
+  "basis": "Two sources. (1) Web searches run on 2026-11-05 through a search index (summaries, not purchases): external_observations, only what a result actually showed; a missing price is null. (2) The factory's own catalogue tiers. No price here is validated by buyers.",
+  "external_observations": [
+   {
+    "url": "https://flevy.com/browse/marketplace/break-even-analysis-template-6520",
+    "price_usd": 45,
+    "note": "generic Break Even Analysis Template (Excel), Flevy",
+    "observed_on": "2026-11-05"
+   },
+   {
+    "url": "https://learnybox.com/en/tools/break-even-calculator/",
+    "price_usd": 0,
+    "note": "free break-even calculator for a course",
+    "observed_on": "2026-11-05"
+   }
+  ],
   "internal_comparables": [
    {
     "id": "B15-007",
@@ -92,6 +105,7 @@
    }
   ],
   "rationale": "$29: a launch-planning model with a long guide; the factory's nearest products are the $15 CLV/CAC calculator and the $15 MRR forecaster, and this one adds three scenarios and a break-even buyers target.",
-  "demand": "WAITING FOR REAL DATA: the account has 0 sales on 112 listings, so no price here is validated by buyers."
+  "demand": "WAITING FOR REAL DATA: the account has 0 sales on 112 listings, so no price here is validated by buyers.",
+  "market_position": "A generic paid break-even template is listed at $45 and a free course calculator exists; $29 is below the paid one and adds launch-specific logic."
  }
 }

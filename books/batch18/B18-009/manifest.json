@@ -6,13 +6,13 @@
  "files": {
   "workbook": {
    "path": "books/batch18/B18-009/wholesale_price_waterfall_channel_margin.xlsx",
-   "bytes": 14033,
-   "sha256": "ebc3f03fd78f7e5719160730bb915f9f12f487210a985cdde95ae09603b70c2a"
+   "bytes": 14034,
+   "sha256": "69513195b029f8f945ad928f2cd95be6840338b388c08a25b8ef999e465608ff"
   },
   "guide": {
    "path": "books/batch18/B18-009/wholesale_price_waterfall_channel_margin_guide.pdf",
-   "bytes": 12060,
-   "sha256": "e7e3e5f631f25fb85d845d4d0dae33d570f1aaf526d1c1e35a12bfefbfbf4ab6"
+   "bytes": 13117,
+   "sha256": "37a3f68752e47507ce989bb1d821299916aacdc0bcb55093f2dde588874ead5b"
   },
   "cover": {
    "path": "books/covers/B18-009.png",
@@ -21,8 +21,8 @@
   },
   "bundle": {
    "path": "books/batch18/B18-009/wholesale_price_waterfall_channel_margin_bundle.zip",
-   "bytes": 21337,
-   "sha256": "e356d64cacaf7d430ec3bbde92c8b4d2b84bd3826b0600056299e0db3cdf0868"
+   "bytes": 22190,
+   "sha256": "fb8d0bc1e5a21ca253c112db35ef4603904e80f525a245a59b6fcb4f62f812c3"
   }
  },
  "qa": {
@@ -75,8 +75,21 @@
  ],
  "currency": "USD",
  "pricing_evidence": {
-  "basis": "INTERNAL ONLY. No external listing price was read for this batch (NOT MEASURED). The price follows the factory's own catalogue tiers: $9-24 single-purpose calculators (batches 14-17, 0 sales) and $29-99 compliance kits. This product is a multi-sheet model with a long guide, so it is placed above the calculators.",
-  "external_observations": [],
+  "basis": "Two sources. (1) Web searches run on 2026-11-05 through a search index (summaries, not purchases): external_observations, only what a result actually showed; a missing price is null. (2) The factory's own catalogue tiers. No price here is validated by buyers.",
+  "external_observations": [
+   {
+    "url": "https://www.someka.net/excel-template/wholesale-price-calculator/",
+    "price_usd": 0,
+    "note": "free wholesale price calculator template",
+    "observed_on": "2026-11-05"
+   },
+   {
+    "url": "https://payhip.com/b/EU1LK",
+    "price_usd": null,
+    "note": "paid multi-sheet wholesale workbook on Payhip; price not shown",
+    "observed_on": "2026-11-05"
+   }
+  ],
   "internal_comparables": [
    {
     "id": "B15-006",
@@ -92,6 +105,7 @@
    }
   ],
   "rationale": "$29: a channel-pricing model with a long guide; the factory's closest products are the $12 price-increase and $12 Etsy profit calculators, and this one adds three channels, a verdict and a direct-versus-wholesale comparison.",
-  "demand": "WAITING FOR REAL DATA: the account has 0 sales on 112 listings, so no price here is validated by buyers."
+  "demand": "WAITING FOR REAL DATA: the account has 0 sales on 112 listings, so no price here is validated by buyers.",
+  "market_position": "Free calculators exist and the one paid comparable's price was not visible. $29 rests on the three-channel stack, the verdicts and the guide; PRICE-EXPOSED."
  }
 }

@@ -51,3 +51,25 @@ Total checks: 1186 independent recalculations (lib/xlsx_eval.py against a separa
 ## Reproduce
 
 `python books/_batch18_src/run.py` (sources are git-ignored: they are the paid product), `python scripts/publish_batch14.py --batch batch18` (dry audit), `--live --only <ids>` after approvals.
+
+## Update (2026-11-05, later): what was added after publication
+
+1. **Guides extended** with "Where to find each number" and "Sanity checks before you trust the result" for every product (these are the two things a buyer needs and the first version lacked). Guides are now 6-7 pages, about 1,800-2,100 words. The ten rebuilt bundles passed the same QA again (same recalculation checks, all pass).
+2. **Live files replaced** with `scripts/replace_batch18_bundles.py` (dry run first, one product tested, then nine): each upload went through the write gate and a write scope, and a read-back confirmed exactly one attached file of the expected size on all ten. No listing had sold, so no buyer received the old file.
+3. **"What you actually receive" line added** to all ten live descriptions with `scripts/apply_batch18_listing_facts.py`, measured from the final bundles (sheets, guide pages, words). Nothing else on a listing changed (price, title, tags, cover).
+4. **External price evidence recorded** in each manifest (web searches on 2026-11-05 through a search index; summaries, not purchases):
+
+| ID | Our price | Prices seen elsewhere (USD) | Reading |
+|---|---|---|---|
+| B18-001 | $49 | $0 | No paid WIP template with a visible price was found; free templates exist. The $49 is therefore NOT anchored to any observed paid price. The differentiator is over/under billing, fade, loss flags and the guide. |
+| B18-002 | $39 | $0, $15, $22.39, $29 | Paid templates seen were roughly $15-44; $39 is in the upper part of that range, justified only by the per-load verdict, the empty-mile logic and the longer guide. |
+| B18-003 | $49 | $3 | The only visible price was $3. $49 is far above it and is the MOST PRICE-EXPOSED of the batch; the justification is the SDE build, three methods, a debt-service test and a long guide, which the $3 listing does not claim. |
+| B18-004 | $39 | $0, $39 | A comparable paid template is listed at $39, the same price; free alternatives exist. |
+| B18-005 | $39 | $0, $45 | A paid comparable is listed at $45; $39 is below it. The MACRS and recapture treatment is the differentiator. |
+| B18-006 | $39 | $0, $5, $49 | Observed prices span $5 to $49. $39 is in the upper half; the cheaper tool uses historical sequences, which this model does not (it uses three fixed hypothetical paths). |
+| B18-007 | $39 | $0, $4.19 | Simple break-even tools are free or a few dollars; retail-specific models exist but their prices were not visible. $39 is above every visible price and is price-exposed. |
+| B18-008 | $29 | $0 | Strong free university tools exist (several use macros). $29 is only defensible by polish, a plain-language guide and no macros; this is PRICE-EXPOSED. |
+| B18-009 | $29 | $0 | Free calculators exist and the one paid comparable's price was not visible. $29 rests on the three-channel stack, the verdicts and the guide; PRICE-EXPOSED. |
+| B18-010 | $29 | $0, $45 | A generic paid break-even template is listed at $45 and a free course calculator exists; $29 is below the paid one and adds launch-specific logic. |
+
+**Price exposure, stated plainly:** B18-003 ($49) is far above the one visible comparable ($3), and B18-007, B18-008 and B18-009 face free or very cheap substitutes. B18-004 and B18-005/B18-010 sit at or below a visible paid comparable. No price was changed: without any sale there is no evidence that a lower price would sell, and a change would be a guess.
