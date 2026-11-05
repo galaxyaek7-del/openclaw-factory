@@ -13,5 +13,11 @@ Start here. These documents describe the factory as implemented and verified on 
 | [FACTORY_ENGINEERING_BACKLOG.md](FACTORY_ENGINEERING_BACKLOG.md) | Ranked tasks with acceptance criteria |
 | [FACTORY_BASELINE_REPORT.md](FACTORY_BASELINE_REPORT.md) | Catalog reconciliation, tests, operating metrics |
 | [EXECUTION_LOG.md](EXECUTION_LOG.md) | Short log so the next session resumes without rediscovery |
+| [../../PROGRESS.md](../../PROGRESS.md) | Current state, faults and plan (2026-11-05). Read first in a new session |
+| [FOUNDER_ACTIONS.md](FOUNDER_ACTIONS.md) | What only the founder can do, in priority order |
+| [COMPANY_OPERATING_PLAN_2026-11.md](COMPANY_OPERATING_PLAN_2026-11.md) | Operating plan: demand, not production, is the constraint |
+| [../claude_md/](../claude_md/) | Long-form detail moved out of `CLAUDE.md` (index at the end of `CLAUDE.md`) |
+
+Rule for historical documents (B11): the ~550 root-level `.md` files and the dated reports are historical records. They are not edited or given headers (the loop rewrites several of them and tests parse some); this index is the single list of what is current. A document not listed here or in the sources below is historical.
 
 Older authoritative sources these documents rely on: `CLAUDE.md`, `OpenClaw_Brain/00_Governance/PERMANENT_OPERATING_DOCTRINE.md`, `reports/COMMERCIAL_RECONCILIATION_2026-10-22.md`, `reports/AGENT_INTEGRATION_2026-10-23.md`, `reports/BATCH14_PRODUCTS_2026-10-23.md`. The ~550 other root-level documents are historical unless one of these points to them.

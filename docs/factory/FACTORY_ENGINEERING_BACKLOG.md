@@ -14,7 +14,7 @@ Each item: why, acceptance criteria, verification. Status: TODO, DOING, DONE, BL
 | B8 | Thin-PDF repairs and unpublish/delete set | R5 | founder authorization for the 14/2/1 actions in `drafts/release_packages/REPAIR_MANIFEST.json` | platform re-read after each action | BLOCKED (founder) |
 | B9 | Move cohort generators behind the manifest contract | R8 | cohort build produces the same manifest shape and runs adapter QA | regenerated manifest + QA report | TODO |
 | B10 | Retire unused Mission Control services | R7 | services with no caller listed and removed in reviewed batches | `enterprise_validation.detect_unused_services()` before/after | DONE 2026-10-29: detector found 2 of 296 endpoints with no caller (commercial_readiness_history/trend) -- connected as Mission Control services rather than retired (the loop records a snapshot daily); detector now reports 0 |
-| B11 | Mark superseded root documents as historical | R6 | index lists authoritative docs; others carry a one-line historical header | spot check | TODO |
+| B11 | Mark superseded root documents as historical | R6 | index lists authoritative docs; others carry a one-line historical header | spot check | DONE 2026-11-05 (index in `docs/factory/README.md`; decision: no per-file headers, see the rule there) |
 | B12 | Paddle key permissions, Telegram chat id | R10 | verifier shows Paddle and Telegram VERIFIED | `connection_verifier.py` | BLOCKED (founder) |
 
 ## Reconstruction pass, 2026-10-29 (mission GF-FACTORY-WIDE-RECONSTRUCTION-AND-BUILD-v1)

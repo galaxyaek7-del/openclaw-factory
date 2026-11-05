@@ -42,11 +42,11 @@ Rules of this file: facts marked OBSERVED were checked this session; nothing is 
 | T3 | B4: central publication clearance in `create_product()` (founder approval or Quality Gate decision), arm + distributor wiring, tests | DONE, commit 2fb75161. Wider run: 1,377 tests, 4 failures; 1 was real (see F10, fixed), 3 are not from this work (see section 4) |
 | T4 | F3: bring n8n back (logon task `GalaxyForge-N8N-Autostart`), verify with `scripts/n8n_workflow_health.py` | DONE: n8n up (200) 2026-11-05 08:08Z. Its last exit was 0xC000013A (console closed). Workflows `02_Sales_Poll` and `Openclaw_Sensing_Engine` still show STALE/FAILING from the days the server was down: re-check after their next scheduled run |
 | T5 | F8: commit hygiene, commit only own files per task | ongoing |
-| T6 | Re-run protection check; confirm only founder-owned items remain | TODO |
-| T7 | Next engineering backlog items that are not founder-blocked (B7 site pages for 5 products, B9, B11) | TODO |
+| T6 | Re-run protection check; confirm only founder-owned items remain | DONE 2026-11-05: 4 PASS; FAIL `disk_space` (1.3 GB, clears when the founder approves deleting `opencode.db.old`) and `payable_withdrawn` (founder, Gumroad dashboard) |
+| T7 | Next engineering backlog items that are not founder-blocked (B7, B9, B11) | B11 DONE (index rule in `docs/factory/README.md`, no per-file headers: the loop rewrites several root docs). B7 skipped: 4 of its 5 pages are for held/withdrawn/duplicate items, and measurement (B6) is the real bottleneck. B9 (cohort generators behind the manifest contract) is a refactor of live generators: next, with a regeneration diff as proof |
 | T9 | Diagnose the 3 failing tests in section 4 | DONE: the 2 visual QA tests had a stale fixture (3-colour cover vs the committed adapter's `cover_has_imagery` check, which is right); fixed in the untracked `tests/test_visual_qa.py`, 18 pass, left uncommitted because the file is untracked. The `profit_oracle` text test fails because of someone else's uncommitted D8 fail-closed change in `profit_oracle.py` (`_score_margin(niche, platform=...)`): update that test when that change is committed |
 | T10 | OpenCode DB shrink (founder directive): cache cleanup 1.63 GB (approved); 44 main sessions exported and verified to `C:\Users\Dell\opencode_exports` (437 MB, MANIFEST.json); slim copy without the `event` table built (6.9 GB; row counts and text lengths of all other tables identical; integrity ok; OpenCode lists the sessions) and swapped in; original kept as `opencode.db.old` | DONE except deleting `.old` (waits for the founder's approval after he checks OpenCode) |
-| T8 | Founder list: refresh `docs/factory/FOUNDER_ACTIONS.md` with F1, F2, F5, F6, F9 | TODO |
+| T8 | Founder list: refresh `docs/factory/FOUNDER_ACTIONS.md` with F1, F2, F5, F6, F9 | DONE, commit 974b80f3 (section 0) |
 
 ## 4. Stuck ("عالق") and failures not from this work
 
@@ -65,4 +65,4 @@ No stuck task. Three tests fail on the current tree and are unrelated to publish
 
 ## 6. Next
 
-Founder checks OpenCode, then approves deleting `opencode.db.old` (F1). Agent: T6 (protection re-check), T8, then T7.
+Founder checks OpenCode, then approves deleting `opencode.db.old` (F1). Agent: T7/B9 (cohort generators behind the manifest contract), then re-check n8n `02_Sales_Poll` and `Openclaw_Sensing_Engine` after their next scheduled run.
