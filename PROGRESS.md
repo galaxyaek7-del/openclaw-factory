@@ -22,7 +22,7 @@ Rules of this file: facts marked OBSERVED were checked this session; nothing is 
 
 | # | Fault | Severity | Owner |
 |---|---|---|---|
-| F1 | Disk C: 6.6 GB free of 255 GB (2.6%). `opencode.db` is 141 GB (backlog B40). Loop enters low-disk mode below 2 GB and stops generating PDFs. | CRITICAL | founder (red line: deleting data) |
+| F1 | Disk C: 1.2 GB free of 255 GB (OBSERVED 2026-11-05 after the slim build). Cause: the old `opencode.db` (141 GB, backlog B40) is kept as `opencode.db.old` until the founder approves deleting it (frees ~141 GB). Loop enters low-disk mode below 2 GB and stops generating PDFs. | CRITICAL | founder: approve deleting `.old` (red line: deleting data) |
 | F2 | Loop had no restart after a crash/log-off (3.3 days dead). No autostart task for server/loop (B37). | HIGH | restarted by agent; autostart install = founder (`scripts/install_factory_autostart.ps1`; persistence was refused to the agent before) |
 | F3 | n8n unreachable ("fetch failed"); the sensing workflows do not run. Watchdog exists but n8n is still down. | HIGH | agent |
 | F4 | Any caller of `gumroad_publisher.create_product()` could create a paid listing with no approval or gate evidence once the live switch was on (B4). | HIGH | agent: FIXED, see task T3 |
@@ -45,6 +45,7 @@ Rules of this file: facts marked OBSERVED were checked this session; nothing is 
 | T6 | Re-run protection check; confirm only founder-owned items remain | TODO |
 | T7 | Next engineering backlog items that are not founder-blocked (B7 site pages for 5 products, B9, B11) | TODO |
 | T9 | Diagnose the 3 failing tests in section 4 | DONE: the 2 visual QA tests had a stale fixture (3-colour cover vs the committed adapter's `cover_has_imagery` check, which is right); fixed in the untracked `tests/test_visual_qa.py`, 18 pass, left uncommitted because the file is untracked. The `profit_oracle` text test fails because of someone else's uncommitted D8 fail-closed change in `profit_oracle.py` (`_score_margin(niche, platform=...)`): update that test when that change is committed |
+| T10 | OpenCode DB shrink (founder directive): cache cleanup 1.63 GB (approved); 44 main sessions exported and verified to `C:\Users\Dell\opencode_exports` (437 MB, MANIFEST.json); slim copy without the `event` table built (6.9 GB; row counts and text lengths of all other tables identical; integrity ok; OpenCode lists the sessions) and swapped in; original kept as `opencode.db.old` | DONE except deleting `.old` (waits for the founder's approval after he checks OpenCode) |
 | T8 | Founder list: refresh `docs/factory/FOUNDER_ACTIONS.md` with F1, F2, F5, F6, F9 | TODO |
 
 ## 4. Stuck ("عالق") and failures not from this work
@@ -64,4 +65,4 @@ No stuck task. Three tests fail on the current tree and are unrelated to publish
 
 ## 6. Next
 
-T6 (protection re-check), then T9, then T7.
+Founder checks OpenCode, then approves deleting `opencode.db.old` (F1). Agent: T6 (protection re-check), T8, then T7.
