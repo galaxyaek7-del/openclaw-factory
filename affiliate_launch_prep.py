@@ -13,10 +13,11 @@ existing, already-built affiliate modules:
   * tracking -- the real channel/campaign/content/UTM identifiers that will
                 tag every real click via
                 affiliate_commerce.click_tracking.record_attributed_click
-  * link     -- honest affiliate_link_status. A CJ tracking link only exists
+  * link     -- honest affiliate_link_status. An Awin tracking link only exists
                 after the founder completes the ONE founder action (apply via
-                CJ + connect Payoneer) and the network issues a link -- until
-                then it is NOT_CONFIGURED, never fabricated.
+                Awin + confirm Payoneer Algeria capability) and the network
+                issues a link -- until then it is NOT_CONFIGURED, never
+                fabricated.
   * measure  -- revenue_intelligence_dashboard() read over the real ledgers
                 (0 revenue today, honestly reported).
 
@@ -38,12 +39,12 @@ from affiliate_content_factory import from_portfolio_opportunity
 
 _FACTORY_ROOT = Path(__file__).resolve().parent
 
-# The single, internally-decided launch opportunity. Chosen 2026-08-14 after
-# official-source verification (see portfolio records): it is the only
-# VERIFIED recurring program whose payout is receivable in Algeria
-# (DigitalOcean pays via CJ -> Payoneer; Payoneer supports Algeria. AWeber/
-# SiteGround pay via PayPal and Brevo via PartnerStack/Airwallex -- none of
-# which support receiving payments in Algeria, verified from official docs).
+# The single, internally-decided first launch candidate. Chosen 2026-08-14 and
+# revalidated 2026-10-21 (see affiliate/portfolio.py): it is the only recurring
+# program with a documented payout route (DigitalOcean -> Awin -> Payoneer).
+# That route is NOT confirmed for Algeria: Awin does not name Algeria and
+# points to Payoneer's Capabilities Map. The candidate stays first because the
+# route is documented, not because Algeria receive capability is proven.
 LAUNCH_OPPORTUNITY_ID = "CO-digitalocean-affiliate"
 
 # Real tracking identifiers prepared for the launch. These are STATIC and
@@ -146,13 +147,16 @@ def _founder_action(offer: dict) -> dict:
         "what": (
             f"سجّل كـ Publisher على شبكة Awin عبر الرابط الرسمي "
             f"{LAUNCH_LINK_SIGNUP_URL} (برنامج DigitalOcean رقم 123996)، "
-            f"قدّم طلب انضمام، وأضف Payoneer كطريقة دفع (متوافقة مع الجزائر)."
+            f"وقدّم طلب الانضمام. لا تضف Payoneer كطريقة دفع إلا بعد تأكيد كتابي "
+            f"من Awin أو Payoneer أن ناشراً في الجزائر يستطيع استلام المدفوعات."
         ),
         "why": (
-            "التحقق الرسمي 2026-08-14 من digitalocean.com/affiliates: زر التسجيل "
-            "الحي يؤدي إلى شبكة Awin وليس CJ. PayPal لا يدعم استلام المدفوعات في "
-            "الجزائر؛ Awin تدفع للناشرين الدوليين عبر Payoneer (متاح في الجزائر) -- "
-            "هذا هو الممر الموثّق لاستلام أول عمولة فعلية."
+            "التحقق الرسمي 2026-10-21 من digitalocean.com/affiliates: زر التسجيل "
+            "الحي يؤدي إلى شبكة Awin وليس CJ. Awin توثّق Payoneer للناشرين "
+            "الدوليين، لكنها لا تذكر الجزائر وتُحيل إلى Payoneer Capabilities Map؛ "
+            "لذلك الممر موثّق لكن قدرة الاستلام في الجزائر غير مؤكدة. PayPal ليس "
+            "بديلاً مؤكداً: اتفاقية الجزائر مشروطة بحساب بنك أمريكي أو بطاقة Visa، "
+            "مع حجز 30 يوماً واستخدام الرصيد للسحب فقط."
         ),
         "unlocks": (
             "رابط Awin tracking الرسمي -> نشره عبر المحتوى المُعد + تسجيل النقرات "

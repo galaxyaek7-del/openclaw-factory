@@ -33,6 +33,8 @@ class TestLaunchPrep(unittest.TestCase):
         self.assertEqual(prep.offer["verification_status"], "VERIFIED")
         self.assertTrue(prep.offer["recurring_commission"])
         self.assertTrue(prep.offer.get("payout_algeria_compatible"))
+        self.assertIn("does not explicitly confirm Algeria",
+                      prep.offer.get("payout_terms", ""))
 
     def test_full_content_chain_all_five_formats(self):
         prep = prepare_launch()
@@ -66,6 +68,8 @@ class TestLaunchPrep(unittest.TestCase):
         self.assertEqual(prep.founder_action["action"], "APPLY_AWIN_DIGITALOCEAN")
         self.assertIn("Awin", prep.founder_action["what"])
         self.assertIn("Payoneer", prep.founder_action["what"])
+        self.assertNotIn("متوافقة مع الجزائر", prep.founder_action["what"])
+        self.assertIn("غير مؤكدة", prep.founder_action["why"])
 
     def test_measurement_is_honest_zero_never_fabricated(self):
         prep = prepare_launch()

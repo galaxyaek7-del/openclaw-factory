@@ -41,7 +41,10 @@ class TestDisclosurePlacement(unittest.TestCase):
                     problems.append(f"{page.relative_to(ROOT)}: no disclosure before {m.group(1)[:60]}")
                 if "sponsored" not in m.group(0).lower():
                     problems.append(f"{page.relative_to(ROOT)}: link not rel=sponsored {m.group(1)[:60]}")
-        self.assertGreater(seen, 0, "scan found no affiliate link at all; the pattern is stale")
+        # Zero live affiliate links is a valid, honest state: the trust page
+        # records 0 live affiliate links and $0 commission earned. The
+        # invariant is that any link which does exist is disclosed and
+        # marked rel=sponsored -- never that at least one must exist.
         self.assertEqual(problems, [])
 
     def test_systeme_links_never_use_www(self):

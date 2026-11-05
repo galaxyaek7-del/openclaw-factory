@@ -91,6 +91,25 @@ class TestVerifyFunction(unittest.TestCase):
             if os.path.exists(path):
                 os.remove(path)
 
+    def test_fresh_verification_stamps_current_date_not_frozen_constant(self):
+        from datetime import datetime, timezone
+        from commission_engine import save_opportunity_portfolio
+        path = _temp_portfolio_path()
+        try:
+            save_opportunity_portfolio(
+                [{"opportunity_id": "CO-t-affiliate", "verification_status": "PARTIALLY_VERIFIED",
+                  "evidence_url": [], "last_verified": "2026-08-07"}], path)
+            res = verify_program_from_official_source(
+                "CO-t-affiliate", "https://example.com/affiliates", "test source", path)
+            self.assertEqual(res["verification_status"], "VERIFIED")
+            real = load_opportunity_portfolio(path)
+            today = datetime.now(timezone.utc).date().isoformat()
+            self.assertEqual(real[0]["last_verified"], today)
+            self.assertEqual(real[0]["evidence_url"][0], "https://example.com/affiliates")
+        finally:
+            if os.path.exists(path):
+                os.remove(path)
+
 
 if __name__ == "__main__":
     unittest.main()
