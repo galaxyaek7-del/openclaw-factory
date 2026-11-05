@@ -30,7 +30,14 @@ function Start-Supervised($label, $log, $target) {
 }
 
 $serverListening = $false
-try { $serverListening = [bool](Get-NetTCPConnection -LocalPort 3000 -State Listen -ErrorAction Stop) } catch {}
+# A real TCP connect, not Get-NetTCPConnection -State Listen: on this machine that cmdlet returns
+# nothing for a live listener (found 2026-11-05), which would have started a second server.
+try {
+  $c = New-Object System.Net.Sockets.TcpClient
+  $iar = $c.BeginConnect('127.0.0.1', 3000, $null, $null)
+  $serverListening = $iar.AsyncWaitHandle.WaitOne(1500) -and $c.Connected
+  $c.Close()
+} catch {}
 $serverSupervisor = $procs | Where-Object { $_.CommandLine -match 'supervisor\.js' -and $_.CommandLine -match 'server_supervised\.log' }
 if ($serverListening -or $serverSupervisor) {
   Write-Output "server: already running (port 3000 listening=$serverListening) - not started"

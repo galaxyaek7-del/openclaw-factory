@@ -11,9 +11,7 @@ prefix with `!`).
 2. **Two held listings and one empty listing still take money at "$0+" (F6).** `/l/iaiyt`,
    `/l/wteork`, `/l/owtmpe`: unpublish in the Gumroad dashboard (see 1b). The protection check
    fails on `payable_withdrawn` until you do.
-3. **No alert reaches you (F5).** Put `TELEGRAM_BOT_TOKEN` and `OPENCLAW_TELEGRAM_CHAT_ID` in
-   `.env` yourself (secrets are never set by the agent). Until then a dead loop is silent; it was
-   dead for 3.3 days (2026-11-01 to 2026-11-05).
+3. **No alert reaches you (F5).** The bot token is set; the bot has no chat with you yet. Follow `docs/factory/TELEGRAM_SETUP.md` (7 steps, about 5 minutes; you write to the bot once and put your chat id in `.env`). Until then a dead loop is silent; it was dead for 3.3 days (2026-11-01 to 2026-11-05).
 4. **No autostart for the server and the loop (F2).** Run once, in an elevated PowerShell:
    `powershell -ExecutionPolicy Bypass -File scripts\install_factory_autostart.ps1`. The agent
    restarted both under the supervisor, but a reboot or log-off stops them again.
