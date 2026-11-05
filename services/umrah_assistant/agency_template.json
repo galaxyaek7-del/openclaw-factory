@@ -1,0 +1,41 @@
+{
+  "_status": "REAL",
+  "_note": "Copy this file to services/umrah_assistant/agencies/<agency>.json (that folder is not committed), replace every REMPLIR with what the agency gave you, then: node services/umrah_assistant/validate_agency.js <file>. Prices are per person in DZD, integers. The assistant answers ONLY from this file.",
+  "name": { "ar": "REMPLIR اسم الوكالة", "fr": "REMPLIR nom de l'agence" },
+  "city": { "ar": "REMPLIR المدينة", "fr": "REMPLIR ville" },
+  "phone": "REMPLIR numéro de l'agence",
+  "hours": { "ar": "REMPLIR ساعات العمل", "fr": "REMPLIR horaires" },
+  "currency": { "ar": "دج", "fr": "DA" },
+  "packages": [
+    {
+      "id": "REMPLIR-id-court-sans-espace",
+      "names": { "ar": "REMPLIR اسم الباقة", "fr": "REMPLIR nom de la formule" },
+      "aliases": [],
+      "days": 0,
+      "price_dzd": 0,
+      "room": { "ar": "REMPLIR نوع الغرفة", "fr": "REMPLIR type de chambre" },
+      "makkah": { "stars": 0, "distance_m": 0 },
+      "madinah": { "stars": 0, "distance_m": 0 },
+      "meals": { "ar": "REMPLIR الوجبات", "fr": "REMPLIR repas" }
+    }
+  ],
+  "departures": [
+    { "date": "REMPLIR-AAAA-MM-JJ", "packages": ["REMPLIR-id-court-sans-espace"] }
+  ],
+  "flight": { "ar": "REMPLIR الطيران", "fr": "REMPLIR vol" },
+  "includes": { "ar": ["REMPLIR"], "fr": ["REMPLIR"] },
+  "excludes": { "ar": ["REMPLIR"], "fr": ["REMPLIR"] },
+  "documents": { "ar": ["REMPLIR"], "fr": ["REMPLIR"] },
+  "documents_note": {
+    "ar": "الشروط تحددها الجهات الرسمية وقد تتغير، والوكالة تؤكدها لك عند الحجز.",
+    "fr": "Les conditions sont fixées par les autorités et peuvent changer, l'agence vous les confirme à la réservation."
+  },
+  "deposit_dzd": 0,
+  "balance_days_before": 0,
+  "payment_methods": { "ar": ["REMPLIR"], "fr": ["REMPLIR"] },
+  "booking_steps": { "ar": ["REMPLIR"], "fr": ["REMPLIR"] },
+  "seats_note": {
+    "ar": "عدد المقاعد المتبقية يؤكده لك صاحب الوكالة وقت الحجز.",
+    "fr": "Le nombre de places restantes vous est confirmé par le responsable au moment de la réservation."
+  }
+}

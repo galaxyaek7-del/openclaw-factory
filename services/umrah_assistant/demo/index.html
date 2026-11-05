@@ -643,6 +643,12 @@
   var input = document.getElementById('input');
   var busy = false;
   document.getElementById('agencyName').textContent = AGENCY.name.ar;
+  if (AGENCY._status === 'REAL') {
+    var bn = document.getElementById('banner');
+    bn.style.whiteSpace = 'pre-line';
+    bn.textContent = 'نسخة تجريبية لوكالتكم: أسعاركم ومعلوماتكم كما زوّدتمونا بها. غير مربوطة بواتساب بعد، ولا يُرسَل شيء لأي شخص.
+Version d'essai pour votre agence : vos prix et informations tels que fournis. Pas encore reliée à WhatsApp, rien n'est envoyé à personne.';
+  }
 
   var CHIPS = [
     ['💰 الأسعار · Prix', 'شحال سعر العمرة؟'],
