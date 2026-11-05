@@ -199,6 +199,11 @@ def telegram(probe=_get_json):
     from channels.env_config import read_env_value
     token = read_env_value("TELEGRAM_BOT_TOKEN", ROOT / ".env")
     chat = read_env_value("OPENCLAW_TELEGRAM_CHAT_ID", ROOT / ".env") or read_env_value("TELEGRAM_CHAT_ID", ROOT / ".env")
+    if not chat:  # chat bound by scripts/telegram_bind.py (one-time pairing code)
+        try:
+            chat = str(json.loads((ROOT / "data" / "telegram_binding.json").read_text(encoding="utf-8"))["chat_id"])
+        except (OSError, ValueError, KeyError):
+            chat = None
     if not token:
         return [_row("telegram", "notification", FAILED, "no bot token configured", "probe")]
     try:

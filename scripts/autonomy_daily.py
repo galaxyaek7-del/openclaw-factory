@@ -30,6 +30,24 @@ HISTORY = ROOT / "data" / "autonomy_status_history.jsonl"
 LATEST = ROOT / "data" / "autonomy_status.json"
 
 
+_TOOL_STATUS = {"VERIFIED": "OK", "VERIFIED_CONNECTED": "OK", "DEGRADED": "DEGRADED", "FAILED": "FAILED", "UNKNOWN": "UNKNOWN"}
+_SKIP_TOOLS = {"loop:low_disk_mode"}  # conditional by design, not a failure signal
+
+
+def tool_rows(verify=None):
+    """Connection-verifier rows (probes and runtime records of every tool) as stage rows keyed 'T:<name>'."""
+    if verify is None:
+        import connection_verifier
+        verify = lambda: connection_verifier.verify(live=True)  # noqa: E731
+    out = []
+    for r in verify().get("rows", []):
+        if r["name"] in _SKIP_TOOLS:
+            continue
+        out.append({"stage": "T:" + r["name"], "name": r["name"], "status": _TOOL_STATUS.get(r["status"], "UNKNOWN"),
+                    "detail": str(r.get("evidence", ""))[:160], "owner": "tool"})
+    return out
+
+
 def regressions(prev_rows, rows):
     """Stages that were OK in the previous snapshot and are not OK now."""
     before = {r["stage"]: r for r in (prev_rows or [])}
@@ -49,7 +67,7 @@ def _last_snapshot(history_path):
         return None
 
 
-def run_once(today=None, state_path=STATE, history_path=HISTORY, latest_path=LATEST, collector=None, alerter=None):
+def run_once(today=None, state_path=STATE, history_path=HISTORY, latest_path=LATEST, collector=None, alerter=None, tools=None):
     today = today or datetime.now(timezone.utc).date().isoformat()
     try:
         last = json.loads(Path(state_path).read_text(encoding="utf-8")).get("last_day")
@@ -60,12 +78,21 @@ def run_once(today=None, state_path=STATE, history_path=HISTORY, latest_path=LAT
     if collector is None:
         import autonomy_selfcheck
         collector = autonomy_selfcheck.collect
+        if tools is None:
+            tools = tool_rows
     rows = collector()
+    if tools is not None:
+        try:
+            rows = rows + tools()
+        except Exception as e:  # the stage check must still be recorded
+            rows = rows + [{"stage": "T:verifier", "name": "connection verifier", "status": "UNKNOWN",
+                            "detail": f"{type(e).__name__}", "owner": "tool"}]
     prev = _last_snapshot(history_path)
     regs = regressions(prev, rows)
     counts = {}
     for r in rows:
-        counts[r["status"]] = counts.get(r["status"], 0) + 1
+        k = ("tools " if str(r["stage"]).startswith("T:") else "") + r["status"]
+        counts[k] = counts.get(k, 0) + 1
     snap = {"day": today, "at": datetime.now(timezone.utc).isoformat(timespec="seconds"), "counts": counts, "rows": rows,
             "regressions": regs}
     Path(history_path).parent.mkdir(parents=True, exist_ok=True)
@@ -80,7 +107,7 @@ def run_once(today=None, state_path=STATE, history_path=HISTORY, latest_path=LAT
             from gf_ops import alerts
             alerter = alerts.send_alert
         body = "\n".join(f"- stage {g['stage']} {g['name']}: OK -> {g['now']} ({g['detail']})" for g in regs)
-        alerted = alerter(subject=f"{len(regs)} automatic stage(s) stopped working", body=body, category="OPS",
+        alerted = alerter(subject=f"{len(regs)} automatic stage(s) or tool(s) stopped working", body=body, category="OPS",
                           evidence="data/autonomy_status.json", retry_status="the next daily check re-reads every stage",
                           next_step="python scripts/autonomy_selfcheck.py", window_hours=20)
     tmp = Path(str(state_path) + ".tmp")
