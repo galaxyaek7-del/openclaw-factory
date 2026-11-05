@@ -60,7 +60,11 @@ class TestG7PublishProtection(unittest.TestCase):
         # takes the platform explicitly and profit_oracle passes
         # "gumroad_digital" at the real call site (same note as
         # tests/test_d16_d19.py::test_d8_still_verified).
-        self.assertIn('ECONOMICS.net_profit(price, "gumroad_digital", config)', Path("profit_oracle.py").read_text(encoding="utf-8"))
+        _src = Path("profit_oracle.py").read_text(encoding="utf-8")
+        # D8 fail-closed (2026-11-03): the platform is a parameter defaulting to gumroad_digital;
+        # an unknown or blank platform scores a neutral 50, never "production is free".
+        self.assertIn('platform="gumroad_digital"', _src)
+        self.assertIn('ECONOMICS.net_profit(price, platform_name, config)', _src)
 
     def test_d10_still_verified(self):
         self.assertIn("astimezone(timezone.utc)", Path("profit_oracle.py").read_text(encoding="utf-8"))

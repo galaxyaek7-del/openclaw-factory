@@ -412,7 +412,7 @@ def _real_ai_cost_trend(log_file=None, now=None):
     return recent_avg, is_outlier
 
 
-def _score_margin(niche):
+def _score_margin(niche, platform="gumroad_digital"):
     """20% weight. Price tier and recurring-revenue potential were pure
     keyword estimates until this fix (2026-07-16, Revenue Activation
     phase): _score_competition() already checked _find_niche_report()
@@ -477,26 +477,38 @@ def _score_margin(niche):
             # ("config/economics.json"), which would silently break if this
             # module is ever invoked from a different working directory.
             config = ECONOMICS.load_config(os.path.join(FACTORY_DIR, 'config', 'economics.json'))
-            net_after_fees = ECONOMICS.net_profit(price, "gumroad_digital", config)
-            net_after_ai_cost = net_after_fees - (avg_ai_cost or 0)
-            cost_score = max(0, min(100, round(100 * net_after_ai_cost / price))) if price else 0
-            ai_cost_note = (
-                f"متوسط تكلفة Groq حقيقية من {sample_size} استدعاء فعلي مسجَّل: ${avg_ai_cost:.4f}"
-                if avg_ai_cost is not None
-                else "لا استدعاءات Groq حقيقية مسجَّلة بعد (ADR-041) — تُحتسَب صفراً مؤقتاً، لا تخميناً"
-            )
-            notes.append(
-                f"هامش صافٍ حقيقي بعد رسوم gumroad_digital الفعلية (config/economics.json): "
-                f"${net_after_fees:.2f} من ${price} — {ai_cost_note}"
-            )
-            if cost_outlier_note:
-                notes.append(cost_outlier_note)
+            platform_name = platform.strip() if isinstance(platform, str) else None
+            known_platforms = (config or {}).get("platforms", {}) or {}
+            if not platform_name or platform_name not in known_platforms:
+                # D8 fail-closed (2026-11-03): an unknown/blank platform must
+                # never be scored as if production were free. Neutral 50 is an
+                # honest "cannot compute", not an optimistic 100.
+                cost_score = 50
+                notes.append(
+                    f"منصة غير معروفة أو غير محددة ({platform!r}) — هامش محايد 50/100 "
+                    f"[fail-closed، لا يُفترض أن التكلفة صفر]"
+                )
+            else:
+                net_after_fees = ECONOMICS.net_profit(price, platform_name, config)
+                net_after_ai_cost = net_after_fees - (avg_ai_cost or 0)
+                cost_score = max(0, min(100, round(100 * net_after_ai_cost / price))) if price else 0
+                ai_cost_note = (
+                    f"متوسط تكلفة Groq حقيقية من {sample_size} استدعاء فعلي مسجَّل: ${avg_ai_cost:.4f}"
+                    if avg_ai_cost is not None
+                    else "لا استدعاءات Groq حقيقية مسجَّلة بعد (ADR-041) — تُحتسَب صفراً مؤقتاً، لا تخميناً"
+                )
+                notes.append(
+                    f"هامش صافٍ حقيقي بعد رسوم {platform_name} الفعلية (config/economics.json): "
+                    f"${net_after_fees:.2f} من ${price} — {ai_cost_note}"
+                )
+                if cost_outlier_note:
+                    notes.append(cost_outlier_note)
         except Exception as e:
-            cost_score = 100
-            notes.append(f"تعذّر حساب الهامش الحقيقي ({e}) — عاد لافتراض 'رقمي=صفر تكلفة' القديم")
+            cost_score = 50
+            notes.append(f"تعذّر حساب الهامش الحقيقي ({e}) — قيمة محايدة 50 [fail-closed]")
     else:
-        cost_score = 100
-        notes.append("economics.py غير متوفر — تكلفة الإنتاج: ~$0 [افتراض قديم، لا حساب حقيقي]")
+        cost_score = 50
+        notes.append("economics.py غير متوفر — تعذّر حساب الهامش، قيمة محايدة 50 [fail-closed]")
 
     if any(k in niche_lower for k in RECURRING_KEYWORDS):
         recurring_score = 90
@@ -844,15 +856,16 @@ def _score_barrier_to_entry(niche):
     return barrier_score, level, f"مُشتقّ من تعقيد التنفيذ الحقيقي (execution={execution_score}) — ليس من عدد المنافسين"
 
 
-def score_opportunity(niche, now=None, external_signal=None, db_file=None):
+def score_opportunity(niche, now=None, external_signal=None, db_file=None,
+                      platform="gumroad_digital"):
     niche = str(niche or '').strip()
     if not niche:
         raise ValueError("النيتش (niche) مطلوب")
 
     demand_score, demand_notes = _score_demand(niche, now, external_signal)
     competition_score, competition_notes = _score_competition(niche, external_signal)
-    margin_score, margin_notes, price = _score_margin(niche)
-    execution_score, execution_notes, platform = _score_execution(niche)
+    margin_score, margin_notes, price = _score_margin(niche, platform=platform)
+    execution_score, execution_notes, execution_platform = _score_execution(niche)
 
     profit_score = round(
         demand_score * 0.40 +
@@ -895,7 +908,7 @@ def score_opportunity(niche, now=None, external_signal=None, db_file=None):
         "profit_score": profit_score,
         "verdict": verdict,
         "recommended_price": f"${price}",
-        "recommended_platform": platform,
+        "recommended_platform": execution_platform,
         "reasoning": reasoning,
         "butter_rating": "🧈" * butter_count,
         "needs_galaxy_approval": profit_score >= 80,
@@ -956,7 +969,8 @@ LONG_TERM_VALUE_BY_TIER = {"tier1": 95, "tier2": 70, "tier3": 60, "tier4": 25}
 MIN_OPPORTUNITY_SCORE = 65
 
 
-def opportunity_score(niche, tier="tier4", external_signal=None):
+def opportunity_score(niche, tier="tier4", external_signal=None,
+                      platform="gumroad_digital"):
     """Tier-aware composite score (ADR-026). Returns a dict with the final
     0-100 score, whether it clears MIN_OPPORTUNITY_SCORE, and every
     component so a caller/log can show its work — never a bare number with
@@ -966,7 +980,8 @@ def opportunity_score(niche, tier="tier4", external_signal=None):
     (every current live caller, factory_loop.js always passes tier4 with
     none) reproduces today's exact behavior unchanged."""
     tier = tier if tier in TIER_WEIGHTS else "tier4"
-    result = score_opportunity(niche, external_signal=external_signal)
+    result = score_opportunity(niche, external_signal=external_signal,
+                               platform=platform)
     scores = result["scores"]
 
     market_demand = scores["demand"]
@@ -1154,7 +1169,8 @@ def _score_payment_evidence(niche, evidence_path=None):
     return score, evidence
 
 
-def ladder_opportunity_score(niche, ladder="kdp_books", external_signal=None, evidence_path=None, db_file=None):
+def ladder_opportunity_score(niche, ladder="kdp_books", external_signal=None, evidence_path=None, db_file=None,
+                             platform="gumroad_digital"):
     """Ladder-aware composite score (ADR-065; reweighted under the Proof
     of Payment doctrine, ADR-121, extended to the full Strategic Doctrine
     v2 decision hierarchy, ADR-122, and further extended to the
@@ -1209,7 +1225,8 @@ def ladder_opportunity_score(niche, ladder="kdp_books", external_signal=None, ev
     factory's culture exists to prevent, and silently treating Unknown as
     a pass would be worse than not gating on it at all."""
     ladder = ladder if ladder in RECURRING_REVENUE_BY_LADDER else "kdp_books"
-    result = score_opportunity(niche, external_signal=external_signal, db_file=db_file)
+    result = score_opportunity(niche, external_signal=external_signal, db_file=db_file,
+                               platform=platform)
     scores = result["scores"]
 
     market_demand = scores["demand"]
@@ -1762,7 +1779,7 @@ def main():
     if '--score' in sys.argv:
         try:
             data = json.loads(sys.stdin.read())
-            result = score_opportunity(data.get('niche', ''))
+            result = score_opportunity(data.get('niche', ''), platform=data.get('platform', 'gumroad_digital'))
             print(json.dumps(result, ensure_ascii=False))
         except Exception as e:
             print(json.dumps({"error": str(e)}, ensure_ascii=False))
@@ -1792,7 +1809,7 @@ def main():
     if '--opportunity-score' in sys.argv:
         try:
             data = json.loads(sys.stdin.read())
-            result = opportunity_score(data.get('niche', ''), tier=data.get('tier', 'tier4'), external_signal=data.get('external_signal'))
+            result = opportunity_score(data.get('niche', ''), tier=data.get('tier', 'tier4'), external_signal=data.get('external_signal'), platform=data.get('platform', 'gumroad_digital'))
             print(json.dumps({"success": True, **result}, ensure_ascii=False))
         except Exception as e:
             print(json.dumps({"success": False, "error": str(e)}, ensure_ascii=False))
@@ -1818,6 +1835,7 @@ def main():
                 # ADR-126): same convention, defaults to the real, shared
                 # data/competitor_database.json exactly as before.
                 db_file=data.get('competitor_db_file'),
+                platform=data.get('platform', 'gumroad_digital'),
             )
             print(json.dumps({"success": True, **result}, ensure_ascii=False))
         except Exception as e:
