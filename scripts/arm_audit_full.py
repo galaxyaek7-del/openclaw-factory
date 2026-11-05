@@ -53,7 +53,10 @@ targets = {
 for k, u in targets.items():
     out["external"][k] = head(u)
 
-# INBOUND: local endpoints (no writes except interest reject-path which writes nothing)
+# INBOUND: local endpoints. GF-16 repair: the interest route persists EVERY
+# rejected POST to customer_interest_rejected.jsonl (see lib/customer_evidence
+# ._persist_rejection), so no live POST may target /api/customer/interest here.
+# The reject-path check runs against the pure validator (zero writes).
 def post(path, payload, timeout=25):
     try:
         d = json.dumps(payload).encode()
@@ -66,7 +69,11 @@ def post(path, payload, timeout=25):
         return {"error": str(e)[:120]}
 import urllib.error
 out["inbound"]["page_view"] = post("/api/page-view", {"page_id": "arm-audit-probe"})
-out["inbound"]["interest_reject"] = post("/api/customer/interest", {"email": "probe@example.com", "message": "TEST_EVENT arm audit probe"})
+import sys
+sys.path.insert(0, ".")
+from lib.customer_evidence import validate_and_classify
+_ok, _cls, _reason, _enr = validate_and_classify({"email": "probe@example.com", "message": "TEST_EVENT arm audit probe"})
+out["inbound"]["interest_reject"] = {"status": 400 if not _ok else 200, "body": _reason[:120], "mode": "local-validate-no-write"}
 out["inbound"]["support_validation"] = post("/api/customer/support-ticket", {"name": "", "email": "x", "message": ""})
 
 with open("data/arm_audit_full.json", "w", encoding="utf-8") as f:

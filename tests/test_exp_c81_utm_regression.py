@@ -169,13 +169,19 @@ class TestDistributorGateRegression(unittest.TestCase):
                          "quality_gate_blocked")
         self.assertFalse(events[0]["quality_gate"]["allowed"])
 
-    def test_unconfigured_default_keeps_pregate_behavior(self):
+    def test_unconfigured_default_now_consults_the_gate(self):
+        """Founder directive, 2026-10-17: the central gate is MANDATORY. An
+        unconfigured real publish is now blocked fail-closed instead of
+        publishing -- this replaces the pre-2026-10-17 assertion that the
+        unconfigured default kept its pre-gate behavior (that scope note was
+        the thing this directive superseded)."""
         arm = self._stub()
         outcomes = distributor.distribute(
             _fake_product(), dry_run=False, ledger_path=self.ledger,
             protection_state_path=self.protection)
-        self.assertTrue(outcomes[0]["attempted"])
-        self.assertEqual(arm.publish.call_count, 1)
+        arm.publish.assert_not_called()
+        self.assertFalse(outcomes[0]["attempted"])
+        self.assertIn("Quality Gate", outcomes[0]["skip_reason"])
 
     def test_dry_run_never_consults_gate(self):
         arm = self._stub()

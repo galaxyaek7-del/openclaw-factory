@@ -41,6 +41,16 @@ def _temp_path(suffix=".jsonl"):
     return path
 
 
+def _allow_gate(*_args, **_kwargs):
+    """A permissive central-Quality-Gate stub. The gate is mandatory on every
+    real publish (founder directive, 2026-10-17); these tests prove a
+    DIFFERENT layer (pipeline wiring, ledger, retry), so they inject an
+    allowing resolver. The gate's own no-bypass behavior is pinned by
+    tests/test_gate_mandatory.py."""
+    return {"allowed": True, "source_id": None, "blocked_by": None,
+            "reason": "test allow"}
+
+
 def _fake_product(source_id="PROD-ce-test-1"):
     return Product(
         title="t", subtitle="", description="d", price_usd=197.0, file_path="/fake/path.pdf",
@@ -263,7 +273,7 @@ class TestRunPublishPipelineRealMode(_FakeArmMixin, unittest.TestCase):
         ))
         record = run_publish_pipeline(
             _fake_product(), dry_run=False, ledger_path=self.ledger_path, state_path=self.state_path,
-            protection_state_path=self.protection_state_path,
+            protection_state_path=self.protection_state_path, quality_gate=_allow_gate,
         )
         self.assertEqual(record["marketplaces"][0]["marketplace_id"], "pdl_real_1")
         self.assertEqual(record["revenue_status"]["listed_on"], ["paddle"])
@@ -293,11 +303,11 @@ class TestRunPublishPipelineRealMode(_FakeArmMixin, unittest.TestCase):
         product = _fake_product()
         run_publish_pipeline(
             product, dry_run=False, ledger_path=self.ledger_path, state_path=self.state_path,
-            protection_state_path=self.protection_state_path,
+            protection_state_path=self.protection_state_path, quality_gate=_allow_gate,
         )
         second = run_publish_pipeline(
             product, dry_run=False, ledger_path=self.ledger_path, state_path=self.state_path,
-            protection_state_path=self.protection_state_path,
+            protection_state_path=self.protection_state_path, quality_gate=_allow_gate,
         )
 
         # 1. Exactly one real publish attempt -- the duplicate never reached the
@@ -351,7 +361,7 @@ class TestApiTimeoutRetry(_FakeArmMixin, unittest.TestCase):
         with patch.object(factory_state, "DEFAULT_STATE_PATH", Path(self.state_path)):
             record = run_publish_pipeline(
                 _fake_product(), dry_run=False, ledger_path=self.ledger_path, state_path=self.state_path,
-                protection_state_path=self.protection_state_path,
+                protection_state_path=self.protection_state_path, quality_gate=_allow_gate,
             )
         m = record["marketplaces"][0]
         self.assertEqual(m["publish_status"], "failed")

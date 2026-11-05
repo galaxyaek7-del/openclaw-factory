@@ -67,9 +67,15 @@ try:
 except Exception as e:
     R["results"]["arms"] = {"error": str(e)[:100], "verdict": "FAIL"}
 
-# Inbound loops (validation paths only — write nothing)
+# Inbound loops. GF-16 repair: /api/customer/interest persists every rejected
+# POST to its rejected ledger, so the interest check uses the pure validator
+# (zero writes). The other two loops use live POST as before.
 local_post("inbound_pageview", "/api/page-view", {"page_id": 12345}, 400)
-local_post("inbound_interest_reject", "/api/customer/interest", {"email": "probe@example.com", "message": "TEST_EVENT integrated test"}, 400)
+from lib.customer_evidence import validate_and_classify as _v
+_ok, _c, _reason, _e = _v({"email": "probe@example.com", "message": "TEST_EVENT integrated test"})
+R["results"]["inbound_interest_reject"] = {"transport": "local-validate-no-write",
+    "status": 400 if not _ok else 200, "reason": _reason[:80],
+    "verdict": "PASS" if (not _ok) else "FAIL"}
 local_post("inbound_support_validate", "/api/customer/support-ticket", {"name": "", "email": "x", "message": ""}, 400)
 
 # Sales truth

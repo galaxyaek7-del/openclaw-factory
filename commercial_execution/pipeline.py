@@ -117,7 +117,8 @@ def build_publish_record(product, outcomes, version=None, ledger_path=None, stat
 
 
 def run_publish_pipeline(product, product_family=None, dry_run=True,
-                          ledger_path=None, state_path=None, version=None, protection_state_path=None):
+                          ledger_path=None, state_path=None, version=None, protection_state_path=None,
+                          quality_gate=None):
     """The unified Publish Pipeline. Reuses distributor.distribute()
     unchanged for the actual fan-out/ledger/retry mechanism — the one new
     integration is arm selection: a product_family with a registered
@@ -133,11 +134,17 @@ def run_publish_pipeline(product, product_family=None, dry_run=True,
     data/publish_protection_state.json -- a real regression this session
     found via the full suite failing once (a real-mode test tripped the
     real min-publish-spacing cooldown left behind by an earlier test in
-    the same run)."""
+    the same run).
+
+    quality_gate: threads through to distributor.distribute()'s central
+    Quality Gate resolver. The gate is MANDATORY on every real publish
+    (founder directive, 2026-10-17) -- this parameter exists only so a
+    test proving a DIFFERENT layer can inject an allowing stub, never so
+    a production caller can opt out (there is no config to disable it)."""
     target_arms = resolve_target_arms(product_family)
     outcomes = distributor.distribute(
         product, arm_names=target_arms, dry_run=dry_run, ledger_path=ledger_path,
-        protection_state_path=protection_state_path,
+        protection_state_path=protection_state_path, quality_gate=quality_gate,
     )
     return build_publish_record(
         product, outcomes, version=version, ledger_path=ledger_path, state_path=state_path,
