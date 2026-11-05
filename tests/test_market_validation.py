@@ -15,7 +15,16 @@ import tempfile
 import unittest
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-import market_validation  # noqa: E402
+# NOTE (2026-09-21): root market_validation.py is shadowed by the
+# market_validation/ package (which holds only validation_gate.py), so a
+# plain import binds the empty package. Load the implementation file
+# explicitly. Test-only change; production code untouched.
+import importlib.util as _ilu
+_mv_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                        "market_validation.py")
+_mv_spec = _ilu.spec_from_file_location("market_validation_impl", _mv_path)
+market_validation = _ilu.module_from_spec(_mv_spec)
+_mv_spec.loader.exec_module(market_validation)  # noqa: E402
 
 
 def _valid_payload(**overrides):

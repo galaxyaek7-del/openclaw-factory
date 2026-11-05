@@ -26,7 +26,7 @@ Reused, not duplicated:
     (PUBLISH_STATE_VERIFIED, PUBLIC_PAGE_VERIFIED, CHECKOUT_VERIFIED,
     TRANSACTION_VERIFIED). MILESTONE_TO_COMMERCIAL_REALITY below cites that
     mapping rather than inventing a competing vocabulary.
-  - product_batch_12.json is the product registry.
+  - product_batch_12.json / product_batch_13.json are the product registries.
   - reports/<id>/GATE_FINAL_*.json is the QA/quality verdict.
   - data/first_sale_*_evidence*.json is the upload/create read-back.
   - data/cycle*_live_verification*.json is the external read-back.
@@ -251,10 +251,14 @@ def _derive_build(product: Dict[str, Any], books_dir: Path, reports_dir: Path,
 
     observed: List[str] = []
     missing: List[str] = []
+    actual: Dict[str, Tuple[int, str]] = {}
     for name in files:
         path = books_dir / name
         if path.exists() and path.stat().st_size > 0:
-            observed.append(f"{_rel(path, root)} ({path.stat().st_size} bytes, sha256 {_sha256(path)[:16]}...)")
+            size = path.stat().st_size
+            digest = _sha256(path)
+            actual[name] = (size, digest)
+            observed.append(f"{_rel(path, root)} ({size} bytes, sha256 {digest[:16]}...)")
         else:
             missing.append(name)
 
@@ -268,13 +272,52 @@ def _derive_build(product: Dict[str, Any], books_dir: Path, reports_dir: Path,
     manifest_path = _newest((reports_dir / product["id"]).glob("MANIFEST_*.json"))
     if manifest_path:
         manifest = _read_json(manifest_path, {}) or {}
-        declared = json.dumps(manifest, ensure_ascii=False).lower()
-        matched = sum(1 for name in files if name.lower() in declared)
-        if matched == len(files):
-            observed.append(f"{_rel(manifest_path, root)} declares all {matched} artifact(s)")
-            note = "artifact set matches the recorded manifest"
-        else:
-            note = f"manifest found but only {matched}/{len(files)} artifact names were present in it"
+        declared_files = manifest.get("files") or manifest.get("artifacts") or []
+        declared: Dict[str, Dict[str, Any]] = {}
+        if isinstance(declared_files, list):
+            for entry in declared_files:
+                if not isinstance(entry, dict):
+                    continue
+                name = Path(str(entry.get("path") or "")).name
+                if name:
+                    declared[name] = entry
+
+        if not declared:
+            return _not_verified(
+                "BUILD_COMPLETE", "OBSERVED", _rel(manifest_path, root),
+                observed, "the manifest exists but records no per-file identity to verify",
+            )
+
+        mismatches: List[str] = []
+        for name, (size, digest) in actual.items():
+            entry = declared.get(name)
+            if entry is None:
+                mismatches.append(f"{name}: not declared in the manifest")
+                continue
+            declared_size = entry.get("bytes")
+            declared_digest = str(entry.get("sha256") or "").lower()
+            if declared_size is not None and declared_size != size:
+                mismatches.append(
+                    f"{name}: size {size} B does not match the manifest's {declared_size} B"
+                )
+            if declared_digest and declared_digest != digest:
+                mismatches.append(
+                    f"{name}: sha256 {digest[:16]}... does not match the manifest's "
+                    f"{declared_digest[:16]}..."
+                )
+
+        if mismatches:
+            return _not_verified(
+                "BUILD_COMPLETE", "OBSERVED", _rel(manifest_path, root),
+                observed + mismatches,
+                "the files exist but their bytes do not match the recorded release identity",
+            )
+
+        observed.append(
+            f"{_rel(manifest_path, root)} declares all {len(actual)} artifact(s); "
+            "byte size and sha256 match"
+        )
+        note = "artifact set, byte size and sha256 match the recorded manifest"
 
     return _verified("BUILD_COMPLETE", "OBSERVED", None, _rel(books_dir, root), observed, note)
 
@@ -594,7 +637,7 @@ def _derive_first_sale(product: Dict[str, Any], data_dir: Path, root: Path) -> M
 def build_record(product: Dict[str, Any], root: Path = ROOT) -> Dict[str, Any]:
     data_dir = root / "data"
     reports_dir = root / "reports"
-    books_dir = root / "books" / "batch12"
+    books_dir = root / "books" / str(product.get("batch") or "batch12")
 
     build = _derive_build(product, books_dir, reports_dir, root)
     qa = _derive_qa(product, reports_dir, root)
@@ -634,9 +677,18 @@ def build_record(product: Dict[str, Any], root: Path = ROOT) -> Dict[str, Any]:
 
 
 def load_products(root: Path = ROOT) -> List[Dict[str, Any]]:
-    payload = _read_json(root / "data" / "product_batch_12.json", {}) or {}
-    products = payload.get("products") or []
-    return [p for p in products if isinstance(p, dict) and p.get("id")]
+    products: List[Dict[str, Any]] = []
+    seen = set()
+    for registry_name in ("product_batch_12.json", "product_batch_13.json"):
+        payload = _read_json(root / "data" / registry_name, {}) or {}
+        for product in payload.get("products") or []:
+            if not isinstance(product, dict) or not product.get("id"):
+                continue
+            if product["id"] in seen:
+                continue
+            seen.add(product["id"])
+            products.append(product)
+    return products
 
 
 def build_snapshot(root: Path = ROOT) -> Dict[str, Any]:

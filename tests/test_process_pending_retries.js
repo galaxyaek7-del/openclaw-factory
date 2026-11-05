@@ -12,7 +12,8 @@ const assert = require('node:assert/strict');
 
 const factoryState = require('../lib/factory_state.js');
 const n8nNotify = require('../lib/n8n_notify.js');
-const { processPendingRetries, expireStaleRetries, dedupePendingRetries } = require('../factory_loop.js');
+const telegramDirect = require('../lib/telegram_direct.js');
+const { processPendingRetries, expireStaleRetries, dedupePendingRetries, formatRetryPayloadForDirectSend } = require('../factory_loop.js');
 
 function withPatched(obj, patches, fn) {
   const originals = {};
@@ -176,8 +177,7 @@ test('dedupePendingRetries collapses duplicates keeping the newest per task', as
   });
 });
 
-test('dedupePendingRetries is a no-op on an already-clean queue', async () => {
-  let saved = null;
+test('dedupePendingRetries is a no-op on an already-clean queue', async () => {  let saved = null;
   await withPatched(factoryState, {
     loadState: () => ({ pending_retries: [{ task: 'telegram_notify:a', context: { payload: {} } }] }),
     saveState: (state) => { saved = state; },
@@ -186,4 +186,75 @@ test('dedupePendingRetries is a no-op on an already-clean queue', async () => {
     assert.equal(removed, 0);
     assert.equal(saved, null, 'no save when nothing changed');
   });
+});
+
+test('transport failure on n8n replay falls back to direct Bot API send', async () => {
+  const retryEntry = {
+    task: 'telegram_notify:factory_recovered', attempt: 25,
+    context: { payload: { event: 'factory_recovered', reason: 'r' }, webhookUrl: 'http://dead', envVarName: 'N8N_TELEGRAM_WEBHOOK_URL' },
+  };
+  const cleared = [];
+  let directText = null;
+  await withPatched(factoryState, {
+    dueRetries: () => [retryEntry],
+    loadState: () => ({ pending_retries: [retryEntry] }),
+    clearRetry: (task) => { cleared.push(task); },
+  }, () => withPatched(n8nNotify, {
+    notifyN8nProductionEvent: async () => ({ attempted: true, success: false, error: 'fetch failed' }),
+  }, () => withPatched(telegramDirect, {
+    sendTelegramMessage: async (text) => { directText = text; return { sent: true, message_id: 7, error: null }; },
+  }, async () => {
+    const result = await processPendingRetries();
+    assert.equal(result.replayed, 1, 'direct success counts as replayed');
+    assert.ok(directText && directText.includes('factory_recovered'), 'direct text carries the real event');
+    assert.deepEqual(cleared, ['telegram_notify:factory_recovered', 'telegram_notify:factory_recovered'], 're-enqueued entry cleared after direct success');
+  })));
+});
+
+test('HTTP-status failure on n8n replay never falls back (n8n alive)', async () => {
+  const retryEntry = {
+    task: 'telegram_notify:x', attempt: 2,
+    context: { payload: { event: 'x' }, webhookUrl: 'http://up', envVarName: 'N8N_TELEGRAM_WEBHOOK_URL' },
+  };
+  let directCalled = false;
+  await withPatched(factoryState, {
+    dueRetries: () => [retryEntry],
+    loadState: () => ({ pending_retries: [retryEntry] }),
+    clearRetry: () => {},
+  }, () => withPatched(n8nNotify, {
+    notifyN8nProductionEvent: async () => ({ attempted: true, success: false, status: 500 }),
+  }, () => withPatched(telegramDirect, {
+    sendTelegramMessage: async () => { directCalled = true; return { sent: true, message_id: 1, error: null }; },
+  }, async () => {
+    const result = await processPendingRetries();
+    assert.equal(directCalled, false, 'no direct send when n8n answered with HTTP status');
+    assert.equal(result.replayed, 0);
+  })));
+});
+
+test('n8n success never triggers the direct fallback', async () => {
+  const retryEntry = {
+    task: 'telegram_notify:y', attempt: 1,
+    context: { payload: { event: 'y' }, webhookUrl: 'http://up', envVarName: 'N8N_TELEGRAM_WEBHOOK_URL' },
+  };
+  let directCalled = false;
+  await withPatched(factoryState, {
+    dueRetries: () => [retryEntry],
+    loadState: () => ({ pending_retries: [] }),
+    clearRetry: () => {},
+  }, () => withPatched(n8nNotify, {
+    notifyN8nProductionEvent: async () => ({ attempted: true, success: true }),
+  }, () => withPatched(telegramDirect, {
+    sendTelegramMessage: async () => { directCalled = true; return { sent: true, message_id: 1, error: null }; },
+  }, async () => {
+    const result = await processPendingRetries();
+    assert.equal(result.replayed, 1);
+    assert.equal(directCalled, false);
+  })));
+});
+
+test('formatRetryPayloadForDirectSend renders only present fields', () => {
+  const text = formatRetryPayloadForDirectSend({ event: 'e', reason: 'r' });
+  assert.ok(text.includes('e') && text.includes('r'));
+  assert.ok(!text.includes('undefined'));
 });

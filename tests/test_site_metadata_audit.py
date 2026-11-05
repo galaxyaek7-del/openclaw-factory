@@ -49,6 +49,11 @@ class SiteAuditTest(unittest.TestCase):
                            "b.html": page("b.html", canonical="")})
         self.assertEqual(self.kinds(r), ["CANONICAL", "CANONICAL"])
 
+    def test_noindex_page_needs_no_canonical(self):
+        extra = '<meta name="robots" content="noindex">'
+        r = self.run_site({"a.html": page("a.html", canonical="", extra=extra)}, sitemap_names=[])
+        self.assertEqual(r["findings"], [])
+
     def test_duplicate_og_and_og_url_mismatch(self):
         extra = ('<meta property="og:title" content="A"><meta property="og:title" content="B">'
                  '<meta property="og:url" content="https://other/"><meta name="twitter:card" content="s">')

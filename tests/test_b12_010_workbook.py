@@ -31,6 +31,8 @@ XLSX = ROOT / "books" / "batch12" / "B12-010_grant_pipeline_tracker.xlsx"
 PDF = ROOT / "books" / "batch12" / "B12-010_grant_pipeline_guide.pdf"
 COVER = ROOT / "books" / "covers" / "B12-010.png"
 MANIFEST = ROOT / "reports" / "B12-010" / "MANIFEST_2026-10-19.json"
+QA_FACTS = ROOT / "reports" / "B12-010" / "QA_FACTS_2026-10-21.json"
+LISTING = ROOT / "reports" / "CYCLE104" / "LISTING_PAYLOADS_B12.json"
 PAGE = ROOT / "customer_site" / "b12-grant-pipeline-tracker.html"
 REGISTRY = ROOT / "data" / "product_batch_12.json"
 
@@ -115,6 +117,29 @@ class TestCanonicalArtifacts(unittest.TestCase):
         self.assertIsNone(data["publication"]["listing_url"])
         self.assertTrue(data["authorization_required"])
         self.assertIsNone(data["authorization_phrase"])
+
+    def test_revalidated_qa_facts_match_the_current_pdf(self):
+        data = json.loads(QA_FACTS.read_text(encoding="utf-8"))
+        self.assertEqual(data["supersedes"], "reports/B12-010/QA_FACTS_2026-10-19.json")
+        self.assertEqual(data["pdf"]["bytes"], EXPECTED["B12-010_grant_pipeline_guide.pdf"][0])
+        self.assertEqual(data["pdf"]["sha256"], EXPECTED["B12-010_grant_pipeline_guide.pdf"][1])
+        self.assertEqual(data["pdf"]["pages"], 17)
+        self.assertEqual(data["pdf"]["sections"], 28)
+        self.assertEqual(data["verdict"]["status"], "PASS")
+        self.assertTrue(data["verdict"]["identity_revalidated"])
+
+    def test_listing_payload_agrees_with_the_files_on_disk(self):
+        data = json.loads(LISTING.read_text(encoding="utf-8"))
+        product = next(p for p in data["products"] if p["id"] == "B12-010")
+        self.assertTrue(product["state"].startswith("READY_TO_PUBLISH"))
+        self.assertFalse(product["published"])
+        recorded = {Path(f["path"]).name: f for f in product["files"]}
+        self.assertEqual(product["cover"], "books/covers/B12-010.png")
+        for name, (size, digest) in EXPECTED.items():
+            if name.endswith(".png"):
+                continue
+            self.assertEqual(recorded[name]["bytes"], size, name)
+            self.assertEqual(recorded[name]["sha256"], digest, name)
 
 
 class TestWorkbook(unittest.TestCase):

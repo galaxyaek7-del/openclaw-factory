@@ -30,8 +30,9 @@ class TestMarketEvidenceIsNotSale(unittest.TestCase):
 
     def test_no_sale_events_or_revenue_exist(self):
         ledger = FACTORY / "data" / "sales_ledger.jsonl"
-        if not ledger.exists():
-            self.skipTest("local sales ledger not present in this checkout")
+        self.assertTrue(
+            ledger.exists(),
+            "data/sales_ledger.jsonl must be tracked and present in every checkout")
         sales = [json.loads(line) for line in
                  ledger.read_text(encoding="utf-8").splitlines()
                  if line.strip()]

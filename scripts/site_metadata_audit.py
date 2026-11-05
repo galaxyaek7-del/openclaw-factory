@@ -8,7 +8,8 @@ customer_site/*.html it checks:
   CHARSET         no <meta charset>
   TITLE           not exactly one non-empty <title>
   CANONICAL       not exactly one canonical link, or it does not point at
-                  this page's own public URL
+                  this page's own public URL (skipped on noindex pages: a
+                  page that asks not to be indexed needs no canonical)
   CANONICAL_DUP   the same canonical URL on two pages
   OG_DUP          an og:* / twitter:* property declared more than once
   OG_URL          og:url present but different from the canonical
@@ -118,7 +119,9 @@ def audit_page(path: str, site_dir: str, base_url: str, unlisted: set[str]) -> t
     if len(titles) != 1 or not titles[0]:
         add("TITLE", f"{len(titles)} <title> element(s)")
     expected = base_url + name
-    if len(c.canonicals) != 1:
+    if c.noindex:
+        pass
+    elif len(c.canonicals) != 1:
         add("CANONICAL", f"{len(c.canonicals)} canonical link(s)")
     elif c.canonicals[0] != expected:
         add("CANONICAL", f"points at {c.canonicals[0]}")

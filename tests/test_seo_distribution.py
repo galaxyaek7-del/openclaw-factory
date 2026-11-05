@@ -97,6 +97,14 @@ class SeoDistributionTest(unittest.TestCase):
         content = (sd._CUSTOMER_SITE_DIR / "guide-digitalocean-affiliate-program.html").read_text(encoding="utf-8")
         self.assertIn("no commission is collected from this page today", content.lower())
 
+    def test_generated_page_wraps_long_values_on_mobile(self):
+        self._write_opps([_make_opp()])
+        sd.publish_seo_pages()
+        content = (sd._CUSTOMER_SITE_DIR / "guide-digitalocean-affiliate-program.html").read_text(encoding="utf-8")
+        self.assertIn("@media(max-width:560px)", content)
+        self.assertIn(".fact .row{flex-direction:column", content)
+        self.assertIn(".fact .row>span:last-child{overflow-wrap:anywhere}", content)
+
 
 if __name__ == "__main__":
     unittest.main()

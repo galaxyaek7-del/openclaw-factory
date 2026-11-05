@@ -5,7 +5,7 @@ const path = require('path');
 const os = require('os');
 
 const telemod = require('../lib/telegram_commands');
-const { isAuthorized, checkRate, COMMANDS, processMessage, getFactoryStatus, getQueueSummary, getEvolutionQueueSummary, getHelpText, getActionsList, getQueueState, getEvolutionQueue, logCommand } = telemod._testExports();
+const { isAuthorized, checkRate, COMMANDS, processMessage, getFactoryStatus, getQueueSummary, getEvolutionQueueSummary, getHelpText, getActionsList, getQueueState, getEvolutionQueue, logCommand, isGscFilename, handleDocument } = telemod._testExports();
 
 function withEnv(overrides, fn) {
   const saved = {};
@@ -216,5 +216,37 @@ describe('telegram-commands start/stop', () => {
       const result = require('../lib/telegram_commands').start();
       assert.equal(result, false);
     });
+  });
+});
+
+describe('telegram-commands GSC document reception', () => {
+  it('isGscFilename accepts only Google-shaped names', () => {
+    assert.ok(isGscFilename('googleabc123.html'));
+    assert.ok(!isGscFilename('notes.txt'));
+    assert.ok(!isGscFilename('google file.html'));
+    assert.ok(!isGscFilename('../googleabc.html'));
+    assert.ok(!isGscFilename(''));
+    assert.ok(!isGscFilename(null));
+  });
+  it('handleDocument rejects a non-Google filename without network', async () => {
+    const res = await handleDocument({ chat: { id: '1' }, document: { file_name: 'photo.jpg', file_id: 'x' } }, 'tok', { fetch: () => { throw new Error('must not fetch'); } });
+    assert.match(res, /only Google/);
+  });
+  it('handleDocument rejects an oversized file without network', async () => {
+    const res = await handleDocument({ chat: { id: '1' }, document: { file_name: 'googleabc123.html', file_id: 'x', file_size: 5 * 1024 * 1024 } }, 'tok', { fetch: () => { throw new Error('must not fetch'); } });
+    assert.match(res, /100KB/);
+  });
+  it('handleDocument rejects content lacking the Google marker (mocked net, no disk write)', async () => {
+    const net = {
+      fetch: async (url) => {
+        if (String(url).includes('/getFile')) {
+          return { json: async () => ({ ok: true, result: { file_path: 'docs/f.html' } }) };
+        }
+        return { ok: true, arrayBuffer: async () => Buffer.from('<html>not google</html>') };
+      },
+    };
+    const res = await handleDocument({ chat: { id: '1' }, document: { file_name: 'googleabc123.html', file_id: 'fid' } }, 'tok', net);
+    assert.match(res, /lacks the google-site-verification marker/);
+    assert.ok(!fs.existsSync(path.join(__dirname, '..', 'gsc_inbox', 'googleabc123.html')), 'rejected file must never reach the inbox');
   });
 });

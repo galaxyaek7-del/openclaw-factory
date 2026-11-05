@@ -157,7 +157,7 @@ B12_006_SPEC: Dict[str, Any] = {
 B12_008_SPEC: Dict[str, Any] = {
     "product_id": "B12-008",
     "artifact": "books/batch12/B12-008_moving_budget_tracker.xlsx",
-    "artifact_sha256": "48225a83e8ddd030e34d26e80594a34b34462b74ec7039e86d20a7cf8ad0155e",
+    "artifact_sha256": "89cc470444e4dd7e51ed9c65019638f53edcb6c861e698a15625eedea1b30e85",
     "formula_sheets": ["Budget", "MoverCompare", "Utilities", "Summary"],
     "scan_sheets": [
         "Budget", "MoverCompare", "AddressChanges", "Utilities",
@@ -167,7 +167,7 @@ B12_008_SPEC: Dict[str, Any] = {
     # where the columns carry different units, so those are checked by column
     # rule instead (see below).
     "tables": [
-        {"sheet": "Summary", "key_column": 1, "value_column": 2, "first_row": 2, "last_row": 21},
+        {"sheet": "Summary", "key_column": 1, "value_column": 2, "first_row": 2, "last_row": 22},
         # The gap-days example is the workbook's flagship calculation: two
         # transferred services with real dates (a 2-day gap and a same-day
         # handover). Checked through the service names so the row order can
@@ -208,6 +208,8 @@ B12_008_SPEC: Dict[str, Any] = {
         {"sheet": "Summary", "label": "Total deposits held (USD)", "kind": "currency", "format_contains": "$"},
         {"sheet": "Summary", "label": "Deposits with photos done (USD)", "kind": "currency", "format_contains": "$"},
         {"sheet": "Summary", "label": "Deposits still at risk (USD)", "kind": "currency", "format_contains": "$"},
+        {"sheet": "Summary", "label": "Buffer (USD)", "kind": "currency", "format_contains": "$"},
+        {"sheet": "Summary", "label": "Real ceiling (USD)", "kind": "currency", "format_contains": "$"},
         {"sheet": "Utilities", "label": "EXAMPLE electricity", "kind": "integer", "format": "0"},
         {"sheet": "Utilities", "label": "EXAMPLE internet", "kind": "integer", "format": "0"},
     ],

@@ -42,6 +42,11 @@ BASELINES = {
         "sha256": "3a8ef339eb07e11b036edf741b1d75d05fbc6ebb7edc58a666f5f8f7602633a6",
         "size": 9639,
     },
+    # File-identity resolution, 2026-10-22: the values below are the canonical
+    # final-release bytes (GATE_FINAL_2026-10-20.json,
+    # FINAL_RELEASE_RECORD_2026-10-20.json). The previous 16,860 B figure was a
+    # stale baseline that predated the late Cycle-106 review repairs, not a
+    # different intended release. Evidence: FILE_IDENTITY_RESOLUTION_2026-10-22.json.
     "books/batch12/B12-008_moving_budget_tracker.xlsx": {
         # Re-baselined 2026-10-20 (Cycle 106): the Cycle-104 workbook was 4
         # sheets / 1 formula and failed the hybrid depth rule; rebuilt to 7
@@ -53,9 +58,12 @@ BASELINES = {
         # calculation the formula did not perform). Native Excel recalculation
         # PASS on this hash (reports/B12-008/WORKBOOK_QA_2026-10-20.json).
         # Previous baseline 1e42132b…d1ed / 7629 B.
-        "sha256": "48225a83e8ddd030e34d26e80594a34b34462b74ec7039e86d20a7cf8ad0155e",
-        "size": 16860,
+        "sha256": "89cc470444e4dd7e51ed9c65019638f53edcb6c861e698a15625eedea1b30e85",
+        "size": 17408,
     },
+    # Same 2026-10-22 identity resolution as the workbook above. The previous
+    # 17,339 B baseline was stale after the late Cycle-106 review repairs; the
+    # canonical final PDF is 17,945 B / 7 pages / 3,288 words.
     "books/batch12/B12-008_moving_checklist.pdf": {
         # Re-baselined 2026-10-20 (Cycle 106): guide rebuilt from 2 pages / 273
         # words to 6 pages / 3,265 words to meet the $29 depth requirement, and
@@ -72,8 +80,8 @@ BASELINES = {
         # corrected sentences ("two days after", "Summary sheet", zero
         # "Dashboard") re-verified on the new bytes. Previous baseline
         # 3026c731...7339. Root cause fixed with the GF_PDF_IMPORT_ONLY guard.
-        "sha256": "246bc6fc4dab990228ffd72828df812e5ff2719b2144151072ad639832dccf6b",
-        "size": 17339,
+        "sha256": "769074972b7fc90e9dfa2cab9145b280f1bdb86482fd6c028e4a594ecb8251e9",
+        "size": 17945,
     },
 }
 

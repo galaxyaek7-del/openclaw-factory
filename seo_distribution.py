@@ -60,6 +60,7 @@ h1{font-size:1.7rem;letter-spacing:-.02em;margin:0 0 .4rem}
 .fact b{color:var(--ink)}
 .fact .row{display:flex;gap:.5rem;margin-bottom:.35rem}
 .fact .k{color:var(--ink-faint);min-width:150px;font-family:var(--mono);font-size:.78rem;padding-top:.15rem}
+@media(max-width:560px){.fact .row{flex-direction:column;gap:.15rem}.fact .k{min-width:0}.fact .row>span:last-child{overflow-wrap:anywhere}}
 h2{font-size:1.15rem;letter-spacing:-.02em;margin:2rem 0 .6rem}
 p{margin:0 0 1rem}
 .steps{background:var(--bg-card);border:1px solid #1a1e2a;border-radius:var(--radius);padding:1.2rem 1.4rem;margin:1rem 0}
@@ -80,7 +81,7 @@ footer{border-top:1px solid #1a1e2a;padding:2rem 0;text-align:center;color:var(-
 
 _SITE_TAIL = """</div>
 </main>
-<footer>Galaxy Forge · __YEAR__ · Content generated from verified program data; affiliate links activate only after founder approval.</footer>
+<footer>Galaxy Forge · __YEAR__ · Content generated from our opportunity records; verification status is shown on each page. Affiliate links activate only after founder approval.</footer>
 <script>
 // Privacy-minimal page-view beacon (Autonomous Enterprise Directive gap #2,
 // 2026-08-15): records ONE real page view via the existing public
@@ -205,10 +206,14 @@ def _page_html(opp: Dict[str, object], slug: str = "") -> str:
                 break
 
     title = f"{program}: what to know before choosing"
+    verification_phrase = (
+        "Verified program details" if verification == "VERIFIED"
+        else "Preliminary program details, not independently verified"
+    )
     if audience:
-        description = f"A real, evidence-based guide to {program} for {audience}. Verified program details, honest pricing, and clear steps."
+        description = f"A real, evidence-based guide to {program} for {audience}. {verification_phrase}, honest pricing, and clear steps."
     else:
-        description = f"A real, evidence-based guide to {program}: verified program details, honest pricing, and clear steps."
+        description = f"A real, evidence-based guide to {program}: {verification_phrase.lower()}, honest pricing, and clear steps."
 
     rows = []
     for label, val in (
@@ -255,8 +260,12 @@ def _page_html(opp: Dict[str, object], slug: str = "") -> str:
             f'{_esc(founder_action)}. We only recommend what we believe is genuinely useful; if a commission ever applies, we disclose it.</div>'
         )
     else:
+        status_label = (
+            "program details verified" if verification == "VERIFIED"
+            else "program details discovered, not independently verified"
+        )
         status_html = (
-            '<span class="status warn">STATUS: program details verified, affiliate link not yet active</span>'
+            f'<span class="status warn">STATUS: {status_label}, affiliate link not yet active</span>'
             '<div class="disclosure"><b>Disclosure:</b> Educational guide to '
             f'<b>{_esc(program)}</b>. Galaxy Forge is not yet an approved affiliate; no commission is collected from this page today.</div>'
         )
@@ -270,8 +279,8 @@ def _page_html(opp: Dict[str, object], slug: str = "") -> str:
         + status_html
         + f'<div class="fact">{facts}</div>'
         + steps_html
-        + f"<p>This page is part of Galaxy Forge's autonomous distribution engine. It is generated from the real, verified opportunity record "
-        + f"(opportunity ID <code>{_esc(opp.get('opportunity_id') or '')}</code>) and updated as the record changes. Nothing on this page is fabricated.</p>"
+        + f"<p>This page is part of Galaxy Forge's autonomous distribution engine. It is generated from the real opportunity record "
+        + f"(opportunity ID <code>{_esc(opp.get('opportunity_id') or '')}</code>) and updated as the record changes. Its verification status is shown above; unverified fields are omitted rather than guessed.</p>"
         + _SITE_TAIL.replace("__YEAR__", str(datetime.now(timezone.utc).year))
               .replace("__PAGE_ID__", f"guide-{slug}")
     )

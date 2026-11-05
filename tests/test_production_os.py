@@ -258,5 +258,184 @@ class TestProductLifecycleView(unittest.TestCase):
         self.assertIn("factory_state", view["note"])
 
 
+def _write_ledger(tmp_dir, events):
+    from datetime import datetime, timezone
+    path = os.path.join(tmp_dir, "sales_ledger.jsonl")
+    with open(path, "w", encoding="utf-8") as f:
+        for e in events:
+            e = dict(e)
+            e.setdefault("timestamp", datetime.now(timezone.utc).isoformat())
+            f.write(json.dumps(e, ensure_ascii=False) + "\n")
+    return path
+
+
+_NOW = __import__("datetime").datetime(2026, 9, 19, tzinfo=__import__("datetime").timezone.utc)
+
+
+def _publish(pid, title, ts, ok=True, dry=False):
+    return {"event_type": "publish_attempt", "platform": "gumroad", "ok": ok,
+            "dry_run": dry, "product_id": "p1", "url": "https://x",
+            "error": None, "product_title": title, "product_source_id": pid,
+            "timestamp": ts}
+
+
+def _sale(name, price):
+    return {"event_type": "sale", "platform": "gumroad",
+            "raw": {"id": "s1", "product_name": name, "price": price}}
+
+
+class TestLearnFeedback(unittest.TestCase):
+    def setUp(self):
+        self.tmp = tempfile.mkdtemp()
+
+    def _genlog(self, records):
+        return _write_genlog(self.tmp, records)
+
+    def test_empty_inputs_yield_zero_kpis_and_unknowns(self):
+        fb = pos.learn_feedback(
+            limit=10, generation_log_path=self._genlog([]),
+            ledger_path=os.path.join(self.tmp, "no-ledger.jsonl"), now=_NOW)
+        self.assertEqual(fb["products"], [])
+        self.assertEqual(fb["kpis"]["verified_revenue_usd"], 0)
+        self.assertEqual(fb["kpis"]["verified_transactions"], 0)
+        self.assertIsNone(fb["kpis"]["distribution_efficiency"]["ok_rate"])
+        self.assertEqual(fb["kpis"]["pain_economic_value"]["status"], "UNKNOWN")
+
+    def test_old_live_publish_without_sales_diagnoses_never_fails(self):
+        rec = dict(_REAL_RECORD, production_id="PROD-1", topic="niche alpha",
+                   timestamp="2026-07-01T00:00:00")
+        fb = pos.learn_feedback(
+            limit=10, generation_log_path=self._genlog([rec]),
+            ledger_path=_write_ledger(self.tmp, [
+                _publish("PROD-1", "niche alpha", "2026-08-01T00:00:00")]),
+            now=_NOW)
+        p = fb["products"][0]
+        self.assertEqual(p["directive"]["signal"], "DIAGNOSE_BEFORE_SCALE")
+        self.assertTrue(p["do_not_clone_without_evidence"])
+        self.assertEqual(p["commercial"]["days_since_live_publish"], 49)
+        # traffic/clicks/checkout are never numbers
+        for stage in ("traffic", "clicks", "checkout"):
+            self.assertEqual(p["commercial"][stage]["status"], "UNKNOWN")
+            self.assertIsNone(p["commercial"][stage]["value"])
+
+    def test_attributed_sale_marks_scale_candidate(self):
+        rec = dict(_REAL_RECORD, production_id="PROD-1", topic="niche alpha",
+                   timestamp="2026-09-01T00:00:00")
+        fb = pos.learn_feedback(
+            limit=10, generation_log_path=self._genlog([rec]),
+            ledger_path=_write_ledger(self.tmp, [
+                _publish("PROD-1", "niche alpha", "2026-09-05T00:00:00"),
+                _sale("niche alpha", 29)]),
+            now=_NOW)
+        p = fb["products"][0]
+        self.assertEqual(p["directive"]["signal"], "SCALE_CANDIDATE")
+        self.assertEqual(p["commercial"]["attributed_transactions"], 1)
+        self.assertEqual(p["commercial"]["attributed_revenue_usd"], 29)
+        self.assertFalse(p["do_not_clone_without_evidence"])
+        self.assertEqual(fb["kpis"]["verified_revenue_usd"], 29)
+        self.assertEqual(fb["kpis"]["verified_transactions"], 1)
+        self.assertEqual(fb["kpis"]["willingness_to_pay_evidence"]["real_amounts_usd"], [29])
+
+    def test_unattributed_sale_counts_factory_only(self):
+        rec = dict(_REAL_RECORD, production_id="PROD-1", topic="niche alpha",
+                   timestamp="2026-09-01T00:00:00")
+        fb = pos.learn_feedback(
+            limit=10, generation_log_path=self._genlog([rec]),
+            ledger_path=_write_ledger(self.tmp, [
+                _publish("PROD-1", "niche alpha", "2026-09-05T00:00:00"),
+                _sale("something else entirely", 10)]),
+            now=_NOW)
+        p = fb["products"][0]
+        self.assertEqual(p["commercial"]["attributed_transactions"], 0)
+        self.assertIsNotNone(p["commercial"]["attribution_note"])
+        self.assertEqual(p["directive"]["signal"], "IN_MEASUREMENT_WINDOW")
+        # factory KPIs still count the real sale -- never dropped
+        self.assertEqual(fb["kpis"]["verified_transactions"], 1)
+        self.assertEqual(fb["kpis"]["verified_revenue_usd"], 10)
+
+    def test_learn_never_writes(self):
+        rec = dict(_REAL_RECORD, production_id="PROD-1", topic="niche alpha",
+                   timestamp="2026-09-01T00:00:00")
+        genlog = self._genlog([rec])
+        ledger = _write_ledger(self.tmp, [_publish("PROD-1", "niche alpha",
+                                                  "2026-09-05T00:00:00")])
+        before = sorted(os.listdir(self.tmp))
+        pos.learn_feedback(limit=10, generation_log_path=genlog,
+                           ledger_path=ledger, now=_NOW)
+        pos.product_lifecycle_view(
+            limit=10, classify_limit=0, generation_log_path=genlog,
+            changelog_path=os.path.join(self.tmp, "changelog.jsonl"),
+            ledger_path=ledger)
+        self.assertEqual(sorted(os.listdir(self.tmp)), before)
+
+    def test_view_carries_learn_block_per_product(self):
+        rec = dict(_REAL_RECORD, production_id="PROD-1", topic="niche alpha",
+                   timestamp="2026-09-01T00:00:00")
+        view = pos.product_lifecycle_view(
+            limit=10, classify_limit=0,
+            generation_log_path=self._genlog([rec]),
+            changelog_path=os.path.join(self.tmp, "changelog.jsonl"),
+            ledger_path=_write_ledger(self.tmp, [
+                _publish("PROD-1", "niche alpha", "2026-09-05T00:00:00")]))
+        learn = view["products"][0]["learn"]
+        self.assertIn("commercial", learn)
+        self.assertIn("directive", learn)
+        self.assertIn("do_not_clone_without_evidence", learn)
+        self.assertIn("learn_kpis", view)
+        self.assertIn("verified_revenue_usd", view["learn_kpis"])
+
+
+class TestProductLifecycleSnapshot(unittest.TestCase):
+    """record_product_lifecycle_snapshot() (restored 2026-10-28): the ONE real
+    write path for data/product_lifecycle_snapshots.jsonl. Isolated temp paths
+    only -- the real ledger is never touched by a test."""
+
+    def setUp(self):
+        self.tmp = tempfile.mkdtemp()
+
+    def _genlog(self, records):
+        return _write_genlog(self.tmp, records)
+
+    def _record(self, path=None, **overrides):
+        kwargs = dict(
+            limit=10, classify_limit=0,
+            changelog_path=os.path.join(self.tmp, "changelog.jsonl"),
+            decisions_path=os.path.join(self.tmp, "decisions.jsonl"),
+            timeline_path=os.path.join(self.tmp, "timeline.jsonl"),
+            outcomes_path=os.path.join(self.tmp, "outcomes.jsonl"),
+            state_path=os.path.join(self.tmp, "factory_state.json"),
+            ledger_path=os.path.join(self.tmp, "sales_ledger.jsonl"),
+        )
+        kwargs.update(overrides)
+        if "generation_log_path" not in kwargs:
+            kwargs["generation_log_path"] = self._genlog([dict(_REAL_RECORD)])
+        return pos.record_product_lifecycle_snapshot(
+            path=path or os.path.join(self.tmp, "snapshots.jsonl"), **kwargs)
+
+    def test_appends_one_real_row_per_call(self):
+        snap = self._record()
+        self.assertEqual(snap["shown_products"], 1)
+        path = os.path.join(self.tmp, "snapshots.jsonl")
+        with open(path, encoding="utf-8") as f:
+            rows = [json.loads(line) for line in f if line.strip()]
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]["shown_products"], 1)
+        self.assertIn("generated_at", rows[0])
+
+        self._record()
+        with open(path, encoding="utf-8") as f:
+            self.assertEqual(len([l for l in f if l.strip()]), 2)
+
+    def test_creates_the_ledger_directory_when_missing(self):
+        nested = os.path.join(self.tmp, "nested", "dir", "snapshots.jsonl")
+        self._record(path=nested)
+        self.assertTrue(os.path.exists(nested))
+
+    def test_an_empty_log_records_an_honest_zero_not_an_error(self):
+        snap = self._record(generation_log_path=self._genlog([]))
+        self.assertEqual(snap["shown_products"], 0)
+        self.assertEqual(snap["total_real_production_ids_in_log"], 0)
+
+
 if __name__ == "__main__":
     unittest.main()

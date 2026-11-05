@@ -31,6 +31,17 @@ from schemas.product import Product
 _REAL_TEXT = _FACTORY_ROOT / "data" / "cycle81_real_listing_text.json"
 
 
+def _allow_gate(*_args, **_kwargs):
+    """A permissive central-Quality-Gate stub. The gate is mandatory on every
+    real publish (founder directive, 2026-10-17); these tests prove the
+    cycle-81 claim-integrity / file-usability layers, so they inject an
+    allowing resolver. The gate's own no-bypass behavior is pinned by
+    tests/test_gate_mandatory.py."""
+    return {"allowed": True, "source_id": None, "blocked_by": None,
+            "reason": "test allow"}
+
+
+
 def _real_description(short_id, fallback=""):
     """The live published copy, read from the snapshot this cycle captured.
     Falls back to a caller-supplied string when the snapshot is absent (a
@@ -365,7 +376,8 @@ class TestDistributorWiring(unittest.TestCase):
                      price_usd=99.0, file_path="/definitely/not/here.pdf")
         outcomes = distributor.distribute(
             p, arm_names=["gumroad"], dry_run=False, allow_protected=True,
-            ledger_path=self.ledger, protection_state_path=self.state)
+            ledger_path=self.ledger, protection_state_path=self.state,
+            quality_gate=_allow_gate)
         self.assertEqual(outcomes[0]["attempted"], True, outcomes[0])
 
     def test_real_publish_with_a_real_contradicting_pdf_is_blocked(self):
@@ -380,7 +392,8 @@ class TestDistributorWiring(unittest.TestCase):
                          price_usd=99.0, file_path=pdf)
             outcomes = distributor.distribute(
                 p, arm_names=["gumroad"], dry_run=False, allow_protected=True,
-                ledger_path=self.ledger, protection_state_path=self.state)
+                ledger_path=self.ledger, protection_state_path=self.state,
+                quality_gate=_allow_gate)
             self.assertEqual(outcomes[0]["attempted"], False)
             self.assertIn("claim-integrity gate", outcomes[0]["skip_reason"])
         finally:
@@ -397,7 +410,7 @@ class TestDistributorWiring(unittest.TestCase):
             outcomes = distributor.distribute(
                 p, arm_names=["gumroad"], dry_run=False, allow_protected=True,
                 allow_claim_risk=True, ledger_path=self.ledger,
-                protection_state_path=self.state)
+                protection_state_path=self.state, quality_gate=_allow_gate)
             self.assertEqual(outcomes[0]["attempted"], True)
         finally:
             os.remove(pdf)
@@ -411,7 +424,8 @@ class TestDistributorWiring(unittest.TestCase):
                          price_usd=99.0, file_path=csv)
             outcomes = distributor.distribute(
                 p, arm_names=["gumroad"], dry_run=False, allow_protected=True,
-                ledger_path=self.ledger, protection_state_path=self.state)
+                ledger_path=self.ledger, protection_state_path=self.state,
+                quality_gate=_allow_gate)
             self.assertEqual(outcomes[0]["attempted"], True, outcomes[0])
         finally:
             os.remove(csv)
@@ -428,7 +442,8 @@ class TestDistributorWiring(unittest.TestCase):
                 price_usd=155.0, file_path=pdf)
             outcomes = distributor.distribute(
                 p, arm_names=["gumroad"], dry_run=False, allow_protected=True,
-                ledger_path=self.ledger, protection_state_path=self.state)
+                ledger_path=self.ledger, protection_state_path=self.state,
+                quality_gate=_allow_gate)
             self.assertEqual(outcomes[0]["attempted"], True, outcomes[0])
         finally:
             os.remove(pdf)
