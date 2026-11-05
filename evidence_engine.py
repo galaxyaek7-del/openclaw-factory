@@ -44,6 +44,9 @@ EVIDENCE_TYPES = (
 
 NOT_VERIFIED = "NOT VERIFIED"
 
+VERIFICATION_STATUSES = ("VERIFIED", "OBSERVED", "PROJECTED", "ESTIMATED", "UNKNOWN")
+RECONCILIATION_STATUSES = ("UNRECONCILED", "MATCHED", "DISPUTED", "NOT_APPLICABLE")
+
 
 def _now_iso():
     return datetime.now(timezone.utc).isoformat()
@@ -62,7 +65,10 @@ def make_evidence_id(evidence_type, module, timestamp, input_summary):
 def record_evidence(evidence_type, module, input_summary, output_summary,
                      duration_ms, success, validation_result=None, ledger_path=None,
                      producer=None, provenance="DERIVED", confidence=None,
-                     supersedes=None, valid_until=None):
+                     supersedes=None, valid_until=None,
+                     source_system=None, source_record_id=None, observed_at=None,
+                     verification_status=None, raw_reference=None,
+                     reconciliation_status=None):
     """The ONE real write path. Immutable, append-only -- existing
     records are never rewritten, same convention as every other real
     *.jsonl ledger in this factory.
@@ -72,9 +78,31 @@ def record_evidence(evidence_type, module, input_summary, output_summary,
     provenance (OBSERVED / DERIVED / INFERRED -- DERIVED default; a
     DERIVED record must never be re-labeled OBSERVED downstream),
     confidence (free-text rationale, never a fabricated number),
-    supersedes (evidence_id this record replaces), valid_until (ISO)."""
+    supersedes (evidence_id this record replaces), valid_until (ISO).
+
+    GF-ROS lineage extension (ADR-GF-ROS-001, additive only): a record
+    that came from an external system carries source_system +
+    source_record_id + observed_at + verification_status +
+    reconciliation_status + raw_reference. When both source_system and
+    source_record_id are given, the record is deduplicated on
+    (source_system, source_record_id, evidence_type): the existing
+    record is returned instead of appending a second row, so replaying
+    the same platform export can never double-count."""
     if evidence_type not in EVIDENCE_TYPES:
         raise ValueError(f"unknown evidence_type: {evidence_type!r} -- expected one of {EVIDENCE_TYPES}")
+    if verification_status is not None and verification_status not in VERIFICATION_STATUSES:
+        raise ValueError(f"unknown verification_status: {verification_status!r} -- "
+                         f"expected one of {VERIFICATION_STATUSES}")
+    if reconciliation_status is not None and reconciliation_status not in RECONCILIATION_STATUSES:
+        raise ValueError(f"unknown reconciliation_status: {reconciliation_status!r} -- "
+                         f"expected one of {RECONCILIATION_STATUSES}")
+
+    path = ledger_path or DEFAULT_LEDGER_PATH
+    if source_system and source_record_id:
+        existing = find_evidence(source_system, source_record_id,
+                                 evidence_type=evidence_type, ledger_path=path)
+        if existing:
+            return existing
 
     timestamp = _now_iso()
     evidence_id = make_evidence_id(evidence_type, module, timestamp, input_summary)
@@ -93,13 +121,46 @@ def record_evidence(evidence_type, module, input_summary, output_summary,
         "confidence": confidence,
         "supersedes": supersedes,
         "valid_until": valid_until,
+        "source_system": source_system,
+        "source_record_id": source_record_id,
+        "observed_at": observed_at,
+        "ingested_at": timestamp,
+        "verification_status": verification_status,
+        "raw_reference": raw_reference,
+        "reconciliation_status": reconciliation_status,
     }
 
-    path = ledger_path or DEFAULT_LEDGER_PATH
     os.makedirs(os.path.dirname(path), exist_ok=True)
     with open(path, "a", encoding="utf-8") as f:
         f.write(json.dumps(record, ensure_ascii=False, default=str) + "\n")
     return record
+
+
+def find_evidence(source_system, source_record_id, evidence_type=None, ledger_path=None):
+    """Return the already-recorded record for this external record, or None.
+
+    Identity is (source_system, source_record_id, evidence_type) -- the
+    same triple record_evidence() deduplicates on."""
+    if not source_system or not source_record_id:
+        return None
+    path = ledger_path or DEFAULT_LEDGER_PATH
+    if not os.path.exists(path):
+        return None
+    match = None
+    with open(path, "r", encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                entry = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            if (entry.get("source_system") == source_system
+                    and entry.get("source_record_id") == source_record_id
+                    and (evidence_type is None or entry.get("evidence_type") == evidence_type)):
+                match = entry
+    return match
 
 
 def read_evidence(evidence_type=None, module=None, limit=50, ledger_path=None):

@@ -623,3 +623,196 @@ def agent_health(leads_path=None, now=None):
         "error_rate": round(rejected / len(leads), 4), "queue_size": 0,
         "current_task": None, "blocked_reason": None,
     }
+
+
+# ---------------------------------------------------------------------------
+# GF-ROS M7 -- lead funnel state machine over data/prospect_pipeline.jsonl
+# ---------------------------------------------------------------------------
+#
+# The file already existed with one schema row and `prospects: []`. It is used
+# here as an append-only transition log, one JSON object per line. The schema
+# row (a line with `schema_version` and no `lead_id`) is skipped by every
+# reader, so the file keeps its original purpose as documentation.
+#
+# Nothing here sends, emails or messages anyone. create_draft() only records a
+# draft; send_draft() reuses channels.write_gate (GF_ALLOW_OUTBOUND_MESSAGES)
+# AND requires an APPROVED row in data/founder_approvals.jsonl, and even then
+# reports transport NOT_CONNECTED rather than claiming a send that never
+# happened.
+
+FUNNEL_STAGES = ("NEW", "QUALIFIED", "CONTACTED", "REPLIED", "PROPOSAL", "WON", "LOST")
+
+DEFAULT_FUNNEL_PATH = _FACTORY_ROOT / "data" / "prospect_pipeline.jsonl"
+DEFAULT_APPROVALS_PATH = _FACTORY_ROOT / "data" / "founder_approvals.jsonl"
+
+_ALLOWED_TRANSITIONS = {
+    "NEW": ("QUALIFIED", "LOST"),
+    "QUALIFIED": ("CONTACTED", "LOST"),
+    "CONTACTED": ("REPLIED", "LOST"),
+    "REPLIED": ("PROPOSAL", "LOST"),
+    "PROPOSAL": ("WON", "LOST"),
+    "WON": (),
+    "LOST": (),
+}
+
+
+class IllegalFunnelTransition(ValueError):
+    """Raised when a move is not permitted by _ALLOWED_TRANSITIONS."""
+
+
+class MissingLeadSource(ValueError):
+    """Raised when a lead would enter the funnel with no real source."""
+
+
+class FounderApprovalRequired(PermissionError):
+    """Raised when an outbound send has no APPROVED founder approval row."""
+
+
+def _funnel_events(path=None):
+    return [r for r in _read_jsonl(path or DEFAULT_FUNNEL_PATH) if r.get("lead_id")]
+
+
+def _append_funnel_event(event, path=None):
+    _append_jsonl(event, path or DEFAULT_FUNNEL_PATH)
+
+
+def lead_stage(lead_id, path=None):
+    """Current funnel stage, or None when this lead has never been in the
+    funnel. None is not the same as NEW: a lead that was never recorded must
+    not be reported as if it had entered."""
+    stage = None
+    for event in _funnel_events(path):
+        if event.get("lead_id") == lead_id and event.get("event") == "TRANSITION":
+            stage = event.get("to_stage")
+    return stage
+
+
+def lead_funnel(lead_id, path=None):
+    return [e for e in _funnel_events(path) if e.get("lead_id") == lead_id]
+
+
+def transition_lead(lead_id, to_stage, *, source_ref=None, reason=None,
+                    path=None, now=None):
+    """Move one lead to `to_stage`, appending a real evidence row and the
+    transition event. Returns the event; raises on an illegal move or on a
+    lead entering the funnel without a real source."""
+    if not lead_id:
+        raise ValueError("lead_id is required")
+    if to_stage not in FUNNEL_STAGES:
+        raise ValueError(f"unknown funnel stage: {to_stage!r}")
+
+    current = lead_stage(lead_id, path)
+    if current is None:
+        if not source_ref:
+            raise MissingLeadSource(
+                "a lead cannot enter the funnel without a real source reference")
+        current = "NEW"
+
+    allowed = _ALLOWED_TRANSITIONS.get(current, ())
+    if to_stage not in allowed:
+        raise IllegalFunnelTransition(
+            f"{lead_id}: {current} -> {to_stage} is not permitted "
+            f"(allowed: {list(allowed) or 'none, terminal stage'})")
+
+    import evidence_engine
+
+    evidence = evidence_engine.record_evidence(
+        evidence_type="CUSTOMER",
+        module="lead_discovery.transition_lead",
+        input_summary=f"{lead_id}: {current} -> {to_stage}",
+        output_summary=reason or "",
+        duration_ms=0,
+        success=True,
+        source_system="prospect_funnel",
+        source_record_id=f"{lead_id}:{to_stage}",
+        observed_at=_now_iso(now),
+    )
+
+    event = {
+        "lead_id": lead_id,
+        "event": "TRANSITION",
+        "from_stage": current,
+        "to_stage": to_stage,
+        "source_ref": source_ref,
+        "reason": reason,
+        "evidence_id": evidence["evidence_id"],
+        "at": _now_iso(now),
+    }
+    _append_funnel_event(event, path)
+    return event
+
+
+def create_draft(lead_id, subject, body, *, channel="email", path=None, now=None):
+    """Record an unsent draft. Never contacts anyone."""
+    import hashlib as _hashlib
+
+    if not lead_id or not body:
+        raise ValueError("lead_id and body are required")
+    draft_id = _hashlib.sha256(
+        f"{lead_id}|{subject}|{body}".encode("utf-8")).hexdigest()[:16]
+    event = {
+        "lead_id": lead_id,
+        "event": "DRAFT",
+        "draft_id": draft_id,
+        "subject": subject,
+        "body": body,
+        "channel": channel,
+        "sent": False,
+        "at": _now_iso(now),
+    }
+    _append_funnel_event(event, path)
+    return event
+
+
+def _has_founder_approval(approval_id, approvals_path=None):
+    if not approval_id:
+        return False
+    for row in _read_jsonl(approvals_path or DEFAULT_APPROVALS_PATH):
+        if row.get("item_id") == approval_id and row.get("status") == "APPROVED":
+            return True
+    return False
+
+
+def send_draft(lead_id, draft_id, *, founder_approval_id=None,
+               approvals_path=None):
+    """Refuse unless the outbound gate is open AND a founder approval exists.
+
+    This factory has no real message transport wired, so a fully authorized
+    call still returns sent=False. Claiming otherwise would be a fabricated
+    delivery."""
+    from channels import write_gate
+
+    decision = write_gate.check_platform_write(
+        "lead_funnel", "send_draft", message=True)
+    if not decision.allowed:
+        raise write_gate.WriteNotAuthorized(decision.reason)
+    if not _has_founder_approval(founder_approval_id, approvals_path):
+        raise FounderApprovalRequired(
+            "outbound send requires an APPROVED founder approval row "
+            f"(got {founder_approval_id!r})")
+    return {
+        "lead_id": lead_id,
+        "draft_id": draft_id,
+        "sent": False,
+        "transport": "NOT_CONNECTED",
+        "note": "Gates passed, but no real message transport exists in this "
+                "factory. Nothing was sent.",
+    }
+
+
+def funnel_summary(path=None):
+    """Real per-stage counts from what has actually been recorded."""
+    counts = {stage: 0 for stage in FUNNEL_STAGES}
+    seen = {}
+    for event in _funnel_events(path):
+        if event.get("event") != "TRANSITION":
+            continue
+        seen[event["lead_id"]] = event.get("to_stage")
+    for stage in seen.values():
+        counts[stage] += 1
+    return {
+        "counts": counts,
+        "total_leads": len(seen),
+        "note": "Empty until a real transition is recorded; 0 is a real count, "
+                "not a placeholder.",
+    }
