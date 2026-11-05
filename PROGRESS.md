@@ -1,0 +1,67 @@
+# PROGRESS.md: Galaxy Forge (OpenClaw Factory)
+
+Started 2026-11-05. Read this first in every new session and continue from "Next".
+Rules of this file: facts marked OBSERVED were checked this session; nothing is guessed.
+
+## 1. Current state (OBSERVED 2026-11-05)
+
+- Server `server.js`: up (health 200), under `scripts/supervisor.js`. Restarted this session.
+- Loop `factory_loop.js`: it was DEAD from 2026-11-01 23:58Z to 2026-11-05 07:39Z (3.3 days,
+  nothing supervised it). Restarted this session under the supervisor. It recovered cleanly.
+- Products: 116 in the registry, 111 `PUBLIC_LISTING_VERIFIED` on Gumroad, 4 `UPLOAD_COMPLETED`,
+  1 `READY_FOR_AUTHORIZATION`. Sales: 0. Revenue: $0 (`config/reality.json`: published_books [],
+  commercial_proof UNKNOWN). `FIRST_SALE_VERIFIED` = 0.
+- Production, QA, publishing (after per-product approval), sales polling, backups all run in the
+  loop. The binding constraint is demand reaching the products, not production
+  (`docs/factory/COMPANY_OPERATING_PLAN_2026-11.md`).
+- Doctrine gate `scripts/check_doctrine.py`: all layers OK (54 tests).
+- Daily protection check: FAIL on `local_backup` (fixed this session: backup `local-2026-11-05`
+  written, restore-checked) and `payable_withdrawn` (2 held listings still published).
+
+## 2. Faults found
+
+| # | Fault | Severity | Owner |
+|---|---|---|---|
+| F1 | Disk C: 6.6 GB free of 255 GB (2.6%). `opencode.db` is 141 GB (backlog B40). Loop enters low-disk mode below 2 GB and stops generating PDFs. | CRITICAL | founder (red line: deleting data) |
+| F2 | Loop had no restart after a crash/log-off (3.3 days dead). No autostart task for server/loop (B37). | HIGH | restarted by agent; autostart install = founder (`scripts/install_factory_autostart.ps1`; persistence was refused to the agent before) |
+| F3 | n8n unreachable ("fetch failed"); the sensing workflows do not run. Watchdog exists but n8n is still down. | HIGH | agent |
+| F4 | Any caller of `gumroad_publisher.create_product()` could create a paid listing with no approval or gate evidence once the live switch was on (B4). | HIGH | agent: FIXED, see task T3 |
+| F5 | Telegram not configured (`TELEGRAM_BOT_TOKEN`/`OPENCLAW_TELEGRAM_CHAT_ID`): no alert reaches the founder, so a dead loop is silent. | MEDIUM | founder (secrets, red line) |
+| F6 | 2 held listings (`/l/iaiyt`, `/l/wteork`) and `/l/owtmpe` still take money at "$0+"; the API cannot unpublish. | HIGH | founder (Gumroad dashboard) |
+| F7 | `NEEDS_ATTENTION.md`: top golden opportunity unchanged for 2680 h; no candidate passes the Proof of Payment gate (ADR-121). By design, not a bug. | INFO | founder evidence |
+| F8 | 1,868 uncommitted paths (data ledgers, reports, books manifests). Commits must be selective. | MEDIUM | agent |
+| F10 | The central Quality Gate in `distributor.py` was opt-in (only when a caller configured it) although the 2026-10-17 founder directive and `tests/test_exp_c81_utm_regression.py` say mandatory: a real publish on any arm skipped it. | HIGH | agent: FIXED in 2fb75161. Callers of real `distribute()`: `src/publish/auto_publisher.py` (Gumroad) and `x_queue.py` (X, spend-blocked anyway); both now stop without gate evidence |
+| F9 | Demand: no board for Pinterest, no analytics receiver, no social credentials (B6, B18, B26). | HIGH for revenue | founder |
+
+## 3. Plan (priority order)
+
+| Task | What | Status |
+|---|---|---|
+| T1 | Restart server + loop under supervisor; write backup | DONE (not committed: runtime state only) |
+| T2 | CLAUDE.md under 10,000 chars, details to `docs/claude_md/`, backup `CLAUDE.backup.md` | DONE |
+| T3 | B4: central publication clearance in `create_product()` (founder approval or Quality Gate decision), arm + distributor wiring, tests | DONE, commit 2fb75161. Wider run: 1,377 tests, 4 failures; 1 was real (see F10, fixed), 3 are not from this work (see section 4) |
+| T4 | F3: bring n8n back (logon task `GalaxyForge-N8N-Autostart`), verify with `scripts/n8n_workflow_health.py` | DONE: n8n up (200) 2026-11-05 08:08Z. Its last exit was 0xC000013A (console closed). Workflows `02_Sales_Poll` and `Openclaw_Sensing_Engine` still show STALE/FAILING from the days the server was down: re-check after their next scheduled run |
+| T5 | F8: commit hygiene, commit only own files per task | ongoing |
+| T6 | Re-run protection check; confirm only founder-owned items remain | TODO |
+| T7 | Next engineering backlog items that are not founder-blocked (B7 site pages for 5 products, B9, B11) | TODO |
+| T9 | Diagnose the 3 failing tests in section 4 (profit_oracle text check, visual QA verdict) | TODO |
+| T8 | Founder list: refresh `docs/factory/FOUNDER_ACTIONS.md` with F1, F2, F5, F6, F9 | TODO |
+
+## 4. Stuck ("عالق") and failures not from this work
+
+No stuck task. Three tests fail on the current tree and are unrelated to publishing; not fixed yet, listed so they are not forgotten (task T9):
+- `tests/test_d16_d19.py::TestD19DocumentationOnly::test_d8_still_verified` (expects the text `ECONOMICS.net_profit(price, "gumroad_digital", config)` in `profit_oracle.py`)
+- `tests/test_visual_qa.py::TestVisualRealEvidence::test_good_cover_produces_evidence_backed_pass` and `TestGate1CannotPromoteNotAvailable::test_clean_visual_pass_does_contribute_to_pass` (verdict is REVIEW, test expects PASS)
+
+## 5. Decisions and why
+
+- Restarted the loop with the existing supervisor, not a new mechanism: it is tested
+  (`tests/test_supervisor.js`) and gives crash-loop guarding.
+- B4 enforced inside `create_product()` itself, with no override argument, so no caller can
+  skip it. Two accepted clearances only: per-product founder approval (exact title, price,
+  description, bundle hash) or an allowed central Quality Gate decision.
+- Not touching F1/F5/F6: deleting data, secrets and live listing changes are red lines.
+
+## 6. Next
+
+T6 (protection re-check), then T9, then T7.
