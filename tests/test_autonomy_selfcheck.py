@@ -76,3 +76,18 @@ class SelfCheckTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+def test_kids_youtube_stage_reports_what_each_episode_waits_for(tmp_path):
+    import json
+    import autonomy_selfcheck as sc
+    (tmp_path / "data").mkdir()
+    (tmp_path / "data" / "kids_youtube_status.json").write_text(json.dumps({"episodes": [
+        {"episode": "a", "passed": False, "failing": ["approval", "credentials"]},
+        {"episode": "b", "passed": False, "failing": ["approval"]}]}))
+    rows = sc.collect(root=tmp_path, env={}, health_fn=lambda: 200, gate_fn=lambda: {"open": False, "why": "x", "signals": {}}, autostart_fn=lambda: "Ready")
+    k = next(r for r in rows if r["stage"] == "K1")
+    assert k["status"] == "BLOCKED" and "approval, credentials" in k["detail"] and "OAuth" in k["owner"]
+    (tmp_path / "data" / "kids_youtube_status.json").write_text(json.dumps({"episodes": [{"episode": "a", "passed": True, "failing": []}]}))
+    rows = sc.collect(root=tmp_path, env={}, health_fn=lambda: 200, gate_fn=lambda: {"open": False, "why": "x", "signals": {}}, autostart_fn=lambda: "Ready")
+    assert next(r for r in rows if r["stage"] == "K1")["status"] == "OK"

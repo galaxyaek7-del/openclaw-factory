@@ -138,6 +138,26 @@ def collect(root: Path = ROOT, env=None, health_fn=None, gate_fn=None, autostart
     # affiliate path
     tag = bool(env.get("AMAZON_ASSOCIATE_TAG"))
     rows.append(stage("A1", "Amazon affiliate", "OK" if tag else "BLOCKED", "AMAZON_ASSOCIATE_TAG %s" % ("set" if tag else "unset"), "founder: Associates account"))
+
+    # children's YouTube arm (kids_studio): what each episode still waits for, from the loop step's own status file
+    ks = _json(root / "data" / "kids_youtube_status.json", None)
+    up = 0
+    try:
+        up = sum(1 for _ in open(root / "data" / "youtube_uploads.jsonl", encoding="utf-8"))
+    except OSError:
+        pass
+    if not ks or not ks.get("episodes"):
+        rows.append(stage("K1", "children's YouTube", "WAITING", "no status yet (loop step kids_youtube_publish has not written one)", "automatic"))
+    else:
+        eps = ks["episodes"]
+        ready = [e for e in eps if e.get("passed")]
+        failing = sorted({f for e in eps for f in e.get("failing", [])})
+        who = {"approval": "founder: approve_kids_episode.py after the Arabic and child-safety review",
+               "credentials": "founder: YouTube OAuth (kids_studio/publishing/README.md)"}
+        status = "OK" if ready or up else "BLOCKED"
+        rows.append(stage("K1", "children's YouTube", status,
+                          "%s episode(s) built, %s ready to upload, %s uploaded; waiting on: %s" % (len(eps), len(ready), up, ", ".join(failing) or "nothing"),
+                          "; ".join(who[f] for f in failing if f in who) or "automatic"))
     return rows
 
 
