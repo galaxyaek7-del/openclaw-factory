@@ -574,6 +574,47 @@ class TestPaymentCompletionAndInvoice(BasePipelineTest):
         self.assertEqual(result["invoice"]["payment_reference"], "txn_real1")
         self.assertTrue(result["invoice"]["invoice_number"].startswith("INV-"))
 
+    def test_paid_request_emits_exactly_one_observed_order(self):
+        import revenue_os
+        orders_path = _temp_path(".jsonl")
+        self.addCleanup(lambda: os.path.exists(orders_path) and os.remove(orders_path))
+        self._awaiting_payment(price=126.0, txn_id="txn_real1")
+        cp.check_payment_status(
+            "req_abc123", state_path=self.state_path, api_key_loader=lambda: "fake-key",
+            get_transactions_fn=lambda k: [{"id": "txn_real1", "status": "completed",
+                                            "currency_code": "USD"}],
+            orders_ledger_path=orders_path,
+        )
+        with open(orders_path, encoding="utf-8") as f:
+            rows = [json.loads(line) for line in f if line.strip()]
+        self.assertEqual(len(rows), 1)
+        order = rows[0]
+        self.assertEqual(order["source_system"], "customer_pipeline")
+        self.assertEqual(order["source_record_id"], "req_abc123")
+        self.assertEqual(order["gross_amount_usd"], 126.0)
+        # OBSERVED, not VERIFIED: nothing reconciled it against the platform yet
+        self.assertEqual(order["verification"], "OBSERVED")
+        self.assertEqual(order["reconciliation_status"], "UNRECONCILED")
+        model = revenue_os.revenue_read_model(
+            orders_path=orders_path, payouts_path=_temp_path(".jsonl"),
+            costs_path=_temp_path(".jsonl"),
+            reconciliation_path=_temp_path(".jsonl"),
+        )
+        self.assertEqual(model["verified_revenue_usd"], 0.0)
+        self.assertEqual(model["counts"]["orders"], 1)
+
+    def test_order_emission_is_idempotent(self):
+        orders_path = _temp_path(".jsonl")
+        self.addCleanup(lambda: os.path.exists(orders_path) and os.remove(orders_path))
+        record = {"request_id": "req_dup", "updated_at": "2026-11-01T00:00:00+00:00",
+                  "proposal": {"price": 50.0}, "payment": {"transaction": {"currency_code": "USD"}}}
+        cp._emit_paid_order(record, ledger_path=orders_path)
+        cp._emit_paid_order(record, ledger_path=orders_path)
+        with open(orders_path, encoding="utf-8") as f:
+            rows = [json.loads(line) for line in f if line.strip()]
+        self.assertEqual(len(rows), 1)
+        self.assertNotIn("order_emission_error", record)
+
     def test_check_all_awaiting_payments_sweeps_only_that_stage(self):
         self._awaiting_payment(price=126.0, txn_id="txn_real1")
         self._write_request("req_new_one")  # stays NEW -- never advanced

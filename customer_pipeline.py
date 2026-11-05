@@ -328,6 +328,60 @@ def _record_history(record, stage, detail=None):
     record.setdefault("stage_history", []).append({"stage": stage, "at": record["updated_at"], "detail": detail})
 
 
+def _emit_paid_order(record, ledger_path=None):
+    """Emit exactly one order row when this request reaches PAID.
+
+    GF-ROS M2 (ADR-GF-ROS-001): data/orders.jsonl has exactly one writer,
+    revenue_os.record_order(), and it is idempotent on
+    (source_system, source_record_id), so re-confirming the same payment
+    never creates a second order.
+
+    verification is OBSERVED, not VERIFIED: the payment confirmation is
+    internal. It only became VERIFIED revenue after an independent
+    reconciliation matches it against the platform's own record. Until then
+    it is recorded, countable, and excluded from verified revenue -- which is
+    the honest state, not a downgrade.
+
+    A ledger failure must never roll back a real payment, so the error is
+    attached to the request record and surfaced to the founder rather than
+    swallowed."""
+    request_id = record.get("request_id")
+    if not request_id:
+        record["order_emission_error"] = "no request_id -- order not emitted"
+        return None
+    proposal = record.get("proposal") or {}
+    txn = (record.get("payment") or {}).get("transaction") or {}
+    try:
+        price = float(proposal.get("price") or 0)
+    except (TypeError, ValueError):
+        price = 0.0
+    try:
+        import revenue_os
+        order = revenue_os.record_order(
+            source_system="customer_pipeline",
+            source_record_id=request_id,
+            gross_amount_usd=price,
+            currency=txn.get("currency_code") or "USD",
+            verification="OBSERVED",
+            reconciliation_status="UNRECONCILED",
+            product_id=proposal.get("product_id"),
+            offer_id=proposal.get("product_id"),
+            channel="paddle",
+            revenue_arm="digital_products",
+            occurred_at=record.get("updated_at"),
+            observed_at=_now(),
+            raw_reference=f"customer_pipeline:{request_id}",
+            ledger_path=ledger_path,
+        )
+        record["order_id"] = order.get("order_id")
+        record.pop("order_emission_error", None)
+        return order
+    except Exception as e:  # noqa: BLE001 -- recorded, never swallowed
+        record["order_emission_error"] = f"{type(e).__name__}: {e}"
+        _notify_founder(f"⚠️ تعذّر تسجيل الطلب في دفتر الأوامر\nطلب: {request_id}\n{type(e).__name__}: {e}")
+        return None
+
+
 def _new_record(request_id):
     now = _now()
     return {
@@ -624,7 +678,8 @@ def retry_payment_verification(request_id, state_path=None, paddle_products_path
     return {"success": True, **record}
 
 
-def check_payment_status(request_id, requests_path=None, state_path=None, api_key_loader=None, get_transactions_fn=None):
+def check_payment_status(request_id, requests_path=None, state_path=None, api_key_loader=None, get_transactions_fn=None,
+                         orders_ledger_path=None):
     """Real Payment completion check (Customer Platform Round 3,
     2026-07-29): confirms the real Paddle transaction created in
     AWAITING_PAYMENT actually completed, transitions AWAITING_PAYMENT ->
@@ -677,6 +732,7 @@ def check_payment_status(request_id, requests_path=None, state_path=None, api_ke
     _record_history(record, "PAID", f"real Paddle transaction {txn_id} confirmed ({status})")
     from invoice_generator import generate_invoice
     record["invoice"] = generate_invoice(record, match)
+    _emit_paid_order(record, ledger_path=orders_ledger_path)
     record = _fulfill_paid_request(record)
 
     state[request_id] = record

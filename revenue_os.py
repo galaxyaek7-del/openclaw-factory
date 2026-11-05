@@ -704,3 +704,287 @@ def build_revenue_os_dashboard() -> Dict[str, object]:
         "HUMAN_GATES": human_gates_report(),
         "note": "Composition-only layer. VERIFIED revenue traces to commission_ledger.py REAL/CONFIRMED-or-PAID records only.",
     }
+
+
+# ---------------------------------------------------------------------------
+# J) ORDERS / PAYOUTS / COSTS / RECONCILIATION + READ MODEL (GF-ROS M2)
+# ---------------------------------------------------------------------------
+#
+# Four new append-only ledgers. Nothing here publishes, checks out, sends, or
+# spends: these are recording and reading primitives only. Every function
+# takes an explicit path override so tests never touch production data.
+
+ORDERS_PATH = _FACTORY_ROOT / "data" / "orders.jsonl"
+PAYOUTS_PATH = _FACTORY_ROOT / "data" / "payouts.jsonl"
+COSTS_PATH = _FACTORY_ROOT / "data" / "costs.jsonl"
+RECONCILIATION_PATH = _FACTORY_ROOT / "data" / "reconciliation_results.jsonl"
+
+PAYOUT_STATUSES = ("PENDING", "CONFIRMED", "PAID", "REVERSED")
+COST_CATEGORIES = ("AI", "INFRASTRUCTURE", "PLATFORM_FEES", "PAYMENT_FEES",
+                   "CONTRACTOR", "OTHER")
+UNKNOWN = "UNKNOWN"
+
+
+def _path_str(path) -> str:
+    return str(path) if path else ""
+
+
+def _read_jsonl(path) -> List[dict]:
+    p = Path(path)
+    if not p.exists():
+        return []
+    rows = []
+    with open(p, encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                rows.append(json.loads(line))
+            except json.JSONDecodeError:
+                continue
+    return rows
+
+
+def _append_jsonl(path, record: dict) -> dict:
+    p = Path(path)
+    p.parent.mkdir(parents=True, exist_ok=True)
+    with open(p, "a", encoding="utf-8") as f:
+        f.write(json.dumps(record, ensure_ascii=False, default=str) + "\n")
+    return record
+
+
+def _find_by_source(rows, source_system, source_record_id):
+    for row in rows:
+        if (row.get("source_system") == source_system
+                and row.get("source_record_id") == source_record_id):
+            return row
+    return None
+
+
+def _is_countable(row: dict) -> bool:
+    """Synthetic/test/dry-run rows are recorded, reported, and never summed."""
+    return not (row.get("synthetic") is True
+                or row.get("environment") == "test"
+                or row.get("dry_run") is True)
+
+
+def record_order(source_system: str, source_record_id: str,
+                 gross_amount_usd: float, net_amount_usd: Optional[float] = None,
+                 fees_usd: float = 0.0, currency: str = "USD",
+                 verification: str = "UNKNOWN", reconciliation_status: str = "UNRECONCILED",
+                 order_id: Optional[str] = None, opportunity_id: Optional[str] = None,
+                 offer_id: Optional[str] = None, product_id: Optional[str] = None,
+                 revenue_arm: Optional[str] = None, channel: Optional[str] = None,
+                 occurred_at: Optional[str] = None, observed_at: Optional[str] = None,
+                 raw_reference: Optional[str] = None, synthetic: bool = False,
+                 ledger_path=None) -> dict:
+    """Record one real order. Idempotent on (source_system, source_record_id):
+    replaying a platform export returns the existing row instead of appending
+    a duplicate."""
+    if not source_system or not source_record_id:
+        raise ValueError("record_order requires source_system and source_record_id")
+    if verification not in VERIFICATION_TIERS:
+        raise ValueError(f"unknown verification: {verification!r} -- expected one of {VERIFICATION_TIERS}")
+    path = ledger_path or ORDERS_PATH
+    existing = _find_by_source(_read_jsonl(path), source_system, source_record_id)
+    if existing:
+        return existing
+    net = net_amount_usd if net_amount_usd is not None else (gross_amount_usd - fees_usd)
+    now = _now_iso()
+    return _append_jsonl(path, {
+        "order_id": order_id or f"{source_system}:{source_record_id}",
+        "source_system": source_system,
+        "source_record_id": source_record_id,
+        "opportunity_id": opportunity_id,
+        "offer_id": offer_id,
+        "product_id": product_id,
+        "revenue_arm": revenue_arm,
+        "channel": channel,
+        "currency": currency,
+        "gross_amount_usd": round(float(gross_amount_usd), 2),
+        "fees_usd": round(float(fees_usd), 2),
+        "net_amount_usd": round(float(net), 2),
+        "verification": verification,
+        "reconciliation_status": reconciliation_status,
+        "occurred_at": occurred_at,
+        "observed_at": observed_at,
+        "ingested_at": now,
+        "raw_reference": raw_reference,
+        "synthetic": bool(synthetic),
+    })
+
+
+def record_payout(source_system: str, source_record_id: str, amount_usd: float,
+                  status: str = "PENDING", commission_ids=None,
+                  fees_usd: float = 0.0, currency: str = "USD",
+                  occurred_at: Optional[str] = None,
+                  raw_reference: Optional[str] = None, synthetic: bool = False,
+                  ledger_path=None) -> dict:
+    """Record one real payout. Idempotent on (source_system, source_record_id)."""
+    if not source_system or not source_record_id:
+        raise ValueError("record_payout requires source_system and source_record_id")
+    if status not in PAYOUT_STATUSES:
+        raise ValueError(f"unknown payout status: {status!r} -- expected one of {PAYOUT_STATUSES}")
+    path = ledger_path or PAYOUTS_PATH
+    existing = _find_by_source(_read_jsonl(path), source_system, source_record_id)
+    if existing:
+        return existing
+    now = _now_iso()
+    return _append_jsonl(path, {
+        "payout_id": f"{source_system}:{source_record_id}",
+        "source_system": source_system,
+        "source_record_id": source_record_id,
+        "amount_usd": round(float(amount_usd), 2),
+        "fees_usd": round(float(fees_usd), 2),
+        "net_amount_usd": round(float(amount_usd) - float(fees_usd), 2),
+        "status": status,
+        "commission_ids": list(commission_ids or []),
+        "currency": currency,
+        "occurred_at": occurred_at,
+        "ingested_at": now,
+        "raw_reference": raw_reference,
+        "synthetic": bool(synthetic),
+    })
+
+
+def record_cost(category: str, amount_usd: float, source: str,
+                approved_by: Optional[str] = None, occurred_at: Optional[str] = None,
+                evidence_id: Optional[str] = None, raw_reference: Optional[str] = None,
+                synthetic: bool = False, ledger_path=None) -> dict:
+    """Record one real cost. `source` is mandatory: an unsourced cost is not
+    recorded at all, so unapproved spend cannot enter the read model."""
+    if category not in COST_CATEGORIES:
+        raise ValueError(f"unknown cost category: {category!r} -- expected one of {COST_CATEGORIES}")
+    if not source:
+        raise ValueError("record_cost requires a real source -- unsourced costs are never recorded")
+    path = ledger_path or COSTS_PATH
+    now = _now_iso()
+    return _append_jsonl(path, {
+        "cost_id": f"{category}:{source}:{occurred_at or now}",
+        "category": category,
+        "amount_usd": round(float(amount_usd), 2),
+        "source": source,
+        "approved_by": approved_by,
+        "approved": bool(approved_by),
+        "occurred_at": occurred_at,
+        "ingested_at": now,
+        "evidence_id": evidence_id,
+        "raw_reference": raw_reference,
+        "synthetic": bool(synthetic),
+    })
+
+
+def record_reconciliation(order_source_record_id: str, status: str,
+                          internal_amount_usd: Optional[float] = None,
+                          external_amount_usd: Optional[float] = None,
+                          source_system: Optional[str] = None,
+                          note: Optional[str] = None,
+                          ledger_path=None) -> dict:
+    if status not in ("MATCHED", "DISPUTED", "MISSING_EXTERNAL", "MISSING_INTERNAL"):
+        raise ValueError(f"unknown reconciliation status: {status!r}")
+    path = ledger_path or RECONCILIATION_PATH
+    return _append_jsonl(path, {
+        "source_record_id": order_source_record_id,
+        "source_system": source_system,
+        "status": status,
+        "internal_amount_usd": internal_amount_usd,
+        "external_amount_usd": external_amount_usd,
+        "note": note,
+        "verified_at": _now_iso(),
+    })
+
+
+def revenue_read_model(orders_path=None, payouts_path=None, costs_path=None,
+                       reconciliation_path=None, commission_ledger_path=None) -> Dict[str, object]:
+    """The ONE read model. Verified revenue is the ACCEPTANCE_TEST_PLAN.md
+    formula and nothing else:
+
+        verified = VERIFIED+MATCHED orders net + CONFIRMED/PAID commissions
+                   + CONFIRMED/PAID payouts - VERIFIED refunds
+                   - approved real costs
+
+    Anything pending/projected/estimated/synthetic is reported separately and
+    never added. A metric with no source is UNKNOWN, never 0.
+
+    An OBSERVED order whose reconciliation says MATCHED is reported in its own
+    field (reconciled_observed_usd) and is NOT silently promoted into verified
+    revenue -- promotion has to be a separate, evidenced act."""
+    from commission_ledger import real_commission_summary
+    from commercial_reconciliation import matched_record_ids
+
+    orders = _read_jsonl(orders_path or ORDERS_PATH)
+    payouts = _read_jsonl(payouts_path or PAYOUTS_PATH)
+    costs = _read_jsonl(costs_path or COSTS_PATH)
+    recon = _read_jsonl(reconciliation_path or RECONCILIATION_PATH)
+    matched = {r.get("source_record_id") for r in recon if r.get("status") == "MATCHED"}
+    matched |= matched_record_ids(reconciliation_path or RECONCILIATION_PATH)
+
+    counted_orders = [o for o in orders if _is_countable(o)]
+    counted_payouts = [p for p in payouts if _is_countable(p)]
+    counted_costs = [c for c in costs if _is_countable(c)]
+
+    verified_orders = [o for o in counted_orders
+                       if o.get("verification") == "VERIFIED"
+                       and (o.get("reconciliation_status") == "MATCHED"
+                            or o.get("source_record_id") in matched)
+                       and o.get("gross_amount_usd", 0) >= 0]
+    reconciled_observed = [o for o in counted_orders
+                           if o.get("verification") == "OBSERVED"
+                           and o.get("source_record_id") in matched
+                           and o.get("gross_amount_usd", 0) >= 0]
+    refunds = [o for o in counted_orders if o.get("verification") == "VERIFIED"
+               and float(o.get("gross_amount_usd") or 0) < 0]
+    verified_payouts = [p for p in counted_payouts if p.get("status") in ("CONFIRMED", "PAID")]
+    approved_costs = [c for c in counted_costs if c.get("approved")]
+
+    commissions = real_commission_summary(ledger_path=commission_ledger_path)
+
+    order_revenue = sum(float(o.get("net_amount_usd") or 0) for o in verified_orders)
+    reconciled_observed_total = sum(float(o.get("net_amount_usd") or 0) for o in reconciled_observed)
+    refund_total = sum(float(o.get("net_amount_usd") or 0) for o in refunds)
+    payout_total = sum(float(p.get("net_amount_usd") or 0) for p in verified_payouts)
+    commission_total = float(commissions.get("real_confirmed_or_paid_commission_usd") or 0)
+    cost_total = sum(float(c.get("amount_usd") or 0) for c in approved_costs)
+
+    verified_revenue = round(order_revenue + commission_total + refund_total
+                             + payout_total - cost_total, 2)
+    return {
+        "generated_at": _now_iso(),
+        "verified_revenue_usd": verified_revenue,
+        "components": {
+            "verified_order_net_usd": round(order_revenue, 2),
+            "verified_commission_usd": round(commission_total, 2),
+            "verified_refund_net_usd": round(refund_total, 2),
+            "confirmed_or_paid_payout_usd": round(payout_total, 2),
+            "approved_cost_usd": round(cost_total, 2),
+        },
+        "reconciled_observed_usd": round(reconciled_observed_total, 2),
+        "counts": {
+            "orders": len(counted_orders),
+            "payouts": len(counted_payouts),
+            "costs": len(counted_costs),
+            "reconciliation_rows": len(recon),
+            "matched": len(matched),
+            "commissions_real_confirmed_or_paid": commissions.get("real_confirmed_or_paid_records", None),
+        },
+        "excluded_synthetic_or_test": {
+            "orders": len(orders) - len(counted_orders),
+            "payouts": len(payouts) - len(counted_payouts),
+            "costs": len(costs) - len(counted_costs),
+            "commission_test_records": commissions.get("test_records", 0),
+        },
+        "unknowns": {
+            "refund_rate": UNKNOWN if not verified_orders else "DERIVED",
+            "conversion_rate": UNKNOWN,
+            "cac_usd": UNKNOWN,
+        },
+        "formula": "VERIFIED+MATCHED order net + CONFIRMED/PAID commission + CONFIRMED/PAID payout net - VERIFIED refunds - approved real costs",
+        "sources": {
+            "orders": _path_str(orders_path or ORDERS_PATH),
+            "payouts": _path_str(payouts_path or PAYOUTS_PATH),
+            "costs": _path_str(costs_path or COSTS_PATH),
+            "reconciliation": _path_str(reconciliation_path or RECONCILIATION_PATH),
+            "commission_ledger": _path_str(commission_ledger_path) or "commission_ledger.default",
+        },
+    }
