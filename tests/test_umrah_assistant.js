@@ -243,3 +243,20 @@ test('the engine has no network or model dependency', () => {
   const src = require('node:fs').readFileSync(require.resolve('../services/umrah_assistant/engine.js'), 'utf8');
   for (const bad of ['require(', 'fetch(', 'XMLHttpRequest', 'groq', 'openai', 'process.env']) assert.ok(!src.includes(bad), bad);
 });
+
+test('Darija / Arabizi phrases found by probing: location, human, documents, booking, Ramadan', () => {
+  const cases = [
+    ['وين راكم', 'location'], ['svp les horaires', 'location'],
+    ['nta robot wla bniadem', 'human'], ['n7ab nhder m3a chi wahed', 'human'],
+    ['wesh lazem dir passeport', 'documents'], ['kifach nconfirmi', 'booking_how'],
+    ['wach kayen bared f ramadan', 'dates'], ['3ndkom promo ?', 'negotiation'],
+    ['شحال تحبو تخلصو في الأول', 'payment']
+  ];
+  for (const [msg, want] of cases) assert.equal(A.classify(msg), want, msg);
+});
+
+test('location answer comes only from the agency file', () => {
+  const s = A.newSession();
+  const r = A.respond(AGENCY, s, 'وين راكم');
+  assert.ok(r.text.includes(AGENCY.city.ar) && r.text.includes(AGENCY.hours.ar) && r.text.includes(AGENCY.phone));
+});
