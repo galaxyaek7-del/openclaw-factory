@@ -174,3 +174,5 @@ site pages for newly published tools (published on the next tick), distribution 
 reading (Telegraph), experiment cycle, commercial readiness. Sunday: weekly report.
 Sales are polled every 4 hours by n8n. The dashboard's "القمع والتجارب" tab shows the
 funnel, what buyers receive and experiment exposure.
+
+- **Affiliate (systeme.io):** the package is ready and nothing is published. Steps: `docs/factory/SYSTEME_PUBLISH_STEPS.md`. Log a real commission with `scripts/record_real_commission.py`.
