@@ -307,16 +307,39 @@ def _commission_evidence(ledger_path=None) -> Dict[str, Any]:
             "test_records": s["test_records"]}
 
 
+def _systeme_evidence() -> Dict[str, Any]:
+    """Systeme.io affiliate path, restated from affiliate/systeme_readiness.py (local checks only,
+    no network). It says nothing about whether systeme.io approved the account: that is UNKNOWN."""
+    try:
+        from affiliate import systeme_readiness as sr
+        r = sr.readiness()
+    except Exception:  # pragma: no cover - the arm keeps its fixed text
+        return {}
+    failed = [c.get("item") for c in r.get("checks", []) if not c.get("ok")]
+    return {"ready": bool(r.get("ready")), "failed": failed,
+            "founder_action": ((r.get("founder_gate") or {}).get("WHAT") or "")}
+
+
 def _affiliate_cfg(cfg: Dict[str, Any], clicks: Dict[str, Any],
-                   commissions: Dict[str, Any] = None) -> Dict[str, Any]:
+                   commissions: Dict[str, Any] = None,
+                   systeme: Dict[str, Any] = None) -> Dict[str, Any]:
     """Affiliate Intelligence restated from its own ledgers: clicks by class (B24)
     and REAL commissions (B22). Only a REAL, PAID commission is revenue for this
     arm; a CONFIRMED one is reported but promotes nothing."""
     commissions = commissions or {}
-    if not (clicks and clicks.get("total")) and not commissions:
+    systeme = systeme or {}
+    if not (clicks and clicks.get("total")) and not commissions and not systeme:
         return cfg
     out = dict(cfg)
     notes = []
+    if systeme:
+        out["systeme_path"] = systeme
+        if systeme.get("ready"):
+            notes.append("Systeme.io path: all local readiness checks pass (page, disclosure, link builder, "
+                         "video package); nothing published yet; founder step: %s"
+                         % (systeme.get("founder_action") or "publish from the founder's own account"))
+        else:
+            notes.append("Systeme.io path NOT ready: " + ", ".join(systeme.get("failed") or ["UNKNOWN"]))
     if clicks and clicks.get("total"):
         parts = ", ".join("%d %s" % (n, k) for k, n in clicks["counts"].items() if n)
         notes.append("%d click(s) recorded (%s); %d could be from an outside person"
@@ -331,7 +354,7 @@ def _affiliate_cfg(cfg: Dict[str, Any], clicks: Dict[str, Any],
         if paid > 0:
             out["arm_revenue_attributable"] = True
     out["gap"] = "; ".join(notes)
-    out["blocker"] = "AMAZON_ASSOCIATE_TAG is unset and no real affiliate account exists; " + out["gap"]
+    out["blocker"] = "AMAZON_ASSOCIATE_TAG is unset (Amazon path blocked); " + out["gap"]
     return out
 
 
@@ -417,7 +440,7 @@ def arm_status() -> Dict[str, Any]:
     cfgs["childrens_media_studio"] = _studio_cfg(ARMS["childrens_media_studio"], _studio_evidence())
     cfgs["content_distribution"] = _content_cfg(ARMS["content_distribution"], _telegraph_evidence())
     cfgs["affiliate_intelligence"] = _affiliate_cfg(ARMS["affiliate_intelligence"], _click_evidence(),
-                                                    _commission_evidence())
+                                                    _commission_evidence(), _systeme_evidence())
     arms = {key: evaluate_arm(key, cfg, revenue) for key, cfg in cfgs.items()}
     arms["digital_products"]["registry_evidence"] = evidence or None
     counts: Dict[str, int] = {s: 0 for s in STATUSES}

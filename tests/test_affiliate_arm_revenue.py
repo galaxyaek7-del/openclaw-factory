@@ -82,5 +82,23 @@ class AffiliateArmRevenue(unittest.TestCase):
                             ba.evaluate_arm("digital_products", cfg, {"status": "STALE", "gross_usd": 15})["status"])
 
 
+
+
+class SystemePathTests(unittest.TestCase):
+    def test_ready_systeme_path_is_reported_without_promoting_the_arm(self):
+        cfg = ba._affiliate_cfg(ba.ARMS["affiliate_intelligence"], {}, {},
+                                {"ready": True, "failed": [], "founder_action": "publish it yourself"})
+        arm = ba.evaluate_arm("affiliate_intelligence", cfg, {"status": "PASS", "gross_usd": 99})
+        self.assertEqual(arm["status"], "BLOCKED")
+        self.assertIn("Systeme.io path: all local readiness checks pass", arm["blocker"])
+        self.assertIn("publish it yourself", arm["blocker"])
+        self.assertFalse(arm["arm_revenue_attributable"])
+
+    def test_unready_systeme_path_names_the_failed_checks(self):
+        cfg = ba._affiliate_cfg(ba.ARMS["affiliate_intelligence"], {}, {},
+                                {"ready": False, "failed": ["disclosure_page"], "founder_action": ""})
+        self.assertIn("NOT ready: disclosure_page", cfg["blocker"])
+
+
 if __name__ == "__main__":
     unittest.main()
