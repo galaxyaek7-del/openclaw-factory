@@ -1,9 +1,29 @@
-# Founder actions (updated 2026-10-31)
+# Founder actions (updated 2026-11-05)
 
 Everything below is prepared and tested. Each step needs you because it writes
 to an external account, creates an account, or touches data only you may
 decide on. Run the commands from `C:\openclaw-dasgboard` (in Claude Code,
 prefix with `!`).
+
+## 0. Open items on 2026-11-05 (from `PROGRESS.md`, in priority order)
+
+1. **Disk C: 1.3 GB free (F1, critical).** The factory loop stops generating PDFs below 2 GB.
+   OpenCode's database was shrunk from 141 GB to 6.9 GB and the new one is in use; the old one
+   is kept as `C:\Users\Dell\.local\share\opencode\opencode.db.old` (plus `-wal.old`, `-shm.old`).
+   Open OpenCode, check your sessions, then tell the agent to delete the `.old` files: that frees
+   about 141 GB. The 44 main sessions are also exported to `C:\Users\Dell\opencode_exports`.
+2. **Two held listings and one empty listing still take money at "$0+" (F6).** `/l/iaiyt`,
+   `/l/wteork`, `/l/owtmpe`: unpublish in the Gumroad dashboard (see 1b). The protection check
+   fails on `payable_withdrawn` until you do.
+3. **No alert reaches you (F5).** Put `TELEGRAM_BOT_TOKEN` and `OPENCLAW_TELEGRAM_CHAT_ID` in
+   `.env` yourself (secrets are never set by the agent). Until then a dead loop is silent; it was
+   dead for 3.3 days (2026-11-01 to 2026-11-05).
+4. **No autostart for the server and the loop (F2).** Run once, in an elevated PowerShell:
+   `powershell -ExecutionPolicy Bypass -File scripts\install_factory_autostart.ps1`. The agent
+   restarted both under the supervisor, but a reboot or log-off stops them again.
+5. **Demand does not reach the products (F9).** Sales are 0 of 111 live listings. Needs from
+   you: a Pinterest board for the queued pins, an analytics receiver, and social credentials
+   (backlog B6, B18, B26). Production is not the bottleneck.
 
 ## 1. Publish the last three batch-16 products: DONE 2026-10-31 11:36 UTC (all three live)
 
