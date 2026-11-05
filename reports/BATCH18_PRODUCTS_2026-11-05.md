@@ -44,7 +44,8 @@ Total checks: 1186 independent recalculations (lib/xlsx_eval.py against a separa
 - **Sales: 0.** No product in this account has sold, so none of these prices is validated. Whether the new tier sells better than the $9-24 tier is UNKNOWN until a buyer pays.
 - **No external price check** was made for this batch (NOT MEASURED).
 - **Central Quality Gate was not consulted:** the batch publisher calls the Gumroad publisher directly with a per-product founder approval (recorded in-session from the founder's order). The approvals are in the git-ignored local file `data/publication_approvals.json`.
-- **Not built:** per-product site pages (`customer_site/tool-*.html`) and Pinterest pins for batch 18. `data/catalog.json` has not been refreshed, so the registry reports 10 `live_missing_from_catalog` until the daily catalog step runs.
+- **Site pages: built and published** (2026-11-05): ten `customer_site/tool-*.html` pages, `tools.html` and 10 sitemap entries, pushed as one site-only commit (7dc68c88) from a clean worktree after the secret scan and the site tests passed; live pages return 200 and the live sitemap lists 42 tool pages.
+- **Not built:** Pinterest pins for batch 18 (the account has no matching board, so 86 earlier pins are already blocked). `data/catalog.json` has not been refreshed, so the registry reports 10 `live_missing_from_catalog` until the daily catalog step runs.
 - The guides are written in plain English for a US/UK audience; tax, valuation and retirement products carry a not-advice disclaimer and ask the buyer to verify with a professional.
 
 ## Reproduce
