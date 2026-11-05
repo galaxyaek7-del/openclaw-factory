@@ -27,6 +27,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "scripts"))
 SWITCH = "GF_AUTO_PUBLISH_APPROVED"
 FREEZE = "GF_FREEZE_NEW_PRODUCTS"  # founder freeze 2026-11-05: wins over SWITCH, deletes nothing
+FOUNDER_APPROVED = "GF_PUBLISH_FOUNDER_APPROVED_WHEN_FROZEN"  # opt-in: freeze does not block products carrying a valid founder approval
 GATED = "GF_DEMAND_GATED"  # founder 2026-11-05 (second order): the freeze lifts only while demand_gate.py is open
 APPROVALS = ROOT / "data" / "publication_approvals.json"
 
@@ -80,10 +81,14 @@ def run_once(env=os.environ, registry=None, batches=None, window_used=None, run=
     gate_cap = None
     if str(env.get(FREEZE, "")).lower() == "true":
         gate = _demand_gate(env) if str(env.get(GATED, "")).lower() == "true" else None
-        if not gate or not gate.get("open"):
+        if gate and gate.get("open"):
+            gate_cap = int(gate.get("daily_cap") or 0)
+        elif str(env.get(FOUNDER_APPROVED, "")).lower() != "true":
             why = (gate or {}).get("why") or "demand gate not enabled"
             return {"action": "none", "detail": f"new products frozen ({FREEZE}=true), {why}: nothing is published"}
-        gate_cap = int(gate.get("daily_cap") or 0)
+        # else: GF_PUBLISH_FOUNDER_APPROVED_WHEN_FROZEN=true. The freeze stops AUTOMATIC additions; a product with a valid
+        # per-product founder approval is the founder's own act, so it may still go out. eligible() below only passes
+        # products whose approval validates (id, price, currency, actions, expiry, revision), nothing else is published.
     import publish_batch14 as pb
     batches = batches if batches is not None else pb.BATCHES
     limit = pb.GUMROAD_DAILY_CREATION_LIMIT if limit is None else limit

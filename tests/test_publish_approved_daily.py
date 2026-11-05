@@ -112,6 +112,28 @@ class PublishApproved(unittest.TestCase):
         self.assertEqual(len(live), 1)
         self.assertEqual(len(live[0][live[0].index("--only") + 1:]), 1, "the daily cap limits the batch")
 
+    def test_founder_approved_products_may_go_out_when_frozen_only_with_the_explicit_flag(self):
+        from unittest import mock
+        closed = {"open": False, "daily_cap": 0, "why": "WAITING FOR REAL DATA"}
+        base = {pad.SWITCH: "true", pad.FREEZE: "true", pad.GATED: "true"}
+        with mock.patch.object(pad, "_demand_gate", return_value=closed):
+            out, pub = self.go(base)  # flag absent: still frozen
+        self.assertEqual(out["action"], "none")
+        self.assertEqual(pub.calls, [])
+        with mock.patch.object(pad, "_demand_gate", return_value=closed):
+            out, pub = self.go(dict(base, **{pad.FOUNDER_APPROVED: "true"}))
+        self.assertEqual(out["action"], "published")
+        live = [c for c in pub.calls if "--live" in c]
+        self.assertEqual(live[0][live[0].index("--only") + 1:], ["B16-008", "B16-009"], "only audit-passing, approved products go out")
+
+    def test_with_the_flag_a_product_without_a_valid_approval_still_does_not_go_out(self):
+        from unittest import mock
+        closed = {"open": False, "daily_cap": 0, "why": "x"}
+        with mock.patch.object(pad, "_demand_gate", return_value=closed):
+            out, pub = self.go({pad.SWITCH: "true", pad.FREEZE: "true", pad.FOUNDER_APPROVED: "true"}, passing=())
+        self.assertIn("none has a valid approval", out["detail"])
+        self.assertFalse(any("--live" in c for c in pub.calls))
+
     def test_gate_switch_off_keeps_the_freeze_absolute(self):
         from unittest import mock
         opened = {"open": True, "daily_cap": 5, "why": "x"}

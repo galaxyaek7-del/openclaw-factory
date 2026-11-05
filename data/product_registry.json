@@ -695,7 +695,7 @@
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
     "published_on_platform": true,
-    "in_catalog": false
+    "in_catalog": true
    }
   },
   {
@@ -715,7 +715,7 @@
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
     "published_on_platform": true,
-    "in_catalog": false
+    "in_catalog": true
    }
   },
   {
@@ -735,7 +735,7 @@
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
     "published_on_platform": true,
-    "in_catalog": false
+    "in_catalog": true
    }
   },
   {
@@ -755,7 +755,7 @@
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
     "published_on_platform": true,
-    "in_catalog": false
+    "in_catalog": true
    }
   },
   {
@@ -775,7 +775,7 @@
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
     "published_on_platform": true,
-    "in_catalog": false
+    "in_catalog": true
    }
   },
   {
@@ -795,7 +795,7 @@
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
     "published_on_platform": true,
-    "in_catalog": false
+    "in_catalog": true
    }
   },
   {
@@ -815,7 +815,7 @@
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
     "published_on_platform": true,
-    "in_catalog": false
+    "in_catalog": true
    }
   },
   {
@@ -835,7 +835,7 @@
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
     "published_on_platform": true,
-    "in_catalog": false
+    "in_catalog": true
    }
   },
   {
@@ -855,7 +855,7 @@
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
     "published_on_platform": true,
-    "in_catalog": false
+    "in_catalog": true
    }
   },
   {
@@ -875,7 +875,7 @@
    "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
     "published_on_platform": true,
-    "in_catalog": false
+    "in_catalog": true
    }
   },
   {
@@ -2519,21 +2519,10 @@
    }
   }
  ],
- "generated_at": "2026-11-05T17:23:23.542757+00:00",
+ "generated_at": "2026-11-05T17:41:29.181669+00:00",
  "source": "Gumroad GET /v2/products (read-only) + data/catalog.json + batch manifests + publish results",
  "drift": {
-  "live_missing_from_catalog": [
-   "B18-001",
-   "B18-002",
-   "B18-003",
-   "B18-004",
-   "B18-005",
-   "B18-006",
-   "B18-007",
-   "B18-008",
-   "B18-009",
-   "B18-010"
-  ],
+  "live_missing_from_catalog": [],
   "catalog_rows_not_live": [],
   "manifest_live_mismatch": [],
   "duplicate_live_titles": [
