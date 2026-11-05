@@ -130,3 +130,77 @@ class GateHookTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class EndToEndGateTests(unittest.TestCase):
+    """quality_gate_allowed as the distributor calls it: the whole decision, not just the hook."""
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
+        d = self.tmp.name
+        self.sa_path = os.path.join(d, "sa.json")
+        self.g2 = os.path.join(d, "g2.jsonl")
+        self.cb = os.path.join(d, "cb.json")
+        with open(self.sa_path, "w", encoding="utf-8") as f:
+            json.dump({"authorizations": [auth()]}, f)
+        open(self.g2, "w").close()
+        self._orig = sa.DEFAULT_PATH
+        sa.DEFAULT_PATH = type(self._orig)(self.sa_path)
+        self.addCleanup(lambda: setattr(sa, "DEFAULT_PATH", self._orig))
+        os.environ[sa.ENV_SWITCH] = "true"
+        self.addCleanup(lambda: os.environ.pop(sa.ENV_SWITCH, None))
+        import demand_gate
+        self.dg = demand_gate
+        self._ev = demand_gate.evaluate
+        self.addCleanup(lambda: setattr(demand_gate, "evaluate", self._ev))
+        self.set_demand(True)
+        self.product = SimpleNamespace(price_usd=15, product_type="printable", source_id="p1", file_path="x.xlsx")
+
+    def set_demand(self, is_open):
+        self.dg.evaluate = lambda *a, **k: {"open": is_open, "why": "WAITING FOR REAL DATA" if not is_open else "test"}
+
+    def decide(self, g1=None):
+        from pathlib import Path
+        rep = g1 or {"verdict": "PASS", "blocked": False, "results": {"t": {"status": "ok", "passed": True}}}
+        return qgp.quality_gate_allowed("p1", product=self.product, arm_name="gumroad", gate1_report=rep,
+                                        gate2_ledger_path=Path(self.g2), circuit_breaker_state_path=Path(self.cb))
+
+    def test_real_demand_plus_clean_gate1_plus_standing_authorization_publishes(self):
+        r = self.decide()
+        self.assertTrue(r["allowed"], r)
+        self.assertEqual("standing:SA-T1", r["gate2"]["reviewer"])
+        self.assertEqual("Gate 1 PASS and Gate 2 PASS", r["reason"])
+
+    def test_no_demand_blocks_at_gate2(self):
+        self.set_demand(False)
+        r = self.decide()
+        self.assertFalse(r["allowed"])
+        self.assertEqual("gate2", r["blocked_by"])
+
+    def test_a_failing_gate1_still_blocks_even_with_demand_and_authorization(self):
+        r = self.decide({"verdict": "PASS", "blocked": False, "results": {"t": {"status": "ok", "passed": False}}})
+        self.assertFalse(r["allowed"])
+        self.assertEqual("gate1", r["blocked_by"])
+
+    def test_an_isolated_circuit_breaker_still_blocks(self):
+        import circuit_breaker as cbm
+        from unittest import mock
+        with mock.patch.object(qgp, "_circuit_allows", return_value=False):
+            r = self.decide()
+        self.assertFalse(r["allowed"])
+        self.assertEqual("circuit_breaker", r["blocked_by"])
+
+    def test_an_explicit_founder_rejection_beats_the_standing_authorization(self):
+        from datetime import timedelta
+        ver = qgp._default_artifact_version(self.product)
+        with open(self.g2, "w", encoding="utf-8") as f:
+            f.write(json.dumps({"source_id": "p1", "artifact_version": ver, "reviewer": "founder",
+                                "decision": "REJECTED", "timestamp": datetime.now(timezone.utc).isoformat()}) + "\n")
+        r = self.decide()
+        self.assertFalse(r["allowed"])
+        self.assertEqual("gate2", r["blocked_by"])
+
+    def test_a_product_above_the_price_cap_is_not_covered(self):
+        self.product.price_usd = 99
+        self.assertFalse(self.decide()["allowed"])
