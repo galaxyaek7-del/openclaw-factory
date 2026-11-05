@@ -10,7 +10,7 @@
 | 1 | **اختيار الفرصة** | Golden Hunter + `profit_oracle` (حد القبول 65) + `decision_engine` | يعمل | آلي |
 | 2 | **الإنتاج** | `triggerGenerateBook`، سلسلة الوكلاء اليومية، `FACTORY_AUTO_PRODUCE=true` | **مبوَّب بالطلب**، بسقف يومي (افتراضي 3) | آلي حين تُفتح البوابة |
 | 3 | **المراجعة** | `inspectors.py` (فحص مزدوج)، `native_workbook_qa`، `cohort_contract.qa`، عقد المنتج | يعمل ويمنع الخروج بلا فحص | آلي |
-| 4 | **التصريح بالنشر** | `publication_clearance`: موافقة المؤسس **أو** قرار Quality Gate المركزي، بلا override | يعمل | آلي عبر Quality Gate، أو يدوي منك |
+| 4 | **التصريح بالنشر** | `publication_clearance`: موافقة المؤسس **أو** قرار Quality Gate المركزي. Gate 2 (توقيع المؤسس) يسدّه الآن **تفويض دائم** `SA-20261105-01` (`standing_authorization.py`, `data/standing_authorization.json`): Gumroad فقط، `printable` فقط، حتى 29 دولاراً، 90 يوماً، ولا يعمل إلا مع بوابة طلب مفتوحة، ولا يتجاوز أي قرار مسجّل منك | **مفعّل** (`GF_STANDING_AUTH=true`) | آلي. إيقافه: `status: REVOKED` أو حذف الملف أو حذف المفتاح |
 | 5 | **الرفع والنشر** | `publish_approved_daily.py` + `distributor` (البوابة الإلزامية) + `write_gate` + حد Gumroad (10 في 24 ساعة) | يعمل، `FACTORY_LIVE_PUBLISH` و`GF_AUTO_PUBLISH_APPROVED` مضبوطان، ومبوَّب بالطلب | آلي |
 | 6 | **التوزيع** | `social_distribution/` + Metricool (Pinterest) | **محجوب**: لا لوحة Pinterest ولا حساب اجتماعي | أنت (F9) |
 | 7 | **القياس** | `poll_sales`، `revenue_truth`، `click_classification`، `product_registry` | يعمل | آلي |

@@ -1,0 +1,23 @@
+{
+  "_note": "Founder STANDING authorization for Gate 2 (see standing_authorization.py). Kill switch: set status to REVOKED, delete this file, or remove GF_STANDING_AUTH from .env. Every verdict that relies on it is marked 'standing:<id>'.",
+  "authorizations": [
+    {
+      "authorization_id": "SA-20261105-01",
+      "status": "ACTIVE",
+      "granted_by": "founder",
+      "granted_at": "2026-11-05T16:38:28Z",
+      "valid_from": "2026-11-05T16:38:28Z",
+      "expires_at": "2027-02-03T16:38:28Z",
+      "reference": "Founder in-session orders 2026-11-05: full automatic production, review, upload and publication with no human step ('واصل العمل وبناء الاتمتة كليا وبشكل الي تماما دون تدخل بشري'); chose option 1 (standing authorization) after being told Gate 2 is the last per-product human sign-off; repeated 'لك كل الصلاحيات العمل و التطوير'. Conditioned on real demand (demand_gate.py open).",
+      "scope": {
+        "platforms": [
+          "gumroad"
+        ],
+        "product_types": [
+          "printable"
+        ],
+        "max_price_usd": 29
+      }
+    }
+  ]
+}
