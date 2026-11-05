@@ -37,6 +37,7 @@ MUTATION SURFACE COVERED
   update_product_file   S3 upload + POST /products/{id}
   enable_product        POST /products/{id}/enable   <- also a mutation, easy to
                                                        forget; it publishes
+  disable_product       PUT  /products/{id}/disable  <- unpublishes (2026-11-05)
 
 The gate runs BEFORE any other validation, so a denied write cannot start an
 S3 multipart session on Gumroad's side.

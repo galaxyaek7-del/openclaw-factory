@@ -8,7 +8,7 @@ prefix with `!`).
 ## 0. Open items on 2026-11-05 (from `PROGRESS.md`, in priority order)
 
 1. **Disk C (F1): FIXED 2026-11-05.** Old OpenCode database deleted on your approval; 142 GB free. The 44 main sessions are also exported to `C:\Users\Dell\opencode_exports`.
-2. **Two held listings and one empty listing still take money at "$0+" (F6).** `/l/iaiyt`,
+2. **F6 DONE 2026-11-05 (unpublished by the agent on your chat approval; read back published=false).** Was: two held listings and one empty listing taking money at "$0+". `/l/iaiyt`,
    `/l/wteork`, `/l/owtmpe`: unpublish in the Gumroad dashboard (see 1b). The protection check
    fails on `payable_withdrawn` until you do.
 3. **No alert reaches you (F5).** The bot token is set; the bot has no chat with you yet. Follow `docs/factory/TELEGRAM_SETUP.md` (7 steps, about 5 minutes; you write to the bot once and put your chat id in `.env`). Until then a dead loop is silent; it was dead for 3.3 days (2026-11-01 to 2026-11-05).

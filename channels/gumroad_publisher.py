@@ -896,6 +896,27 @@ def update_product_file(token, product_id, file_path, verify_delay_seconds=1.0,
     )
 
 
+def disable_product(token, product_id):
+    """Unpublish a live product (PUT /v2/products/:id/disable) so it can no longer be bought.
+
+    Added 2026-11-05 for the three "$0+" listings (founder order in chat, same day). Same fail-closed write gate as
+    every other mutation, and it changes nothing but the published flag: no price, file, title or description is sent.
+    The caller must read the listing back and confirm published is false (scripts/unpublish_zero_price_listings.py does)."""
+    _require_write_authorization("disable_product")
+    if not product_id:
+        raise ConfigError("disable_product requires a product_id")
+    try:
+        r = _request_with_retry("PUT", f"{GUMROAD_API_BASE}/products/{product_id}/disable",
+                                data={"access_token": token}, timeout=60)
+        r.raise_for_status()
+    except requests.RequestException as e:
+        raise RuntimeError(f"Gumroad disable_product request failed: {_safe_err(e)}")
+    result = r.json()
+    if not result.get("success", False):
+        raise RuntimeError(f"Gumroad disable_product failed: {_gumroad_error(result)}")
+    return result.get("product") or {}
+
+
 def enable_product(token, product_id):
     """Publish a draft product so it becomes purchasable (PUT
     /v2/products/:id/enable -- the real publish endpoint; the 'publish'
