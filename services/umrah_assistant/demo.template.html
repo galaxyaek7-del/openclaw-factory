@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>مساعد وكالات العمرة | Assistant Omra (démo)</title>
+<style>
+  :root {
+    --bg: #efeae2; --panel: #f7f5f1; --bar: #0b6b5c; --bar-text: #ffffff;
+    --bubble-in: #ffffff; --bubble-out: #d9fdd3; --text: #1b1f1e; --muted: #667781;
+    --banner: #fff3c4; --banner-text: #5c4500; --accent: #0b6b5c; --border: #d9d4cb; --chip: #ffffff;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0b141a; --panel: #1f2c34; --bar: #1f2c34; --bar-text: #e9edef;
+      --bubble-in: #202c33; --bubble-out: #005c4b; --text: #e9edef; --muted: #8696a0;
+      --banner: #3b3410; --banner-text: #f3dd8a; --accent: #25d366; --border: #2a3942; --chip: #1f2c34;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body { background: var(--bg); color: var(--text); font-family: system-ui, -apple-system, "Segoe UI", Tahoma, "Noto Naskh Arabic", sans-serif; display: flex; justify-content: center; }
+  .app { width: 100%; max-width: 480px; height: 100dvh; display: flex; flex-direction: column; background: var(--bg); position: relative; }
+  header { background: var(--bar); color: var(--bar-text); padding: 10px 14px; padding-top: max(10px, env(safe-area-inset-top)); display: flex; align-items: center; gap: 10px; }
+  .avatar { width: 40px; height: 40px; border-radius: 50%; background: #fff3; display: grid; place-items: center; font-size: 22px; flex: none; }
+  .title { flex: 1; min-width: 0; }
+  .title b { display: block; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .title span { font-size: 12px; opacity: .85; }
+  header button { background: #fff2; color: inherit; border: 0; border-radius: 18px; padding: 8px 12px; font-size: 13px; cursor: pointer; min-height: 36px; }
+  .banner { background: var(--banner); color: var(--banner-text); font-size: 12px; text-align: center; padding: 6px 12px; line-height: 1.4; }
+  #chat { flex: 1; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 6px; scroll-behavior: smooth; }
+  .msg { max-width: 86%; padding: 8px 11px 6px; border-radius: 10px; font-size: 15px; line-height: 1.5; white-space: pre-wrap; word-wrap: break-word; box-shadow: 0 1px 1px #0002; }
+  .msg time { display: block; font-size: 10.5px; color: var(--muted); margin-top: 2px; text-align: end; unicode-bidi: plaintext; }
+  .in { align-self: flex-start; background: var(--bubble-in); border-top-left-radius: 2px; }
+  .out { align-self: flex-end; background: var(--bubble-out); border-top-right-radius: 2px; }
+  .sys { align-self: center; background: var(--panel); color: var(--muted); font-size: 12px; border-radius: 12px; padding: 4px 10px; box-shadow: none; }
+  .typing { color: var(--muted); font-size: 13px; }
+  .chips { display: flex; gap: 6px; padding: 6px 10px; overflow-x: auto; background: var(--panel); border-top: 1px solid var(--border); scrollbar-width: none; }
+  .chips::-webkit-scrollbar { display: none; }
+  .chip { flex: none; background: var(--chip); color: var(--text); border: 1px solid var(--border); border-radius: 16px; padding: 7px 12px; font-size: 13px; cursor: pointer; white-space: nowrap; min-height: 34px; }
+  .chip.demo { background: var(--accent); color: #fff; border-color: var(--accent); }
+  form { display: flex; gap: 8px; padding: 8px 10px; padding-bottom: max(8px, env(safe-area-inset-bottom)); background: var(--panel); }
+  input[type=text] { flex: 1; min-width: 0; border: 1px solid var(--border); background: var(--bubble-in); color: var(--text); border-radius: 22px; padding: 11px 14px; font-size: 16px; outline: none; }
+  input[type=text]:focus { border-color: var(--accent); }
+  .send { width: 46px; height: 46px; border-radius: 50%; border: 0; background: var(--accent); color: #fff; font-size: 20px; cursor: pointer; flex: none; }
+  .sheet { position: absolute; inset: 0; background: var(--bg); display: none; flex-direction: column; z-index: 5; }
+  .sheet.open { display: flex; }
+  .sheet header { gap: 8px; }
+  .sheet .body { flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+  .card { background: var(--bubble-in); border-radius: 12px; padding: 12px 14px; box-shadow: 0 1px 2px #0002; font-size: 14px; line-height: 1.7; }
+  .card h3 { margin: 0 0 6px; font-size: 15px; color: var(--accent); }
+  .card dl { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 2px 10px; }
+  .card dt { color: var(--muted); } .card dd { margin: 0; font-weight: 600; unicode-bidi: plaintext; }
+  .note { font-size: 12px; color: var(--muted); line-height: 1.5; }
+  .empty { text-align: center; color: var(--muted); padding: 30px 10px; font-size: 14px; }
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <header>
+    <div class="avatar" aria-hidden="true">🕋</div>
+    <div class="title"><b id="agencyName"></b><span id="status">مساعد آلي · assistant automatique</span></div>
+    <button id="ownerBtn" type="button">👤 صاحب الوكالة <span id="leadCount"></span></button>
+  </header>
+  <div class="banner" id="banner">نموذج توضيحي: وكالة وهمية وبيانات وهمية، لا يُرسَل شيء لأي شخص.<br>Démo : agence et données fictives, rien n'est envoyé à personne.</div>
+  <div id="chat" role="log" aria-live="polite"></div>
+  <div class="chips" id="chips"></div>
+  <form id="form" autocomplete="off">
+    <input type="text" id="input" placeholder="اكتب رسالتك… / Écrivez votre message…" enterkeyhint="send" aria-label="message">
+    <button class="send" type="submit" aria-label="send">➤</button>
+  </form>
+
+  <section class="sheet" id="sheet" aria-label="owner view">
+    <header>
+      <button id="backBtn" type="button">← رجوع / Retour</button>
+      <div class="title"><b>ما يصل لصاحب الوكالة</b><span>Ce que reçoit le responsable</span></div>
+    </header>
+    <div class="body" id="leads"></div>
+  </section>
+</div>
+
+<script type="application/json" id="agency-data">/*AGENCY_JSON*/</script>
+<script>
+/*ENGINE_JS*/
+</script>
+<script>
+(function () {
+  var AGENCY = JSON.parse(document.getElementById('agency-data').textContent);
+  var A = window.UmrahAssistant;
+  var session = A.newSession();
+  var chat = document.getElementById('chat');
+  var input = document.getElementById('input');
+  var busy = false;
+  document.getElementById('agencyName').textContent = AGENCY.name.ar;
+
+  var CHIPS = [
+    ['💰 الأسعار · Prix', 'شحال سعر العمرة؟'],
+    ['📅 المواعيد · Dates', 'Quand sont les prochains départs ?'],
+    ['📄 الوثائق · Documents', 'واش لازم من وثائق؟'],
+    ['🏨 الفندق · Hôtel', 'Quel hôtel et à quelle distance du Haram ?'],
+    ['💳 الدفع · Paiement', 'kifach ndfa3 ? 3andkom baridimob ?'],
+    ['✅ نحب نحجز · Réserver', 'Je veux réserver'],
+    ['غالي · Trop cher', 'c\'est trop cher']
+  ];
+  var SCENARIOS = {
+    fr: ['Bonjour', 'Combien coûte la formule Confort ?', 'Quels documents faut-il ?', 'Je veux réserver la formule Confort', '3', 'Karim Bensalem', '0555 12 34 56'],
+    dz: ['السلام عليكم', 'شحال سعر العمرة؟', 'وقتاش السفر؟', 'نحب نحجز', 'الاقتصادية', '2', 'أحمد منصور', '0661 23 45 67'],
+    zz: ['salam', 'chhal ta3 omra ?', 'wach lazem men wra9 ?', 'nheb nehjez', 'confort', '4', 'Yacine Haddad', '0770 12 34 56']
+  };
+
+  function hhmm() { var d = new Date(); return ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2); }
+  function bubble(text, who) {
+    var el = document.createElement('div');
+    el.className = 'msg ' + who;
+    el.setAttribute('dir', 'auto');
+    var span = document.createElement('span');
+    span.textContent = text;
+    var t = document.createElement('time');
+    t.textContent = hhmm();
+    el.appendChild(span); el.appendChild(t);
+    chat.appendChild(el);
+    chat.scrollTop = chat.scrollHeight;
+    return el;
+  }
+  function sys(text) {
+    var el = document.createElement('div'); el.className = 'msg sys'; el.textContent = text; chat.appendChild(el); chat.scrollTop = chat.scrollHeight;
+  }
+  function wait(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+
+  async function send(text) {
+    text = String(text || '').trim();
+    if (!text || busy) return;
+    busy = true;
+    bubble(text, 'out');
+    var typing = bubble('…', 'in'); typing.classList.add('typing');
+    await wait(450 + Math.min(900, text.length * 12));
+    var res = A.respond(AGENCY, session, text);
+    typing.remove();
+    bubble(res.text, 'in');
+    if (res.handoff) { sys('✅ ' + (res.lang === 'fr' ? 'Demande transmise au responsable (simulation)' : 'تم تحويل الطلب لصاحب الوكالة (محاكاة)')); renderLeads(); }
+    busy = false;
+  }
+
+  async function play(list) {
+    reset();
+    for (var i = 0; i < list.length; i++) { await send(list[i]); await wait(550); }
+  }
+
+  function reset() {
+    session = A.newSession(); chat.innerHTML = ''; busy = false; renderLeads();
+    sys('محادثة جديدة · Nouvelle conversation');
+  }
+
+  function renderLeads() {
+    var box = document.getElementById('leads');
+    box.innerHTML = '';
+    var n = session.handoffs.length;
+    document.getElementById('leadCount').textContent = n ? '(' + n + ')' : '';
+    var note = document.createElement('div'); note.className = 'note';
+    note.textContent = 'محاكاة: هذه البطاقة هي ما يستلمه صاحب الوكالة. لا يوجد ربط حقيقي بواتساب أو هاتف في هذا الديمو (NOT CONNECTED). / Simulation : voici la fiche reçue par le responsable. Aucune connexion réelle à WhatsApp ou au téléphone dans cette démo (NOT CONNECTED).';
+    box.appendChild(note);
+    if (!n) { var e = document.createElement('div'); e.className = 'empty'; e.textContent = 'لا توجد طلبات بعد · Aucune demande pour l\'instant'; box.appendChild(e); return; }
+    var REASON = { ready_to_book: 'جاهز للحجز · Prêt à réserver', negotiation: 'يريد تخفيضاً · Demande de remise', complaint: 'شكوى · Réclamation', human_requested: 'يطلب مكالمة · Demande de rappel', unknown_repeated: 'سؤال غير مفهوم · Question non comprise' };
+    session.handoffs.slice().reverse().forEach(function (c) {
+      var card = document.createElement('div'); card.className = 'card';
+      var h = document.createElement('h3'); h.textContent = REASON[c.reason] || c.reason; card.appendChild(h);
+      var dl = document.createElement('dl');
+      function row(k, v) { if (v === null || v === undefined || v === '') return; var dt = document.createElement('dt'); dt.textContent = k; var dd = document.createElement('dd'); dd.textContent = v; dl.appendChild(dt); dl.appendChild(dd); }
+      row('الاسم · Nom', c.name); row('الهاتف · Tél.', c.phone); row('الباقة · Formule', c.package); row('الأشخاص · Pers.', c.persons);
+      row('تقدير · Estimation', c.estimate_dzd ? String(c.estimate_dzd).replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' DA' : null);
+      row('اللغة · Langue', { fr: 'Français', ar: 'العربية', dz: 'الدارجة' }[c.lang] || c.lang);
+      row('آخر رسائله', c.last_messages.slice(-2).join(' | '));
+      card.appendChild(dl); box.appendChild(card);
+    });
+  }
+
+  var chips = document.getElementById('chips');
+  function addChip(label, onClick, cls) { var b = document.createElement('button'); b.type = 'button'; b.className = 'chip' + (cls ? ' ' + cls : ''); b.textContent = label; b.addEventListener('click', onClick); chips.appendChild(b); }
+  addChip('▶ Démo FR', function () { play(SCENARIOS.fr); }, 'demo');
+  addChip('▶ عرض بالدارجة', function () { play(SCENARIOS.dz); }, 'demo');
+  addChip('▶ Démo arabizi', function () { play(SCENARIOS.zz); }, 'demo');
+  CHIPS.forEach(function (c) { addChip(c[0], function () { send(c[1]); }); });
+  addChip('↺ Reset', reset);
+
+  document.getElementById('form').addEventListener('submit', function (e) { e.preventDefault(); var v = input.value; input.value = ''; send(v); });
+  document.getElementById('ownerBtn').addEventListener('click', function () { renderLeads(); document.getElementById('sheet').classList.add('open'); });
+  document.getElementById('backBtn').addEventListener('click', function () { document.getElementById('sheet').classList.remove('open'); });
+  reset();
+  var q = /[?&]demo=(fr|dz|zz)/.exec(location.search);
+  if (q) play(SCENARIOS[q[1]]).then(function () {
+    if (/[?&]owner=1/.test(location.search)) { renderLeads(); document.getElementById('sheet').classList.add('open'); }
+  });
+})();
+</script>
+</body>
+</html>

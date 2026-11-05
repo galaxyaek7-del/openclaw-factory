@@ -1,0 +1,77 @@
+{
+  "_status": "SIMULATION",
+  "_note": "EXEMPLE / مثال: وكالة وهمية وبيانات وهمية لعرض الديمو فقط. الأسعار والتواريخ والأرقام ليست حقيقية ولا تخص أي وكالة. SIMULATION - fictional agency, fictional data, for demonstration only.",
+  "name": { "ar": "وكالة النور للسياحة والعمرة (مثال)", "fr": "Agence Ennour Tourisme & Omra (exemple)" },
+  "city": { "ar": "الجزائر العاصمة", "fr": "Alger" },
+  "phone": "05 XX XX XX XX",
+  "hours": { "ar": "من السبت إلى الخميس، 9:00 - 17:00", "fr": "Samedi au jeudi, 9h00 - 17h00" },
+  "currency": { "ar": "دج", "fr": "DA" },
+  "packages": [
+    {
+      "id": "eco",
+      "names": { "ar": "الاقتصادية", "fr": "Économique" },
+      "aliases": ["اقتصاديه", "اقتصادي", "ايكو", "economique", "eco", "moins chere", "ecnomique"],
+      "days": 15,
+      "price_dzd": 285000,
+      "room": { "ar": "غرفة رباعية (4 أشخاص)", "fr": "chambre quadruple (4 personnes)" },
+      "makkah": { "stars": 3, "distance_m": 800 },
+      "madinah": { "stars": 3, "distance_m": 600 },
+      "meals": { "ar": "فطور", "fr": "petit-déjeuner" }
+    },
+    {
+      "id": "confort",
+      "names": { "ar": "الكوفور (المريحة)", "fr": "Confort" },
+      "aliases": ["كوفور", "كونفور", "مريحه", "المريحه", "confort", "comfort", "konfor", "kovor"],
+      "days": 15,
+      "price_dzd": 345000,
+      "room": { "ar": "غرفة ثلاثية (3 أشخاص)", "fr": "chambre triple (3 personnes)" },
+      "makkah": { "stars": 4, "distance_m": 300 },
+      "madinah": { "stars": 4, "distance_m": 250 },
+      "meals": { "ar": "فطور وعشاء", "fr": "petit-déjeuner et dîner" }
+    },
+    {
+      "id": "premium",
+      "names": { "ar": "المميزة (VIP)", "fr": "Premium (VIP)" },
+      "aliases": ["مميزه", "المميزه", "فاخره", "الفاخره", "في اي بي", "vip", "premium", "luxe", "5 etoiles", "5 نجوم", "خمس نجوم"],
+      "days": 10,
+      "price_dzd": 520000,
+      "room": { "ar": "غرفة مزدوجة (شخصان)", "fr": "chambre double (2 personnes)" },
+      "makkah": { "stars": 5, "distance_m": 100 },
+      "madinah": { "stars": 5, "distance_m": 100 },
+      "meals": { "ar": "إقامة كاملة (3 وجبات)", "fr": "pension complète (3 repas)" }
+    }
+  ],
+  "departures": [
+    { "date": "2026-12-18", "packages": ["eco", "confort"] },
+    { "date": "2027-01-15", "packages": ["eco", "confort", "premium"] },
+    { "date": "2027-02-12", "packages": ["confort", "premium"] }
+  ],
+  "flight": { "ar": "طيران ذهاب وعودة الجزائر - جدة", "fr": "vol aller-retour Alger - Djeddah" },
+  "includes": {
+    "ar": ["تذكرة الطيران ذهاباً وإياباً", "الإقامة في مكة والمدينة حسب الباقة", "التأشيرة", "النقل بين المدن", "مرشد ديني ومرافق من الوكالة"],
+    "fr": ["billet d'avion aller-retour", "hébergement à La Mecque et à Médine selon la formule", "le visa", "transferts entre les villes", "un guide religieux et un accompagnateur de l'agence"]
+  },
+  "excludes": {
+    "ar": ["المصاريف الشخصية", "الوجبات غير المذكورة في الباقة"],
+    "fr": ["les dépenses personnelles", "les repas non mentionnés dans la formule"]
+  },
+  "documents": {
+    "ar": ["جواز سفر بيومتري صالح 6 أشهر على الأقل بعد تاريخ العودة", "صورتان بيومتريتان بخلفية بيضاء", "شهادة التلقيح ضد التهاب السحايا", "نسخة من بطاقة التعريف", "المتزوجون: نسخة من عقد الزواج أو دفتر العائلة"],
+    "fr": ["passeport biométrique valable au moins 6 mois après la date de retour", "2 photos d'identité biométriques sur fond blanc", "certificat de vaccination contre la méningite", "copie de la carte d'identité nationale", "couples mariés : copie de l'acte de mariage ou du livret de famille"]
+  },
+  "documents_note": {
+    "ar": "هذه القائمة مثال: الشروط تحددها الجهات الرسمية وقد تتغير، والوكالة تؤكدها لك عند الحجز.",
+    "fr": "Cette liste est un exemple : les conditions sont fixées par les autorités et peuvent changer, l'agence vous les confirme à la réservation."
+  },
+  "deposit_dzd": 50000,
+  "balance_days_before": 20,
+  "payment_methods": { "ar": ["نقداً في الوكالة", "تحويل بنكي", "حوالة بريدية CCP", "بريدي موب (BaridiMob)"], "fr": ["espèces à l'agence", "virement bancaire", "mandat postal CCP", "BaridiMob"] },
+  "booking_steps": {
+    "ar": ["تختار الباقة وتاريخ السفر", "تدفع التسبيق وتأخذ وصلاً", "تسلّم الوثائق للوكالة", "الوكالة تتكفل بالتأشيرة", "تدفع المتبقي قبل السفر بـ 20 يوماً", "اجتماع تحضيري قبل الانطلاق"],
+    "fr": ["vous choisissez la formule et la date de départ", "vous versez l'acompte et recevez un reçu", "vous déposez vos documents à l'agence", "l'agence s'occupe du visa", "vous réglez le solde 20 jours avant le départ", "réunion de préparation avant le départ"]
+  },
+  "seats_note": {
+    "ar": "عدد المقاعد المتبقية يؤكده لك صاحب الوكالة وقت الحجز.",
+    "fr": "Le nombre de places restantes vous est confirmé par le responsable au moment de la réservation."
+  }
+}
