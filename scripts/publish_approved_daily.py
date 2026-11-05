@@ -26,6 +26,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "scripts"))
 SWITCH = "GF_AUTO_PUBLISH_APPROVED"
+FREEZE = "GF_FREEZE_NEW_PRODUCTS"  # founder freeze 2026-11-05: wins over SWITCH, deletes nothing
 APPROVALS = ROOT / "data" / "publication_approvals.json"
 
 
@@ -65,6 +66,8 @@ def eligible(batch, ids, run=_publisher):
 
 
 def run_once(env=os.environ, registry=None, batches=None, window_used=None, run=_publisher, limit=None):
+    if str(env.get(FREEZE, "")).lower() == "true":
+        return {"action": "none", "detail": f"new products frozen ({FREEZE}=true): nothing is published"}
     import publish_batch14 as pb
     batches = batches if batches is not None else pb.BATCHES
     limit = pb.GUMROAD_DAILY_CREATION_LIMIT if limit is None else limit

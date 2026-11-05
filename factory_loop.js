@@ -87,13 +87,19 @@ const ATTENTION_STREAK_THRESHOLD = 3; // consecutive occurrences before flagging
 // enforces the token check independently, so setting this alone can never
 // push anything live. Absent (the default): every automatic distribution
 // attempt stays dry_run, no exceptions (OCTOPUS_ARCHITECTURE.md §10.4/ADR-6).
-const LIVE_PUBLISH_ENABLED = process.env.FACTORY_LIVE_PUBLISH === 'true';
+// FOUNDER FREEZE (2026-11-05): the first paying customer is the only goal, so no loop may
+// create a new digital product. GF_FREEZE_NEW_PRODUCTS=true (set in .env) stops every automatic
+// path that builds or lists a product: book/PDF generation (triggerGenerateBook), Golden Hunter
+// auto-production, the daily agent product chain, live distribution, and publish_approved
+// (scripts/publish_approved_daily.py honours the same flag). Nothing is deleted: unset it to resume.
+const PRODUCT_FREEZE = String(process.env.GF_FREEZE_NEW_PRODUCTS || '').toLowerCase() === 'true';
+const LIVE_PUBLISH_ENABLED = process.env.FACTORY_LIVE_PUBLISH === 'true' && !PRODUCT_FREEZE;
 
 // Real automatic production from a Golden Hunter discovery requires this
 // separate, explicit flag — unset (the default) means the bridge always
 // picks the top opportunity and RECORDS what it would produce, but never
 // spends a real Groq call. ADR-009: not set anywhere in this repo/.env.
-const AUTO_PRODUCE_ENABLED = process.env.FACTORY_AUTO_PRODUCE === 'true';
+const AUTO_PRODUCE_ENABLED = process.env.FACTORY_AUTO_PRODUCE === 'true' && !PRODUCT_FREEZE;
 const REPORTS_DIR = path.join(FACTORY_DIR, 'reports');
 const WEEKLY_REPORT_STABLE = path.join(FACTORY_DIR, 'FACTORY_WEEKLY_REPORT.md');
 const OPPORTUNITIES_FILE = path.join(FACTORY_DIR, 'OPPORTUNITIES.md');
@@ -673,6 +679,10 @@ function lowDiskState(checks) {
 function setLowDiskState(state) { lowDisk = state || { active: false, free_gb: null }; }
 
 async function triggerGenerateBook(brief) {
+  if (PRODUCT_FREEZE) {
+    return { ok: false, frozen: true,
+      detail: 'تجميد المنتجات الجديدة (GF_FREEZE_NEW_PRODUCTS=true): لا توليد كتب/منتجات' };
+  }
   if (lowDisk.active) {
     return { ok: false, low_disk: true,
       detail: `وضع القرص المنخفض: ${lowDisk.free_gb}GB حرة (< ${LOW_DISK_GB}GB) — توليد الكتب/الأغلفة موقوف مؤقتاً` };
@@ -1692,7 +1702,7 @@ async function healEmptyBooks(reachable) {
   }
   const result = await triggerGenerateBook(lastSuccess.brief);
   return {
-    action: result.ok ? 'healed' : 'failed',
+    action: result.ok ? 'healed' : (result.frozen ? 'skipped' : 'failed'),
     detail: `books/ كان فارغاً — أُعيد توليد آخر نيتش Scout (${lastSuccess.brief.title}): ${result.detail}`,
     distribution: result.distribution,
   };
@@ -1821,7 +1831,7 @@ async function hunt(reachable) {
 
   const result = await triggerGenerateBook(chosen.brief);
   return {
-    action: result.ok ? 'healed' : (result.rejected ? 'rejected' : 'failed'),
+    action: result.ok ? 'healed' : (result.frozen ? 'skipped' : (result.rejected ? 'rejected' : 'failed')),
     detail: `كتاب مفقود لنيتش مؤهَّل من آخر ${lastThree.length} سجلات (${chosen.brief.title}): ${result.detail}`,
     distribution: result.distribution,
   };
@@ -4461,6 +4471,9 @@ function runNodeScript(script, { timeoutMs = 2 * 60 * 1000, scriptPath } = {}) {
 // a 5-minute cap per tick; any error is reported, never thrown into the tick.
 let agentChainGroq = null;
 async function runAgentProductChain({ timeoutMs = 5 * 60 * 1000 } = {}) {
+  if (PRODUCT_FREEZE) {
+    return { action: 'skipped', detail: 'new products frozen (GF_FREEZE_NEW_PRODUCTS=true)' };
+  }
   try {
     const { runDailyProductChain } = require('./lib/daily_product_chain');
     const key = process.env.GROQ_KEY || process.env.GROQ_API_KEY;

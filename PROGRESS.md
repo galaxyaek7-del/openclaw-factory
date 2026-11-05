@@ -3,6 +3,14 @@
 Started 2026-11-05. Read this first in every new session and continue from "Next".
 Rules of this file: facts marked OBSERVED were checked this session; nothing is guessed.
 
+## 0. Founder directive of 2026-11-05 (top priority, overrides the plan below)
+
+Goal: **the first real paying customer**. The factory serves only this. No new arms, no new ideas, simplest solution always. Stop if C: free space drops under 3 GB.
+- **Only Claude Code works on this project. OpenCode is stopped** (its database was slimmed and the old one deleted; the 44 session exports are kept).
+- **Phase 1 (stabilise)**: (1) database task finished (T10); (2) new-product production frozen by `GF_FREEZE_NEW_PRODUCTS=true`, details in section 3 task T11; (3) this note; (4) autostart F2 prepared, see T12; (5) Telegram F5 steps written for the founder, see T13.
+- **Phase 2 (demo)**: a chat assistant for Algerian Umrah agencies (Arabic, Algerian Darija, French; hands a ready-to-book customer to the agency owner), shown from a phone; fictional agency data labelled as an example; one-page pitch AR/FR, three DZD price proposals (founder decides), top 10 objections with answers. Reuse earlier work (real-estate broker assistant, traveller assistant, auto-reply) before building.
+- Red lines still hold: no deletion without backup, no payment/subscription, nothing published to the public or sent to real customers, no secrets exposed.
+
 ## 1. Current state (OBSERVED 2026-11-05)
 
 - Server `server.js`: up (health 200), under `scripts/supervisor.js`. Restarted this session.
@@ -46,6 +54,9 @@ Rules of this file: facts marked OBSERVED were checked this session; nothing is 
 | T7 | Next engineering backlog items that are not founder-blocked (B7, B9, B11) | B11 DONE (index rule in `docs/factory/README.md`, no per-file headers: the loop rewrites several root docs). B7 skipped: 4 of its 5 pages are for held/withdrawn/duplicate items, and measurement (B6) is the real bottleneck. B9 DONE: `cohort_contract.py` converts each cohort product to the batch-14 manifest shape (`{id, slug, title, price_cents, files{role: path, bytes, sha256}, qa}`) and runs adapter QA (hashes, bundle contents, workbook/docx open, thin-guide limits); wired into the 4 cohort `build.py` (`<cohort>/contracts/<id>.json`, outside the zipped folder; `--qa` now fails on a contract failure). Proof: regenerated B10+B11 in a scratch copy with and without the change: identical manifests, READMEs, zip contents and workbook values, except `bundle_bytes` which also differs between two runs of the old code (zip timestamps). P10 and SHOP also build and pass. 22 tests. Not done: `book_generator.py` and `scripts/build_tool_workbook.py` are still outside the contract. `cohort_GF_PREMIUM_10_2026_09/build.py` and the SHOPIFY one are untracked files in git; patched on disk, not committed |
 | T9 | Diagnose the 3 failing tests in section 4 | DONE: the 2 visual QA tests had a stale fixture (3-colour cover vs the committed adapter's `cover_has_imagery` check, which is right); fixed in the untracked `tests/test_visual_qa.py`, 18 pass, left uncommitted because the file is untracked. The `profit_oracle` text test fails because of someone else's uncommitted D8 fail-closed change in `profit_oracle.py` (`_score_margin(niche, platform=...)`): update that test when that change is committed |
 | T10 | OpenCode DB shrink (founder directive): cache cleanup 1.63 GB (approved); 44 main sessions exported and verified to `C:\Users\Dell\opencode_exports` (437 MB, MANIFEST.json); slim copy without the `event` table built (6.9 GB; row counts and text lengths of all other tables identical; integrity ok; OpenCode lists the sessions) and swapped in; original kept as `opencode.db.old` | DONE: `opencode.db.old` and its wal/shm deleted on the founder's approval; 44 session exports kept in `opencode_exports` |
+| T11 | Freeze new products (founder directive) | DONE 2026-11-05: flag `GF_FREEZE_NEW_PRODUCTS=true` in `.env` (untracked). Gates: `factory_loop.js` (`triggerGenerateBook` incl. the two heal paths, Golden Hunter auto-produce, `runAgentProductChain`, live distribution) and `scripts/publish_approved_daily.py` (wins over `GF_AUTO_PUBLISH_APPROVED=true`, runs nothing). Loop restarted by exact PID (new PID under the supervisor) so it reads the flag. Existing listings, site pages, sales polling, backups, reports keep running. 3 new tests + 30 existing pass. Unset the flag to resume. Manual `/generate-book` from the dashboard and manual `publish_batch14.py` are not blocked: they need a human |
+| T12 | F2 autostart | see the entry below once done |
+| T13 | F5 Telegram steps | see the entry below once done |
 | T8 | Founder list: refresh `docs/factory/FOUNDER_ACTIONS.md` with F1, F2, F5, F6, F9 | DONE, commit 974b80f3 (section 0) |
 
 ## 4. Stuck ("عالق") and failures not from this work

@@ -68,6 +68,28 @@ class PublishApproved(unittest.TestCase):
         self.assertIn("none has a valid approval", out["detail"])
         self.assertFalse(any("--live" in c for c in pub.calls))
 
+    def test_freeze_wins_over_the_publish_switch_and_calls_nothing(self):
+        out, pub = self.go({pad.SWITCH: "true", pad.FREEZE: "true"})
+        self.assertEqual(out["action"], "none")
+        self.assertIn("frozen", out["detail"])
+        self.assertEqual(pub.calls, [], "a frozen run must not even run the publisher dry run")
+
+    def test_freeze_off_or_other_value_changes_nothing(self):
+        for v in ("", "false", "0"):
+            out, pub = self.go({pad.SWITCH: "true", pad.FREEZE: v})
+            self.assertEqual(out["action"], "published", v)
+
+    def test_loop_source_gates_every_automatic_producer(self):
+        src = (Path(__file__).resolve().parent.parent / "factory_loop.js").read_text(encoding="utf-8")
+        self.assertIn("GF_FREEZE_NEW_PRODUCTS", src)
+        for needle in ("process.env.FACTORY_LIVE_PUBLISH === 'true' && !PRODUCT_FREEZE",
+                       "process.env.FACTORY_AUTO_PRODUCE === 'true' && !PRODUCT_FREEZE"):
+            self.assertIn(needle, src)
+        for fn in ("async function triggerGenerateBook(", "async function runAgentProductChain("):
+            body = src[src.index(fn):]
+            first_lines = body.split(chr(10))[:3]
+            self.assertTrue(any("if (PRODUCT_FREEZE)" in l for l in first_lines), fn)
+
     def test_already_published_products_are_not_candidates(self):
         groups = pad.candidates(self.registry, self.batches)
         self.assertEqual(groups, {"batch16": ["B16-008", "B16-009", "B16-010"]})
