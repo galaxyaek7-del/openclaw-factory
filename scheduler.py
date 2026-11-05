@@ -101,3 +101,110 @@ def decide_next_actions(decisions_path=None, board_path=None, alerts_path=None,
         "buckets": buckets,
         "counts": {k: len(v) for k, v in buckets.items()},
     }
+
+
+# ---------------------------------------------------------------------------
+# GF-ROS M5 -- opportunity labels (PURSUE / TEST / HOLD / REJECT)
+# ---------------------------------------------------------------------------
+#
+# A relabel, not a judgement. Every label cites an existing real bucket or an
+# existing real decision status. No arithmetic, no second score, no model call.
+# If a label cannot be justified by one of those two sources it is not emitted.
+
+OPPORTUNITY_LABELS = ("PURSUE", "TEST", "HOLD", "REJECT")
+
+_LABEL_BY_BUCKET = {
+    "run_now": "PURSUE",
+    "accelerate": "PURSUE",
+    "wait": "HOLD",
+    "stop": "HOLD",
+    "cancel": "REJECT",
+}
+
+_LABEL_BY_DECISION_STATUS = {
+    "DEFERRED": "HOLD",
+    "REJECTED": "REJECT",
+}
+
+_LABEL_ORDER = {label: i for i, label in enumerate(OPPORTUNITY_LABELS)}
+
+
+def label_opportunities(decisions_path=None, portfolio=None, actions=None,
+                        decisions=None, experiments=None):
+    """Return every real opportunity with a single label, its source, and the
+    reason that source already gave.
+
+    `TEST` is not inferred from "it would be reasonable to test this". It is
+    emitted only for a niche that already has a real experiment record in
+    `experiments`. A DEFERRED decision is HOLD -- the engine declined to accept
+    and declined to reject, and nothing is being tested yet. Without this
+    distinction the label would claim activity that has not happened.
+
+    `actions`, `decisions` and `experiments` are injectable so callers (and
+    tests) never pay for a second full-portfolio computation."""
+    if actions is None:
+        actions = decide_next_actions(decisions_path=decisions_path, portfolio=portfolio)
+    if decisions is None:
+        from decision_engine import store
+        decisions = store.latest_decision_per_niche(decisions_path)
+
+    items = []
+    seen = set()
+
+    for bucket, entries in (actions.get("buckets") or {}).items():
+        label = _LABEL_BY_BUCKET.get(bucket)
+        if label is None:
+            continue
+        for entry in entries:
+            niche = entry.get("niche")
+            if not niche or niche in seen:
+                continue
+            seen.add(niche)
+            items.append({
+                "niche": niche,
+                "label": label,
+                "source": f"scheduler_bucket:{bucket}",
+                "reason": entry.get("reason"),
+            })
+
+    for experiment in (experiments or []):
+        niche = experiment.get("niche")
+        if not niche or niche in seen:
+            continue
+        seen.add(niche)
+        items.append({
+            "niche": niche,
+            "label": "TEST",
+            "source": f"experiment:{experiment.get('experiment_id')}",
+            "reason": experiment.get("hypothesis"),
+        })
+
+    for niche, decision in (decisions or {}).items():
+        if niche in seen:
+            continue
+        status = decision.get("status")
+        label = _LABEL_BY_DECISION_STATUS.get(status)
+        if label is None:
+            continue
+        seen.add(niche)
+        reasoning = decision.get("reasoning") or []
+        items.append({
+            "niche": niche,
+            "label": label,
+            "source": f"decision_status:{status}",
+            "reason": reasoning[0] if reasoning else None,
+        })
+
+    items.sort(key=lambda i: (_LABEL_ORDER[i["label"]], i["niche"]))
+    counts = {label: 0 for label in OPPORTUNITY_LABELS}
+    for item in items:
+        counts[item["label"]] += 1
+
+    return {
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "items": items,
+        "counts": counts,
+        "total": len(items),
+        "note": "Pure relabel of existing scheduler buckets and decision statuses. "
+                "No new score, no model call, no fabricated label for an unevaluated niche.",
+    }

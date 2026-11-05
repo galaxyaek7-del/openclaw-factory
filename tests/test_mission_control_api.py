@@ -35,6 +35,15 @@ class TestEndpointDispatch(unittest.TestCase):
         for name in ("evidence_network_status", "evidence_coverage_status"):
             self.assertIn(name, mission_control_api._ENDPOINTS)
 
+    def test_financial_connectivity_endpoint_is_registered(self):
+        self.assertIn("financial_connectivity_status", mission_control_api._ENDPOINTS)
+        result = mission_control_api._financial_connectivity_status()
+        self.assertEqual(result["mode"], "READ_ONLY")
+        self.assertEqual(result["network_calls"], 0)
+        self.assertEqual(result["writes"], 0)
+        self.assertIn("providers", result)
+        self.assertIn("routing", result)
+
     def test_evidence_network_status_reports_the_real_connector_registry(self):
         """Evidence Network (ADR-128, 2026-07-25) — Mission Control's real
         view of which evidence sources are actually callable today."""
@@ -339,6 +348,28 @@ class TestEndpointDispatch(unittest.TestCase):
             result = mission_control_api._trigger_opportunity_evaluation()
         mock_cycle.assert_called_once_with(execute_production=False)
         self.assertEqual(result, fake_result)
+
+
+class TestAffiliatePortfolioOverlay(unittest.TestCase):
+    def test_endpoint_is_registered(self):
+        self.assertIn("affiliate_portfolio_overlay", mission_control_api._ENDPOINTS)
+
+    def test_read_only_overlay_reports_tri_state_and_zero_activation(self):
+        result = mission_control_api._affiliate_portfolio_overlay()
+        self.assertEqual(
+            result["payout_states"],
+            ["VERIFIED", "CONDITIONAL", "UNKNOWN"],
+        )
+        self.assertEqual(result["activation_ready"], 0)
+        self.assertGreaterEqual(result["affiliate_candidates"], 24)
+        self.assertEqual(
+            set(result["payout_counts"]),
+            {"VERIFIED", "CONDITIONAL", "UNKNOWN", "NOT_APPLICABLE"},
+        )
+        self.assertTrue(all(
+            candidate["activation_status"] == "NOT_ACTIVATION_READY"
+            for candidate in result["candidates"]
+        ))
 
 
 class TestGlobalMarketLearningEngineActions(unittest.TestCase):

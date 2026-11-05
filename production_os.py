@@ -45,6 +45,7 @@ _FACTORY_ROOT = Path(__file__).resolve().parent
 _GENERATION_LOG_PATH = _FACTORY_ROOT / "books" / "_generation_log.jsonl"
 _CHANGELOG_PATH = _FACTORY_ROOT / "data" / "product_changelog.jsonl"
 _SALES_LEDGER_PATH = _FACTORY_ROOT / "data" / "sales_ledger.jsonl"
+_PRODUCT_LIFECYCLE_SNAPSHOTS_PATH = _FACTORY_ROOT / "data" / "product_lifecycle_snapshots.jsonl"
 
 # LEARN feedback (Evidence-Driven Opportunity Factory): how many days a live
 # (non-dry-run) publish gets before zero sales flips its directive from
@@ -322,6 +323,33 @@ def product_lifecycle_view(
             + str(len(by_production_id)) + "."
         ),
     }
+
+
+def record_product_lifecycle_snapshot(path=None, **view_kwargs):
+    """The ONE real write path for Product Lifecycle history.
+
+    Appends one real row -- the already-real product_lifecycle_view() output,
+    unchanged -- to data/product_lifecycle_snapshots.jsonl. Called only from
+    factory_loop.js's once-per-calendar-day tick gate, never from a live
+    Mission Control view, the same discipline that keeps a page refresh from
+    duplicating a ledger (ADR-144/ADR-159).
+
+    Why this exists: the ledger stalled at 2026-08-31 with 11 real rows
+    because no caller was ever wired up -- tests/test_factory_loop_daily_
+    product_lifecycle_snapshot.js was the only surviving trace of that
+    intent, and it had been failing against a function that never existed.
+    Recording the exact view the founder already sees makes a real lifecycle
+    trend computable later without inventing a new metric.
+
+    Read-only apart from the single append; never publishes, pays, or
+    touches financial state.
+    """
+    snapshot = product_lifecycle_view(**view_kwargs)
+    target = Path(path) if path else _PRODUCT_LIFECYCLE_SNAPSHOTS_PATH
+    target.parent.mkdir(parents=True, exist_ok=True)
+    with target.open("a", encoding="utf-8") as f:
+        f.write(json.dumps(snapshot, ensure_ascii=False, default=str) + "\n")
+    return snapshot
 
 
 def _parse_ts(ts):

@@ -1453,6 +1453,16 @@ def _channel_intelligence_readiness():
     return channel_readiness_summary()
 
 
+def _financial_connectivity_status():
+    """server.js `financial-connectivity-status` documents
+    'financial_connectivity.py::build_financial_connectivity_snapshot()'.
+
+    Read-only: credential presence only, no value, no network call, no
+    provider mutation, and no transfer."""
+    from financial_connectivity import build_financial_connectivity_snapshot
+    return build_financial_connectivity_snapshot()
+
+
 def _services_engine_status():
     """server.js `services-engine-status` documents
     'services_engine.py::revenue_factory_status()'."""
@@ -2505,6 +2515,27 @@ def _prioritized_evidence_summary():
 
     from multi_source_intelligence import coverage
     return coverage.prioritized_evidence_summary(niche)
+
+
+def _revenue_os_read_model():
+    """GF-ROS M9 -- the single commercial truth surface: verified revenue,
+    its components, reconciled-but-unpromoted observed revenue, real counts,
+    and the metrics that are honestly UNKNOWN. Read-only: pure file reads
+    over the four GF-ROS ledgers plus the commission ledger, nothing written."""
+    import revenue_os
+    return revenue_os.revenue_read_model()
+
+
+def _product_intelligence_report():
+    """Digital Product Intelligence (advisory): a 50-idea catalog across the ten
+    named category families, each idea resolved against real local evidence only
+    (data/market_evidence.jsonl, data/catalog.json, data/competitor_database.json,
+    config/channels.json, config/economics.json). Demand without a recorded source
+    is UNKNOWN and capped, never treated as positive demand; a composite is
+    withheld below 60% coverage; production effort is a cost component and can
+    never produce a PURSUE label. Read-only: writes nothing, publishes nothing."""
+    import product_intelligence_engine as pie
+    return pie.report()
 
 
 def _brand_dna_report():
@@ -4149,6 +4180,40 @@ def _affiliate_daily_health():
     return _dh.daily_health(probe=False)
 
 
+def _affiliate_portfolio_overlay():
+    """Read-only affiliate portfolio overlay (2026-10-21).
+
+    Pure read over affiliate/portfolio.py's tri-state payout model and
+    research-backed register. It never applies, publishes, creates a link,
+    or writes any ledger; every row remains NOT_ACTIVATION_READY.
+    """
+    from affiliate import portfolio
+    register = portfolio.build_register()
+    summary = portfolio.summary(register)
+    candidates = [
+        {
+            "opportunity_id": row.get("opportunity_id"),
+            "program_name": row.get("program_name"),
+            "family": row.get("family"),
+            "payout_state": row.get("payout_state"),
+            "disposition": row.get("disposition"),
+            "activation_status": row.get("activation_status"),
+            "next_action": row.get("next_action"),
+        }
+        for row in register["programs"] + register["owned_purchase_intent"]
+    ]
+    return {
+        "generated_at": register["generated_at"],
+        "total_candidates": register["candidate_count"],
+        "affiliate_candidates": register["affiliate_candidate_count"],
+        "payout_states": register["payout_states"],
+        "payout_counts": summary["by_algeria_payout"],
+        "disposition_counts": summary["by_disposition"],
+        "activation_ready": summary["activation_ready"],
+        "candidates": candidates,
+    }
+
+
 def _first_dollar_engine():
     """FIRST-DOLLAR ENGINE (FINAL OPERATING DIRECTIVE 2026-08-15): read-only
     scoring/ranking/router over the existing infrastructure. Computes
@@ -4369,6 +4434,7 @@ _ENDPOINTS = {
     "affiliate_commerce_status": _affiliate_commerce_status,
     "affiliate_daily_tick": _affiliate_daily_tick,
     "affiliate_daily_health": _affiliate_daily_health,
+    "affiliate_portfolio_overlay": _affiliate_portfolio_overlay,
     "attribution_source_report": _attribution_source_report,
     "affiliate_simulation_report": _affiliate_simulation_report,
     "launch_readiness_score": _launch_readiness_score,
@@ -4414,6 +4480,8 @@ _ENDPOINTS = {
     "capital_decisions_report": _capital_decisions_report,
     "truth_registry_report": _truth_registry_report,
     "brand_dna_report": _brand_dna_report,
+    "revenue_os_read_model": _revenue_os_read_model,
+    "product_intelligence_report": _product_intelligence_report,
     "trend_to_product_status": _trend_to_product_status,
     "goos_evaluate_opportunity": _goos_evaluate_opportunity,
     "strategic_intelligence_engine_report": _strategic_intelligence_engine_report,
@@ -4452,6 +4520,7 @@ _ENDPOINTS = {
     "channel_intelligence_payments": _channel_intelligence_payments,
     "channel_intelligence_product_matrix": _channel_intelligence_product_matrix,
     "channel_intelligence_readiness": _channel_intelligence_readiness,
+    "financial_connectivity_status": _financial_connectivity_status,
     "services_engine_status": _services_engine_status,
     "services_engine_portfolio": _services_engine_portfolio,
     "services_engine_matrix": _services_engine_matrix,
@@ -4636,6 +4705,27 @@ def main():
                               "failed_checks": verdict["failed_checks"],
                               "checked_at": verdict["checked_at"]},
                              ensure_ascii=False, default=str))
+        except Exception as e:
+            print(json.dumps({"success": False, "error": str(e)}, ensure_ascii=False))
+            sys.exit(1)
+        return
+
+    if endpoint == "record_daily_product_lifecycle_snapshot":
+        # The ONE real write path for data/product_lifecycle_snapshots.jsonl,
+        # dispatched only from factory_loop.js's once-per-calendar-day gate.
+        # Deliberately NOT in _ENDPOINTS, for the same reason
+        # run_daily_evidence_recording_audit/run_daily_reality_integrity_check
+        # above are special-cased: reality_audit.py enumerates _ENDPOINTS, and
+        # a registered append-only writer would gain one fabricated row per
+        # audit pass (the ADR-162 incident class).
+        try:
+            import production_os
+            snapshot = production_os.record_product_lifecycle_snapshot()
+            print(json.dumps({"success": True, "snapshot": {
+                "generated_at": snapshot.get("generated_at"),
+                "shown_products": snapshot.get("shown_products"),
+                "total_real_production_ids_in_log": snapshot.get("total_real_production_ids_in_log"),
+            }}, ensure_ascii=False, default=str))
         except Exception as e:
             print(json.dumps({"success": False, "error": str(e)}, ensure_ascii=False))
             sys.exit(1)
