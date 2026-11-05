@@ -229,7 +229,7 @@ class TestRealRepository(unittest.TestCase):
         self.assertEqual(r["invariant_violations"], [])
         counts = r["counts"]
         self.assertEqual(counts["primary_state_sum"], counts["logical_products"])
-        self.assertGreaterEqual(counts["logical_products"], 21)
+        self.assertGreaterEqual(counts["logical_products"], 24)
 
     def test_real_published_products_are_checkout_verified(self):
         r = psr.reconcile()
@@ -239,6 +239,18 @@ class TestRealRepository(unittest.TestCase):
         for product in published:
             self.assertIn(product["primary_state"],
                           ("CHECKOUT_VERIFIED", "PUBLIC_LISTING_VERIFIED"))
+
+    def test_real_reconciliation_includes_the_three_b13_products(self):
+        r = psr.reconcile()
+        b13 = [p for p in r["products"] if p["canonical_id"].startswith("B13-")]
+        self.assertEqual(["B13-001", "B13-002", "B13-003"],
+                         sorted(p["canonical_id"] for p in b13))
+        for product in b13:
+            self.assertEqual("READY_FOR_AUTHORIZATION", product["primary_state"])
+            self.assertEqual("PASS", product["flags"]["qa"]["status"])
+            self.assertEqual([], product["conflicts"])
+        self.assertEqual(24, r["counts"]["logical_products"])
+        self.assertEqual(27, r["counts"]["products_plus_axis_overlap"])
 
 
 if __name__ == "__main__":

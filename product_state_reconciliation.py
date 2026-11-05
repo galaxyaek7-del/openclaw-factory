@@ -18,6 +18,11 @@ The answer this module computes, rather than asserts:
     of products that carry a *platform publication* state (PUBLISHED) in
     addition to a *release* state. Those two axes were being counted
     together. All three are B12-001 / B12-003 / B12-004.
+
+    Current (2026-10-24): B13-001/002/003 are included from their own
+    registry and manifests, so the live reconciliation reports 24 logical
+    products and 27 product-plus-publication-axis assignments. The Cycle-105
+    numbers above are kept as the historical reason this module exists.
   * So the discrepancy is an AXIS OVERLAP -- not duplicate records and not
     missing products.
 
@@ -71,7 +76,8 @@ CATALOG_PATH_NOTE = "product_master_catalog.build_product_master_catalog()"
 APPROVALS_PATH = ROOT / "data" / "founder_approvals.jsonl"
 ASSET_REGISTRY_PATH = ROOT / "data" / "asset_registry.json"
 LISTING_VERIFICATION_PATH = ROOT / "reports" / "CYCLE104" / "GUMROAD_LISTING_VERIFICATION.json"
-BATCH_REGISTRY_PATH = ROOT / "data" / "product_batch_12.json"
+BATCH_REGISTRY_PATHS = [ROOT / "data" / "product_batch_12.json",
+                        ROOT / "data" / "product_batch_13.json"]
 
 # Exactly one of these describes any product at any time. Ordered from the
 # strongest proven position to the weakest; the FIRST one with real evidence
@@ -131,7 +137,7 @@ def _norm(value):
 # Words that carry no identity: they appear in most product titles, so they
 # must not inflate a similarity score.
 _STOPWORDS = {"for", "of", "the", "a", "an", "and", "to", "in", "with", "on", "your"}
-_DECLARED_ID_RE = re.compile(r"(B12-\d{3})", re.IGNORECASE)
+_DECLARED_ID_RE = re.compile(r"((?:B12|B13)-\d{3})", re.IGNORECASE)
 
 
 def _tokens(title):
@@ -146,8 +152,9 @@ def _jaccard(left, right):
 
 
 def _declared_id(entry):
-    """The B12 registry id, recovered from the artifact path when the catalog
-    carries a live platform id instead. Never guessed: only an exact match."""
+    """The B12/B13 registry id, recovered from the artifact path when the
+    catalog carries a live platform id instead. Never guessed: only an exact
+    match."""
     for path in entry.get("source_files") or []:
         match = _DECLARED_ID_RE.search(str(path))
         if match:
@@ -158,8 +165,8 @@ def _declared_id(entry):
 
 def _history_for(entry, history_by_id, history_by_title):
     """Join a catalog entry to its operational-history record by explicit id
-    first, then by the declared B12 id, then by normalized title. A join that
-    needs the title fallback is recorded, never assumed silently."""
+    first, then by the declared registry id, then by normalized title. A join
+    that needs the title fallback is recorded, never assumed silently."""
     pid = str(entry.get("internal_product_id"))
     if pid in history_by_id:
         return history_by_id[pid], "explicit_id"
@@ -302,8 +309,12 @@ def build_products(*, root=None, catalog=None, history=None, approvals=None,
 
     history_by_id = {h.get("product_id"): h for h in history.get("products") or []}
     history_by_title = {_norm(h.get("title")): h for h in history.get("products") or []}
-    batch = _read_json(BATCH_REGISTRY_PATH, {})
-    batch_by_id = {p.get("id"): p for p in (batch.get("products") or []) if isinstance(p, dict)}
+    batch_by_id = {}
+    for path in BATCH_REGISTRY_PATHS:
+        batch = _read_json(path, {})
+        for product in batch.get("products") or []:
+            if isinstance(product, dict) and product.get("id"):
+                batch_by_id[product["id"]] = product
 
     authorization = _authorization_verdict(authorization_fn, approvals)
     records = []
@@ -452,8 +463,9 @@ def count_reconciliation(reconciliation):
             "invariant. The published products ALSO carry a publication flag, so "
             "counting both axes yields logical_products + axis_overlap. That overlap "
             "-- not a duplicate record and not a missing product -- is the only "
-            "mechanism in this repository that reproduces the reported 24 "
-            "(21 products + 3 published)."),
+            "mechanism in this repository that can produce a larger reported total "
+            f"({total} logical products + {len(published)} published = "
+            f"{total + len(published)})."),
     }
 
 

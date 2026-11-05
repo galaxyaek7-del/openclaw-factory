@@ -1,0 +1,85 @@
+{
+ "batch": "B13",
+ "created_at": "2026-10-24",
+ "source": "reports/B13-001, reports/B13-002, reports/B13-003",
+ "products": [
+  {
+   "id": "B13-001",
+   "title": "Renovation Allowance & Change-Order Control",
+   "price": 15.0,
+   "price_usd": 15.0,
+   "price_basis": "FOUNDER_PREFERRED_DIRECTION_NOT_AUTHORIZED",
+   "pricing_date": "2026-10-20",
+   "price_evidence": "reports/B13-001/LISTING_PAYLOAD_2026-10-20.json",
+   "files": [
+    "B13-001_renovation_allowance_control.xlsx",
+    "B13-001_renovation_allowance_control_guide.pdf"
+   ],
+   "batch": "batch13",
+   "manifest": "books/batch13/B13-001.manifest.json",
+   "gate_report": "reports/B13-001/GATE_SELECTED_PRICE_2026-10-20.json",
+   "listing_payload": "reports/B13-001/LISTING_PAYLOAD_2026-10-20.json",
+   "state": "READY_FOR_AUTHORIZATION",
+   "authorization_status": "NOT_GRANTED",
+   "publication_status": "NOT_PUBLISHED",
+   "published": false,
+   "sales_observed": 0,
+   "issues": [],
+   "distribution_channels": [
+    "gumroad"
+   ]
+  },
+  {
+   "id": "B13-002",
+   "title": "Grant Endgame: No-Cost Extension & Unspent Funds Kit",
+   "price": 19.0,
+   "price_usd": 19.0,
+   "price_basis": "PLANNING_TARGET_NOT_FOUNDER_APPROVED",
+   "pricing_date": null,
+   "price_evidence": "reports/B13-002/LISTING_PAYLOAD_2026-10-23.json",
+   "files": [
+    "B13-002_grant_endgame_nce_unspent_funds.xlsx",
+    "B13-002_grant_endgame_nce_unspent_funds_guide.pdf"
+   ],
+   "batch": "batch13",
+   "manifest": "books/batch13/B13-002.manifest.json",
+   "gate_report": "reports/B13-002/GATE_FINAL_2026-10-23.json",
+   "listing_payload": "reports/B13-002/LISTING_PAYLOAD_2026-10-23.json",
+   "state": "READY_FOR_AUTHORIZATION",
+   "authorization_status": "NOT_GRANTED",
+   "publication_status": "NOT_PUBLISHED",
+   "published": false,
+   "sales_observed": 0,
+   "issues": [],
+   "distribution_channels": [
+    "gumroad"
+   ]
+  },
+  {
+   "id": "B13-003",
+   "title": "Caregiver Command Kit: Emergency, Medication, Appointments",
+   "price": 16.99,
+   "price_usd": 16.99,
+   "price_basis": "PLANNING_TARGET_NOT_FOUNDER_APPROVED",
+   "pricing_date": null,
+   "price_evidence": "reports/B13-003/LISTING_PAYLOAD_2026-10-24.json",
+   "files": [
+    "B13-003_caregiver_command_kit.xlsx",
+    "B13-003_caregiver_command_kit_guide.pdf"
+   ],
+   "batch": "batch13",
+   "manifest": "books/batch13/B13-003.manifest.json",
+   "gate_report": "reports/B13-003/GATE_FINAL_2026-10-24.json",
+   "listing_payload": "reports/B13-003/LISTING_PAYLOAD_2026-10-24.json",
+   "state": "READY_FOR_AUTHORIZATION",
+   "authorization_status": "NOT_GRANTED",
+   "publication_status": "NOT_PUBLISHED",
+   "published": false,
+   "sales_observed": 0,
+   "issues": [],
+   "distribution_channels": [
+    "gumroad"
+   ]
+  }
+ ]
+}

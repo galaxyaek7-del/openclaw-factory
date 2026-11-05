@@ -165,3 +165,66 @@ class TestDaily(unittest.TestCase):
         self.assertIn("live_missing_from_catalog=1", r["detail"])
         self.assertEqual(rd.run_once(today="2026-10-24", state_path=st, runner=runner)["action"], "none")
         self.assertEqual(len(calls), 1)
+
+
+class TestPublishDates(unittest.TestCase):
+    """first_published_at comes from real publish_attempt evidence only.
+
+    config/reality.json's critical_if_sales_zero_after_days=30 could not be
+    evaluated before this: nothing recorded when a listing went live, and
+    Gumroad's API returns no dates at all.
+    """
+
+    def ledger(self, rows):
+        import json
+        import tempfile
+        p = Path(tempfile.mkdtemp()) / "sales_ledger.jsonl"
+        p.write_text("\n".join(json.dumps(r) for r in rows) + "\n", encoding="utf-8")
+        return p
+
+    def test_history_keeps_the_earliest_real_publish_and_ignores_dry_runs(self):
+        p = self.ledger([
+            {"event_type": "publish_attempt", "ok": True, "dry_run": True,
+             "product_source_id": "B14-001", "product_id": "g1", "timestamp": "2026-09-01T00:00:00+00:00"},
+            {"event_type": "publish_attempt", "ok": False, "dry_run": False,
+             "product_source_id": "B14-001", "product_id": "g1", "timestamp": "2026-09-02T00:00:00+00:00"},
+            {"event_type": "publish_attempt", "ok": True, "dry_run": False,
+             "product_source_id": "B14-001", "product_id": "g1", "timestamp": "2026-10-23T13:22:42+00:00"},
+            {"event_type": "publish_attempt", "ok": True, "dry_run": False,
+             "product_source_id": "B14-001", "product_id": "g1", "timestamp": "2026-10-25T00:00:00+00:00"},
+            {"event_type": "sale", "ok": True, "dry_run": False, "product_id": "g1", "timestamp": "2026-10-26T00:00:00+00:00"},
+            "not json",
+        ])
+        h = pr.load_publish_history(p)
+        self.assertEqual(h["by_internal"]["B14-001"], "2026-10-23T13:22:42+00:00")
+        self.assertEqual(h["by_gumroad"]["g1"], "2026-10-23T13:22:42+00:00",
+                         "a dry run and a failed attempt never count as publication")
+
+    def test_missing_ledger_is_empty_history_not_an_error(self):
+        h = pr.load_publish_history(Path("does") / "not" / "exist.jsonl")
+        self.assertEqual(h, {"by_internal": {}, "by_gumroad": {}})
+
+    def test_build_dates_records_from_history_by_either_id(self):
+        from datetime import datetime, timezone
+        h = {"by_internal": {}, "by_gumroad": {"g1": "2026-10-23T13:22:42+00:00"}}
+        reg = pr.build(LIVE, CATALOG, MANIFESTS, PUBLISHED, None, None, h)
+        by_gid = {r["external_ids"].get("gumroad"): r for r in reg["products"]}
+        self.assertEqual(by_gid["g1"]["first_published_at"], "2026-10-23T13:22:42+00:00")
+        self.assertIsNone(by_gid["g2"]["first_published_at"], "no evidence, no date")
+        self.assertEqual(pr.days_live(by_gid["g1"], datetime(2026, 11, 2, 13, 22, 42, tzinfo=timezone.utc)), 10)
+        self.assertIsNone(pr.days_live(by_gid["g2"]))
+
+    def test_drift_flags_only_published_zero_sales_past_the_threshold(self):
+        from datetime import datetime, timedelta, timezone
+        now = datetime(2026, 10, 28, tzinfo=timezone.utc)
+        old = (now - timedelta(days=31)).isoformat()
+        young = (now - timedelta(days=29)).isoformat()
+        h = {"by_internal": {}, "by_gumroad": {"g1": old, "g2": young, "g3": old}}
+        reg = pr.build(LIVE, CATALOG, MANIFESTS, PUBLISHED, None, None, h)
+        d = pr.drift(reg, LIVE, CATALOG, MANIFESTS, now)
+        flagged = d["published_zero_sales_past_threshold"]
+        self.assertIn("B14-001", flagged, "31 days live with zero sales is real evidence")
+        self.assertNotIn(pr.derived_id("g2"), flagged, "29 days is not past the threshold yet")
+        self.assertNotIn(pr.derived_id("g3"), flagged, "g3 has a real sale")
+        self.assertNotIn(pr.derived_id("g4"), flagged, "g4 is not published")
+

@@ -301,6 +301,21 @@ class TestClaimAudit(unittest.TestCase):
         findings = doctrine_review.audit_release_records(root=self.tmp)["findings"]
         self.assertTrue(any(f["code"] == "MANIFEST_STATUS_CONTRADICTS_STATE" for f in findings))
 
+    def test_b13_manifest_is_audited_by_id_and_state(self):
+        _write_json(self.tmp / "data" / "operational_history.json",
+                    {"products": [{"product_id": "B13-003",
+                                   "highest_contiguous_verified": "READY_FOR_AUTHORIZATION"}]})
+        path = self.tmp / "books" / "batch13" / "B13-003.manifest.json"
+        _write_json(path, {"id": "B13-003", "state": "READY_FOR_AUTHORIZATION"})
+        result = doctrine_review.audit_release_records(root=self.tmp)
+        self.assertEqual(1, result["claims_checked"])
+        self.assertEqual([], result["findings"])
+
+        _write_json(path, {"id": "B13-003", "state": "CHECKOUT_VERIFIED"})
+        result = doctrine_review.audit_release_records(root=self.tmp)
+        self.assertTrue(any(f["code"] == "MANIFEST_STATUS_CONTRADICTS_STATE"
+                            for f in result["findings"]))
+
     def test_pass_row_citing_a_missing_path_is_critical(self):
         _write_json(self.tmp / "reports" / "B12-010" / "RELEASE_BASELINE_2026-10-19.json",
                     {"product_id": "B12-010",
@@ -332,10 +347,10 @@ class TestClaimAudit(unittest.TestCase):
         result = doctrine_review.audit_structured_claims()
         self.assertEqual(0, result["critical"], result["findings"])
 
-    def test_real_registry_drift_is_the_three_known_products(self):
+    def test_real_registry_drift_is_zero_after_reconciliation(self):
         findings = doctrine_review.audit_registry_drift()
         flagged = {f["product_id"] for f in findings}
-        self.assertEqual({"B12-001", "B12-003", "B12-004"}, flagged)
+        self.assertEqual(set(), flagged, findings)
 
 
 class TestDoctrineLayerMatrix(unittest.TestCase):

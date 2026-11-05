@@ -1,4 +1,4 @@
-"""Tests for product_master_catalog.py (ADR-202, 2026-08-07).
+﻿"""Tests for product_master_catalog.py (ADR-202, 2026-08-07).
 
     python -m unittest tests.test_product_master_catalog -v
 """
@@ -30,6 +30,25 @@ def _empty_gumroad(tmp):
     return prep, inv
 
 
+def _empty_batch13(tmp):
+    path = os.path.join(tmp, "batch13.json")
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump({"products": []}, f)
+    return path
+
+
+_EMPTY_BATCH13 = os.path.join(tempfile.gettempdir(), "gf_test_empty_batch13.json")
+with open(_EMPTY_BATCH13, "w", encoding="utf-8") as _f:
+    json.dump({"products": []}, _f)
+
+
+def _build_catalog(**kwargs):
+    """Keep these tests isolated from the real B13 source unless a test
+    explicitly supplies it."""
+    kwargs.setdefault("batch13_path", _EMPTY_BATCH13)
+    return pmc.build_product_master_catalog(**kwargs)
+
+
 class TestPaddleCatalogEntries(unittest.TestCase):
     def test_every_field_from_the_directive_is_present(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -43,7 +62,7 @@ class TestPaddleCatalogEntries(unittest.TestCase):
             with open(reality_path, "w", encoding="utf-8") as f:
                 json.dump({"published_books": []}, f)
 
-            result = pmc.build_product_master_catalog(
+            result = _build_catalog(
                 paddle_products_path=paddle_path, finance_path=finance_path, reality_path=reality_path,
                 gumroad_prep_path=_empty_gumroad(tmp)[0], gumroad_inventory_path=_empty_gumroad(tmp)[1],
             )
@@ -75,7 +94,7 @@ class TestPaddleCatalogEntries(unittest.TestCase):
             with open(reality_path, "w", encoding="utf-8") as f:
                 json.dump({"published_books": []}, f)
 
-            result = pmc.build_product_master_catalog(
+            result = _build_catalog(
                 paddle_products_path=paddle_path, finance_path=finance_path, reality_path=reality_path,
             )
             entry = next(p for p in result["products"] if p["product_name"] == "Real Widget")
@@ -89,7 +108,7 @@ class TestPaddleCatalogEntries(unittest.TestCase):
             reality_path = os.path.join(tmp, "reality.json")
             with open(reality_path, "w", encoding="utf-8") as f:
                 json.dump({"published_books": []}, f)
-            result = pmc.build_product_master_catalog(paddle_products_path=paddle_path, reality_path=reality_path,
+            result = _build_catalog(paddle_products_path=paddle_path, reality_path=reality_path,
                                                       gumroad_prep_path=_empty_gumroad(tmp)[0],
                                                       gumroad_inventory_path=_empty_gumroad(tmp)[1])
             self.assertEqual(result["total_products"], 4)
@@ -103,7 +122,7 @@ class TestPaddleCatalogEntries(unittest.TestCase):
             reality_path = os.path.join(tmp, "reality.json")
             with open(reality_path, "w", encoding="utf-8") as f:
                 json.dump({"published_books": [{"asin": "B000TEST", "title": "Real KDP Book", "price_usd": 9.99, "published_date": "2026-08-01"}]}, f)
-            result = pmc.build_product_master_catalog(paddle_products_path=paddle_path, reality_path=reality_path)
+            result = _build_catalog(paddle_products_path=paddle_path, reality_path=reality_path)
             kdp_entry = next(p for p in result["products"] if p["product_name"] == "Real KDP Book")
             self.assertEqual(kdp_entry["publication_status"], "PUBLISHED")
             self.assertEqual(kdp_entry["platforms"]["amazon_kdp"]["asin"], "B000TEST")
@@ -137,7 +156,7 @@ class TestGenerationLogCrossReference(unittest.TestCase):
             with open(reality_path, "w", encoding="utf-8") as f:
                 json.dump({"published_books": []}, f)
 
-            result = pmc.build_product_master_catalog(paddle_products_path=paddle_path, reality_path=reality_path, generation_log_path=gen_log_path)
+            result = _build_catalog(paddle_products_path=paddle_path, reality_path=reality_path, generation_log_path=gen_log_path)
             entry = next(p for p in result["products"] if p["product_name"] == "Real Widget")
             self.assertEqual(entry["description"], "Real Widget")
             self.assertIn("/books/real_widget.pdf", entry["source_files"])
@@ -157,7 +176,7 @@ class TestGenerationLogCrossReference(unittest.TestCase):
             with open(reality_path, "w", encoding="utf-8") as f:
                 json.dump({"published_books": []}, f)
 
-            result = pmc.build_product_master_catalog(paddle_products_path=paddle_path, reality_path=reality_path, generation_log_path=gen_log_path)
+            result = _build_catalog(paddle_products_path=paddle_path, reality_path=reality_path, generation_log_path=gen_log_path)
             entry = next(p for p in result["products"] if p["product_name"] == "Real Widget")
             self.assertTrue(entry["version"].startswith("3 "))
 
@@ -173,7 +192,7 @@ class TestGenerationLogCrossReference(unittest.TestCase):
             with open(reality_path, "w", encoding="utf-8") as f:
                 json.dump({"published_books": []}, f)
 
-            result = pmc.build_product_master_catalog(paddle_products_path=paddle_path, reality_path=reality_path, generation_log_path=gen_log_path)
+            result = _build_catalog(paddle_products_path=paddle_path, reality_path=reality_path, generation_log_path=gen_log_path)
             entry = next(p for p in result["products"] if p["product_name"] == "No Log Entry Product")
             self.assertEqual(entry["description"], "Unknown")
             self.assertEqual(entry["source_files"], [])
@@ -191,7 +210,7 @@ class TestGenerationLogCrossReference(unittest.TestCase):
             with open(reality_path, "w", encoding="utf-8") as f:
                 json.dump({"published_books": []}, f)
 
-            result = pmc.build_product_master_catalog(paddle_products_path=paddle_path, reality_path=reality_path, generation_log_path=gen_log_path)
+            result = _build_catalog(paddle_products_path=paddle_path, reality_path=reality_path, generation_log_path=gen_log_path)
             entry = next(p for p in result["products"] if p["product_name"] == "Failed Widget")
             self.assertEqual(entry["description"], "Unknown")
 
@@ -342,3 +361,4 @@ class TestGenerationLogIndex(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+

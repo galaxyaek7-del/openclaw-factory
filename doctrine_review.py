@@ -82,28 +82,29 @@ def _evidence_refs(text: str) -> List[str]:
 
 
 def audit_registry_drift(root: Path = ROOT) -> List[Dict[str, Any]]:
-    registry = _read_json(root / "data" / "product_batch_12.json", {}) or {}
     snapshot = _read_json(root / "data" / "operational_history.json", {}) or {}
     by_id = {p.get("product_id"): p for p in snapshot.get("products") or []}
     findings = []
-    for product in registry.get("products") or []:
-        pid = product.get("id")
-        record = by_id.get(pid)
-        if not record:
-            continue
-        registry_state = product.get("status") or product.get("state")
-        verified = record.get("highest_contiguous_verified")
-        if registry_state not in REGISTRY_EQUIV or verified not in MILESTONE_INDEX:
-            continue
-        if REGISTRY_EQUIV[registry_state] < MILESTONE_INDEX[verified]:
-            findings.append({
-                "severity": "WARNING",
-                "code": "REGISTRY_BEHIND_EVIDENCE",
-                "product_id": pid,
-                "claim": "registry state %s" % registry_state,
-                "reality": "evidence state %s" % verified,
-                "evidence": "data/product_batch_12.json vs data/operational_history.json",
-            })
+    for registry_name in ("product_batch_12.json", "product_batch_13.json"):
+        registry = _read_json(root / "data" / registry_name, {}) or {}
+        for product in registry.get("products") or []:
+            pid = product.get("id")
+            record = by_id.get(pid)
+            if not record:
+                continue
+            registry_state = product.get("status") or product.get("state")
+            verified = record.get("highest_contiguous_verified")
+            if registry_state not in REGISTRY_EQUIV or verified not in MILESTONE_INDEX:
+                continue
+            if REGISTRY_EQUIV[registry_state] < MILESTONE_INDEX[verified]:
+                findings.append({
+                    "severity": "WARNING",
+                    "code": "REGISTRY_BEHIND_EVIDENCE",
+                    "product_id": pid,
+                    "claim": "registry state %s" % registry_state,
+                    "reality": "evidence state %s" % verified,
+                    "evidence": "data/%s vs data/operational_history.json" % registry_name,
+                })
     return findings
 
 
@@ -140,10 +141,14 @@ def audit_release_records(root: Path = ROOT) -> Dict[str, Any]:
     snapshot = _read_json(root / "data" / "operational_history.json", {}) or {}
     by_id = {p.get("product_id"): p for p in snapshot.get("products") or []}
 
-    for path in sorted(glob.glob(str(root / "reports" / "B12-*" / "MANIFEST_*.json"))):
+    manifest_paths = (
+        sorted(glob.glob(str(root / "reports" / "B12-*" / "MANIFEST_*.json")))
+        + sorted(glob.glob(str(root / "books" / "batch13" / "B13-*.manifest.json")))
+    )
+    for path in manifest_paths:
         data = _read_json(Path(path), {}) or {}
-        pid = data.get("product_id")
-        claim = data.get("status")
+        pid = data.get("product_id") or data.get("id")
+        claim = data.get("status") or data.get("state")
         if not pid or not claim:
             continue
         claims += 1
