@@ -587,7 +587,12 @@ def publish_one(man, token, *, gp, write_scope, ledger, cover_url_fn, approvals,
         "expected_sha256": man["files"]["bundle"]["sha256"],
         "tags": list(man.get("tags") or []),
     }
-    product = gp.create_product(token, spec, upload_scope_id=scope.scope_id)
+    product = gp.create_product(
+        token, spec, upload_scope_id=scope.scope_id,
+        publication_clearance={"kind": "founder_approval", "product": man, "approvals": approvals,
+                               "root": root, "now": now,
+                               "max_age_seconds": approval_max_age_seconds},
+    )
     pid = product.get("id")
     rec = {
         "id": man["id"],

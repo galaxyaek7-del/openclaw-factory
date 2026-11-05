@@ -329,11 +329,12 @@ def distribute(product, arm_names=None, dry_run=True, ledger_path=None, protecti
     # Opt-in only (see SCOPE NOTE in the docstring): consulted when the
     # caller configures it via `quality_gate` or a gate ledger/evidence
     # path. Otherwise real-mode behavior is unchanged (pre-gate).
-    _gate_configured = (
-        quality_gate is not None
-        or gate2_ledger_path is not None
-        or quality_evidence_path is not None
-    )
+    # Founder directive 2026-10-17: the central Quality Gate is MANDATORY for
+    # every real publish. It used to apply only when a caller configured it,
+    # so a real publish through any arm skipped it by default (found
+    # 2026-11-05, tests/test_exp_c81_utm_regression.py). Dry runs never
+    # consult it (checked below with `not dry_run`).
+    _gate_configured = True
     _gate_verdict = {"evaluated": False, "verdict": None}
 
     def _gate_for_run(arm_name):
@@ -363,6 +364,7 @@ def distribute(product, arm_names=None, dry_run=True, ledger_path=None, protecti
             continue
 
         gate = None
+        qg = None
         try:
             if not arm.supports(product):
                 outcomes.append({
@@ -452,6 +454,13 @@ def distribute(product, arm_names=None, dry_run=True, ledger_path=None, protecti
                     })
                     continue
 
+            if not dry_run and isinstance(qg, dict) and qg.get("allowed") is True:
+                # B4: hand the allowed gate decision to the arm, which passes
+                # it to the platform's create call as publication clearance.
+                try:
+                    setattr(product, "quality_gate_decision", qg)
+                except (AttributeError, TypeError):
+                    pass
             result = arm.publish(product, dry_run=dry_run)
         except Exception as e:
             # Defense in depth (ADR-5): even if an arm breaks its own

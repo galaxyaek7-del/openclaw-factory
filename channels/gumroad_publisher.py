@@ -442,7 +442,7 @@ def _find_duplicate_listing(token, title):
     return None
 
 
-def create_product(token, product_spec, *, upload_scope_id=None):
+def create_product(token, product_spec, *, upload_scope_id=None, publication_clearance=None):
     # PHASE 5 (2026-10-14): mandatory, centralized write authorization.
     # This is the FIRST statement on purpose -- a denied write must not be
     # able to start an S3 multipart session on Gumroad's side via
@@ -450,6 +450,12 @@ def create_product(token, product_spec, *, upload_scope_id=None):
     # check at all; the "writes blocked" posture reported across several
     # cycles was a convention, not a control. See channels/write_gate.py.
     _require_write_authorization("create_product")
+    # Backlog B4 (2026-11-05): the write gate says who may write; this says
+    # whether THIS product was cleared for sale (per-product founder approval
+    # or a central Quality Gate decision). Checked before any upload. No
+    # override. See channels/publication_clearance.py.
+    from channels.publication_clearance import require_clearance
+    require_clearance(publication_clearance, product_spec or {})
     if not token or not str(token).strip():
         raise ConfigError("create_product requires a non-empty token")
     file_path = product_spec.get("file_path")

@@ -92,6 +92,12 @@ import requests
 
 from channels.gumroad_publisher import _gumroad_error, _PART_SIZE
 
+# B4 (2026-11-05): create_product() requires publication clearance; these
+# tests exercise its later checks, so they pass a valid gate decision.
+_CLEARED = {"kind": "quality_gate",
+            "decision": {"allowed": True, "gate1": {"passed": True}, "gate2": {"passed": True}}}
+
+
 # Cycle 84: this module exercises Gumroad write logic against a mocked
 # HTTP layer, so it explicitly opts in to write authorization. It was
 # previously getting this from an AUTOUSE fixture that set
@@ -148,7 +154,7 @@ class TestGumroadApiFix(unittest.TestCase):
         pdf = _tmp_file()
         try:
             product = create_product("token", {"file_path": pdf, "price_cents": 1000, "title": "Test Product"},
-                                   upload_scope_id=_up(pdf))
+                                   upload_scope_id=_up(pdf), publication_clearance=_CLEARED)
         finally:
             os.unlink(pdf)
 
@@ -195,7 +201,7 @@ class TestGumroadApiFix(unittest.TestCase):
         big = _tmp_file(suffix=".bin", data=b"x" * (_PART_SIZE + 1))
         try:
             create_product("token", {"file_path": big, "price_cents": 500, "title": "Multi"},
-                           upload_scope_id=_up(big))
+                           upload_scope_id=_up(big), publication_clearance=_CLEARED)
         finally:
             os.unlink(big)
 
@@ -221,7 +227,7 @@ class TestGumroadApiFix(unittest.TestCase):
         try:
             with self.assertRaises(RuntimeError):
                 create_product("token", {"file_path": pdf, "price_cents": 1000, "title": "Test"},
-                           upload_scope_id=_up(pdf))
+                           upload_scope_id=_up(pdf), publication_clearance=_CLEARED)
         finally:
             os.unlink(pdf)
 
@@ -247,7 +253,7 @@ class TestGumroadApiFix(unittest.TestCase):
         try:
             with self.assertRaises(RuntimeError) as ctx:
                 create_product("token", {"file_path": pdf, "price_cents": 1000, "title": "Test"},
-                           upload_scope_id=_up(pdf))
+                           upload_scope_id=_up(pdf), publication_clearance=_CLEARED)
             self.assertIn("no ETag", str(ctx.exception))
         finally:
             os.unlink(pdf)
@@ -271,7 +277,7 @@ class TestGumroadApiFix(unittest.TestCase):
         try:
             with self.assertRaises(RuntimeError) as ctx:
                 create_product("token", {"file_path": pdf, "price_cents": 1000, "title": "Test"},
-                           upload_scope_id=_up(pdf))
+                           upload_scope_id=_up(pdf), publication_clearance=_CLEARED)
             self.assertIn("The upload_id does not exist", str(ctx.exception))
             self.assertNotIn("None", str(ctx.exception))
         finally:

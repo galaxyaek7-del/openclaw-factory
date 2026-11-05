@@ -139,7 +139,12 @@ class FakeGumroad:
         self.update_error = update_error
         self.create_count = 0
 
-    def create_product(self, token, spec, upload_scope_id=None):
+    def create_product(self, token, spec, upload_scope_id=None, publication_clearance=None):
+        # B4: the real create_product() runs this check first; the fake runs
+        # the same check so a publisher that sends no (or a wrong) clearance
+        # fails here exactly as it would live.
+        from channels.publication_clearance import require_clearance
+        self.clearance = require_clearance(publication_clearance, spec)
         self.calls.append(("create", spec["title"], upload_scope_id))
         self.create_count += 1
         if self.create_error and (not self.fail_first or self.create_count == 1):

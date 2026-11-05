@@ -32,6 +32,12 @@ od = _load()
 sys.path.insert(0, str(FACTORY_DIR / "tests"))
 from paid_artifacts import paid_files_absent, require_paid_files  # noqa: E402
 
+# B4 (2026-11-05): create_product() requires publication clearance; these
+# tests exercise its later checks, so they pass a valid gate decision.
+_CLEARED = {"kind": "quality_gate",
+            "decision": {"allowed": True, "gate1": {"passed": True}, "gate2": {"passed": True}}}
+
+
 # Paid product files are not in the public repository (2026-10-23). On CI the
 # safety-matrix tests below still need validate_spec() to treat the absent
 # release files as present, since they test the response handling after it;
@@ -200,7 +206,7 @@ class TestRealWriteGateFailsClosed(unittest.TestCase):
                 with self.assertRaises(Exception) as ctx:
                     gp.create_product("fake-token", {
                         "name": "x", "price": 1499, "file_path": str(tmp),
-                    }, upload_scope_id=None)
+                    }, upload_scope_id=None, publication_clearance=_CLEARED)
                 self.assertIn("WriteNotAuthorized", type(ctx.exception).__name__)
                 post.assert_not_called()
                 req.assert_not_called()
@@ -237,7 +243,7 @@ class TestCreatePayloadHasNoDraftControl(unittest.TestCase):
                  mock.patch("requests.post", side_effect=fake_post):
                 gp.create_product("tok", {
                     "title": od.TITLE, "price_cents": od.PRICE_CENTS,
-                    "file_path": str(tmp), "description": "d"}, upload_scope_id="scope")
+                    "file_path": str(tmp), "description": "d"}, upload_scope_id="scope", publication_clearance=_CLEARED)
         finally:
             tmp.unlink(missing_ok=True)
 

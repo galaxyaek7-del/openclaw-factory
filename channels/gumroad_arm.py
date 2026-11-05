@@ -68,7 +68,14 @@ class GumroadArm(BaseArm):
 
         try:
             token = gumroad_publisher.load_token()
-            result = gumroad_publisher.create_product(token, spec)
+            # B4: the distributor attaches its central Quality Gate decision
+            # to the product when the gate allowed it; without one,
+            # create_product() refuses (fail-closed).
+            result = gumroad_publisher.create_product(
+                token, spec,
+                publication_clearance={"kind": "quality_gate",
+                                       "decision": getattr(product, "quality_gate_decision", None)},
+            )
         except Exception as e:
             self._record_failure()
             return PublishResult(

@@ -93,6 +93,12 @@ if str(_FACTORY_ROOT) not in sys.path:
 
 from channels import gumroad_publisher as gp
 
+# B4 (2026-11-05): create_product() requires publication clearance; these
+# tests exercise its later checks, so they pass a valid gate decision.
+_CLEARED = {"kind": "quality_gate",
+            "decision": {"allowed": True, "gate1": {"passed": True}, "gate2": {"passed": True}}}
+
+
 # Cycle 84: this module exercises Gumroad write logic against a mocked
 # HTTP layer, so it explicitly opts in to write authorization. It was
 # previously getting this from an AUTOUSE fixture that set
@@ -189,7 +195,7 @@ class TestRetryOnTransientFailure(unittest.TestCase):
                         "title": "Test",
                         "price_cents": 999,
                         "file_path": tmp.name,
-                    }, upload_scope_id=_upload_scope(tmp.name))
+                    }, upload_scope_id=_upload_scope(tmp.name), publication_clearance=_CLEARED)
             # complete (1) + the single, un-retried create POST (1) = 2.
             self.assertEqual(mock_post.call_count, 2)
             self.assertEqual(mock_req.call_count, 2)
@@ -227,7 +233,7 @@ class TestRetryOnTransientFailure(unittest.TestCase):
                     "title": "Test", "price_cents": 999, "file_path": tmp.name,
                     "tags": ["menu engineering", " restaurant ", ""],
                     "taxonomy_id": 266,
-                }, upload_scope_id=_upload_scope(tmp.name))
+                }, upload_scope_id=_upload_scope(tmp.name), publication_clearance=_CLEARED)
             sent = mock_post.call_args_list[1].kwargs["data"]
             self.assertEqual(sent["tags[]"], ["menu engineering", "restaurant"])
             self.assertEqual(sent["taxonomy_id"], 266)
@@ -256,7 +262,7 @@ class TestRetryOnTransientFailure(unittest.TestCase):
                               side_effect=[complete_ok, create_ok]) as mock_post:
                 gp.create_product("fake-token", {
                     "title": "Test", "price_cents": 999, "file_path": tmp.name,
-                }, upload_scope_id=_upload_scope(tmp.name))
+                }, upload_scope_id=_upload_scope(tmp.name), publication_clearance=_CLEARED)
             sent = mock_post.call_args_list[1].kwargs["data"]
             self.assertNotIn("tags[]", sent)
             self.assertNotIn("taxonomy_id", sent)

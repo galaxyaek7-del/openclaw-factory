@@ -24,6 +24,12 @@ from channels import publish_protection as pp  # noqa: E402
 from channels import write_scope  # noqa: E402
 from channels.write_gate import WriteNotAuthorized  # noqa: E402
 
+# B4 (2026-11-05): create_product() requires publication clearance; these
+# tests exercise its later checks, so they pass a valid gate decision.
+_CLEARED = {"kind": "quality_gate",
+            "decision": {"allowed": True, "gate1": {"passed": True}, "gate2": {"passed": True}}}
+
+
 
 def _no_network(*a, **k):
     raise AssertionError("a network call was attempted")
@@ -59,7 +65,7 @@ class TestLiveSwitchOff(_Base):
 
     def test_create_update_enable_and_file_update_are_all_denied(self):
         with self.assertRaises(WriteNotAuthorized):
-            gp.create_product("tok", self.spec())
+            gp.create_product("tok", self.spec(), publication_clearance=_CLEARED)
         with self.assertRaises(WriteNotAuthorized):
             gp.update_product("tok", "pid", {"price": 1})
         with self.assertRaises(WriteNotAuthorized):
@@ -83,27 +89,27 @@ class TestCreateProductPreconditions(_Base):
 
     def test_missing_attachment(self):
         with self.assertRaises(gp.ConfigError):
-            gp.create_product("tok", self.spec(file_path=None))
+            gp.create_product("tok", self.spec(file_path=None), publication_clearance=_CLEARED)
         with self.assertRaises(gp.ConfigError):
-            gp.create_product("tok", self.spec(file_path=str(self.tmp / "nope.xlsx")))
+            gp.create_product("tok", self.spec(file_path=str(self.tmp / "nope.xlsx")), publication_clearance=_CLEARED)
 
     def test_unreadable_and_empty_attachment(self):
         empty = self.tmp / "empty.xlsx"; empty.write_bytes(b"")
         with self.assertRaises(gp.ConfigError):
-            gp.create_product("tok", self.spec(file_path=str(empty)))
+            gp.create_product("tok", self.spec(file_path=str(empty)), publication_clearance=_CLEARED)
         with patch.object(Path, "read_bytes", side_effect=OSError("permission denied")):
             with self.assertRaises(gp.ConfigError) as cm:
-                gp.create_product("tok", self.spec())
+                gp.create_product("tok", self.spec(), publication_clearance=_CLEARED)
         self.assertIn("unreadable", str(cm.exception))
 
     def test_missing_or_invalid_price(self):
         for bad in (None, 0, -5, "abc"):
             with self.assertRaises(gp.ConfigError):
-                gp.create_product("tok", self.spec(price_cents=bad))
+                gp.create_product("tok", self.spec(price_cents=bad), publication_clearance=_CLEARED)
 
     def test_wrong_file_identity(self):
         with self.assertRaises(gp.ConfigError) as cm:
-            gp.create_product("tok", self.spec(expected_sha256="0" * 64))
+            gp.create_product("tok", self.spec(expected_sha256="0" * 64), publication_clearance=_CLEARED)
         self.assertIn("identity mismatch", str(cm.exception))
 
     def test_duplicate_title_is_refused_before_upload(self):
@@ -111,7 +117,7 @@ class TestCreateProductPreconditions(_Base):
         with patch.object(gp, "list_products", return_value=live), \
              patch.object(gp, "_upload_file", side_effect=_no_network) as up:
             with self.assertRaises(gp.DuplicateListing):
-                gp.create_product("tok", self.spec(expected_sha256=hashlib.sha256(self.file.read_bytes()).hexdigest()))
+                gp.create_product("tok", self.spec(expected_sha256=hashlib.sha256(self.file.read_bytes()).hexdigest()), publication_clearance=_CLEARED)
         self.assertFalse(up.called)
 
     def test_deleted_listing_is_not_a_duplicate_but_unreadable_catalog_blocks(self):
@@ -124,7 +130,7 @@ class TestCreateProductPreconditions(_Base):
     def test_create_without_upload_scope_is_denied_after_all_checks(self):
         with patch.object(gp, "list_products", return_value=[]):
             with self.assertRaises(WriteNotAuthorized):
-                gp.create_product("tok", self.spec())
+                gp.create_product("tok", self.spec(), publication_clearance=_CLEARED)
 
 
 class TestUploadScopes(_Base):
