@@ -7,7 +7,7 @@ prefix with `!`).
 
 ## 0. Open items on 2026-11-05 (from `PROGRESS.md`, in priority order)
 
-1. **Disk C (F1): FIXED 2026-11-05.** Old OpenCode database deleted on your approval; 142 GB free. The 44 main sessions are also exported to `C:SERSDELLOPENCODE_EXPORTS`.
+1. **Disk C (F1): FIXED 2026-11-05.** Old OpenCode database deleted on your approval; 142 GB free. The 44 main sessions are also exported to `C:\Users\Dell\opencode_exports`.
 2. **Two held listings and one empty listing still take money at "$0+" (F6).** `/l/iaiyt`,
    `/l/wteork`, `/l/owtmpe`: unpublish in the Gumroad dashboard (see 1b). The protection check
    fails on `payable_withdrawn` until you do.
