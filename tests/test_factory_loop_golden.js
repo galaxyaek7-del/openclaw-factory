@@ -372,6 +372,41 @@ async function main() {
     assert.ok(!fl.appendGoldenHunterEvent(skip, q, DEP_EVENTS_PATH)._deduped);
   });
 
+  await test('rankGoldenOpportunities: one entry per niche, best first, SKIP and excluded niches left out, ladder-accepted before all', () => {
+    const data = { results: [
+      opp('planner', 71, 'GOOD'), opp('planner', 71, 'GOOD'), opp('budget', 71, 'GOOD'), opp('cheap', 40, 'SKIP'), opp('great', 90, 'GOLDEN'),
+      { niche: 'ladder niche', verdict: 'GOOD', profit_score: 60, ladder: 'ai_saas', ladder_accepted: true, ladder_score: 88 }] };
+    const r = fl.rankGoldenOpportunities(data);
+    assert.deepStrictEqual(r.map((x) => x.niche), ['ladder niche', 'great', 'budget', 'planner'], 'ladder first, then score, ties by name, planner once');
+    assert.deepStrictEqual(fl.rankGoldenOpportunities(data, { exclude: new Set(['great', 'planner']) }).map((x) => x.niche), ['ladder niche', 'budget']);
+    assert.deepStrictEqual(fl.rankGoldenOpportunities(null), []);
+  });
+
+  await test('looksLikeHeadline and the fit bonus: forum questions are not niches; a fitting niche wins a tie but never beats a better score', () => {
+    assert.ok(fl.looksLikeHeadline('Can I stop Google search results from showing my site as docs?'));
+    assert.ok(fl.looksLikeHeadline('How do I price a freelance project'));
+    assert.ok(fl.looksLikeHeadline('x'.repeat(81)));
+    assert.ok(!fl.looksLikeHeadline('Break-even calculator for a small shop'));
+    const r = fl.rankGoldenOpportunities({ results: [opp('printable wall art', 71, 'GOOD'), opp('Break-even calculator for a shop', 71, 'GOOD'),
+      opp('Can I do this?', 99, 'GOLDEN'), opp('printable planner', 77, 'GOOD')] });
+    assert.deepStrictEqual(r.map((x) => x.niche), ['printable planner', 'Break-even calculator for a shop', 'printable wall art']);
+  });
+
+  await test('recentlyRejectedGoldenNiches: only rejections inside the window count; pool markers and other actions are ignored', () => {
+    const p = path.join(tmpDir, 'events_cooldown.jsonl');
+    const now = Date.parse('2026-11-10T12:00:00Z');
+    const rows = [
+      { timestamp: '2026-11-09T10:00:00.000Z', action: 'skipped', reason: 'opportunity_score_below_floor', niche: 'recent' },
+      { timestamp: '2026-11-01T10:00:00.000Z', action: 'skipped', reason: 'opportunity_score_below_floor', niche: 'old' },
+      { timestamp: '2026-11-09T10:00:00.000Z', action: 'skipped', reason: 'stale', niche: 'wrong reason' },
+      { timestamp: '2026-11-09T10:00:00.000Z', action: 'skipped', reason: 'all_candidates_in_cooldown', niche: '*pool*' },
+      { timestamp: '2026-11-09T10:00:00.000Z', action: 'attempted', niche: 'attempted only', dry_run: true },
+      { timestamp: '2026-11-08T10:00:00.000Z', action: 'skipped', reason: 'circuit_breaker', niche: 'breaker' }];
+    require('fs').writeFileSync(p, rows.map((r) => JSON.stringify(r)).join(String.fromCharCode(10)) + String.fromCharCode(10));
+    assert.deepStrictEqual([...fl.recentlyRejectedGoldenNiches(p, 7, now)].sort(), ['breaker', 'recent']);
+    assert.strictEqual(fl.recentlyRejectedGoldenNiches(path.join(tmpDir, 'missing.jsonl'), 7, now).size, 0);
+  });
+
   await test('goldenNicheAlreadyAttempted: dry_run entries never block a future real attempt', () => {
     const p = path.join(tmpDir, 'events_dryrun.jsonl');
     fl.appendGoldenHunterEvent({ action: 'attempted', dry_run: true, niche: 'دليل التأمل' }, p, DEP_EVENTS_PATH);

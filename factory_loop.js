@@ -1267,6 +1267,51 @@ function evaluateGoldenOpportunities(data, nowMs = Date.now()) {
   return { ok: true, top };
 }
 
+const GOLDEN_MAX_EVALUATIONS = Number(process.env.GF_GOLDEN_MAX_EVALUATIONS || 5);
+const GOLDEN_REJECTION_COOLDOWN_DAYS = Number(process.env.GF_GOLDEN_COOLDOWN_DAYS || 7);
+
+// A forum or news headline is not a product niche ("Can I stop Google search results from showing my site...?"): it wastes a scoring call.
+function looksLikeHeadline(niche) {
+  const n = String(niche || '').trim();
+  return n.includes('?') || n.includes('؟') || n.length > 80 || /^(how|why|what|when|should|can i|do you|am i|is it|apply|breaking|building|alternatives to)\b/i.test(n);
+}
+
+// Mild preference (a tie-breaker, never a threshold change) for niches that fit the current business: spreadsheet tools for money decisions.
+const GOLDEN_FIT_RE = /(calculator|spreadsheet|workbook|excel|break-?even|cash ?flow|budget|invoice|pricing|payroll|tax|compliance|forecast|tracker|حاسبة|جدول|ميزانية|تدفق نقدي|ضريبة|امتثال)/i;
+const goldenFitBonus = (niche) => (GOLDEN_FIT_RE.test(String(niche || '')) ? 5 : 0);
+
+// Candidates for one hunter pass: eligible (not SKIP, numeric profit_score), ONE entry per niche (the best), ladder-accepted first
+// (by ladder_score) then by profit_score, ties by niche so the order is deterministic. `exclude` is a Set of niches to leave out.
+function rankGoldenOpportunities(data, { exclude = new Set() } = {}) {
+  const results = Array.isArray(data && data.results) ? data.results : [];
+  const best = new Map();
+  for (const r of results) {
+    if (!r || !r.niche || !r.verdict || r.verdict === 'SKIP' || typeof r.profit_score !== 'number') continue;
+    if (looksLikeHeadline(r.niche)) continue;
+    if (exclude.has(r.niche)) continue;
+    const cur = best.get(r.niche);
+    const key = (x) => (x.ladder_accepted === true ? 1000 + (x.ladder_score || 0) : 0) + (x.profit_score + goldenFitBonus(x.niche)) / 1000;
+    if (!cur || key(r) > key(cur)) best.set(r.niche, r);
+  }
+  const rank = (x) => (x.ladder_accepted === true ? 1000 + (x.ladder_score || 0) : 0) * 1000 + x.profit_score + goldenFitBonus(x.niche);
+  return [...best.values()].sort((a, b) => (rank(b) - rank(a)) || String(a.niche).localeCompare(String(b.niche)));
+}
+
+// Niches the hunter itself rejected (below the score floor, circuit breaker, already attempted) in the last N days.
+function recentlyRejectedGoldenNiches(logPath = GOLDEN_HUNTER_EVENTS_FILE, days = GOLDEN_REJECTION_COOLDOWN_DAYS, nowMs = Date.now()) {
+  const out = new Set();
+  let events = [];
+  try { events = readGoldenHunterEvents(logPath); } catch (_) { return out; }
+  const since = nowMs - days * 24 * 60 * 60 * 1000;
+  for (const e of events) {
+    if (!e || e.action !== 'skipped' || !e.niche || e.niche === '*pool*') continue;
+    if (!['opportunity_score_below_floor', 'circuit_breaker', 'already_attempted'].includes(e.reason)) continue;
+    const t = Date.parse(e.timestamp);
+    if (Number.isFinite(t) && t >= since) out.add(e.niche);
+  }
+  return out;
+}
+
 async function huntGolden(reachable) {
   if (!reachable) {
     return { action: 'skipped', ...appendGoldenHunterEvent({ action: 'skipped', reason: 'dashboard_unreachable', detail: 'السيرفر غير متاح — تخطّي جسر Golden Hunter هذه الدورة' }) };
@@ -1278,44 +1323,48 @@ async function huntGolden(reachable) {
     const rec = appendGoldenHunterEvent({ action: 'skipped', reason: evaluation.reason, age_hours: evaluation.age_hours, detail: evaluation.detail });
     return { action: 'skipped', detail: rec.detail };
   }
-  const top = evaluation.top;
-
-  if (goldenNicheAlreadyAttempted(top.niche)) {
-    const rec = appendGoldenHunterEvent({ action: 'skipped', reason: 'already_attempted', niche: top.niche, detail: `النيتش "${top.niche}" جُرِّب فعلياً سابقاً عبر جسر Golden Hunter — لا تكرار` });
-    return { action: 'none', detail: rec.detail };
-  }
-
-  const rejection = isNicheRejected(top.niche);
-  if (rejection) {
-    const rec = appendGoldenHunterEvent({ action: 'skipped', reason: 'circuit_breaker', niche: top.niche, detail: `تخطّي نيتش مرفوض سابقاً (${top.niche}) — قاطع الدائرة نشط حتى ${rejection.retryAfter}: ${rejection.reason}` });
+  // 2026-11-06 (hunter v2 selection): the hunter used to take the single top candidate every tick, so one rejected niche (score 52.3,
+  // below the floor) was re-picked forever and nothing else was ever evaluated. Now: distinct niches, ladder-accepted first, niches
+  // rejected in the last 7 days are skipped (cooldown), and up to GOLDEN_MAX_EVALUATIONS candidates are scored per tick until one passes.
+  // Every gate below is the original one, applied per candidate; a scoring failure still fails OPEN as before.
+  const ranked = rankGoldenOpportunities(data, { exclude: recentlyRejectedGoldenNiches() });
+  if (!ranked.length) {
+    const rec = appendGoldenHunterEvent({ action: 'skipped', reason: 'all_candidates_in_cooldown', niche: '*pool*',
+      detail: `كل مرشحي الصياد رُفضوا خلال آخر ${GOLDEN_REJECTION_COOLDOWN_DAYS} أيام (فترة التبريد) — لا مرشح جديد للتقييم حتى تنتهي الفترة أو يتجدد الحوض` });
     return { action: 'skipped', detail: rec.detail };
   }
-
-  // ADR-026: Opportunity Score gate — "fewer, better assets" means a
-  // stricter bar than the old profit_score>=60 check alone. A scoring
-  // failure (spawn error, timeout, bad output) fails OPEN here on
-  // purpose, not closed: this is a NEW, additive gate layered on top of
-  // profit_score/butter_price's existing checks (still enforced later by
-  // book_generator.py's Dual Inspection regardless) — never block
-  // production because a second, newer scoring call happened to fail.
-  //
-  // ADR-070 (mission follow-up, 2026-07-17): when the picked opportunity
-  // carries a ladder tag (pickTopGoldenOpportunity() now prefers these,
-  // market_hunter.py's retooled Strategic Production Priority Ladder
-  // candidates, ADR-068), gate via the ladder-aware score instead — the
-  // exact wiring ADR-069 disclosed as the remaining gap after Step 5's
-  // proof. Every entry with no ladder tag (every pre-ladder golden
-  // opportunity) keeps using the original opportunity_score() gate,
-  // byte-for-byte unchanged.
-  const opportunityScore = top.ladder
-    ? await getLadderOpportunityScore(top.niche, top.ladder)
-    : await getOpportunityScore(top.niche, { tier: 'tier4' });
-  if (opportunityScore.ok && !opportunityScore.accepted) {
-    const rec = appendGoldenHunterEvent({
-      action: 'skipped', reason: 'opportunity_score_below_floor', niche: top.niche,
-      opportunity_score: opportunityScore.score, detail: `تخطّي "${top.niche}" — Opportunity Score ${opportunityScore.score}/100 (${opportunityScore.reason})`,
-    });
-    return { action: 'skipped', detail: rec.detail };
+  let top = null;
+  let opportunityScore = null;
+  const evaluated = [];
+  for (const cand of ranked.slice(0, GOLDEN_MAX_EVALUATIONS)) {
+    if (goldenNicheAlreadyAttempted(cand.niche)) {
+      appendGoldenHunterEvent({ action: 'skipped', reason: 'already_attempted', niche: cand.niche, detail: `النيتش "${cand.niche}" جُرِّب فعلياً سابقاً` });
+      continue;
+    }
+    if (isNicheRejected(cand.niche)) {
+      appendGoldenHunterEvent({ action: 'skipped', reason: 'circuit_breaker', niche: cand.niche, detail: `تخطّي نيتش مرفوض سابقاً (${cand.niche}) — قاطع الدائرة` });
+      continue;
+    }
+    // ADR-026 Opportunity Score gate (ADR-070: ladder-aware score for ladder-tagged candidates), unchanged, per candidate.
+    const sc = cand.ladder
+      ? await getLadderOpportunityScore(cand.niche, cand.ladder)
+      : await getOpportunityScore(cand.niche, { tier: 'tier4' });
+    if (sc.ok && !sc.accepted) {
+      appendGoldenHunterEvent({
+        action: 'skipped', reason: 'opportunity_score_below_floor', niche: cand.niche,
+        opportunity_score: sc.score, detail: `تخطّي "${cand.niche}" — Opportunity Score ${sc.score}/100 (${sc.reason})`,
+      });
+      evaluated.push({ niche: cand.niche, score: sc.score });
+      continue;
+    }
+    top = cand;
+    opportunityScore = sc;
+    break;
+  }
+  if (!top) {
+    const best = evaluated.reduce((m, e) => (m && m.score >= e.score ? m : e), null);
+    return { action: 'skipped', detail: `قُيِّم ${evaluated.length} مرشحاً هذه الدورة ولم يجتز أحد عتبة Opportunity Score`
+      + (best ? ` — الأفضل "${best.niche}" (${best.score}/100)` : '') + `; المتبقي في الحوض: ${Math.max(0, ranked.length - evaluated.length)}` };
   }
 
   if (opportunityScore.ok && opportunityScore.accepted) {
@@ -6092,7 +6141,7 @@ module.exports = {
   runMarketEvidenceCycle, maybeRunDailyMarketEvidence,
   readLastGenerationRecord, triggerDistribute, triggerGenerateBook, formatDistributionAction, pollSales,
   huntGolden, readGoldenOpportunities, pickTopGoldenOpportunity, briefFromGoldenOpportunity,
-  appendGoldenHunterEvent, readGoldenHunterEvents, goldenNicheAlreadyAttempted,
+  appendGoldenHunterEvent, readGoldenHunterEvents, goldenNicheAlreadyAttempted, rankGoldenOpportunities, recentlyRejectedGoldenNiches, looksLikeHeadline,
   evaluateGoldenOpportunities, getButterPrice, getOpportunityScore, getLadderOpportunityScore,
   checkProductionEngineHealth,
   checkNeedsAttention, criticalHealthReasons, workflowHealthReasons, writeNeedsAttention, clearNeedsAttention, checkGoldenStagnation,
