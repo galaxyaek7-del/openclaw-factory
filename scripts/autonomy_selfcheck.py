@@ -154,6 +154,19 @@ def collect(root: Path = ROOT, env=None, health_fn=None, gate_fn=None, autostart
     except Exception as e:  # noqa: BLE001  a broken ledger must not stop the stage check
         rows.append(stage("C1", "connector intake", "WAITING", "unreadable (%s)" % type(e).__name__, "agent"))
 
+    # storefront health guard: what a buyer can see wrong on a live listing
+    lh = _json(root / "data" / "listing_health.json", None)
+    if not lh:
+        rows.append(stage("L1", "storefront health", "WAITING", "no report yet (loop step listing_health writes one daily)", "automatic"))
+    else:
+        sm = lh.get("summary", {})
+        age = _age_minutes(root / "data" / "listing_health.json")
+        stale = age is None or age > 48 * 60
+        bad = sm.get("needs_action", 0)
+        rows.append(stage("L1", "storefront health", "OK" if (not bad and not stale) else "WAITING",
+                          "%s live listings, %s finding(s), %s critical/high%s" % (sm.get("live_listings"), sm.get("findings"), bad, "; report older than 48 h" if stale else ""),
+                          "agent: fix the findings in data/listing_health.json" if bad else "automatic"))
+
     # children's YouTube arm (kids_studio): what each episode still waits for, from the loop step's own status file
     ks = _json(root / "data" / "kids_youtube_status.json", None)
     up = 0

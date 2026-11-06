@@ -113,6 +113,13 @@ def run(now=None):
     for a in rep["approvals_expiring"]:
         if a["hours_left"] <= 12:  # an approval that outlives the next publishing window is not yet a problem
             problems.append(f"approval for {a['product']} expires in {a['hours_left']} h")
+    try:
+        lh = json.loads((ROOT / "data" / "listing_health.json").read_text(encoding="utf-8"))
+        for f in lh.get("findings", []):
+            if f.get("severity") in ("CRITICAL", "HIGH"):
+                problems.append(f"listing {f['slug']}: {f['kind']} ({f['detail']})")
+    except (OSError, ValueError):
+        pass
     rep["agent_problems"] = problems
     return rep
 

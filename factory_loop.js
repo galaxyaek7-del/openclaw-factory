@@ -5441,6 +5441,10 @@ async function runTick() {
     actions.push({ step: 'site_publish', ...(await runOnceScript('auto_publish_site.py', { timeoutMs: 20 * 60 * 1000 })) });
     markStep('indexnow');
     actions.push({ step: 'indexnow', ...(await runOnceScript('indexnow_auto.py')) });
+    // 2026-11-06: storefront health guard (corrupted text, price-0 listings, test titles, duplicates, missing covers):
+    // one read-only list call a day, report in data/listing_health.json. See listing_health.py.
+    markStep('listing_health');
+    actions.push({ step: 'listing_health', ...(await runOnceScript('listing_health_daily.py', { timeoutMs: 4 * 60 * 1000 })) });
     // 2026-10-23: daily product-registry rebuild + listing page checks (read-only).
     markStep('product_registry');
     const registryResult = await runOnceScript('registry_daily.py', { timeoutMs: 15 * 60 * 1000 });
