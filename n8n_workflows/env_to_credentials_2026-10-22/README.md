@@ -222,3 +222,19 @@ reached `server.js`.
 2. Run `python n8n_workflows/env_to_credentials_2026-10-22/apply_fix.py --rollback C:\Users\Dell\.n8n\backup_gf_envfix_20261022_165323`.
 3. Restart `server.js` and `factory_loop.js`: stop each by exact PID, and its
    supervisor respawns it.
+
+## Update 2026-11-06: Telegram relay workflows applied (founder order in chat: "fix n8n from all sides")
+
+The two workflows the first apply skipped (03_Production_Notify, 04_Telegram_Notify) were still failing: 29 of 29 runs
+since 2026-10-23 (`$env` blocked), and nothing watched them. The blocker (the chat id) was gone: the factory's own
+2026-07-18 delivery record held it, and it was restored to `.env`.
+
+`apply_fix.py` was NOT re-run: it re-imports all six files, and its copies of Sales_Poll and Openclaw_Sensing_Engine are
+older than the live ones (the live Sensing webhook has header auth since the later hardening), so it would have
+overwritten that. `apply_telegram_only.py` applies only the two Telegram files and the `GFtelegramBot001` credential:
+database backup, exact-PID stop, credential file deleted in `finally`, import, publish, restart, then a live check
+(unauthenticated call must get 403, authenticated call 200 and a real Telegram message). Result: 403 / 200, n8n
+execution 284 `success` with a Telegram `message_id`. Backup: `~/.n8n/backup_gf_envfix_20261106_131458`.
+
+After the bot token is rotated in BotFather, put the new token in `.env` and run `python apply_telegram_only.py`
+again (it is idempotent and re-imports the credential).

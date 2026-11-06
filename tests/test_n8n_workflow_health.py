@@ -143,3 +143,28 @@ class TestRedaction(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+def test_event_driven_relay_is_ok_after_a_success_and_failing_after_an_error(tmp_path):
+    import sqlite3
+    import sys
+    from datetime import datetime, timezone
+    sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "scripts"))
+    import n8n_workflow_health as h
+    db = tmp_path / "database.sqlite"
+    con = sqlite3.connect(db)
+    con.executescript("create table workflow_entity(id text, name text, active int);"
+                      "create table execution_entity(id integer primary key, workflowId text, status text, startedAt text);"
+                      "create table execution_data(executionId integer, data text);"
+                      "insert into workflow_entity values('w1','04_Telegram_Notify',1);")
+    con.execute("insert into execution_entity(workflowId,status,startedAt) values('w1','error','2026-11-05 19:49:24.000')")
+    con.execute("insert into execution_data values(1,'[]')")
+    con.commit()
+    now = datetime(2026, 11, 6, 13, 0, tzinfo=timezone.utc)
+    r = h.assess(db, now=now, healthz=True, targets={"04_Telegram_Notify": h.TARGETS["04_Telegram_Notify"]})
+    assert r["workflows"]["04_Telegram_Notify"]["verdict"] == "FAILING"
+    con.execute("insert into execution_entity(workflowId,status,startedAt) values('w1','success','2026-11-06 12:30:00.000')")
+    con.execute("insert into execution_data values(2,'[]')")
+    con.commit()
+    r = h.assess(db, now=now, healthz=True, targets={"04_Telegram_Notify": h.TARGETS["04_Telegram_Notify"]})
+    assert r["workflows"]["04_Telegram_Notify"]["verdict"] == "OK"

@@ -44,6 +44,10 @@ TARGETS = {
     "02_Sales_Poll": (timedelta(hours=4), "Poll Sales (server.js Brain)"),
     "Openclaw_Sensing_Engine": (timedelta(days=1), "HTTP Request1"),
     "01_Market_Scout": (None, "HTTP Request"),
+    # event-driven Telegram relays (2026-11-06): no schedule, no server.js node: a run is good when it ended `success`.
+    # They failed 29/29 times from 2026-10-23 (`$env` blocked) and nothing here watched them.
+    "04_Telegram_Notify": (None, None),
+    "03_Production_Notify": (None, None),
 }
 # A run is fresh if it is younger than interval x FRESH_FACTOR (+ grace).
 FRESH_FACTOR = 1.5
@@ -151,10 +155,12 @@ def assess(db_path, now=None, healthz=None, targets=None):
         if success:
             rec["last_success_at"] = success["startedAt"]
             try:
-                payload = _node_output_json(revive_flatted(success["data"]), node) if success["data"] else None
+                payload = _node_output_json(revive_flatted(success["data"]), node) if (node and success["data"]) else None
             except Exception:  # noqa: BLE001
                 payload = None
-            if isinstance(payload, dict) and payload.get("success") is True:
+            if node is None:  # event-driven relay: an execution that ended `success` is the business result
+                rec["business_op"] = "OK"
+            elif isinstance(payload, dict) and payload.get("success") is True:
                 rec["business_op"] = "OK"
             elif isinstance(payload, dict):
                 rec["business_op"] = "FAILED"
