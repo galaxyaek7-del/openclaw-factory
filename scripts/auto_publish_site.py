@@ -21,6 +21,7 @@ import argparse
 import json
 import os
 import re
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -71,7 +72,7 @@ def is_ignored(path):
 
 
 def run_gate(tree_dir):
-    env = dict(os.environ, CI="true", PYTHONIOENCODING="utf-8")
+    env = dict(os.environ, CI="true", PYTHONIOENCODING="utf-8", NODE_PATH=str(ROOT / "node_modules"))
     steps = [[sys.executable, "scripts/scan_for_secrets.py"],
              [sys.executable, "-m", "pytest", "-q", *SITE_TESTS_PY],
              ["node", "--test", *SITE_TESTS_JS]]
@@ -112,21 +113,99 @@ def write_state(s):
     os.replace(tmp, STATE)
 
 
+SITE_PATHSPEC = ["customer_site", "sitemap.xml", "robots.txt", "c8742f1da91ebe577587681839ae0004.txt"]
+
+
+def site_changes(base, head):
+    """Committed changes on OUR side (base..head) restricted to site paths: [(status, path)]. No renames: A/M/D only."""
+    out = git("diff", "--name-status", "--no-renames", base, head, "--", *SITE_PATHSPEC)
+    return [tuple(l.split("	", 1)) for l in out.splitlines() if "	" in l]
+
+
+def conflicting_paths(base, origin, changes):
+    """Paths we changed that origin ALSO changed since the merge base: never overwritten."""
+    bad = []
+    for _st, path in changes:
+        if subprocess.run(["git", "diff", "--quiet", base, origin, "--", path], cwd=ROOT).returncode != 0:
+            bad.append(path)
+    return bad
+
+
+def tree_publish(origin, head, dry_run=False, n_commits=0):
+    """Publish only the committed site-file differences, on top of origin/main, from a clean worktree.
+
+    Used when the unpublished range also contains non-site commits (code, reports): those stay local, exactly as the
+    range review demands, but they no longer block new site pages forever. Same guarantees as the range path: site
+    paths only, no product-like binary, nothing .gitignore excludes, fast-forward only (the new commit's parent is
+    origin/main), secret scan and site tests must pass in the worktree, never --force."""
+    base = git("merge-base", origin, head).strip()
+    changes = site_changes(base, head)
+    # a file whose content on origin already equals ours (published earlier in tree mode) is done, not a conflict
+    changes = [c for c in changes
+               if subprocess.run(["git", "diff", "--quiet", origin, head, "--", c[1]], cwd=ROOT).returncode != 0]
+    if not changes:
+        return {"action": "none", "detail": f"{n_commits} unpublished commits, none changes a site file"}
+    ok, why = review_range([(head, changes)], is_ignored)
+    if not ok:
+        return {"action": "none", "detail": f"site changes held: {why}"}
+    bad = conflicting_paths(base, origin, changes)
+    if bad:
+        return {"action": "blocked", "detail": f"origin/main changed the same site file(s) since the merge base: {bad[:3]}"}
+    if dry_run:
+        return {"action": "dry_run", "detail": f"would publish {len(changes)} site file(s) in tree mode: {[c[1] for c in changes[:5]]}"}
+    wt = tempfile.mkdtemp(prefix="gf_sitepub_")
+    try:
+        git("worktree", "add", "--detach", wt, origin)
+        for status, path in changes:
+            target = Path(wt) / path
+            if status[0] == "D":
+                target.unlink(missing_ok=True)
+            else:
+                blob = subprocess.run(["git", "show", f"{head}:{path}"], cwd=ROOT, capture_output=True, check=True).stdout
+                target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_bytes(blob)
+        wgit = lambda *a: subprocess.run(["git", "-C", wt, *a], capture_output=True, text=True, encoding="utf-8", errors="replace")  # noqa: E731
+        added = wgit("add", "-A", "--", *[path for _st, path in changes])  # only paths that changed: an absent pathspec fails the whole add
+        if added.returncode != 0:
+            raise RuntimeError(f"worktree add failed: {added.stderr.strip()[:200]}")
+        if wgit("diff", "--cached", "--quiet").returncode == 0:
+            return {"action": "none", "detail": "site files already identical on origin/main"}
+        c = wgit("commit", "-q", "-m", f"Site: automatic publish of {len(changes)} committed site file(s) (tree mode, nothing else included)")
+        if c.returncode != 0:
+            raise RuntimeError(f"worktree commit failed: {c.stderr.strip()[:200]}")
+        ok, why = run_gate(wt)
+        if not ok:
+            return {"action": "blocked", "detail": f"gate failed, not pushed: {why}"}
+        new = wgit("rev-parse", "HEAD").stdout.strip()
+        pushed = wgit("push", "origin", f"{new}:refs/heads/main")
+        if pushed.returncode != 0:
+            raise RuntimeError(f"git push failed: {pushed.stderr.strip()[:200]}")
+        write_state({**read_state(), "last_push": {"sha": new, "origin_before": origin, "commits": len(changes), "mode": "tree"}})
+        return {"action": "pushed", "detail": f"{len(changes)} site file(s) pushed in tree mode ({new[:7]}); {why}"}
+    finally:
+        subprocess.run(["git", "worktree", "remove", "--force", wt], cwd=ROOT, capture_output=True)
+        subprocess.run(["git", "worktree", "prune"], cwd=ROOT, capture_output=True)
+        shutil.rmtree(wt, ignore_errors=True)
+
+
 def run(dry_run=False):
     git("fetch", "-q", "origin", "main")
     origin, head = git("rev-parse", "origin/main").strip(), git("rev-parse", "main").strip()
     if origin == head:
         return {"action": "none", "detail": "nothing to publish (main == origin/main)"}
-    if subprocess.run(["git", "merge-base", "--is-ancestor", origin, head], cwd=ROOT).returncode != 0:
-        return {"action": "blocked", "detail": "main and origin/main have diverged; not a fast-forward, never forced"}
+    fast_forward = subprocess.run(["git", "merge-base", "--is-ancestor", origin, head], cwd=ROOT).returncode == 0
     state = read_state()
     last = state.get("last_push")
     if last and last.get("origin_before") is not None and origin == last.get("sha"):
         if ci_conclusion(last["sha"]) == "failure":
             return {"action": "blocked", "detail": f"CI failed for the last automatic push {last['sha'][:7]}; waiting for a manual fix"}
+    if not fast_forward:  # origin has commits main lacks (an earlier tree-mode push): only the site-file difference can go
+        return tree_publish(origin, head, dry_run, 0)
     commits = [(c, changed_paths(c)) for c in git("rev-list", "--reverse", f"{origin}..{head}").split()]
     ok, why = review_range(commits, is_ignored)
     if not ok:
+        if "not a site page" in why:  # only non-site commits hold the range: publish just the site-file difference
+            return tree_publish(origin, head, dry_run, len(commits))
         return {"action": "none", "detail": f"{len(commits)} unpublished commits; {why}"}
     with tempfile.TemporaryDirectory() as d:
         subprocess.run(f'git archive {head} | tar -x -C "{d}"', cwd=ROOT, shell=True, check=True)
