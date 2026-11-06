@@ -99,6 +99,13 @@ def run(now=None):
         "git": git_counts(),
     }
     try:
+        import agent_kpis
+        ak = agent_kpis.gather(now)
+        rep["agents"] = {"cost_usd": ak["total_cost_usd"], "llm_calls": ak["llm_calls"],
+                         "flagged": {r["agent"]: r["flags"] for r in ak["agents"] if r["flags"]}}
+    except Exception as e:  # noqa: BLE001
+        rep["agents"] = {"error": type(e).__name__}
+    try:
         import company_scorecard
         sc = company_scorecard.score(company_scorecard.evaluate(*company_scorecard.gather(now)))
         rep["company_automation"] = {"percent": sc["percent"], "automatic_or_gated": sc["automatic_or_gated"], "of": sc["capabilities"]}
@@ -144,7 +151,7 @@ def main(argv=None):
         if rec:
             L += ["", "Recovered in the last 24 h (failed, then ran fine): " + ", ".join(f"{f['step']} x{f['failures']}" for f in rec)]
         L += ["", f"Connector intake: newest {rep['connector_intake']['newest_age_hours']} h, pin outbound clicks {rep['connector_intake']['pin_outbound_clicks']}",
-              f"Git: {rep['git']}", f"Company automation: {rep.get('company_automation')}"]
+              f"Git: {rep['git']}", f"Company automation: {rep.get('company_automation')}", f"Agents: {rep.get('agents')}"]
         sys.stdout.buffer.write(("\n".join(L) + "\n").encode("utf-8"))
     return 1 if rep["agent_problems"] else 0
 
