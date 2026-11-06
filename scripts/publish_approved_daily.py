@@ -52,13 +52,32 @@ def _batch_of(manifest, batches):
     return None
 
 
+def _live_published_ids(results_path):
+    """Ids the batch results file already records as a LIVE PASS. The product registry is rebuilt once a day, so a product published
+    mid-day stays READY_FOR_AUTHORIZATION there; without this every loop tick tried to publish it again (blocked by the duplicate
+    guard, but noisy and one guard away from a duplicate listing; seen 2026-11-06 with B17-001 at 17:36 and 17:38)."""
+    ids = set()
+    try:
+        doc = json.loads(Path(results_path).read_text(encoding="utf-8"))
+    except (OSError, ValueError, TypeError):
+        return ids
+    for run in doc if isinstance(doc, list) else []:
+        if not isinstance(run, dict) or str(run.get("mode", "")).upper() != "LIVE":
+            continue
+        for r in run.get("results") or []:
+            if isinstance(r, dict) and r.get("status") == "PASS" and r.get("product_id"):
+                ids.add(r.get("id"))
+    return ids
+
+
 def candidates(registry, batches):
     out = {}
+    done = {name: _live_published_ids(res) for name, (_folder, res) in batches.items()}
     for p in (registry or {}).get("products", []):
         if p.get("primary_state") != "READY_FOR_AUTHORIZATION" or not p.get("manifest"):
             continue
         b = _batch_of(p["manifest"], batches)
-        if b:
+        if b and p["internal_id"] not in done.get(b, set()):
             out.setdefault(b, []).append(p["internal_id"])
     return out
 

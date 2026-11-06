@@ -162,3 +162,19 @@ def test_reopen_daily_followups_clears_only_the_day_marker(tmp_path):
     d = json.loads((tmp_path / "indexnow_auto.json").read_text(encoding="utf-8"))
     assert d["last_day"] is None and d["submitted"] == {"a": 1}
     assert pad.reopen_daily_followups(tmp_path) == []
+
+
+def test_a_product_already_live_pass_is_not_a_candidate_again(tmp_path):
+    import json
+    import publish_approved_daily as pad
+    res = tmp_path / "res.json"
+    res.write_text(json.dumps([{"mode": "LIVE", "results": [{"id": "B1-001", "status": "PASS", "product_id": "abc"}]},
+                               {"mode": "LIVE", "results": [{"id": "B1-002", "status": "BLOCKED"}]},
+                               {"mode": "DRY", "results": [{"id": "B1-003", "status": "PASS", "product_id": "zzz"}]}]), encoding="utf-8")
+    folder = tmp_path / "b1"
+    (folder / "x").mkdir(parents=True)
+    reg = {"products": [{"internal_id": i, "primary_state": "READY_FOR_AUTHORIZATION", "manifest": str(folder / "x" / "m.json")}
+                        for i in ("B1-001", "B1-002", "B1-003")]}
+    out = pad.candidates(reg, {"b1": (str(folder), str(res))})
+    assert out == {"b1": ["B1-002", "B1-003"]}
+    assert pad.candidates(reg, {"b1": (str(folder), str(tmp_path / "missing.json"))}) == {"b1": ["B1-001", "B1-002", "B1-003"]}
