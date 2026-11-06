@@ -391,7 +391,7 @@ footer{border-top:1px solid var(--border-soft); padding:3rem 0 2.5rem;}
           <p style="font-size:.9rem;color:var(--ink-dim);">Not ready to describe it yet? <a href="interest.html" style="color:var(--cool);">Register interest instead</a> — a real signal we track, not a mailing list.</p>
         </div>
         <form class="request-form" id="requestForm">
-          <input type="text" name="website" class="hp-field" tabindex="-1" autocomplete="off">
+          <input type="text" name="website" class="hp-field" tabindex="-1" autocomplete="off" aria-hidden="true">
           <input type="hidden" name="product_id" id="f-product-id" value="">
           <div class="field-row">
             <div class="field"><label for="f-name">Name *</label><input id="f-name" name="name" type="text" required maxlength="200"></div>
@@ -414,7 +414,7 @@ footer{border-top:1px solid var(--border-soft); padding:3rem 0 2.5rem;}
           <div class="consult-box" id="consultBox" style="display:none;">
             <div class="consult-log" id="consultLog"></div>
             <div class="consult-input-row">
-              <input id="consultInput" type="text" maxlength="500" placeholder="Describe your problem in a sentence or two…">
+              <input id="consultInput" type="text" maxlength="500" placeholder="Describe your problem in a sentence or two…" aria-label="Describe your problem in a sentence or two…">
               <button type="button" class="btn btn-ghost" id="consultSend">Ask</button>
             </div>
           </div>
@@ -467,7 +467,7 @@ footer{border-top:1px solid var(--border-soft); padding:3rem 0 2.5rem;}
           <div class="request-note"><div class="mark">✓</div><p><strong style="color:var(--ink);">Real triage.</strong> Tickets are logged for founder review — see our <a href="trust/incident-disclosure-policy.html" style="color:var(--cool);">Incident Disclosure Policy</a> for how we handle anything serious.</p></div>
         </div>
         <form class="support-form" id="supportForm">
-          <input type="text" name="website" class="hp-field" tabindex="-1" autocomplete="off">
+          <input type="text" name="website" class="hp-field" tabindex="-1" autocomplete="off" aria-hidden="true">
           <div class="field-row">
             <div class="field"><label for="s-name">Name *</label><input id="s-name" name="name" type="text" required maxlength="200"></div>
             <div class="field"><label for="s-email">Email *</label><input id="s-email" name="email" type="email" required maxlength="200"></div>
