@@ -1,0 +1,11 @@
+{
+  "_comment": "Founder-approved decision rule (2026-11-06): thresholds are DECISIONS written in advance, not forecasts. 'Not measured' is never counted as a miss: a checkpoint with unmeasured clicks reports UNKNOWN and asks for the measurement to be fixed. Pins started publishing 2026-11-06.",
+  "checkpoints": [
+    {"id": "C1", "date": "2026-11-27", "min_pin_clicks": 5, "min_sales": 0,
+     "if_missed": "Pins reach nobody or point at the wrong products: review the pin text and images, concentrate the pins on the 5 strongest tools for one buyer, check that clicks are measured at all."},
+    {"id": "C2", "date": "2026-12-11", "min_pin_clicks": 25, "min_sales": 1, "either": true,
+     "if_missed": "Traffic or conversion is not there: change positioning or price of the top tools (one change at a time, recorded), and put the founder-gated service path (Umrah-agency demo outreach) first."},
+    {"id": "C3", "date": "2027-01-08", "min_pin_clicks": 0, "min_sales": 1,
+     "if_missed": "Founder decision: stop adding tools, keep only the channels that produced a measured click, and move the effort to the service arm."}
+  ]
+}

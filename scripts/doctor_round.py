@@ -147,6 +147,18 @@ def run(now=None):
             problems.append(f"data integrity: {f} has {n} bad line(s) (new or grown)")
     except Exception:  # noqa: BLE001  the integrity scan must never stop the round
         pass
+    try:
+        import funnel_report
+        fr = funnel_report.report(now.date())
+        rep["funnel"] = {"pins_due": fr["pins_due_by_today"], "pin_clicks": fr["pin_outbound_clicks"], "clicks_measured": fr["pin_clicks_measured"], "sales": fr["sales"],
+                         "checkpoints": {c["id"]: c["verdict"] for c in fr["checkpoints"]}}
+        for c in fr["checkpoints"]:
+            if c["verdict"] == "TRIGGERED":
+                rep["needs_founder"].append({"stage": "kill criterion " + c["id"], "need": "founder decision: " + c["if_missed"]})
+            elif c["verdict"] == "UNKNOWN":
+                problems.append("kill criterion " + c["id"] + " cannot be judged: pin clicks are not measured (fix the Metricool/connector measurement)")
+    except Exception:  # noqa: BLE001  the funnel must never stop the round
+        pass
     rep["agent_problems"] = problems
     return rep
 
