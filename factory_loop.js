@@ -4840,6 +4840,21 @@ function opsDailyRecordPath(now) {
 async function maybeRunDailyOpsControl(now = new Date()) {
   const datedPath = opsDailyRecordPath(now);
   if (fs.existsSync(datedPath)) {
+    // 2026-11-06: a record written while the host's network was down (website/gumroad "unreachable") is refreshed,
+    // up to 3 times, 2h apart. Real findings never trigger this. See lib/ops_retry.js.
+    try {
+      const { shouldRerunOpsRecord } = require('./lib/ops_retry');
+      const counterPath = `${datedPath}.reruns`;
+      let rerunsDone = 0;
+      try { rerunsDone = parseInt(fs.readFileSync(counterPath, 'utf8'), 10) || 0; } catch (_) { /* none yet */ }
+      const record = JSON.parse(fs.readFileSync(datedPath, 'utf8'));
+      const decision = shouldRerunOpsRecord(record, { recordMtimeMs: fs.statSync(datedPath).mtimeMs, nowMs: now.getTime(), rerunsDone });
+      if (decision.rerun) {
+        fs.writeFileSync(counterPath, String(rerunsDone + 1));
+        const r = await runOpsDailyControl();
+        return { ...r, detail: `إعادة فحص ${rerunsDone + 1}/3 (فشل شبكي عابر): ${r.detail || ''}` };
+      }
+    } catch (_) { /* a broken record must not break the tick: fall through to the normal skip */ }
     return { action: 'none', detail: `سجل عمليات اليوم موجود بالفعل: ${path.basename(datedPath)}` };
   }
   return runOpsDailyControl();
