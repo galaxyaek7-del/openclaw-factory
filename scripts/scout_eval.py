@@ -122,6 +122,14 @@ def call(system, user, max_tokens=3000, attempts=3):
     raise last
 
 
+def QA_SYS(variant, v1_system):
+    """A is judged by the live v1 QA persona; B and C by the reviewer matched to the v2 brief format."""
+    if variant == "A":
+        return v1_system
+    return subprocess.run(["node", "-e", "process.stdout.write(require('./lib/scout_brief_v2').QA_V2_SYSTEM)"], cwd=str(ROOT),
+                          capture_output=True, text=True, encoding="utf-8").stdout
+
+
 def run():
     inputs = build_inputs()
     pr = node("prompts", inputs)
@@ -139,7 +147,7 @@ def run():
     for p in parsed:
         if p["qa_user"]:
             try:
-                qa_text = call(pr["qa_system"], p["qa_user"], max_tokens=1500)
+                qa_text = call(QA_SYS(by_id[p["id"]]["variant"], pr["qa_system"]), p["qa_user"], max_tokens=1500)
             except Exception as e:  # noqa: BLE001
                 qa_text = ""
             qa_in.append({"id": p["id"], "variant": by_id[p["id"]]["variant"], "text": by_id[p["id"]]["text"], "qa_text": qa_text})

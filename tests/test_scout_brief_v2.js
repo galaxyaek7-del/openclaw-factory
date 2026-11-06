@@ -19,6 +19,7 @@ assert.ok(c.scoutContract(good.replace('$29', '$99')), 'v1 contract is unchanged
 c = rc('v2');
 assert.ok(c.researchSteps()[0].config.system.includes('Excel workbooks'), 'flag selects v2 system prompt');
 assert.ok(c.scoutContract(good).brief.price === 29);
+assert.ok(c.researchSteps()[1].config.system.includes('BRIEF'), 'flag also selects the matched QA reviewer');
 assert.strictEqual(c.scoutContract('##TITLE##\nNONE\n##TOPIC##\nx'), null, 'a decline never becomes a brief');
 rc(undefined);
 console.log('test_scout_brief_v2: ok');
