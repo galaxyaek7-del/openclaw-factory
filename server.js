@@ -88,6 +88,9 @@ app.use((req, res, next) => {
 app.use((req, res, next) => {
   if (req.path.startsWith('/attribution')) return next();
   if (req.path.startsWith('/health') || req.path === '/favicon.ico') return next();
+  // 2026-11-06: only a person navigating to a page is a view. API calls, the loop's own polling (X-Internal-Token),
+  // loopback requests and assets are not: they filled the ledger with 64k fake "REAL" views. lib/attribution_filter.js
+  if (!require('./lib/attribution_filter').shouldAutoTrack(req)) return next();
   try {
     let src = 'unknown';
     if (req.query && req.query.source) src = String(req.query.source);
