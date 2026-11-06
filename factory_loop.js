@@ -5436,6 +5436,9 @@ async function runTick() {
     actions.push({ step: 'demand_sensing', ...(await runDemandSensingStep()) });
     markStep('agent_product_chain');
     actions.push({ step: 'agent_product_chain', ...(await runAgentProductChain()) });
+    // 2026-11-06: research-only Scout->QA run once a day while production is frozen (keeps the agents' KPIs alive; publishes nothing).
+    markStep('research_chain_daily');
+    actions.push({ step: 'research_chain_daily', ...(await runOnceScript('research_chain_daily.py', { timeoutMs: 6 * 60 * 1000 })) });
 
     markStep('site_publish');
     actions.push({ step: 'site_publish', ...(await runOnceScript('auto_publish_site.py', { timeoutMs: 20 * 60 * 1000 })) });
