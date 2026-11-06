@@ -49,7 +49,7 @@
   "5_DISTRIBUTION_AUDIT_BEFORE_CREATING_ANYTHING": {
     "free_copy_offer": {"status": "PASS", "pages_offering_it": 4, "mailto_links": 10, "distinct_addresses": ["galaxyaek7@gmail.com"], "consistent": true, "subjects_prefilled": "8 of 10", "finding": "the zero-friction path to a first real human is wired consistently and was never found broken. No fix was needed and none was invented."},
     "existing_articles": {"in_ledger": 26, "with_a_live_gumroad_CTA": 22, "with_NO_product_link": 4},
-    "total_measured_lifetime_reads": {"value": 320, "source": "getPage.views summed live across 26 articles", "OBSERVED": true, "up_from": 294 before this cycle's two new articles"},
+    "total_measured_lifetime_reads": {"value": 320, "source": "getPage.views summed live across 26 articles", "OBSERVED": true, "up_from": "294 before this cycle's two new articles"},
     "paid_orders_attributable_to_any_of_them": 0,
     "nothing_new_was_published_this_cycle_before_the_audit": true
   },

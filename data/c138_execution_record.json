@@ -69,7 +69,7 @@
     "INFERRED_NOT_OBSERVED": "that category placement improves discovery is INFERRED. Gumroad's own search and discover pages render client-side and could not be scraped, so no impression or click evidence exists either way. The misconfiguration itself is OBSERVED; its revenue effect is not."
   },
 
-  "6_STRONGEST_PRODUCT_CANDIDATES_WITH_EVIDENCE": [
+  "6_STRONGEST_PRODUCT_CANDIDATES_WITH_EVIDENCE": {"candidates": [
     {"rank": 1, "slug": "iaiyt", "price": "$155", "evidence": "highest score on verifiable facts: 106,314-byte deliverable, 4,085-char description, disclaimer present, link present, category out of 'other', 3 cover images, 19 tags, is_compliance_blocked false, InStock", "caveat": "it is also our most complete sales surface AND it has sold 0, which is direct evidence that presentation alone has not converted anything"},
     {"rank": 2, "slug": "bfhpzl", "price": "$79", "evidence": "largest real deliverable in the catalogue at 173,373 bytes, 2,458-char description with disclaimer, reachable cheaper alternative at $49, category out of 'other', and it holds storefront position 1 - the only channel measured to place us in front of buyers"},
     {"rank": 3, "slug": "sjrjxq", "price": "$49", "evidence": "10,065-byte deliverable, storefront position 2, now out of 'other' - the cheapest step into the same problem, which matters for a buyer with a real but uncertain problem"}

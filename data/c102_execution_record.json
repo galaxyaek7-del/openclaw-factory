@@ -113,8 +113,8 @@
     "payment_completes": "UNKNOWN",
     "account_accepts_payments": "UNKNOWN",
     "account_receives_payouts": "UNKNOWN",
-    "new_spend": "PASS - \$0.00",
-    "verified_revenue": "\$0.00"
+    "new_spend": "PASS - $0.00",
+    "verified_revenue": "$0.00"
   },
 
   "remaining_blockers_requiring_owner": [

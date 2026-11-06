@@ -27,7 +27,7 @@
    "quality_method": "inspectors.py Dual Inspection (page count, dimensions, empty pages, placeholder scan) + read-through"
   },
   "input": "Buyer Word manuscripts + trim/page-count/image answers + KDP-experience note + real prior-format sample (books/eu_ai_act_compliance_toolkit.pdf)",
-  "opening": "I typeset print-ready KDP interiors from finished manuscripts ‚Äî clean typography, correct trim and margins, QA-checked page by page. Two books, one week, fixed scope.",
+  "opening": "I typeset print-ready KDP interiors from finished manuscripts √¢‚Ç¨‚Äù clean typography, correct trim and margins, QA-checked page by page. Two books, one week, fixed scope.",
   "price_hypothesis": "\\-90 fixed for both books (inside buyer \\-100; reflects ~6-9h pipeline-assisted + QA work)",
   "understanding": "Buyer (Rosenberg US, 5.0/16, verified payment) has 2 finished proof-read Word manuscripts; needs Kindle + paperback interiors meeting all KDP specs, plus hand-off guide. Bid must include KDP-experience note + prior-format sample.",
   "assumptions": [
@@ -48,9 +48,9 @@
    "Biddable status confirmed (page currently reads In Progress)"
   ],
   "risks": [
-   "Award-risk: page shows In Progress ó may already be awarded; confirm biddable first",
+   "Award-risk: page shows In Progress ‚Äî may already be awarded; confirm biddable first",
    "Complex tables/images unknown until files seen (clarification gate)",
-   "40 competing proposals ó win-rate low",
+   "40 competing proposals ‚Äî win-rate low",
    "Revision creep beyond one round (bounded explicitly)"
   ],
   "quality_checks": [
@@ -60,7 +60,7 @@
    "Price inside buyer range, effort-backed",
    "Timeline 5 days realistic pipeline-assisted",
    "Assumptions/exclusions explicit",
-   "No fabricated credentials ó sample is real existing PDF",
+   "No fabricated credentials ‚Äî sample is real existing PDF",
    "Revisions bounded to one round",
    "Deliverable with existing pipeline: YES"
   ]
@@ -85,12 +85,12 @@
  },
  "founder_gate": {
   "account": "same Freelancer bidding identity as lead-gen packet (single consolidated identity decision)",
-  "precondition": "confirm listing still biddable (page reads In Progress ó if awarded, stand down, no submit)",
+  "precondition": "confirm listing still biddable (page reads In Progress ‚Äî if awarded, stand down, no submit)",
   "what": "submit prepared KDP bid (\\-90) + experience note + real sample via own session",
   "authentication": "founder-owned session only; factory never touches credentials",
   "payment_authorization": "none (buyer pays on delivery via escrow)",
   "after_submit": "factory resumes public-page monitoring; buyer reply (if any) relayed by founder"
  },
  "opportunity_id": "OPP-KDP-TYPESET-001",
- "status": "SUPERSEDED 2026-10-01 ó awarded elsewhere (closed_awarded); prepared bid never submitted; retained as reusable template"
+ "status": "SUPERSEDED 2026-10-01 ‚Äî awarded elsewhere (closed_awarded); prepared bid never submitted; retained as reusable template"
 }

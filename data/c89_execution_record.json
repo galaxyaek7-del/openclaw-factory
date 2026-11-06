@@ -31,7 +31,7 @@
       "tests/test_gf_pageview.js - 13 tests, all passing"
     ],
     "modified": "58 customer_site/*.html pages: the silent inline beacon was removed and replaced with a single <script src=\"assets/gf-pageview.js\" defer></script> placed outside any <script> element",
-    "pages_not_touched": 3 (they carried no beacon)",
+    "pages_not_touched": "3 (they carried no beacon)",
     "migration_safety": {
       "dry_run_first": "the first regex attempt matched only 3 of 61 and was discarded",
       "balanced_paren_scanner": "regex cannot handle .catch(()=>{}) / .catch(function(){}) because of nested parens; the final scanner walks balanced parentheses",

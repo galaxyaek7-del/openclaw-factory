@@ -51,7 +51,7 @@
   "6_PROVEN_DEFECT_FOUND_AND_FIXED_THE_FUNNEL_GAP": {
     "measured": {"article_links_to_the_49_triage": true, "article_links_to_the_79_bundle": false},
     "why_it_matters": "the article's entire purpose is helping a reader decide whether they are allowed to appeal. A reader who concludes 'permanent, I can appeal' is exactly the buyer for the appeal kit, and the article gave them no way to buy it. The article was resolving the triage question and dropping the step-two buyer.",
-    "fix": "one paragraph inserted before the honesty block, pointing to the \$79 bundle with the same utm_campaign=c82_entry and a distinct utm_content=etsy_permanent_appeal_path",
+    "fix": "one paragraph inserted before the honesty block, pointing to the $79 bundle with the same utm_campaign=c82_entry and a distinct utm_content=etsy_permanent_appeal_path",
     "safety": "the read went through lib.telegraph_safe_edit.read_page which always sends return_content=true, and the write was refused-safe by design. 15 nodes read, 16 sent, 16 read back - the short-read-back guard would have raised.",
     "verified_live": ["PERMANENT suspension", "/l/sjrjxq", "/l/bfhpzl", "c82_entry", "not allowed to appeal", "Straight with you"],
     "minimal_change": "one paragraph, nothing else in the article touched"
@@ -66,16 +66,16 @@
     "head": "d99c404, branch main, in sync with origin/main",
     "ci": "IN PROGRESS - run 38459591833. Not declared passed.",
     "pages": "PASS - completed success",
-    "product": "PASS - \$79, published, 6-part archive verified from the live buyer URL",
+    "product": "PASS - $79, published, 6-part archive verified from the live buyer URL",
     "purchase_path": "page and checkout reachable (HTTP 200). Live charge UNKNOWN - never attempted, no fake order.",
-    "payouts": "UNKNOWN eligibility, \$0.00 withdrawn OBSERVED. No bank or sensitive setting was touched.",
-    "article": "PASS - link present, points at the correct \$49 product, UTMs correct, 5 reads observed",
+    "payouts": "UNKNOWN eligibility, $0.00 withdrawn OBSERVED. No bank or sensitive setting was touched.",
+    "article": "PASS - link present, points at the correct $49 product, UTMs correct, 5 reads observed",
     "deliverable": "PASS after my own false alarm was corrected",
     "orders": 0,
-    "revenue": "\$0.00",
+    "revenue": "$0.00",
     "refunds": "UNKNOWN - no API field",
-    "VERIFIED_REVENUE": "\$0.00",
-    "TOTAL_NEW_SPEND": "\$0.00",
+    "VERIFIED_REVENUE": "$0.00",
+    "TOTAL_NEW_SPEND": "$0.00",
     "first_sale": "NOT YET"
   },
 
