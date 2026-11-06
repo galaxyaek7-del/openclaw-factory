@@ -91,3 +91,21 @@
     fail();
   }
 })();
+
+/* Outbound attribution (2026-11-06). Links from this site to the Gumroad store carry utm_source=site so a click or sale can be
+ * traced to the page it came from. Pure client-side link tagging: nothing is sent anywhere, links that already have a utm_source
+ * (pins, campaigns) are left alone, and any failure is swallowed so the page is never affected. */
+(function () {
+  'use strict';
+  try {
+    if (typeof document === 'undefined' || !document.querySelectorAll) return;
+    var slug = (location.pathname || '').split('/').pop().replace(/\.html?$/, '').replace(/[^a-z0-9_-]/gi, '').slice(0, 60) || 'home';
+    var links = document.querySelectorAll('a[href^="https://aekraft.gumroad.com/l/"]');
+    for (var i = 0; i < links.length; i++) {
+      var href = links[i].getAttribute('href') || '';
+      if (href.indexOf('utm_source=') !== -1) continue;
+      links[i].setAttribute('href', href + (href.indexOf('?') === -1 ? '?' : '&') +
+        'utm_source=site&utm_medium=organic&utm_campaign=' + slug);
+    }
+  } catch (e) { /* never throw */ }
+})();
