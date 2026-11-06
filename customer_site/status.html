@@ -85,7 +85,7 @@ main{padding:3.5rem 0 5rem;}
 .evidence-list li::before{content:"— "; color:var(--ink-faint);}
 
 .contract-box{background:var(--bg-card); border:1px solid var(--border-soft); border-radius:9px; padding:1.1rem; display:flex; flex-direction:column; gap:.7rem; font-size:.85rem; color:var(--ink-dim);}
-.contract-box h4{font-size:.78rem; text-transform:uppercase; letter-spacing:.04em; color:var(--ink-faint); margin:0;}
+.contract-box h3,.contract-box h4{font-size:.78rem; text-transform:uppercase; letter-spacing:.04em; color:var(--ink-faint); margin:0;}
 .contract-box .term{padding-bottom:.6rem; border-bottom:1px solid var(--border-soft);}
 .contract-box .term:last-child{border-bottom:none; padding-bottom:0;}
 .contract-box .draft-note{color:var(--accent-ink);}
@@ -136,7 +136,7 @@ main{padding:3.5rem 0 5rem;}
     <div class="eyebrow"><span>●</span> Order Tracking &amp; Customer Dashboard</div>
 
     <div id="lookupCard" class="lookup-card" style="display:none;">
-      <h2>Track a request</h2>
+      <h1 style="font-size:1.5em;">Track a request</h1>
       <p style="color:var(--ink-dim); font-size:.9rem;">Paste the request ID from your submission confirmation.</p>
       <input id="lookupInput" placeholder="req_xxxxxxxxxxxxxxxx" autocomplete="off" aria-label="Request ID">
       <button id="lookupBtn" class="btn btn-primary">Track request →</button>
@@ -163,7 +163,7 @@ main{padding:3.5rem 0 5rem;}
         <ul class="evidence-list" id="evidenceList"></ul>
 
         <div id="contractBox" class="contract-box" style="display:none;">
-          <h4>Contract terms</h4>
+          <h3>Contract terms</h3>
           <div id="contractTerms"></div>
         </div>
 
@@ -181,7 +181,7 @@ main{padding:3.5rem 0 5rem;}
       </div>
 
       <div id="invoiceBox" class="contract-box" style="display:none;">
-        <h4>Invoice</h4>
+        <h3>Invoice</h3>
         <div id="invoiceBody"></div>
       </div>
 
@@ -190,7 +190,7 @@ main{padding:3.5rem 0 5rem;}
       </div>
 
       <div id="reviewBox" class="contract-box" style="display:none;">
-        <h4>Leave a review</h4>
+        <h3>Leave a review</h3>
         <div id="reviewStars" style="font-size:1.4rem; letter-spacing:.15em; cursor:pointer;"></div>
         <textarea id="reviewText" maxlength="1000" placeholder="Optional — tell us how it went…" style="font-family:inherit; font-size:.88rem; background:var(--bg-elev); border:1px solid var(--border); color:var(--ink); border-radius:8px; padding:.7rem .85rem; width:100%; min-height:70px; resize:vertical;" aria-label="Optional — tell us how it went…"></textarea>
         <button id="reviewSubmitBtn" class="btn btn-primary" disabled>Submit review</button>

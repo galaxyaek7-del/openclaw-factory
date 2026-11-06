@@ -109,3 +109,22 @@
     }
   } catch (e) { /* never throw */ }
 })();
+
+/* Hosted visit counter hook (2026-11-06). GitHub Pages cannot receive the beacon above, so real visit counts need a hosted counter.
+ * GF_COUNTER_CODE is empty until the founder creates a free GoatCounter site (https://www.goatcounter.com, privacy-friendly, no cookies)
+ * and gives its code; then set it here ONCE and every page that loads this file starts counting. Empty = disabled, nothing loads. */
+(function () {
+  'use strict';
+  var GF_COUNTER_CODE = '';
+  try {
+    if (!GF_COUNTER_CODE || !/^[a-z0-9-]{2,40}$/.test(GF_COUNTER_CODE)) return;
+    if (typeof document === 'undefined' || !document.createElement) return;
+    var ua = (navigator && navigator.userAgent) ? navigator.userAgent.toLowerCase() : '';
+    if (/bot|crawl|spider|headless|phantomjs|selenium|puppeteer|playwright/.test(ua)) return;
+    var s = document.createElement('script');
+    s.async = true;
+    s.src = 'https://gc.zgo.at/count.js';
+    s.setAttribute('data-goatcounter', 'https://' + GF_COUNTER_CODE + '.goatcounter.com/count');
+    document.head.appendChild(s);
+  } catch (e) { /* never throw */ }
+})();
