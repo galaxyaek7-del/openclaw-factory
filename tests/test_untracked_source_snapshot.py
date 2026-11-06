@@ -33,3 +33,15 @@ def test_secret_blocks_the_snapshot(tmp_path):
     (tmp_path / "leak.py").write_text("K = 'gsk_" + "a" * 30 + "'")
     r = u.snapshot(tmp_path, "local/test")
     assert r["action"] == "blocked" and "leak.py" in r["detail"]
+
+
+def test_product_generators_are_source_but_products_are_not(tmp_path):
+    g = _repo(tmp_path)
+    (tmp_path / "books" / "_batch17_src").mkdir(parents=True)
+    (tmp_path / "books" / "_batch17_src" / "r02.py").write_text("x = 1")
+    (tmp_path / "books" / "batch17" / "B17-002").mkdir(parents=True)
+    (tmp_path / "books" / "batch17" / "B17-002" / "gen.py").write_text("y = 2")
+    r = u.snapshot(tmp_path, "local/test")
+    assert r["action"] == "snapshot"
+    assert g("cat-file", "-e", "local/test:books/_batch17_src/r02.py").returncode == 0
+    assert g("cat-file", "-e", "local/test:books/batch17/B17-002/gen.py").returncode != 0

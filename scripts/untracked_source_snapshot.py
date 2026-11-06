@@ -27,8 +27,8 @@ ROOT = Path(__file__).resolve().parent.parent
 BRANCH = "local/untracked-source"
 STATE = ROOT / "data" / "untracked_snapshot_state.json"
 EXT = re.compile(r"\.(py|js|ps1|bat|sh)$")
-SKIP = re.compile(r"^(tests/_endurance_tmp|node_modules|books/|data/|reports/)")
-WHERE = re.compile(r"^([^/]+\.(py|js|ps1|bat|sh)|scripts/|tests/|decision_engine/|prospecting/|lib/|channels/|ai_capability/|social_distribution/|affiliate/)")
+SKIP = re.compile(r"^(tests/_endurance_tmp|node_modules|books/(?!_batch\d+_src/)|data/|reports/)")  # product GENERATORS (books/_batch*_src/*.py) are source; the products themselves stay out
+WHERE = re.compile(r"^([^/]+\.(py|js|ps1|bat|sh)|scripts/|tests/|decision_engine/|prospecting/|lib/|channels/|ai_capability/|social_distribution/|affiliate/|books/_batch\d+_src/)")
 SECRET = re.compile(r"gsk_[A-Za-z0-9]{20,}|bot[0-9]{8,}:[A-Za-z0-9_-]{30,}|sk_live_[A-Za-z0-9]{16,}|AKIA[0-9A-Z]{16}|-----BEGIN (RSA |EC )?PRIVATE KEY-----[\s\S]{20,}")
 
 
@@ -41,7 +41,15 @@ def wanted(paths):
 
 
 def untracked(root=ROOT):
-    return wanted([l for l in git("ls-files", "-o", "--exclude-standard", root=root).stdout.splitlines() if l.strip()])
+    found = [l for l in git("ls-files", "-o", "--exclude-standard", root=root).stdout.splitlines() if l.strip()]
+    # books/ is git-ignored (paid products stay out of the public repo) so ls-files never lists the product GENERATORS in it;
+    # they are source and are added explicitly, but only .py files that git does not already track.
+    tracked = set(git("ls-files", "--", "books", root=root).stdout.splitlines())
+    for p in sorted(Path(root).glob("books/_batch*_src/*.py")):
+        rel = p.relative_to(root).as_posix()
+        if rel not in tracked and rel not in found:
+            found.append(rel)
+    return wanted(found)
 
 
 def secret_files(files, root=ROOT):
