@@ -32,3 +32,16 @@ def test_approval_expiry_window(tmp_path):
     f.write_text(json.dumps({"approvals": {"P1": {"expires_at": "2026-11-07T01:00:00+00:00"}, "P2": {"expires_at": "2026-11-06T20:00:00+00:00"}, "P3": {"expires_at": "2026-12-01T00:00:00+00:00"}}}))
     got = {a["product"]: a["hours_left"] for a in dr.expiring_approvals(f, NOW)}
     assert set(got) == {"P1", "P2"} and got["P2"] == 5.0
+
+
+def test_diagnose_recovers_when_a_later_tick_carries_diagnosis_checks(tmp_path):
+    rows = [
+        {"timestamp": "2026-11-06T10:00:00Z", "actions": [{"step": "diagnose", "action": "failed", "detail": "health timed out"}]},
+        {"timestamp": "2026-11-06T11:00:00Z", "diagnosis": {"status": "warning", "checks": {"x": {"ok": True}}}, "actions": [{"step": "other", "action": "none"}]},
+    ]
+    p = tmp_path / "l.log"
+    p.write_text("\n".join(json.dumps(r) for r in rows) + "\n")
+    assert {f["step"]: f for f in dr.failed_steps(p, NOW)}["diagnose"]["failing_now"] is False
+    # but with no later healthy diagnosis it still counts as failing
+    p.write_text(json.dumps(rows[0]) + "\n")
+    assert {f["step"]: f for f in dr.failed_steps(p, NOW)}["diagnose"]["failing_now"] is True

@@ -38,6 +38,11 @@ def failed_steps(log_path, now, hours=24):
                 continue
             if str(d.get("timestamp", "")) < since:
                 continue
+            # `diagnose` writes an action only when it fails or acts; a healthy tick carries its result in `diagnosis` instead.
+            # A later tick with diagnosis checks therefore means the step ran fine (the doctor flagged a 19:28 health timeout as "failing
+            # now" two hours after it had recovered).
+            if (d.get("diagnosis") or {}).get("checks") and "diagnose" in latest and latest["diagnose"] == "failed":
+                latest["diagnose"] = "recovered"
             for a in d.get("actions", []) or []:
                 st = a.get("step")
                 latest[st] = a.get("action")
