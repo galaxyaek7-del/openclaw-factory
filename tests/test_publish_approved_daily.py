@@ -154,7 +154,8 @@ if __name__ == "__main__":
 def test_reopen_daily_followups_clears_only_the_day_marker(tmp_path):
     import json
     import publish_approved_daily as pad
-    for n, doc in (("tool_pages_daily_state.json", {"last_day": "2026-11-06", "result": {"pages": 3}}),
+    for n, doc in (("registry_daily_state.json", {"last_day": "2026-11-06", "summary": {}}),
+                   ("tool_pages_daily_state.json", {"last_day": "2026-11-06", "result": {"pages": 3}}),
                    ("indexnow_auto.json", {"submitted": {"a": 1}, "last_day": "2026-11-06"}),
                    ("listing_health_state.json", {"last_day": "2026-11-06"})):
         (tmp_path / n).write_text(json.dumps(doc), encoding="utf-8")

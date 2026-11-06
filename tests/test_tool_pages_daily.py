@@ -102,3 +102,26 @@ def test_a_sitemap_with_unrelated_or_removed_lines_is_not_committed(tmp_path):
     (r / "sitemap.xml").write_text("<urlset>\n<url><loc>x/other-page.html</loc></url>\n</urlset>\n")  # removes a line, adds a non-tool one
     out = tpd.commit_generated(r)
     assert out["committed"] == 0
+
+
+def test_tool_page_waits_until_its_product_is_in_the_catalog_then_commits_both(tmp_path):
+    import json, subprocess
+    import tool_pages_daily as t
+
+    def g(*a):
+        return subprocess.run(["git", *a], cwd=str(tmp_path), capture_output=True, text=True)
+    g("init", "-q"); g("config", "user.email", "t@t"); g("config", "user.name", "t")
+    site = tmp_path / "customer_site"
+    site.mkdir()
+    (site / "catalog.json").write_text(json.dumps({"data": {"products": [{"url": "https://aekraft.gumroad.com/l/old"}]}}), encoding="utf-8")
+    (tmp_path / "sitemap.xml").write_text("<urlset></urlset>", encoding="utf-8")
+    (site / "tools.html").write_text("tools", encoding="utf-8")
+    g("add", "."); g("commit", "-q", "-m", "init")
+    page = '<script type="application/ld+json">{"offers": {"url": "https://aekraft.gumroad.com/l/newprod"}}</script>'
+    (site / "tool-new.html").write_text(page, encoding="utf-8")
+    r = t.commit_generated(tmp_path)
+    assert r["committed"] == 0 and r["waiting_for_catalog"] == ["tool-new.html"]
+    # the catalog catches up: both files go in one commit
+    (site / "catalog.json").write_text(json.dumps({"data": {"products": [{"url": "https://aekraft.gumroad.com/l/old"}, {"url": "https://aekraft.gumroad.com/l/newprod"}]}}), encoding="utf-8")
+    r = t.commit_generated(tmp_path)
+    assert r["committed"] == 2 and sorted(r["paths"]) == ["customer_site/catalog.json", "customer_site/tool-new.html"]

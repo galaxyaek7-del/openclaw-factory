@@ -15,6 +15,7 @@ absent this step says so instead of failing.
     python scripts/tool_pages_daily.py --once
 """
 import json
+import re
 import subprocess
 import sys
 from datetime import datetime, timezone
@@ -37,6 +38,28 @@ def _git(root, *args):
     return subprocess.run(["git", *args], cwd=str(root), capture_output=True, text=True, encoding="utf-8", errors="replace")
 
 
+def pages_missing_from_catalog(root, paths):
+    """Tool pages in `paths` whose offer URL (JSON-LD) is not a product in customer_site/catalog.json on disk."""
+    try:
+        doc = json.loads((Path(root) / "customer_site" / "catalog.json").read_text(encoding="utf-8"))
+        urls = {p.get("url") for p in (doc.get("data") or doc).get("products", [])}
+    except (OSError, ValueError, AttributeError):
+        return []  # no readable catalog: do not block (the test suite on CI remains the backstop)
+    out = []
+    for rel in paths:
+        name = Path(rel).name
+        if not (name.startswith("tool-") and name.endswith(".html")):
+            continue
+        try:
+            html = (Path(root) / rel).read_text(encoding="utf-8", errors="ignore")
+        except OSError:
+            continue
+        m = re.search(r'"url":\s*"(https://[^"]*gumroad\.com/l/[^"?]+)', html)
+        if m and m.group(1) not in urls:
+            out.append(name)
+    return out
+
+
 def commit_generated(root=ROOT):
     """Commit the pages the generator just wrote, and nothing else (2026-11-06).
 
@@ -57,6 +80,15 @@ def commit_generated(root=ROOT):
         paths.append(path)
     if not paths:
         return {"committed": 0, "paths": []}
+    # A tool page must never reach the public site before the catalog that lists its product (CI failed twice on 2026-11-06 for
+    # exactly this: test_tool_structured_data). Wait until customer_site/catalog.json contains every page's Gumroad URL, then commit
+    # the catalog in the SAME commit so one tree-mode push carries both.
+    missing = pages_missing_from_catalog(root, paths)
+    if missing:
+        return {"committed": 0, "paths": [], "waiting_for_catalog": missing}
+    cat = _git(root, "status", "--porcelain", "--", "customer_site/catalog.json").stdout.strip()
+    if cat:
+        paths.append("customer_site/catalog.json")
     add = _git(root, "add", "--", *paths)
     if add.returncode != 0:
         return {"committed": 0, "paths": paths, "error": add.stderr.strip()[:160]}

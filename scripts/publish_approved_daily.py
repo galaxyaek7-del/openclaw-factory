@@ -99,7 +99,7 @@ def eligible(batch, ids, run=_publisher):
     return [p.get("id") or p.get("product_id") for p in doc.get("products", []) if p.get("status") == "PASS"]
 
 
-FOLLOWUP_STATES = ("tool_pages_daily_state.json", "indexnow_auto.json", "listing_health_state.json")
+FOLLOWUP_STATES = ("registry_daily_state.json", "tool_pages_daily_state.json", "indexnow_auto.json", "listing_health_state.json")
 
 
 def reopen_daily_followups(data_dir=None):
