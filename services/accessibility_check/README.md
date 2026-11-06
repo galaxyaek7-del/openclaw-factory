@@ -25,7 +25,7 @@ python services/accessibility_check/build_demo.py
 - **Synthetic page:** `demo_package/synthetic_page.html` is an invented shop page carrying each fault. Report: 7 errors, 4 warnings, all 11 faults found.
 - **Real sample on our own site:** `demo_package/own_site_report.md` covers Galaxy Forge's own 118 public pages, the only real site we may scan without asking.
   - **Result:** 0 errors and 22 warnings: 11 form fields labelled only by placeholder text, 5 hidden spam-trap fields still announced to screen readers, 3 pages with no h1, 3 skipped heading levels.
-  - **Status:** these are real fixes for our own pages, not yet applied.
+  - **Status (2026-11-06):** the fixes were applied; the same check now reports 0 errors and 0 warnings on 143 pages. Public before/after: `customer_site/blog-we-checked-our-own-site-for-accessibility.html` (validation step 1 of the plan below is done; the 60-day stop clock starts when the page is live and measured).
 
 The code is `check.py`, with tests in `tests/test_phase3_demonstrations.py`.
 
