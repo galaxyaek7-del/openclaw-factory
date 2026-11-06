@@ -419,6 +419,10 @@ async function main() {
     const ev = [{ action: 'attempted', dry_run: false, timestamp: '2026-11-06T01:00:00Z' }, { action: 'attempted', dry_run: true, timestamp: '2026-11-06T02:00:00Z' },
       { action: 'attempted', dry_run: false, timestamp: '2026-11-05T23:00:00Z' }, { action: 'skipped', timestamp: '2026-11-06T03:00:00Z' }, { action: 'attempted', dry_run: false, timestamp: '2026-11-06T04:00:00Z' }];
     assert.strictEqual(fl.goldenProductionsToday(ev, now), 2);
+    assert.strictEqual(fl.goldenProductionsToday([...ev, { action: 'attempted', dry_run: false, ok: false, timestamp: '2026-11-06T05:00:00Z' }], now), 2, 'a failed or QA-stopped attempt is not a production');
+    assert.strictEqual(fl.goldenAttemptsToday([...ev, { action: 'attempted', dry_run: false, ok: false, timestamp: '2026-11-06T05:00:00Z' }], now), 3, 'but it is an attempt (it cost model calls)');
+    assert.strictEqual(fl.goldenDailyAttemptCap({}), 12);
+    assert.strictEqual(fl.goldenDailyAttemptCap({ GF_GOLDEN_DAILY_ATTEMPTS: '4' }), 4);
     assert.strictEqual(fl.goldenProductionsToday([], now), 0);
   });
 

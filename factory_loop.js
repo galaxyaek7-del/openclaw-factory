@@ -777,7 +777,8 @@ async function triggerGenerateBook(brief) {
     }
 
     if (!data.success) {
-      return { ok: false, detail: `فشل التوليد: ${data.error}` };
+      // data.error was undefined on 2026-11-06 22:01 (the whole reply was swallowed as "undefined"): say what came back instead
+      return { ok: false, detail: `فشل التوليد: ${data.error || data.message || ('رد غير متوقع: ' + JSON.stringify(data).slice(0, 160))}` };
     }
 
     // data.success && data.published === true from here on: BOTH inspectors
@@ -1292,6 +1293,18 @@ function goldenDailyCap(env = process.env) {
 }
 
 function goldenProductionsToday(events, nowMs = Date.now()) {
+  // successful (or not-yet-known) real attempts only: a chain run that QA stopped, or a failed generation, produced nothing
+  const day = new Date(nowMs).toISOString().slice(0, 10);
+  return (events || []).filter((e) => e && e.action === 'attempted' && e.dry_run === false && e.ok !== false && String(e.timestamp || '').slice(0, 10) === day).length;
+}
+
+// Every real attempt costs model calls (the agent chain makes about six), successful or not: a second, higher cap bounds the cost.
+function goldenDailyAttemptCap(env = process.env) {
+  const v = Number(env.GF_GOLDEN_DAILY_ATTEMPTS);
+  return env.GF_GOLDEN_DAILY_ATTEMPTS !== undefined && env.GF_GOLDEN_DAILY_ATTEMPTS !== '' && Number.isInteger(v) && v >= 0 ? v : 12;
+}
+
+function goldenAttemptsToday(events, nowMs = Date.now()) {
   const day = new Date(nowMs).toISOString().slice(0, 10);
   return (events || []).filter((e) => e && e.action === 'attempted' && e.dry_run === false && String(e.timestamp || '').slice(0, 10) === day).length;
 }
@@ -1444,10 +1457,15 @@ async function huntGolden(reachable) {
     notifyGoldenHunterAccepted(top.niche, opportunityScore).catch(() => {});
   }
 
-  if (autoProduceEnabled() && goldenProductionsToday(readGoldenHunterEvents()) >= goldenDailyCap()) {
-    const rec = appendGoldenHunterEvent({ action: 'skipped', reason: 'daily_production_cap', niche: '*pool*',
-      detail: `سقف الإنتاج اليومي للصياد (${goldenDailyCap()}) بُلغ — "${top.niche}" يمرّ لاحقاً` });
-    return { action: 'skipped', detail: rec.detail };
+  if (autoProduceEnabled()) {
+    const evs = readGoldenHunterEvents();
+    const capHit = goldenProductionsToday(evs) >= goldenDailyCap() ? { reason: 'daily_production_cap', n: goldenDailyCap(), what: 'الإنتاج الناجح' }
+      : (goldenAttemptsToday(evs) >= goldenDailyAttemptCap() ? { reason: 'daily_attempt_cap', n: goldenDailyAttemptCap(), what: 'المحاولات' } : null);
+    if (capHit) {
+      const rec = appendGoldenHunterEvent({ action: 'skipped', reason: capHit.reason, niche: '*pool*',
+        detail: `سقف ${capHit.what} اليومي للصياد (${capHit.n}) بُلغ — "${top.niche}" يمرّ لاحقاً` });
+      return { action: 'skipped', detail: rec.detail };
+    }
   }
 
   const brief = await briefFromGoldenOpportunity(top);
@@ -6232,7 +6250,7 @@ module.exports = {
   runMarketEvidenceCycle, maybeRunDailyMarketEvidence,
   readLastGenerationRecord, triggerDistribute, triggerGenerateBook, formatDistributionAction, pollSales,
   huntGolden, readGoldenOpportunities, pickTopGoldenOpportunity, briefFromGoldenOpportunity,
-  appendGoldenHunterEvent, readGoldenHunterEvents, goldenNicheAlreadyAttempted, rankGoldenOpportunities, recentlyRejectedGoldenNiches, looksLikeHeadline, goldenScoreFloorOverride, applyGoldenScoreFloor, goldenDailyCap, goldenProductionsToday, goldenRoute, runGoldenNicheThroughChain, findLiveDuplicate, liveCatalogTitles,
+  appendGoldenHunterEvent, readGoldenHunterEvents, goldenNicheAlreadyAttempted, rankGoldenOpportunities, recentlyRejectedGoldenNiches, looksLikeHeadline, goldenScoreFloorOverride, applyGoldenScoreFloor, goldenDailyCap, goldenProductionsToday, goldenDailyAttemptCap, goldenAttemptsToday, goldenRoute, runGoldenNicheThroughChain, findLiveDuplicate, liveCatalogTitles,
   evaluateGoldenOpportunities, getButterPrice, getOpportunityScore, getLadderOpportunityScore,
   checkProductionEngineHealth,
   checkNeedsAttention, criticalHealthReasons, workflowHealthReasons, writeNeedsAttention, clearNeedsAttention, checkGoldenStagnation,
