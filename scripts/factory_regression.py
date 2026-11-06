@@ -34,7 +34,7 @@ PY_TESTS = [
     "test_founder_digest", "test_doctor_round", "test_connector_intake", "test_listing_health", "test_company_scorecard",
     "test_company_protection_check", "test_global_readiness_audit", "test_auto_publish_site", "test_auto_publish_site_tree",
     "test_tool_pages_daily", "test_n8n_workflow_health", "test_n8n_notification_selfcheck", "test_telegram_bind", "test_telegram_direct",
-    "test_unpublish_duplicate_listing", "test_unpublish_zero_price_listings", "test_repair_listing_mojibake", "test_arms_exercise_coverage", "test_research_chain_daily", "test_data_integrity_check", "test_funnel_report", "test_untracked_source_snapshot", "test_build_bundle", "test_agent_kpis",
+    "test_unpublish_duplicate_listing", "test_unpublish_zero_price_listings", "test_repair_listing_mojibake", "test_arms_exercise_coverage", "test_research_chain_daily", "test_data_integrity_check", "test_funnel_report", "test_attach_pending_covers", "test_untracked_source_snapshot", "test_build_bundle", "test_agent_kpis",
 ]
 JS_TESTS = ["test_factory_loop_demand_gate", "test_attribution_filter", "test_ops_retry", "test_telegram_direct",
             "test_factory_loop_ops_daily_control", "test_umrah_assistant", "test_umrah_agency", "test_scout_brief_v2", "test_gf_outbound_utm"]

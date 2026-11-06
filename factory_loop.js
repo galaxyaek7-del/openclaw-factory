@@ -5498,6 +5498,10 @@ async function runTick() {
     // approval, revision, price and auth checks still decide every product.
     markStep('publish_approved');
     actions.push({ step: 'publish_approved', ...(await runOnceScript('publish_approved_daily.py', { timeoutMs: 30 * 60 * 1000 })) });
+    // 2026-11-06: a listing created live whose cover step failed (the cover file was not on the public site yet) is repaired here,
+    // cover only, with the standard safeguards. scripts/attach_pending_covers.py
+    markStep('attach_pending_covers');
+    actions.push({ step: 'attach_pending_covers', ...(await runOnceScript('attach_pending_covers.py', { timeoutMs: 5 * 60 * 1000 })) });
     // 2026-11-05: once a day, read-only check of every automatic stage
     // (scripts/autonomy_selfcheck.py); a stage that was OK and stopped raises an
     // alert (Telegram, or the local fallback ledger when no chat id is set).
