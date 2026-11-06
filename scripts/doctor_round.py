@@ -94,6 +94,12 @@ def run(now=None):
         "approvals_expiring": expiring_approvals(ROOT / "data" / "publication_approvals.json", now),
         "git": git_counts(),
     }
+    try:
+        import company_scorecard
+        sc = company_scorecard.score(company_scorecard.evaluate(*company_scorecard.gather(now)))
+        rep["company_automation"] = {"percent": sc["percent"], "automatic_or_gated": sc["automatic_or_gated"], "of": sc["capabilities"]}
+    except Exception as e:  # noqa: BLE001  the scorecard must never stop the round
+        rep["company_automation"] = {"error": type(e).__name__}
     problems = []
     for f in rep["failed_steps_24h"]:
         problems.append(f"step {f['step']} failed {f['failures']}x (last: {f['last']})")
@@ -116,7 +122,7 @@ def main(argv=None):
         L += ["", "Waiting for real data: " + ", ".join(rep["waiting_on_reality"]), "", "Agent problems:"]
         L += [f"  ! {p}" for p in rep["agent_problems"]] or ["  none"]
         L += ["", f"Connector intake: newest {rep['connector_intake']['newest_age_hours']} h, pin outbound clicks {rep['connector_intake']['pin_outbound_clicks']}",
-              f"Git: {rep['git']}"]
+              f"Git: {rep['git']}", f"Company automation: {rep.get('company_automation')}"]
         sys.stdout.buffer.write(("\n".join(L) + "\n").encode("utf-8"))
     return 1 if rep["agent_problems"] else 0
 
