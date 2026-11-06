@@ -37,7 +37,7 @@ PY_TESTS = [
     "test_unpublish_duplicate_listing", "test_unpublish_zero_price_listings", "test_repair_listing_mojibake", "test_arms_exercise_coverage", "test_research_chain_daily", "test_data_integrity_check", "test_untracked_source_snapshot", "test_build_bundle", "test_agent_kpis",
 ]
 JS_TESTS = ["test_factory_loop_demand_gate", "test_attribution_filter", "test_ops_retry", "test_telegram_direct",
-            "test_factory_loop_ops_daily_control", "test_umrah_assistant", "test_umrah_agency", "test_scout_brief_v2"]
+            "test_factory_loop_ops_daily_control", "test_umrah_assistant", "test_umrah_agency", "test_scout_brief_v2", "test_gf_outbound_utm"]
 
 
 def _run(cmd, timeout):
