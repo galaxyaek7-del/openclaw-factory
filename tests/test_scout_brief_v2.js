@@ -11,6 +11,7 @@ const d = parseScoutBriefV2('##TITLE##\nNONE\n##TOPIC##\nno money decision behin
 assert.strictEqual(d.declined, true);
 assert.ok(/NONE/.test(scoutBriefPromptV2('x')) && /Input[^\n]*x/.test(scoutBriefPromptV2('x')));
 assert.ok(/Excel workbooks/.test(V2_SYSTEM));
+assert.ok(/100,000/.test(V2_SYSTEM) && /Truth first/.test(V2_SYSTEM), 'mission is injected into the scout');
 
 const rc = (v) => { delete require.cache[require.resolve('../lib/research_chain')]; if (v === undefined) delete process.env.GF_SCOUT_PROMPT; else process.env.GF_SCOUT_PROMPT = v; return require('../lib/research_chain'); };
 let c = rc(undefined);
