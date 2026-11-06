@@ -107,3 +107,21 @@ test('contracts reject answers missing required fields', () => {
   assert.equal(outlineContract('CHAPTER 1: a\nCHAPTER 2: b'), null);
   assert.equal(listingContract('TITLE: x\nDESCRIPTION: y\nTAGS: a, b'), null);
 });
+
+test('a caller can give the chain its own task id (golden hunter: one task per niche) and a re-run is idempotent', async () => {
+  const p = paths();
+  const c = fakeClient();
+  const r = await run(p, c, { taskId: 'golden_abc12345_20261106' });
+  assert.equal(r.task_id, 'golden_abc12345_20261106');
+  assert.equal(r.action, 'blocked');
+  assert.ok(fs.existsSync(path.join(p.packages, 'golden_abc12345_20261106.json')), 'package named after the task id');
+  const again = await run(p, fakeClient(), { taskId: 'golden_abc12345_20261106' });
+  assert.equal(again.action, 'none', 'the same task id is not run twice');
+});
+
+test('with FACTORY_LIVE_PUBLISH=true a finished chain still ends blocked with a package, it never reaches the publish stub', async () => {
+  const p = paths();
+  const r = await run(p, fakeClient(), { env: { FACTORY_LIVE_PUBLISH: 'true' } });
+  assert.equal(r.action, 'blocked');
+  assert.ok(r.package_path && r.package_path.endsWith('.json'));
+});

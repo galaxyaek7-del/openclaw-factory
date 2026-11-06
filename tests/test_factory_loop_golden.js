@@ -422,6 +422,23 @@ async function main() {
     assert.strictEqual(fl.goldenProductionsToday([], now), 0);
   });
 
+  await test('findLiveDuplicate: a niche already covered by a live title is caught; an unrelated one is not', () => {
+    const live = ['Freelance Project Profitability Tracker', 'European Accessibility Act Penalty Exposure Checker (11 EU Countries)', 'Debt Payoff Planner (Avalanche or Snowball)'];
+    const d = fl.findLiveDuplicate('Freelance project profitability and hourly rate tracker', live);
+    assert.ok(d && /Freelance Project/.test(d.title) && d.score >= 0.5);
+    assert.strictEqual(fl.findLiveDuplicate('Rental property deal analyzer', live), null);
+    assert.strictEqual(fl.findLiveDuplicate('tracker', live), null, 'too little signal to call it a duplicate');
+    assert.strictEqual(fl.findLiveDuplicate('anything at all', []), null);
+    assert.ok(fl.liveCatalogTitles().length > 50, 'reads the real catalog titles');
+  });
+
+  await test('goldenRoute: agent chain by default, legacy only when asked', () => {
+    assert.strictEqual(fl.goldenRoute({}), 'chain');
+    assert.strictEqual(fl.goldenRoute({ GF_GOLDEN_ROUTE: 'legacy' }), 'legacy');
+    assert.strictEqual(fl.goldenRoute({ GF_GOLDEN_ROUTE: 'LEGACY' }), 'legacy');
+    assert.strictEqual(fl.goldenRoute({ GF_GOLDEN_ROUTE: 'whatever' }), 'chain');
+  });
+
   await test('recentlyRejectedGoldenNiches: only rejections inside the window count; pool markers and other actions are ignored', () => {
     const p = path.join(tmpDir, 'events_cooldown.jsonl');
     const now = Date.parse('2026-11-10T12:00:00Z');

@@ -1338,6 +1338,53 @@ function recentlyRejectedGoldenNiches(logPath = GOLDEN_HUNTER_EVENTS_FILE, days 
   return out;
 }
 
+// 2026-11-06 (founder: modify the mechanisms): for a NON-ladder niche the hunter used to call the legacy book generator, so a niche that
+// passed the lowered floor became a book PDF while the company sells spreadsheet tools. The default route is now the same agent chain the
+// daily product chain uses (Scout v2 -> QA -> finance -> design -> builder -> publisher), one idempotent task per niche, ending in a
+// founder-review package (nothing is built for sale or published; the chain may also decline a niche that has no money decision behind it).
+// GF_GOLDEN_ROUTE=legacy restores the book generator.
+// A niche that overlaps a LIVE product title is skipped before the (paid) agent chain runs: the first live golden-route run proposed a
+// "Freelance Project Profitability & Hourly Rate Calculator" while a "Freelance Project Profitability Tracker" is already on sale.
+const DUP_STOP = new Set(['calculator', 'tracker', 'planner', 'model', 'template', 'workbook', 'excel', 'small', 'business', 'tool', 'with', 'your', 'for', 'and', 'the']);
+function titleTokens(text) {
+  return new Set(String(text || '').toLowerCase().match(/[a-z]{4,}|[؀-ۿ]{3,}/g) || []);
+}
+function findLiveDuplicate(text, titles, threshold = 0.5) {
+  const a = [...titleTokens(text)].filter((w) => !DUP_STOP.has(w));
+  if (a.length < 2) return null;
+  let best = null;
+  for (const t of titles || []) {
+    const b = new Set([...titleTokens(t)].filter((w) => !DUP_STOP.has(w)));
+    const shared = a.filter((w) => b.has(w)).length;
+    const score = shared / a.length;  // how much of the NEW idea is already covered by that live title
+    if (shared >= 2 && score >= threshold && (!best || score > best.score)) best = { title: t, score: Math.round(score * 100) / 100 };
+  }
+  return best;
+}
+function liveCatalogTitles(file = path.join(FACTORY_DIR, 'customer_site', 'catalog.json')) {
+  try {
+    const doc = JSON.parse(fs.readFileSync(file, 'utf8'));
+    return ((doc.data || doc).products || []).map((p) => p.title).filter(Boolean);
+  } catch (_) { return []; }
+}
+
+function goldenRoute(env = process.env) {
+  return String(env.GF_GOLDEN_ROUTE || 'chain').toLowerCase() === 'legacy' ? 'legacy' : 'chain';
+}
+
+async function runGoldenNicheThroughChain(niche, { client } = {}) {
+  const { runDailyProductChain } = require('./lib/daily_product_chain');
+  const day = new Date().toISOString().slice(0, 10);
+  const taskId = `golden_${require('crypto').createHash('sha1').update(String(niche)).digest('hex').slice(0, 8)}_${day.replace(/-/g, '')}`;
+  const key = process.env.GROQ_KEY || process.env.GROQ_API_KEY;
+  if (!client && key && !agentChainGroq) { const Groq = require('groq-sdk'); agentChainGroq = new Groq({ apiKey: key }); }
+  const dup = findLiveDuplicate(niche, liveCatalogTitles());
+  if (dup) return { ok: false, rejected: true, detail: `تخطّي: النيش "${niche}" يتداخل مع منتج حي "${dup.title}" (${Math.round(dup.score * 100)}%) — لا تشغيل للسلسلة`, package_path: null, task_id: taskId };
+  const r = await runDailyProductChain({ client: client || agentChainGroq, day, taskId, trends: [niche] });
+  const ok = r.action === 'blocked' || r.action === 'done';
+  return { ok, rejected: r.action === 'stopped', detail: r.detail, package_path: r.package_path || null, task_id: r.task_id };
+}
+
 async function huntGolden(reachable) {
   if (!reachable) {
     return { action: 'skipped', ...appendGoldenHunterEvent({ action: 'skipped', reason: 'dashboard_unreachable', detail: 'السيرفر غير متاح — تخطّي جسر Golden Hunter هذه الدورة' }) };
@@ -1447,6 +1494,18 @@ async function huntGolden(reachable) {
     return {
       action: result.ok ? 'produced' : 'failed',
       detail: `[Golden Hunter → المحرك الحديث] ${rec.detail}`,
+    };
+  }
+
+  if (goldenRoute() === 'chain') {
+    const viaChain = await runGoldenNicheThroughChain(top.niche);
+    const recChain = appendGoldenHunterEvent({
+      action: 'attempted', dry_run: false, niche: top.niche, profit_score: top.profit_score, verdict: top.verdict, brief,
+      pipeline: 'agent_chain', ok: viaChain.ok, rejected: viaChain.rejected, detail: viaChain.detail, package_path: viaChain.package_path, task_id: viaChain.task_id,
+    });
+    return {
+      action: viaChain.ok ? 'produced' : (viaChain.rejected ? 'rejected' : 'failed'),
+      detail: `[Golden Hunter → سلسلة الوكلاء] ${recChain.detail}`,
     };
   }
 
@@ -6173,7 +6232,7 @@ module.exports = {
   runMarketEvidenceCycle, maybeRunDailyMarketEvidence,
   readLastGenerationRecord, triggerDistribute, triggerGenerateBook, formatDistributionAction, pollSales,
   huntGolden, readGoldenOpportunities, pickTopGoldenOpportunity, briefFromGoldenOpportunity,
-  appendGoldenHunterEvent, readGoldenHunterEvents, goldenNicheAlreadyAttempted, rankGoldenOpportunities, recentlyRejectedGoldenNiches, looksLikeHeadline, goldenScoreFloorOverride, applyGoldenScoreFloor, goldenDailyCap, goldenProductionsToday,
+  appendGoldenHunterEvent, readGoldenHunterEvents, goldenNicheAlreadyAttempted, rankGoldenOpportunities, recentlyRejectedGoldenNiches, looksLikeHeadline, goldenScoreFloorOverride, applyGoldenScoreFloor, goldenDailyCap, goldenProductionsToday, goldenRoute, runGoldenNicheThroughChain, findLiveDuplicate, liveCatalogTitles,
   evaluateGoldenOpportunities, getButterPrice, getOpportunityScore, getLadderOpportunityScore,
   checkProductionEngineHealth,
   checkNeedsAttention, criticalHealthReasons, workflowHealthReasons, writeNeedsAttention, clearNeedsAttention, checkGoldenStagnation,
