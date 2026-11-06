@@ -409,6 +409,19 @@ async function main() {
     assert.strictEqual(fl.applyGoldenScoreFloor(ok, 50), ok);
   });
 
+  await test('goldenDailyCap / goldenProductionsToday: only real attempts of today count; invalid cap falls back to 3; 0 means none', () => {
+    assert.strictEqual(fl.goldenDailyCap({}), 3);
+    assert.strictEqual(fl.goldenDailyCap({ GF_GOLDEN_DAILY_CAP: '5' }), 5);
+    assert.strictEqual(fl.goldenDailyCap({ GF_GOLDEN_DAILY_CAP: '0' }), 0);
+    assert.strictEqual(fl.goldenDailyCap({ GF_GOLDEN_DAILY_CAP: '-1' }), 3);
+    assert.strictEqual(fl.goldenDailyCap({ GF_GOLDEN_DAILY_CAP: 'x' }), 3);
+    const now = Date.parse('2026-11-06T12:00:00Z');
+    const ev = [{ action: 'attempted', dry_run: false, timestamp: '2026-11-06T01:00:00Z' }, { action: 'attempted', dry_run: true, timestamp: '2026-11-06T02:00:00Z' },
+      { action: 'attempted', dry_run: false, timestamp: '2026-11-05T23:00:00Z' }, { action: 'skipped', timestamp: '2026-11-06T03:00:00Z' }, { action: 'attempted', dry_run: false, timestamp: '2026-11-06T04:00:00Z' }];
+    assert.strictEqual(fl.goldenProductionsToday(ev, now), 2);
+    assert.strictEqual(fl.goldenProductionsToday([], now), 0);
+  });
+
   await test('recentlyRejectedGoldenNiches: only rejections inside the window count; pool markers and other actions are ignored', () => {
     const p = path.join(tmpDir, 'events_cooldown.jsonl');
     const now = Date.parse('2026-11-10T12:00:00Z');

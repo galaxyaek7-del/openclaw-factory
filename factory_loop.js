@@ -1284,6 +1284,18 @@ function applyGoldenScoreFloor(sc, floor) {
   return { ...sc, accepted: true, overridden: true, reason: `${sc.reason} | مقبول بتجاوز العتبة: GF_GOLDEN_SCORE_FLOOR=${floor} (العتبة الأصلية لم تُجتز)` };
 }
 
+// Daily cap on what the hunter actually starts to produce (real, non-dry-run attempts today, UTC). Lowering the score floor must not turn
+// into unbounded production: the default is 3 a day (GF_GOLDEN_DAILY_CAP; 0 = produce nothing, unset/invalid = 3).
+function goldenDailyCap(env = process.env) {
+  const v = Number(env.GF_GOLDEN_DAILY_CAP);
+  return env.GF_GOLDEN_DAILY_CAP !== undefined && env.GF_GOLDEN_DAILY_CAP !== '' && Number.isInteger(v) && v >= 0 ? v : 3;
+}
+
+function goldenProductionsToday(events, nowMs = Date.now()) {
+  const day = new Date(nowMs).toISOString().slice(0, 10);
+  return (events || []).filter((e) => e && e.action === 'attempted' && e.dry_run === false && String(e.timestamp || '').slice(0, 10) === day).length;
+}
+
 // A forum or news headline is not a product niche ("Can I stop Google search results from showing my site...?"): it wastes a scoring call.
 function looksLikeHeadline(niche) {
   const n = String(niche || '').trim();
@@ -1383,6 +1395,12 @@ async function huntGolden(reachable) {
 
   if (opportunityScore.ok && opportunityScore.accepted) {
     notifyGoldenHunterAccepted(top.niche, opportunityScore).catch(() => {});
+  }
+
+  if (autoProduceEnabled() && goldenProductionsToday(readGoldenHunterEvents()) >= goldenDailyCap()) {
+    const rec = appendGoldenHunterEvent({ action: 'skipped', reason: 'daily_production_cap', niche: '*pool*',
+      detail: `سقف الإنتاج اليومي للصياد (${goldenDailyCap()}) بُلغ — "${top.niche}" يمرّ لاحقاً` });
+    return { action: 'skipped', detail: rec.detail };
   }
 
   const brief = await briefFromGoldenOpportunity(top);
@@ -6155,7 +6173,7 @@ module.exports = {
   runMarketEvidenceCycle, maybeRunDailyMarketEvidence,
   readLastGenerationRecord, triggerDistribute, triggerGenerateBook, formatDistributionAction, pollSales,
   huntGolden, readGoldenOpportunities, pickTopGoldenOpportunity, briefFromGoldenOpportunity,
-  appendGoldenHunterEvent, readGoldenHunterEvents, goldenNicheAlreadyAttempted, rankGoldenOpportunities, recentlyRejectedGoldenNiches, looksLikeHeadline, goldenScoreFloorOverride, applyGoldenScoreFloor,
+  appendGoldenHunterEvent, readGoldenHunterEvents, goldenNicheAlreadyAttempted, rankGoldenOpportunities, recentlyRejectedGoldenNiches, looksLikeHeadline, goldenScoreFloorOverride, applyGoldenScoreFloor, goldenDailyCap, goldenProductionsToday,
   evaluateGoldenOpportunities, getButterPrice, getOpportunityScore, getLadderOpportunityScore,
   checkProductionEngineHealth,
   checkNeedsAttention, criticalHealthReasons, workflowHealthReasons, writeNeedsAttention, clearNeedsAttention, checkGoldenStagnation,
