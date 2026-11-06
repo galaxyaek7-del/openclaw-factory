@@ -5489,6 +5489,10 @@ async function runTick() {
     // alert (Telegram, or the local fallback ledger when no chat id is set).
     markStep('autonomy_daily');
     actions.push({ step: 'autonomy_daily', ...(await runOnceScript('autonomy_daily.py', { timeoutMs: 3 * 60 * 1000 })) });
+    // 2026-11-06: one Arabic digest a day to the founder's Telegram (measured data only), from 07:00 UTC, retried when
+    // the host's network is down, at most 4 times a day. scripts/founder_digest.py
+    markStep('founder_digest');
+    actions.push({ step: 'founder_digest', ...(await runOnceScript('founder_digest.py', { timeoutMs: 3 * 60 * 1000 })) });
     // 2026-11-05: looks for the founder's one-time pairing code (scripts/telegram_bind.py --issue);
     // binds the chat that sent it. No code issued or already bound: a no-op.
     markStep('telegram_bind');
