@@ -74,7 +74,10 @@ def send_telegram_message(text, env_path=None, timeout=15):
         )
         body = r.json() if r.content else {}
     except requests.RequestException as e:
-        return {"sent": False, "message_id": None, "error": f"Telegram request failed: {e}"}
+        # str(e) embeds the request URL, and the URL embeds the bot token: keep the reason, drop the token.
+        import re
+        clean = re.sub(r"bot\d{6,}:[A-Za-z0-9_-]{20,}", "bot<redacted>", str(e))
+        return {"sent": False, "message_id": None, "error": f"Telegram request failed: {clean}"}
 
     if not r.ok or not body.get("ok"):
         return {"sent": False, "message_id": None, "error": body.get("description") or f"HTTP {r.status_code}"}

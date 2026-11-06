@@ -126,7 +126,7 @@ def collect(root: Path = ROOT, env=None, health_fn=None, gate_fn=None, autostart
     rows.append(stage(9, "alerts to the founder", "OK" if tg else "BLOCKED",
                       "token %s, chat id %s" % ("set" if env.get("TELEGRAM_BOT_TOKEN") else "missing",
                                                 "set" if chat_ok else "missing"),
-                      "founder: send the pairing code to the bot (docs/factory/TELEGRAM_SETUP.md)"))
+                      "automatic" if tg else "founder: send the pairing code to the bot (docs/factory/TELEGRAM_SETUP.md)"))
 
     # 10 persistence
     try:

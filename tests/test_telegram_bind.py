@@ -49,3 +49,32 @@ def test_sender_uses_binding_when_env_has_no_chat(tmp_path):
     f = tmp_path / "b.json"
     f.write_text(json.dumps({"chat_id": "42"}))
     assert td.bound_chat_id(f) == "42" and td.bound_chat_id(tmp_path / "none.json") is None
+
+
+def test_a_network_error_never_carries_the_bot_token(monkeypatch):
+    """requests puts the URL (with the token) in its exception text; that text must never reach a log line."""
+    import requests
+    fake_token = "bot123456789:" + "A" * 35
+
+    def boom(url, **kw):
+        raise requests.ConnectTimeout("Max retries exceeded with url: /" + fake_token + "/getUpdates")
+
+    monkeypatch.setattr(requests, "get", boom)
+    try:
+        tb.fetch_updates("123456789:" + "A" * 35)
+        raise AssertionError("must raise")
+    except ConnectionError as e:
+        assert "A" * 20 not in str(e) and "ConnectTimeout" in str(e)
+    assert "A" * 20 not in tb.scrub("Err: " + fake_token)
+
+
+def test_telegram_direct_error_text_has_no_token(monkeypatch, tmp_path):
+    import requests
+    from channels import telegram_direct as td
+    env = tmp_path / ".env"
+    env.write_text("TELEGRAM_BOT_TOKEN=123456789:" + "B" * 35 + "\nOPENCLAW_TELEGRAM_CHAT_ID=1\n")
+    monkeypatch.delenv("TELEGRAM_BOT_TOKEN", raising=False)
+    monkeypatch.delenv("OPENCLAW_TELEGRAM_CHAT_ID", raising=False)
+    monkeypatch.setattr(requests, "post", lambda *a, **k: (_ for _ in ()).throw(requests.ConnectTimeout("url /bot123456789:" + "B" * 35)))
+    r = td.send_telegram_message("x", env_path=env)
+    assert r["sent"] is False and "B" * 20 not in r["error"]

@@ -19,6 +19,7 @@ import hashlib
 import hmac
 import json
 import os
+import re
 import secrets
 import sys
 from datetime import datetime, timedelta, timezone
@@ -65,9 +66,20 @@ def _token():
     return _load_env_value("TELEGRAM_BOT_TOKEN")
 
 
+_TOKEN_RE = re.compile(r"bot\d{6,}:[A-Za-z0-9_-]{20,}")
+
+
+def scrub(text):
+    """requests puts the request URL (which carries the bot token) into its exception text: never log it raw."""
+    return _TOKEN_RE.sub("bot<redacted>", str(text))
+
+
 def fetch_updates(token, timeout=15):
     import requests
-    r = requests.get(f"https://api.telegram.org/bot{token}/getUpdates", params={"limit": 100}, timeout=timeout)
+    try:
+        r = requests.get(f"https://api.telegram.org/bot{token}/getUpdates", params={"limit": 100}, timeout=timeout)
+    except requests.RequestException as e:  # text of e contains the URL, hence the token
+        raise ConnectionError(f"Telegram unreachable ({type(e).__name__})") from None
     body = r.json() if r.content else {}
     return body.get("result") or []
 
@@ -109,7 +121,7 @@ def main(argv=None):
     try:
         r = run_once()
     except Exception as e:  # reported to the loop, never thrown
-        r = {"action": "failed", "detail": f"{type(e).__name__}: {str(e)[:200]}"}
+        r = {"action": "failed", "detail": scrub(f"{type(e).__name__}: {str(e)[:200]}")}
     sys.stdout.write(json.dumps(r, ensure_ascii=False) + "\n")
 
 
