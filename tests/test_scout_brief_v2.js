@@ -23,3 +23,17 @@ assert.ok(c.researchSteps()[1].config.system.includes('BRIEF'), 'flag also selec
 assert.strictEqual(c.scoutContract('##TITLE##\nNONE\n##TOPIC##\nx'), null, 'a decline never becomes a brief');
 rc(undefined);
 console.log('test_scout_brief_v2: ok');
+
+// Four production agents: v2 personas only under the flag.
+{
+  const pcmod = () => { delete require.cache[require.resolve('../lib/product_chain')]; return require('../lib/product_chain'); };
+  const cfgs = (v) => { if (v === undefined) delete process.env.GF_SCOUT_PROMPT; else process.env.GF_SCOUT_PROMPT = v; return pcmod().productSteps({ packagesDir: require('os').tmpdir() }); };
+  const names = ['finance_pricing', 'design_brief', 'builder_outline', 'publisher_listing'];
+  const off = cfgs(undefined), on = cfgs('v2');
+  for (const n of names) {
+    assert.ok(!/Galaxy Forge sells Excel workbooks/.test(off.find((s) => s.id === n).config.system), n + ' default stays v1');
+    assert.ok(/Galaxy Forge sells Excel workbooks/.test(on.find((s) => s.id === n).config.system), n + ' flag selects v2 persona');
+  }
+  delete process.env.GF_SCOUT_PROMPT;
+  console.log('test_scout_brief_v2 personas: ok');
+}
