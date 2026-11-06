@@ -59,3 +59,11 @@ def test_gives_up_after_the_attempt_cap(tmp_path):
     for _ in range(fd.MAX_ATTEMPTS):
         fd.run_once(t, st, g, lambda s, b: {"delivered": False, "channel": "local_fallback"})
     assert "gave up" in fd.run_once(t, st, g, lambda s, b: {"delivered": True})["detail"]
+
+
+def test_connector_line_shows_age_clicks_and_overdue():
+    fresh = {"last_intake": [{"age_hours": 3.2}, {"age_hours": 20}], "pin_outbound_clicks": 4, "pins_measured": 2}
+    assert "آخر جولة قبل 3 ساعة" in msg(connectors=fresh) and "نقرات Pinterest الخارجة: 4" in msg(connectors=fresh)
+    stale = {"last_intake": [{"age_hours": 70}], "pin_outbound_clicks": 0, "pins_measured": 0}
+    assert "الجولة متأخرة" in msg(connectors=stale)
+    assert "لم تُسجَّل جولة بعد" in msg(connectors={"last_intake": []})

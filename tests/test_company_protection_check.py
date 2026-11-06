@@ -29,6 +29,14 @@ class Protection(unittest.TestCase):
         (self.root / ".env").write_text("FACTORY_LIVE_PUBLISH=false\n", encoding="utf-8")
         self.assertEqual(pc.check_live_write_switch(self.root)[0], "PASS")
 
+    def test_live_switch_on_by_the_founders_recorded_order_passes_and_says_why(self):
+        (self.root / ".env").write_text("FACTORY_LIVE_PUBLISH=true\nGF_AUTO_PUBLISH_APPROVED=true\n", encoding="utf-8")
+        status, why = pc.check_live_write_switch(self.root)
+        self.assertEqual(status, "PASS")
+        self.assertIn("founder's order", why)
+        (self.root / ".env").write_text("FACTORY_LIVE_PUBLISH=true\nGF_AUTO_PUBLISH_APPROVED=false\n", encoding="utf-8")
+        self.assertEqual(pc.check_live_write_switch(self.root)[0], "FAIL")
+
     def test_held_listing_still_published_fails(self):
         d = self.root / "data"
         (d / "hold_products.json").write_text(json.dumps({"products": {"x": {"product_id": "P1"}}}), encoding="utf-8")

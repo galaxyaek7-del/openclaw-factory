@@ -139,6 +139,21 @@ def collect(root: Path = ROOT, env=None, health_fn=None, gate_fn=None, autostart
     tag = bool(env.get("AMAZON_ASSOCIATE_TAG"))
     rows.append(stage("A1", "Amazon affiliate", "OK" if tag else "BLOCKED", "AMAZON_ASSOCIATE_TAG %s" % ("set" if tag else "unset"), "founder: Associates account"))
 
+    # connector intake: how fresh is what the Claude connectors last reported (the loop cannot call them; a session does)
+    try:
+        import connector_intake
+        ci = connector_intake.summary(root / "data" / "connector_intake.jsonl")
+        ages = [r["age_hours"] for r in ci["last_intake"]]
+        newest = min(ages) if ages else None
+        if newest is None:
+            rows.append(stage("C1", "connector intake", "WAITING", "no connector round recorded yet", "agent: run a doctor round"))
+        else:
+            rows.append(stage("C1", "connector intake", "OK" if newest <= 48 else "WAITING",
+                              "last round %.0f h ago; Pinterest outbound clicks %s over %s measured pin(s)" % (newest, ci["pin_outbound_clicks"], ci["pins_measured"]),
+                              "automatic" if newest <= 48 else "agent: doctor round overdue (>48 h)"))
+    except Exception as e:  # noqa: BLE001  a broken ledger must not stop the stage check
+        rows.append(stage("C1", "connector intake", "WAITING", "unreadable (%s)" % type(e).__name__, "agent"))
+
     # children's YouTube arm (kids_studio): what each episode still waits for, from the loop step's own status file
     ks = _json(root / "data" / "kids_youtube_status.json", None)
     up = 0

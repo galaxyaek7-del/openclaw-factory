@@ -72,7 +72,7 @@ def _need(s):
     return _NEEDS.get(str(s.get("stage")), s.get("owner", ""))
 
 
-def build_message(*, today, stages, tools_counts, regressions, registry, demand, pins, tool_names=None):
+def build_message(*, today, stages, tools_counts, regressions, registry, demand, pins, tool_names=None, connectors=None):
     pub = sum(1 for p in registry.get("products", []) if p.get("published")) if registry else None
     sales = sum(int(p.get("sales_count") or 0) for p in registry.get("products", []) if p.get("published")) if registry else None
     reg_age = str((registry or {}).get("generated_at", ""))[:16] or "UNKNOWN"
@@ -100,6 +100,14 @@ def build_message(*, today, stages, tools_counts, regressions, registry, demand,
     if pins is not None:
         nxt = f" | التالي: {pins['next'][1]} ({pins['next'][0]})" if pins.get("next") else ""
         L.append(f"Pinterest: {pins['due']} دبوساً حان موعده، {pins['later']} مجدولاً{nxt}.")
+    if connectors is not None:
+        rows = connectors.get("last_intake", [])
+        if rows:
+            newest = min(r["age_hours"] for r in rows)
+            L.append(f"الموصلات: آخر جولة قبل {newest:.0f} ساعة | نقرات Pinterest الخارجة: {connectors.get('pin_outbound_clicks', 0)} "
+                     f"({connectors.get('pins_measured', 0)} دبوساً مقيساً)" + (" | الجولة متأخرة" if newest > 48 else ""))
+        else:
+            L.append("الموصلات: لم تُسجَّل جولة بعد.")
     L.append("")
     L.append("المصدر: فحوص المصنع الحية، لا تقدير.")
     return "\n".join(L)
@@ -119,8 +127,13 @@ def gather(today):
     except Exception:  # noqa: BLE001
         demand = None
     pins = pinterest_summary(_jsonl(ROOT / "data" / "pinterest_manual_posts.jsonl"), today)
+    try:
+        import connector_intake
+        connectors = connector_intake.summary(ROOT / "data" / "connector_intake.jsonl")
+    except Exception:  # noqa: BLE001
+        connectors = None
     return dict(today=today, stages=stages, tools_counts=counts, regressions=regs, registry=registry, demand=demand,
-                pins=pins, tool_names=tool_names)
+                pins=pins, tool_names=tool_names, connectors=connectors)
 
 
 def run_once(now=None, state_path=STATE, gather_fn=None, sender=None):

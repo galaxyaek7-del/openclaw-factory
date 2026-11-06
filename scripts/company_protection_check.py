@@ -43,10 +43,21 @@ def _env_value(name, env_path):
 
 
 def check_live_write_switch(root=ROOT):
-    v = _env_value("FACTORY_LIVE_PUBLISH", Path(root) / ".env")
-    if (v or "").lower() == "true":
-        return "FAIL", "FACTORY_LIVE_PUBLISH=true is left in .env: every platform write would pass the global switch"
-    return "PASS", "off in .env (gated scripts turn it on for one run only)"
+    """The global live-write switch may be ON only by the founder's recorded order.
+
+    Updated 2026-11-06 to the founder's latest directives (2026-10-31 auto-publish ON; 2026-11-05 fully automatic
+    factory, demand-gated, standing Gate-2 authorization): ON together with GF_AUTO_PUBLISH_APPROVED=true is the
+    ordered state, not a leftover, so it passes and says why. ON without that order is still a FAIL: every platform
+    write would pass the global switch with nobody having authorised it. Each write still needs its own gate (write
+    gate + fresh Gumroad auth, per-product approval or standing authorization, write scope, demand gate)."""
+    env = Path(root) / ".env"
+    v = _env_value("FACTORY_LIVE_PUBLISH", env)
+    if (v or "").lower() != "true":
+        return "PASS", "off in .env (gated scripts turn it on for one run only)"
+    if (_env_value("GF_AUTO_PUBLISH_APPROVED", env) or "").lower() == "true":
+        return "PASS", ("ON by the founder's order (auto-publish of approved products); every write still passes the write "
+                        "gate, a fresh Gumroad auth, a per-product approval or the standing authorization, and the demand gate")
+    return "FAIL", "FACTORY_LIVE_PUBLISH=true is on in .env without GF_AUTO_PUBLISH_APPROVED=true: no recorded founder order for it"
 
 
 def check_secrets(root=ROOT):

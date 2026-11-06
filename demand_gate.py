@@ -16,6 +16,11 @@ The gate is OPEN when at least one REAL demand signal exists in the factory's ow
   MARKET_DEMAND   a market_evidence row of a buyer-side type (demo/trial request, waitlist,
                   purchase attempt, closed sale, email reply, landing-page conversion)
 
+  PIN_CLICKS      Pinterest outbound clicks to our listings, reported by Metricool and recorded in
+                  data/connector_intake.jsonl (scripts/connector_intake.py). Counts only when the total
+                  reaches GF_PIN_CLICK_GATE_MIN (default 5): one click may be the founder's own test.
+                  Added 2026-11-06 (INFERRED evidence, stated as such): it is an outside person's click.
+
 Not demand: our own clicks (INTERNAL), TEST_EVENT rows, example addresses, competitor
 observations, public-complaint research rows. Counting them would open the gate on nothing.
 
@@ -41,6 +46,7 @@ BUYER_EVENT_TYPES = (
 )
 _FAKE_EMAIL_DOMAINS = ("t.com", "example.com", "example.org", "test.com", "localhost")
 DEFAULT_DAILY_CAP = 3
+DEFAULT_PIN_CLICK_MIN = 5
 
 
 def _read_jsonl(path):
@@ -127,6 +133,29 @@ def market_demand_signal(root: Path, path=None):
     return n
 
 
+def _int_env(env, name, default):
+    try:
+        return int(env.get(name, default))
+    except (TypeError, ValueError):
+        return default
+
+
+def pin_click_signal(root: Path, minimum: int):
+    """Outbound Pinterest clicks from the connector intake ledger; 0 below the threshold (one click proves nothing)."""
+    best = {}
+    for r in _read_jsonl(root / "data" / "connector_intake.jsonl"):
+        pl = r.get("payload") or {}
+        if r.get("kind") != "pin_metrics" or r.get("source") != "metricool" or pl.get("measured") is not True:
+            continue
+        for p in pl.get("pins", []):
+            try:
+                best[p["pin_id"]] = max(best.get(p["pin_id"], 0), int(p.get("outbound_clicks") or 0))
+            except (KeyError, TypeError, ValueError):
+                continue
+    total = sum(best.values())
+    return total if total >= max(1, minimum) else 0
+
+
 def evaluate(root=None, environ=None, now=None):
     root = Path(root) if root else ROOT
     env = os.environ if environ is None else environ
@@ -135,6 +164,7 @@ def evaluate(root=None, environ=None, now=None):
         "EXTERNAL_CLICK": external_click_signal(root),
         "BUYER_INTEREST": buyer_interest_signal(root),
         "MARKET_DEMAND": market_demand_signal(root),
+        "PIN_CLICKS": pin_click_signal(root, _int_env(env, "GF_PIN_CLICK_GATE_MIN", DEFAULT_PIN_CLICK_MIN)),
     }
     try:
         cap = max(0, int(env.get("GF_DEMAND_GATE_DAILY_CAP", DEFAULT_DAILY_CAP)))
@@ -146,7 +176,7 @@ def evaluate(root=None, environ=None, now=None):
         "daily_cap": cap if is_open else 0,
         "signals": signals,
         "why": ("real demand recorded: " + ", ".join(k for k, v in signals.items() if v > 0))
-               if is_open else "WAITING FOR REAL DATA: no sale, outside click, buyer interest or buyer-side market evidence",
+               if is_open else "WAITING FOR REAL DATA: no sale, outside click, buyer interest, buyer-side market evidence or enough Pinterest clicks",
         "evaluated_at": (now or datetime.now(timezone.utc)).isoformat(),
     }
 

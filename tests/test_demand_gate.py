@@ -3,6 +3,7 @@ import os
 import sys
 import tempfile
 import unittest
+from pathlib import Path
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 import demand_gate as dg  # noqa: E402
@@ -101,3 +102,36 @@ class DemandGateTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestPinClickSignal(unittest.TestCase):
+    """Pinterest outbound clicks (connector intake) open the gate only from the threshold up."""
+
+    def setUp(self):
+        import tempfile
+        self.tmp = Path(tempfile.mkdtemp())
+        (self.tmp / "data").mkdir()
+
+    def write(self, clicks, measured=True):
+        rec = {"kind": "pin_metrics", "source": "metricool", "fetched_at": "2026-11-07T00:00:00+00:00",
+               "payload": {"measured": measured, "pins": [{"pin_id": f"p{i}", "outbound_clicks": c} for i, c in enumerate(clicks)]}}
+        (self.tmp / "data" / "connector_intake.jsonl").write_text(json.dumps(rec) + "\n", encoding="utf-8")
+
+    def test_below_threshold_is_not_demand(self):
+        self.write([1, 2])
+        r = dg.evaluate(root=self.tmp, environ={})
+        self.assertFalse(r["open"])
+        self.assertEqual(0, r["signals"]["PIN_CLICKS"])
+
+    def test_at_threshold_opens_the_gate_and_is_named(self):
+        self.write([2, 3])
+        r = dg.evaluate(root=self.tmp, environ={})
+        self.assertTrue(r["open"])
+        self.assertEqual(5, r["signals"]["PIN_CLICKS"])
+        self.assertIn("PIN_CLICKS", r["why"])
+
+    def test_threshold_is_configurable_and_unmeasured_never_counts(self):
+        self.write([2])
+        self.assertTrue(dg.evaluate(root=self.tmp, environ={"GF_PIN_CLICK_GATE_MIN": "2"})["open"])
+        self.write([9], measured=False)
+        self.assertFalse(dg.evaluate(root=self.tmp, environ={})["open"])

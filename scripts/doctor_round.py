@@ -1,0 +1,125 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""Factory doctor round: one read-only command that lists everything needing attention (2026-11-06).
+
+    python scripts/doctor_round.py            # human report
+    python scripts/doctor_round.py --json
+
+Sections: (1) stage check: BLOCKED/WAITING with owner; (2) loop steps that FAILED in the last 24 h, by step;
+(3) connector intake freshness (a Claude session must refresh it: the loop cannot call connectors);
+(4) approvals that expire within 36 h; (5) unpublished local commits and site difference.
+Exit code 1 when an agent-owned problem exists (failed steps, stale intake, expiring approval), 0 otherwise.
+Everything is read from live files; nothing is written, sent or changed.
+"""
+from __future__ import annotations
+
+import json
+import subprocess
+import sys
+from collections import Counter
+from datetime import datetime, timedelta, timezone
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT))
+sys.path.insert(0, str(ROOT / "scripts"))
+
+
+def failed_steps(log_path, now, hours=24):
+    since = (now - timedelta(hours=hours)).isoformat()
+    c, last = Counter(), {}
+    try:
+        for line in Path(log_path).read_text(encoding="utf-8", errors="ignore").splitlines():
+            try:
+                d = json.loads(line)
+            except ValueError:
+                continue
+            if str(d.get("timestamp", "")) < since:
+                continue
+            for a in d.get("actions", []) or []:
+                if a.get("action") == "failed":
+                    c[a.get("step")] += 1
+                    last[a.get("step")] = str(a.get("detail"))[:110].replace("\n", " ")
+    except OSError:
+        pass
+    return [{"step": s, "failures": n, "last": last[s]} for s, n in c.most_common()]
+
+
+def expiring_approvals(path, now, hours=36):
+    out = []
+    try:
+        d = json.loads(Path(path).read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return out
+    items = d.get("approvals", d) if isinstance(d, dict) else d
+    rows = items.items() if isinstance(items, dict) else enumerate(items or [])
+    for k, v in rows:
+        if not isinstance(v, dict):
+            continue
+        exp = v.get("expires_at") or v.get("expires") or v.get("valid_until")
+        try:
+            t = datetime.fromisoformat(str(exp).replace("Z", "+00:00"))
+        except ValueError:
+            continue
+        left = (t - now).total_seconds() / 3600
+        if 0 < left <= hours:
+            out.append({"product": v.get("product_id") or v.get("id") or str(k), "hours_left": round(left, 1)})
+    return out
+
+
+def git_counts():
+    def g(*a):
+        return subprocess.run(["git", *a], cwd=str(ROOT), capture_output=True, text=True, encoding="utf-8", errors="replace").stdout
+    try:
+        ahead = len(g("rev-list", "origin/main..main").split())
+        site = len([l for l in g("diff", "--name-status", "--no-renames", "origin/main", "HEAD", "--", "customer_site", "sitemap.xml").splitlines() if l.strip()])
+    except Exception:  # noqa: BLE001
+        return {"unpublished_commits": None, "site_files_differ": None}
+    return {"unpublished_commits": ahead, "site_files_differ": site}
+
+
+def run(now=None):
+    now = now or datetime.now(timezone.utc)
+    import autonomy_selfcheck
+    import connector_intake
+    stages = autonomy_selfcheck.collect()
+    ci = connector_intake.summary(ROOT / "data" / "connector_intake.jsonl", now)
+    ages = [r["age_hours"] for r in ci["last_intake"]]
+    rep = {
+        "at": now.isoformat(timespec="seconds"),
+        "needs_founder": [{"stage": s["name"], "need": s["owner"]} for s in stages if s["status"] == "BLOCKED"],
+        "waiting_on_reality": [s["name"] for s in stages if s["status"] == "WAITING"],
+        "failed_steps_24h": failed_steps(ROOT / "factory_loop.log", now),
+        "connector_intake": {"newest_age_hours": min(ages) if ages else None, "pin_outbound_clicks": ci["pin_outbound_clicks"]},
+        "approvals_expiring": expiring_approvals(ROOT / "data" / "publication_approvals.json", now),
+        "git": git_counts(),
+    }
+    problems = []
+    for f in rep["failed_steps_24h"]:
+        problems.append(f"step {f['step']} failed {f['failures']}x (last: {f['last']})")
+    if rep["connector_intake"]["newest_age_hours"] is None or rep["connector_intake"]["newest_age_hours"] > 48:
+        problems.append("connector intake older than 48 h: run the connector part of the doctor round")
+    for a in rep["approvals_expiring"]:
+        problems.append(f"approval for {a['product']} expires in {a['hours_left']} h")
+    rep["agent_problems"] = problems
+    return rep
+
+
+def main(argv=None):
+    argv = sys.argv[1:] if argv is None else argv
+    rep = run()
+    if "--json" in argv:
+        sys.stdout.write(json.dumps(rep, ensure_ascii=False, indent=1) + "\n")
+    else:
+        L = [f"DOCTOR ROUND {rep['at']}", "", f"Needs the founder ({len(rep['needs_founder'])}):"]
+        L += [f"  - {x['stage']}: {x['need']}" for x in rep["needs_founder"]]
+        L += ["", "Waiting for real data: " + ", ".join(rep["waiting_on_reality"]), "", "Agent problems:"]
+        L += [f"  ! {p}" for p in rep["agent_problems"]] or ["  none"]
+        L += ["", f"Connector intake: newest {rep['connector_intake']['newest_age_hours']} h, pin outbound clicks {rep['connector_intake']['pin_outbound_clicks']}",
+              f"Git: {rep['git']}"]
+        sys.stdout.buffer.write(("\n".join(L) + "\n").encode("utf-8"))
+    return 1 if rep["agent_problems"] else 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
