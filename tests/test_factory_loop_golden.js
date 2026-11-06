@@ -454,6 +454,18 @@ async function main() {
     assert.strictEqual(fl.withDigitalCandidates(null, path.join(tmpDir, 'nope.json')).results.length, 0);
   });
 
+  await test('findVariantOfAttempted: a niche with a different ending is a variant; a different niche, a dry run and an old attempt are not', () => {
+    const now = Date.parse('2026-11-06T12:00:00Z');
+    const ev = [{ action: 'attempted', dry_run: false, niche: 'قوالب تصميم SVG قابلة للقص للأطفال', timestamp: '2026-11-06T10:00:00Z' },
+      { action: 'attempted', dry_run: true, niche: 'budget tracker for couples monthly', timestamp: '2026-11-06T10:00:00Z' },
+      { action: 'attempted', dry_run: false, niche: 'old rental analyzer workbook toolkit', timestamp: '2026-09-01T10:00:00Z' }];
+    assert.strictEqual(fl.findVariantOfAttempted('قوالب تصميم SVG قابلة للقص للرجال', ev, 30, now), 'قوالب تصميم SVG قابلة للقص للأطفال');
+    assert.strictEqual(fl.findVariantOfAttempted('Wedding vendor payment planner workbook', ev, 30, now), null);
+    assert.strictEqual(fl.findVariantOfAttempted('budget tracker for couples weekly', ev, 30, now), null, 'a dry run never counts');
+    assert.strictEqual(fl.findVariantOfAttempted('old rental analyzer workbook toolkit pro', ev, 30, now), null, 'older than the window');
+    assert.strictEqual(fl.findVariantOfAttempted('x y', ev, 30, now), null);
+  });
+
   await test('goldenRoute: agent chain by default, legacy only when asked', () => {
     assert.strictEqual(fl.goldenRoute({}), 'chain');
     assert.strictEqual(fl.goldenRoute({ GF_GOLDEN_ROUTE: 'legacy' }), 'legacy');

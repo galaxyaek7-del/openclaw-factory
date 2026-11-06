@@ -1366,7 +1366,7 @@ function recentlyRejectedGoldenNiches(logPath = GOLDEN_HUNTER_EVENTS_FILE, days 
   const since = nowMs - days * 24 * 60 * 60 * 1000;
   for (const e of events) {
     if (!e || e.action !== 'skipped' || !e.niche || e.niche === '*pool*') continue;
-    if (!['opportunity_score_below_floor', 'circuit_breaker', 'already_attempted'].includes(e.reason)) continue;
+    if (!['opportunity_score_below_floor', 'circuit_breaker', 'already_attempted', 'variant_of_attempted'].includes(e.reason)) continue;
     const t = Date.parse(e.timestamp);
     if (Number.isFinite(t) && t >= since) out.add(e.niche);
   }
@@ -1401,6 +1401,24 @@ function liveCatalogTitles(file = path.join(FACTORY_DIR, 'customer_site', 'catal
     const doc = JSON.parse(fs.readFileSync(file, 'utf8'));
     return ((doc.data || doc).products || []).map((p) => p.title).filter(Boolean);
   } catch (_) { return []; }
+}
+
+// "قوالب SVG قابلة للقص للأطفال" and "... للرجال" are one niche with two endings; both were produced on 2026-11-06 and used two of the three daily
+// package slots. A niche whose keywords are mostly the same as a niche already attempted in the last N days is a variant and is skipped.
+function findVariantOfAttempted(niche, events, days = 30, nowMs = Date.now(), threshold = 0.6) {
+  const a = titleTokens(niche);
+  if (a.size < 3) return null;
+  const since = nowMs - days * 24 * 60 * 60 * 1000;
+  for (const e of events || []) {
+    if (!e || e.action !== 'attempted' || e.dry_run !== false || !e.niche || e.niche === niche) continue;
+    const t = Date.parse(e.timestamp);
+    if (Number.isFinite(t) && t < since) continue;
+    const b = titleTokens(e.niche);
+    const shared = [...a].filter((w) => b.has(w)).length;
+    const jac = shared / (a.size + b.size - shared);
+    if (shared >= 3 && jac >= threshold) return e.niche;
+  }
+  return null;
 }
 
 function goldenRoute(env = process.env) {
@@ -1451,6 +1469,11 @@ async function huntGolden(reachable) {
     }
     if (isNicheRejected(cand.niche)) {
       appendGoldenHunterEvent({ action: 'skipped', reason: 'circuit_breaker', niche: cand.niche, detail: `تخطّي نيتش مرفوض سابقاً (${cand.niche}) — قاطع الدائرة` });
+      continue;
+    }
+    const variantOf = findVariantOfAttempted(cand.niche, readGoldenHunterEvents());
+    if (variantOf) {
+      appendGoldenHunterEvent({ action: 'skipped', reason: 'variant_of_attempted', niche: cand.niche, detail: `"${cand.niche}" نسخة من نيش جُرِّب سابقاً ("${variantOf}")` });
       continue;
     }
     // ADR-026 Opportunity Score gate (ADR-070: ladder-aware score for ladder-tagged candidates), unchanged, per candidate.
@@ -6278,7 +6301,7 @@ module.exports = {
   runMarketEvidenceCycle, maybeRunDailyMarketEvidence,
   readLastGenerationRecord, triggerDistribute, triggerGenerateBook, formatDistributionAction, pollSales,
   huntGolden, readGoldenOpportunities, pickTopGoldenOpportunity, briefFromGoldenOpportunity,
-  appendGoldenHunterEvent, readGoldenHunterEvents, goldenNicheAlreadyAttempted, rankGoldenOpportunities, recentlyRejectedGoldenNiches, looksLikeHeadline, goldenScoreFloorOverride, applyGoldenScoreFloor, goldenDailyCap, goldenProductionsToday, goldenDailyAttemptCap, goldenAttemptsToday, goldenRoute, runGoldenNicheThroughChain, findLiveDuplicate, liveCatalogTitles, readDigitalCandidates, withDigitalCandidates, digitalChainInput,
+  appendGoldenHunterEvent, readGoldenHunterEvents, goldenNicheAlreadyAttempted, rankGoldenOpportunities, recentlyRejectedGoldenNiches, looksLikeHeadline, goldenScoreFloorOverride, applyGoldenScoreFloor, goldenDailyCap, goldenProductionsToday, goldenDailyAttemptCap, goldenAttemptsToday, goldenRoute, runGoldenNicheThroughChain, findLiveDuplicate, liveCatalogTitles, findVariantOfAttempted, readDigitalCandidates, withDigitalCandidates, digitalChainInput,
   evaluateGoldenOpportunities, getButterPrice, getOpportunityScore, getLadderOpportunityScore,
   checkProductionEngineHealth,
   checkNeedsAttention, criticalHealthReasons, workflowHealthReasons, writeNeedsAttention, clearNeedsAttention, checkGoldenStagnation,
