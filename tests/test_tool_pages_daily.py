@@ -53,3 +53,52 @@ class DailyGate(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+def _repo(tmp_path):
+    import subprocess
+    r = tmp_path / "r"
+    r.mkdir()
+    for a in (["init", "-q", "-b", "main"], ["config", "user.name", "t"], ["config", "user.email", "t@t"], ["config", "commit.gpgsign", "false"]):
+        subprocess.run(["git", *a], cwd=r, check=True, capture_output=True)
+    (r / "customer_site").mkdir()
+    (r / "customer_site" / "tools.html").write_text("<ul></ul>")
+    (r / "customer_site" / "about.html").write_text("about v1")
+    (r / "sitemap.xml").write_text("<urlset>\n<url><loc>x/index.html</loc></url>\n</urlset>\n")
+    subprocess.run(["git", "add", "-A"], cwd=r, check=True)
+    subprocess.run(["git", "commit", "-q", "-m", "init"], cwd=r, check=True, capture_output=True)
+    return r
+
+
+def _changed(r):
+    import subprocess
+    return subprocess.run(["git", "show", "--name-only", "--format=", "HEAD"], cwd=r, capture_output=True, text=True).stdout.split()
+
+
+def test_generated_tool_pages_are_committed_and_unrelated_changes_are_not(tmp_path):
+    import importlib.util
+    import sys
+    spec = importlib.util.spec_from_file_location("tpd", str(Path(__file__).resolve().parent.parent / "scripts" / "tool_pages_daily.py"))
+    tpd = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(tpd)
+    r = _repo(tmp_path)
+    (r / "customer_site" / "tool-new.html").write_text("new page")
+    (r / "customer_site" / "tools.html").write_text("<ul><li>new</li></ul>")
+    (r / "customer_site" / "about.html").write_text("about v2 (someone else's edit)")
+    (r / "sitemap.xml").write_text("<urlset>\n<url><loc>x/index.html</loc></url>\n  <url><loc>x/tool-new.html</loc></url>\n</urlset>\n")
+    out = tpd.commit_generated(r)
+    assert out["committed"] == 3
+    assert sorted(_changed(r)) == ["customer_site/tool-new.html", "customer_site/tools.html", "sitemap.xml"]
+    import subprocess
+    assert "about.html" in subprocess.run(["git", "status", "--porcelain"], cwd=r, capture_output=True, text=True).stdout  # left alone
+
+
+def test_a_sitemap_with_unrelated_or_removed_lines_is_not_committed(tmp_path):
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("tpd2", str(Path(__file__).resolve().parent.parent / "scripts" / "tool_pages_daily.py"))
+    tpd = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(tpd)
+    r = _repo(tmp_path)
+    (r / "sitemap.xml").write_text("<urlset>\n<url><loc>x/other-page.html</loc></url>\n</urlset>\n")  # removes a line, adds a non-tool one
+    out = tpd.commit_generated(r)
+    assert out["committed"] == 0
