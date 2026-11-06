@@ -1,0 +1,19 @@
+{
+ "_comment": "Historical files found unparseable on 2026-11-06 (STABILITY_REPORT L1). No live code reads them. Never delete here; add a file only when it is confirmed historical.",
+ "json": [
+  "data/c102_execution_record.json",
+  "data/c133_execution_record.json",
+  "data/c138_execution_record.json",
+  "data/c140_execution_record.json",
+  "data/c141_execution_record.json",
+  "data/c89_execution_record.json",
+  "data/c92_founder_outreach.json",
+  "data/founder_packet_kdp_typeset.json"
+ ],
+ "jsonl": {
+  "data/controlled_7day_trial.jsonl": 1,
+  "data/indexnow_submissions.jsonl": 1,
+  "data/product_analysis_v57.jsonl": 232,
+  "data/proposal_pipeline.jsonl": 97
+ }
+}

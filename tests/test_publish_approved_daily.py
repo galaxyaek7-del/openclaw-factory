@@ -149,3 +149,16 @@ class PublishApproved(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+def test_reopen_daily_followups_clears_only_the_day_marker(tmp_path):
+    import json
+    import publish_approved_daily as pad
+    for n, doc in (("tool_pages_daily_state.json", {"last_day": "2026-11-06", "result": {"pages": 3}}),
+                   ("indexnow_auto.json", {"submitted": {"a": 1}, "last_day": "2026-11-06"}),
+                   ("listing_health_state.json", {"last_day": "2026-11-06"})):
+        (tmp_path / n).write_text(json.dumps(doc), encoding="utf-8")
+    assert sorted(pad.reopen_daily_followups(tmp_path)) == sorted(pad.FOLLOWUP_STATES)
+    d = json.loads((tmp_path / "indexnow_auto.json").read_text(encoding="utf-8"))
+    assert d["last_day"] is None and d["submitted"] == {"a": 1}
+    assert pad.reopen_daily_followups(tmp_path) == []

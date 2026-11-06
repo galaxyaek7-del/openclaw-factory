@@ -133,6 +133,20 @@ def run(now=None):
                 problems.append(f"listing {f['slug']}: {f['kind']} ({f['detail']})")
     except (OSError, ValueError):
         pass
+    try:
+        import data_integrity_check as dic
+        bj, bl = dic.scan()
+        try:
+            known = json.loads(dic.KNOWN.read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            known = {"json": [], "jsonl": {}}
+        nj, nl_ = dic.compare(bj, bl, known)
+        for f in nj:
+            problems.append(f"data integrity: {f} no longer parses (new corruption)")
+        for f, n in nl_.items():
+            problems.append(f"data integrity: {f} has {n} bad line(s) (new or grown)")
+    except Exception:  # noqa: BLE001  the integrity scan must never stop the round
+        pass
     rep["agent_problems"] = problems
     return rep
 

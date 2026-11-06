@@ -80,6 +80,29 @@ def eligible(batch, ids, run=_publisher):
     return [p.get("id") or p.get("product_id") for p in doc.get("products", []) if p.get("status") == "PASS"]
 
 
+FOLLOWUP_STATES = ("tool_pages_daily_state.json", "indexnow_auto.json", "listing_health_state.json")
+
+
+def reopen_daily_followups(data_dir=None):
+    """A product published mid-day must not wait until tomorrow for its tool page, IndexNow ping and listing check: those steps are
+    gated once per UTC day and had already run. Clear their own day marker so the next loop tick runs them again (2026-11-06)."""
+    d = Path(data_dir) if data_dir else ROOT / "data"
+    cleared = []
+    for name in FOLLOWUP_STATES:
+        f = d / name
+        try:
+            doc = json.loads(f.read_text(encoding="utf-8"))
+            if isinstance(doc, dict) and doc.get("last_day"):
+                doc["last_day"] = None
+                tmp = Path(str(f) + ".tmp")
+                tmp.write_text(json.dumps(doc, ensure_ascii=False), encoding="utf-8")
+                tmp.replace(f)
+                cleared.append(name)
+        except (OSError, ValueError):
+            continue
+    return cleared
+
+
 def run_once(env=os.environ, registry=None, batches=None, window_used=None, run=_publisher, limit=None):
     gate_cap = None
     if str(env.get(FREEZE, "")).lower() == "true":
@@ -123,6 +146,8 @@ def run_once(env=os.environ, registry=None, batches=None, window_used=None, run=
         for r in doc.get("results") or doc.get("products") or []:
             (published if r.get("status") == "PASS" else failed).append(r.get("id"))
         room -= len(take)
+    if published:
+        reopen_daily_followups()
     action = "published" if published else "failed"
     return {"action": action, "detail": f"published {len(published)} {published}; not passed {len(failed)} {failed}"}
 
