@@ -154,6 +154,20 @@ def collect(root: Path = ROOT, env=None, health_fn=None, gate_fn=None, autostart
     except Exception as e:  # noqa: BLE001  a broken ledger must not stop the stage check
         rows.append(stage("C1", "connector intake", "WAITING", "unreadable (%s)" % type(e).__name__, "agent"))
 
+    # regression gate: do the critical tests still pass (nightly)
+    rg = _json(root / "data" / "regression_status.json", None)
+    if not rg:
+        rows.append(stage("R1", "regression gate", "WAITING", "no run recorded yet (loop step factory_regression runs nightly)", "automatic"))
+    else:
+        age = _age_minutes(root / "data" / "regression_status.json")
+        stale = age is None or age > 36 * 60
+        n = rg.get("failed", 0)
+        rows.append(stage("R1", "regression gate", "OK" if (not n and not stale) else "WAITING",
+                          "python %s passed in %s files, node %s/%s files; %s failing%s" % (rg.get("python", {}).get("passed"), rg.get("python", {}).get("files"),
+                                                                                         rg.get("node", {}).get("passed_files"), rg.get("node", {}).get("files"), n,
+                                                                                         "; last run older than 36 h" if stale else ""),
+                          "agent: fix the failing tests in data/regression_status.json" if n else "automatic"))
+
     # storefront health guard: what a buyer can see wrong on a live listing
     lh = _json(root / "data" / "listing_health.json", None)
     if not lh:

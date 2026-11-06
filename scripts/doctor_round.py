@@ -114,6 +114,12 @@ def run(now=None):
         if a["hours_left"] <= 12:  # an approval that outlives the next publishing window is not yet a problem
             problems.append(f"approval for {a['product']} expires in {a['hours_left']} h")
     try:
+        rg = json.loads((ROOT / "data" / "regression_status.json").read_text(encoding="utf-8"))
+        if rg.get("failed"):
+            problems.append(f"regression gate: {rg['failed']} failing ({', '.join(rg.get('failures', [])[:4])})")
+    except (OSError, ValueError):
+        pass
+    try:
         lh = json.loads((ROOT / "data" / "listing_health.json").read_text(encoding="utf-8"))
         for f in lh.get("findings", []):
             if f.get("severity") in ("CRITICAL", "HIGH"):

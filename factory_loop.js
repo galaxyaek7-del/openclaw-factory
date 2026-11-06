@@ -5441,6 +5441,10 @@ async function runTick() {
     actions.push({ step: 'site_publish', ...(await runOnceScript('auto_publish_site.py', { timeoutMs: 20 * 60 * 1000 })) });
     markStep('indexnow');
     actions.push({ step: 'indexnow', ...(await runOnceScript('indexnow_auto.py')) });
+    // 2026-11-06: nightly regression gate over the curated critical tests (gates, publishers, monitors, digest): a change
+    // that breaks them shows up the same day. At most once a day, ~40 s. scripts/factory_regression.py
+    markStep('factory_regression');
+    actions.push({ step: 'factory_regression', ...(await runOnceScript('factory_regression.py', { timeoutMs: 8 * 60 * 1000 })) });
     // 2026-11-06: storefront health guard (corrupted text, price-0 listings, test titles, duplicates, missing covers):
     // one read-only list call a day, report in data/listing_health.json. See listing_health.py.
     markStep('listing_health');

@@ -72,7 +72,7 @@ def _need(s):
     return _NEEDS.get(str(s.get("stage")), s.get("owner", ""))
 
 
-def build_message(*, today, stages, tools_counts, regressions, registry, demand, pins, tool_names=None, connectors=None, automation=None):
+def build_message(*, today, stages, tools_counts, regressions, registry, demand, pins, tool_names=None, connectors=None, automation=None, regression=None):
     pub = sum(1 for p in registry.get("products", []) if p.get("published")) if registry else None
     sales = sum(int(p.get("sales_count") or 0) for p in registry.get("products", []) if p.get("published")) if registry else None
     reg_age = str((registry or {}).get("generated_at", ""))[:16] or "UNKNOWN"
@@ -100,6 +100,10 @@ def build_message(*, today, stages, tools_counts, regressions, registry, demand,
     if pins is not None:
         nxt = f" | التالي: {pins['next'][1]} ({pins['next'][0]})" if pins.get("next") else ""
         L.append(f"Pinterest: {pins['due']} دبوساً حان موعده، {pins['later']} مجدولاً{nxt}.")
+    if regression:
+        n = regression.get("failed", 0)
+        L.append(f"اختبارات الانحدار: {regression.get('python', {}).get('passed', '?')} ناجحاً بلا فشل" if not n else
+                 f"اختبارات الانحدار: {n} فاشلة ({'، '.join(regression.get('failures', [])[:3])}): شيء انكسر ويُعالَج.")
     if automation:
         L.append(f"الآلية: {automation['automatic_or_gated']} من {automation['capabilities']} قدرة آلية أو مشروطة ({automation['percent']}%)؛ الباقي بوابة بشرية أو ينتظر حساباً/قراراً منك.")
     if connectors is not None:
@@ -139,8 +143,9 @@ def gather(today):
         automation = company_scorecard.score(company_scorecard.evaluate(*company_scorecard.gather()))
     except Exception:  # noqa: BLE001
         automation = None
+    regression = _json(ROOT / "data" / "regression_status.json", None)
     return dict(today=today, stages=stages, tools_counts=counts, regressions=regs, registry=registry, demand=demand,
-                pins=pins, tool_names=tool_names, connectors=connectors, automation=automation)
+                pins=pins, tool_names=tool_names, connectors=connectors, automation=automation, regression=regression)
 
 
 def run_once(now=None, state_path=STATE, gather_fn=None, sender=None):
