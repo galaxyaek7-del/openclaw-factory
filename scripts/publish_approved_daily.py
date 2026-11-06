@@ -64,8 +64,11 @@ def candidates(registry, batches):
 
 
 def _publisher(args, timeout_s):
+    # The publisher prints JSON containing non-ASCII text; without this a console-less Windows run encodes it as
+    # cp1252 and dies with UnicodeEncodeError (seen 2026-11-06 on a manual run), so the child is told to use UTF-8.
     r = subprocess.run([sys.executable, str(ROOT / "scripts" / "publish_batch14.py"), *args], cwd=str(ROOT),
-                       capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=timeout_s)
+                       capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=timeout_s,
+                       env={**os.environ, "PYTHONIOENCODING": "utf-8"})
     try:
         return json.loads(r.stdout)
     except ValueError:
