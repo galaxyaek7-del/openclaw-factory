@@ -5446,6 +5446,9 @@ async function runTick() {
     actions.push({ step: 'indexnow', ...(await runOnceScript('indexnow_auto.py')) });
     // 2026-11-06: nightly regression gate over the curated critical tests (gates, publishers, monitors, digest): a change
     // that breaks them shows up the same day. At most once a day, ~40 s. scripts/factory_regression.py
+    // 2026-11-06: local-only snapshot of source files git does not track (never pushed). scripts/untracked_source_snapshot.py
+    markStep('untracked_source_snapshot');
+    actions.push({ step: 'untracked_source_snapshot', ...(await runOnceScript('untracked_source_snapshot.py', { timeoutMs: 4 * 60 * 1000 })) });
     markStep('factory_regression');
     actions.push({ step: 'factory_regression', ...(await runOnceScript('factory_regression.py', { timeoutMs: 8 * 60 * 1000 })) });
     // 2026-11-06: storefront health guard (corrupted text, price-0 listings, test titles, duplicates, missing covers):
