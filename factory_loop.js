@@ -808,9 +808,28 @@ async function triggerGenerateBook(brief) {
 // it never imports or calls market_hunter.py/profit_oracle.py, only reads
 // their already-written output file.
 
+// 2026-11-06: the same low-score niche was re-evaluated every tick and logged 5,574 identical "skipped" events (133 a day, in two files).
+// A skip identical to the newest record (same niche and reason) on the same UTC day is not written again; the tick result is unchanged.
+function isRepeatedGoldenHunterSkip(fields, logPath, now = new Date()) {
+  if (fields.action !== 'skipped' || !fields.niche || !fields.reason) return false;
+  try {
+    const size = fs.statSync(logPath).size;
+    const fd = fs.openSync(logPath, 'r');
+    const len = Math.min(size, 8192);
+    const buf = Buffer.alloc(len);
+    fs.readSync(fd, buf, 0, len, size - len);
+    fs.closeSync(fd);
+    const lines = buf.toString('utf8').split(String.fromCharCode(10)).filter((l) => l.trim().startsWith('{'));
+    const last = JSON.parse(lines[lines.length - 1]);
+    return last.action === 'skipped' && last.niche === fields.niche && last.reason === fields.reason
+      && String(last.timestamp || '').slice(0, 10) === now.toISOString().slice(0, 10);
+  } catch (_) { return false; }
+}
+
 function appendGoldenHunterEvent(fields, logPath = GOLDEN_HUNTER_EVENTS_FILE, departmentEventsLogPath = departmentEvents.DEFAULT_LOG_PATH) {
   try {
     fs.mkdirSync(path.dirname(logPath), { recursive: true });
+    if (isRepeatedGoldenHunterSkip(fields, logPath)) return { timestamp: new Date().toISOString(), ...fields, _deduped: true };
     const record = { timestamp: new Date().toISOString(), ...fields };
     fs.appendFileSync(logPath, JSON.stringify(record) + '\n');
     // EOS Phase 2, Round 2 (2026-07-19): also emits a real correlation-

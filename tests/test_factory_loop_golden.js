@@ -356,6 +356,22 @@ async function main() {
     assert.ok(events[0].timestamp, 'timestamp should be auto-filled');
   });
 
+  await test('appendGoldenHunterEvent: an identical skip on the same day is written once (5,574 duplicates on 2026-11-06)', () => {
+    const p = path.join(tmpDir, 'events_dedupe.jsonl');
+    const skip = { action: 'skipped', reason: 'opportunity_score_below_floor', niche: 'low niche', opportunity_score: 52.3 };
+    const a = fl.appendGoldenHunterEvent(skip, p, DEP_EVENTS_PATH);
+    const b = fl.appendGoldenHunterEvent(skip, p, DEP_EVENTS_PATH);
+    assert.ok(!a._deduped && b._deduped === true, 'second identical skip is not written');
+    fl.appendGoldenHunterEvent({ ...skip, niche: 'other niche' }, p, DEP_EVENTS_PATH);
+    fl.appendGoldenHunterEvent({ action: 'attempted', niche: 'low niche', dry_run: true }, p, DEP_EVENTS_PATH);
+    fl.appendGoldenHunterEvent(skip, p, DEP_EVENTS_PATH);
+    assert.strictEqual(fl.readGoldenHunterEvents(p).length, 4, 'a different niche, a different action and a skip after them are all written');
+    // yesterday's identical skip does not suppress today's
+    const q = path.join(tmpDir, 'events_dedupe_old.jsonl');
+    require('fs').writeFileSync(q, JSON.stringify({ ...skip, timestamp: '2026-11-05T10:00:00.000Z' }) + String.fromCharCode(10));
+    assert.ok(!fl.appendGoldenHunterEvent(skip, q, DEP_EVENTS_PATH)._deduped);
+  });
+
   await test('goldenNicheAlreadyAttempted: dry_run entries never block a future real attempt', () => {
     const p = path.join(tmpDir, 'events_dryrun.jsonl');
     fl.appendGoldenHunterEvent({ action: 'attempted', dry_run: true, niche: 'دليل التأمل' }, p, DEP_EVENTS_PATH);
