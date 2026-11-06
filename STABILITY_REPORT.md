@@ -21,7 +21,7 @@ The factory is **running and healthy at the process level**: server, factory loo
 | M2 | **Paddle API key lacks permission** (HTTP 403 on read). Payment gateway for the customer platform cannot be read; waits on the founder's Paddle onboarding. | `connection_verifier.py` |
 | M3 | **Auto-restart after reboot configured but never proven live.** `GalaxyForge-Factory-Autostart` (logon trigger, runs `scripts/start_factory_supervised.ps1`, has duplicate guards) last ran 2026-11-05 with result 0; `GalaxyForge-N8N-Autostart` is running; `GalaxyForge-Ngrok-Autostart` last result `0xC000013A` (terminated), state Ready. A real reboot test has not been done: **UNKNOWN**. | Task Scheduler |
 | M4 | Working tree carries **1,779 modified/untracked files** unrelated to my commits (generated reports, site pages, manifests). High risk of a mistaken commit; hides real changes. | `git status --short` |
-| M5 | Groq rate limit (HTTP 429) appears during bursts (seen twice today in my evaluation scripts). The live chain retries, but a burst of daily steps could stall one agent step. | eval runs 17:12Z |
+| M5 | Groq rate limit (HTTP 429) appears during bursts (seen twice today in my evaluation scripts). **Already handled**: `groq_chat` retries with a growing delay (`_retry_delay_seconds`); my evaluation scripts have their own spaced retries. Corrected after reading the code. | eval runs 17:12Z |
 | M6 | Internet from this host is intermittent (earlier today: 368 of 777 health ticks with a target down; 4-hour outage 03:00-07:00Z). GitHub fetch and n8n relays fail during outages. | health history |
 | M7 | Scout (76% task success) and QA (68%) are flagged DEGRADED by the agent KPIs: stale history (old book-prompt era). The fixes made today (Scout v2, matched QA, mission prompt) have **no measured result yet** (needs several daily chains). | `agent_kpis.py` |
 
@@ -91,3 +91,15 @@ The factory is **running and healthy at the process level**: server, factory loo
 2. **Notifications:** retry/repair `03_Production_Notify` (credential or timeout), then rerun the relay self-check.
 3. **Resilience:** Groq 429 backoff in the chain steps; off-machine backup proposal for the founder to approve (U2).
 4. **Then** the remaining groups of your list (the message was cut after the first group; send the rest).
+
+## 9. Phase 2 results (infrastructure group), 2026-11-06 evening
+| Item | Result |
+|---|---|
+| server.js without errors | **OK**: 0 real crashes since 2026-10-25, `/health` 200, supervisor present (no change needed) |
+| All routes answer correctly | **OK**: 37 of 37 probed GET routes return 200/302/401, none 5xx, none over 5 s (routes with params or heavy/side-effect names were deliberately not probed) |
+| Database healthy | **No database by design.** New `scripts/data_integrity_check.py` + `config/data_integrity_known.json`: 8 historical unparseable files and 4 JSONL with old bad lines are baselined; any NEW corruption fails the doctor round and nightly gate. Nothing deleted |
+| .env complete, no values in code | **OK**: 33 variables, none empty, tracked-secret scan clean; explicit `PORT=3000` added; `AMAZON_ASSOCIATE_TAG` stays a founder item |
+| Autostart after reboot | **Partly proven**: dry-run of `start_factory_supervised.ps1` correctly refuses to start second copies. A real reboot was NOT done (it would restart the founder's machine): still UNKNOWN end to end |
+| Publish follow-ups | **Fixed a real gap found today**: a product published mid-day (B17-001 at 17:26Z) would have waited until tomorrow for its tool page, IndexNow and listing check (once-a-day gates). `publish_approved_daily` now re-opens them; test added |
+| n8n relays 03/04 | Added Retry on Fail (3 tries, 3 s) to the Telegram nodes and applied live (DB backup `backup_gf_envfix_20261106_182923`, rollback command in the apply script). Live check: unauthenticated 403, authenticated 200. `03_Production_Notify` still shows its old 12:54 error until its next real event: not yet proven by a successful run |
+| Still open | U1 token rotation (founder), U2 off-machine backup (founder decision), M2 Paddle 403 (founder), M3 real reboot test, M4 working-tree drift, M6 intermittent internet |
