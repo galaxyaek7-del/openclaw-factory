@@ -32,7 +32,7 @@ The factory is **running and healthy at the process level**: server, factory loo
 | L2 | `data/commission_attribution_log.jsonl` is 108 MB (one legacy day) and `data/attribution_log.jsonl` 24 MB; `factory_loop.log` 9 MB. No rotation. Disk is not at risk (133 GB free). | `ls` |
 | L3 | `n8n:01_Market_Scout` is manual-only and never ran (UNKNOWN by design). | verifier |
 | L4 | `.env` has no `PORT` (default 3000 applies), no `AFFILIATE_MODE`, no `AMAZON_ASSOCIATE_TAG` (founder item). 33 variables, none empty. | name check |
-| L5 | `/health` returns `status: warning` while 9 of 12 checks are ok: the other 3 are `not_applicable` (no database, queue or worker pool by design). The warning is cosmetic, but it hides a real warning if one appears. | `/health` |
+| L5 | ~~`/health` returns `status: warning` while only `not_applicable` checks are non-ok~~ **Withdrawn after reading `server.js` (lines ~6196-6215):** `not_applicable` checks are already excluded; the `warning` comes from the Reality Scorecard override (zero sales 30+ days after publishing), which is deliberate and honest. No change needed. |
 | L6 | Backup branches (`backup/pre-13c`, `backup/pre-14`, ...) and `pre-*` branches clutter the local repo (local only, not on the remote). | `git branch -a` |
 
 ## 3. Status of every tool and service
