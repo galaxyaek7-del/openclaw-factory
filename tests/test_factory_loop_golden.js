@@ -392,6 +392,23 @@ async function main() {
     assert.deepStrictEqual(r.map((x) => x.niche), ['printable planner', 'Break-even calculator for a shop', 'printable wall art']);
   });
 
+  await test('GF_GOLDEN_SCORE_FLOOR: lowers only the score floor, is explicit in the reason, and never touches failures or already-accepted scores', () => {
+    assert.strictEqual(fl.goldenScoreFloorOverride({}), null);
+    assert.strictEqual(fl.goldenScoreFloorOverride({ GF_GOLDEN_SCORE_FLOOR: '' }), null);
+    assert.strictEqual(fl.goldenScoreFloorOverride({ GF_GOLDEN_SCORE_FLOOR: 'abc' }), null);
+    assert.strictEqual(fl.goldenScoreFloorOverride({ GF_GOLDEN_SCORE_FLOOR: '150' }), null);
+    assert.strictEqual(fl.goldenScoreFloorOverride({ GF_GOLDEN_SCORE_FLOOR: '50' }), 50);
+    const rej = { ok: true, accepted: false, score: 55.2, reason: 'below floor' };
+    const a = fl.applyGoldenScoreFloor(rej, 50);
+    assert.ok(a.accepted && a.overridden && /GF_GOLDEN_SCORE_FLOOR=50/.test(a.reason));
+    assert.strictEqual(fl.applyGoldenScoreFloor(rej, 60).accepted, false, 'below the new floor stays rejected');
+    assert.strictEqual(fl.applyGoldenScoreFloor(rej, null).accepted, false, 'no override, no change');
+    const failed = { ok: false, error: 'boom' };
+    assert.strictEqual(fl.applyGoldenScoreFloor(failed, 0), failed, 'a scoring failure is never turned into an acceptance');
+    const ok = { ok: true, accepted: true, score: 90 };
+    assert.strictEqual(fl.applyGoldenScoreFloor(ok, 50), ok);
+  });
+
   await test('recentlyRejectedGoldenNiches: only rejections inside the window count; pool markers and other actions are ignored', () => {
     const p = path.join(tmpDir, 'events_cooldown.jsonl');
     const now = Date.parse('2026-11-10T12:00:00Z');

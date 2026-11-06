@@ -1270,6 +1270,20 @@ function evaluateGoldenOpportunities(data, nowMs = Date.now()) {
 const GOLDEN_MAX_EVALUATIONS = Number(process.env.GF_GOLDEN_MAX_EVALUATIONS || 5);
 const GOLDEN_REJECTION_COOLDOWN_DAYS = Number(process.env.GF_GOLDEN_COOLDOWN_DAYS || 7);
 
+// Founder order 2026-11-06 ("bypass the thresholds in the factory"): the tier-4 Opportunity Score floor (81.2) is a book-era bar and
+// left the hunter with no candidate at all (best of 5 evaluated: 55.2). GF_GOLDEN_SCORE_FLOOR lowers THIS floor only; quality gates, the
+// write gate, publication clearance and the truth rules are untouched, and FACTORY_AUTO_PRODUCE still decides whether anything is produced
+// (off: a passing niche is only recorded as a dry-run). Unset or invalid = no override (the original floor applies).
+function goldenScoreFloorOverride(env = process.env) {
+  const v = Number(env.GF_GOLDEN_SCORE_FLOOR);
+  return env.GF_GOLDEN_SCORE_FLOOR !== undefined && env.GF_GOLDEN_SCORE_FLOOR !== '' && Number.isFinite(v) && v >= 0 && v <= 100 ? v : null;
+}
+
+function applyGoldenScoreFloor(sc, floor) {
+  if (!sc || !sc.ok || sc.accepted || floor === null || floor === undefined || !(sc.score >= floor)) return sc;
+  return { ...sc, accepted: true, overridden: true, reason: `${sc.reason} | مقبول بتجاوز العتبة: GF_GOLDEN_SCORE_FLOOR=${floor} (العتبة الأصلية لم تُجتز)` };
+}
+
 // A forum or news headline is not a product niche ("Can I stop Google search results from showing my site...?"): it wastes a scoring call.
 function looksLikeHeadline(niche) {
   const n = String(niche || '').trim();
@@ -1346,9 +1360,9 @@ async function huntGolden(reachable) {
       continue;
     }
     // ADR-026 Opportunity Score gate (ADR-070: ladder-aware score for ladder-tagged candidates), unchanged, per candidate.
-    const sc = cand.ladder
+    const sc = applyGoldenScoreFloor(cand.ladder
       ? await getLadderOpportunityScore(cand.niche, cand.ladder)
-      : await getOpportunityScore(cand.niche, { tier: 'tier4' });
+      : await getOpportunityScore(cand.niche, { tier: 'tier4' }), goldenScoreFloorOverride());
     if (sc.ok && !sc.accepted) {
       appendGoldenHunterEvent({
         action: 'skipped', reason: 'opportunity_score_below_floor', niche: cand.niche,
@@ -6141,7 +6155,7 @@ module.exports = {
   runMarketEvidenceCycle, maybeRunDailyMarketEvidence,
   readLastGenerationRecord, triggerDistribute, triggerGenerateBook, formatDistributionAction, pollSales,
   huntGolden, readGoldenOpportunities, pickTopGoldenOpportunity, briefFromGoldenOpportunity,
-  appendGoldenHunterEvent, readGoldenHunterEvents, goldenNicheAlreadyAttempted, rankGoldenOpportunities, recentlyRejectedGoldenNiches, looksLikeHeadline,
+  appendGoldenHunterEvent, readGoldenHunterEvents, goldenNicheAlreadyAttempted, rankGoldenOpportunities, recentlyRejectedGoldenNiches, looksLikeHeadline, goldenScoreFloorOverride, applyGoldenScoreFloor,
   evaluateGoldenOpportunities, getButterPrice, getOpportunityScore, getLadderOpportunityScore,
   checkProductionEngineHealth,
   checkNeedsAttention, criticalHealthReasons, workflowHealthReasons, writeNeedsAttention, clearNeedsAttention, checkGoldenStagnation,
