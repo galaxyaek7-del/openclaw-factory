@@ -65,7 +65,9 @@ def _live_published_ids(results_path):
         if not isinstance(run, dict) or str(run.get("mode", "")).upper() != "LIVE":
             continue
         for r in run.get("results") or []:
-            if isinstance(r, dict) and r.get("status") == "PASS" and r.get("product_id"):
+            # PASS, or BLOCKED after the listing was created (a later step such as the cover failed): either way the listing EXISTS,
+            # so another create attempt could only hit the duplicate guard. A failed later step is repaired, not re-published.
+            if isinstance(r, dict) and r.get("status") in ("PASS", "BLOCKED") and r.get("product_id"):
                 ids.add(r.get("id"))
     return ids
 

@@ -170,12 +170,12 @@ def test_a_product_already_live_pass_is_not_a_candidate_again(tmp_path):
     import publish_approved_daily as pad
     res = tmp_path / "res.json"
     res.write_text(json.dumps([{"mode": "LIVE", "results": [{"id": "B1-001", "status": "PASS", "product_id": "abc"}]},
-                               {"mode": "LIVE", "results": [{"id": "B1-002", "status": "BLOCKED"}]},
+                               {"mode": "LIVE", "results": [{"id": "B1-002", "status": "BLOCKED"}, {"id": "B1-004", "status": "BLOCKED", "product_id": "made-but-cover-failed"}]},
                                {"mode": "DRY", "results": [{"id": "B1-003", "status": "PASS", "product_id": "zzz"}]}]), encoding="utf-8")
     folder = tmp_path / "b1"
     (folder / "x").mkdir(parents=True)
     reg = {"products": [{"internal_id": i, "primary_state": "READY_FOR_AUTHORIZATION", "manifest": str(folder / "x" / "m.json")}
-                        for i in ("B1-001", "B1-002", "B1-003")]}
+                        for i in ("B1-001", "B1-002", "B1-003", "B1-004")]}
     out = pad.candidates(reg, {"b1": (str(folder), str(res))})
     assert out == {"b1": ["B1-002", "B1-003"]}
-    assert pad.candidates(reg, {"b1": (str(folder), str(tmp_path / "missing.json"))}) == {"b1": ["B1-001", "B1-002", "B1-003"]}
+    assert pad.candidates(reg, {"b1": (str(folder), str(tmp_path / "missing.json"))}) == {"b1": ["B1-001", "B1-002", "B1-003", "B1-004"]}
