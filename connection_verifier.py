@@ -33,6 +33,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
+TELEGRAM_BINDING = ROOT / "data" / "telegram_binding.json"  # overridable so tests never read the real pairing
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
@@ -201,7 +202,7 @@ def telegram(probe=_get_json):
     chat = read_env_value("OPENCLAW_TELEGRAM_CHAT_ID", ROOT / ".env") or read_env_value("TELEGRAM_CHAT_ID", ROOT / ".env")
     if not chat:  # chat bound by scripts/telegram_bind.py (one-time pairing code)
         try:
-            chat = str(json.loads((ROOT / "data" / "telegram_binding.json").read_text(encoding="utf-8"))["chat_id"])
+            chat = str(json.loads(Path(TELEGRAM_BINDING).read_text(encoding="utf-8"))["chat_id"])
         except (OSError, ValueError, KeyError):
             chat = None
     if not token:

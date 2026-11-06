@@ -72,7 +72,10 @@ class TestProbes(unittest.TestCase):
         self.assertIn("sensing_engine", warn["evidence"])
 
     def test_telegram_valid_token_without_chat_id_is_degraded(self):
-        with patch("channels.env_config.read_env_value", side_effect=lambda k, p: "SECRET-TOKEN-VALUE" if k == "TELEGRAM_BOT_TOKEN" else None):
+        # isolated from the real pairing file: data/telegram_binding.json exists on this machine since 2026-11-06
+        no_binding = Path(tempfile.mkdtemp()) / "no_such_binding.json"
+        with patch("channels.env_config.read_env_value", side_effect=lambda k, p: "SECRET-TOKEN-VALUE" if k == "TELEGRAM_BOT_TOKEN" else None), \
+                patch.object(cv, "TELEGRAM_BINDING", no_binding):
             r = cv.telegram(probe=lambda u: (200, {"ok": True}))[0]
         self.assertEqual(r["status"], cv.DEGRADED)
         self.assertNotIn("SECRET-TOKEN-VALUE", r["evidence"])
