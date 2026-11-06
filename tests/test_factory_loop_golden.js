@@ -436,6 +436,24 @@ async function main() {
     assert.ok(fl.liveCatalogTitles().length > 50, 'reads the real catalog titles');
   });
 
+  await test('digital candidates: only strong + not-yet-attempted ones reach the pool, they rank before plain niches, and the chain input carries type, buyer and price', () => {
+    const f = path.join(tmpDir, 'digital_candidates.json');
+    require('fs').writeFileSync(f, JSON.stringify([
+      { niche: 'Escrow Review Window Calculator', quality: 'strong', status: 'candidate', product_type: 'excel_workbook', topic: 'review window length', audience: 'freelancers', price: 29, source: 'hunter_headline' },
+      { niche: 'FAANG Interview Prep Checklist', quality: 'weak', status: 'candidate', product_type: 'checklist_kit', price: 29 },
+      { niche: 'Old one', quality: 'strong', status: 'attempted', product_type: 'excel_workbook', price: 19 }]));
+    assert.deepStrictEqual(fl.readDigitalCandidates(f).map((c) => c.niche), ['Escrow Review Window Calculator']);
+    assert.deepStrictEqual(fl.readDigitalCandidates(path.join(tmpDir, 'nope.json')), []);
+    const merged = fl.withDigitalCandidates({ generated_at: 'x', results: [opp('printable planner', 99, 'GOLDEN')] }, f);
+    assert.strictEqual(merged.generated_at, 'x');
+    const r = fl.rankGoldenOpportunities(merged);
+    assert.deepStrictEqual(r.map((x) => x.niche), ['Escrow Review Window Calculator', 'printable planner'], 'digital before a higher-scored plain niche');
+    assert.ok(r[0].digital === true);
+    const input = fl.digitalChainInput(r[0]);
+    assert.ok(/excel_workbook/.test(input) && /freelancers/.test(input) && /\$29/.test(input));
+    assert.strictEqual(fl.withDigitalCandidates(null, path.join(tmpDir, 'nope.json')).results.length, 0);
+  });
+
   await test('goldenRoute: agent chain by default, legacy only when asked', () => {
     assert.strictEqual(fl.goldenRoute({}), 'chain');
     assert.strictEqual(fl.goldenRoute({ GF_GOLDEN_ROUTE: 'legacy' }), 'legacy');

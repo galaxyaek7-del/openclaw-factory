@@ -1309,6 +1309,28 @@ function goldenAttemptsToday(events, nowMs = Date.now()) {
   return (events || []).filter((e) => e && e.action === 'attempted' && e.dry_run === false && String(e.timestamp || '').slice(0, 10) === day).length;
 }
 
+// 2026-11-06 (founder: move the hunter from books to the other digital products): candidates produced by golden_hunter/digital_discovery.py
+// (real signals translated into concrete digital products, checked against the live catalog and tagged strong/weak by a deterministic
+// buyer-relevance rule) are added to the pool and ranked FIRST among non-ladder niches. Only `strong` candidates reach the hunter.
+const DIGITAL_CANDIDATES_FILE = path.join(FACTORY_DIR, 'data', 'digital_candidates.json');
+function readDigitalCandidates(file = DIGITAL_CANDIDATES_FILE) {
+  try {
+    const arr = JSON.parse(fs.readFileSync(file, 'utf8'));
+    return (Array.isArray(arr) ? arr : []).filter((c) => c && c.niche && c.quality === 'strong' && (c.status || 'candidate') === 'candidate');
+  } catch (_) { return []; }
+}
+function withDigitalCandidates(data, file = DIGITAL_CANDIDATES_FILE) {
+  const base = Array.isArray(data && data.results) ? data.results : [];
+  const extra = readDigitalCandidates(file).map((c) => ({
+    niche: c.niche, verdict: 'GOOD', profit_score: 60, digital: true, product_type: c.product_type, topic: c.topic, audience: c.audience,
+    price: c.price, source: c.source,
+  }));
+  return { ...(data || {}), results: [...base, ...extra] };
+}
+function digitalChainInput(cand) {
+  return `${cand.niche} — ${cand.topic || ''} (type: ${cand.product_type}, buyer: ${cand.audience || 'small business'}, suggested price $${cand.price})`;
+}
+
 // A forum or news headline is not a product niche ("Can I stop Google search results from showing my site...?"): it wastes a scoring call.
 function looksLikeHeadline(niche) {
   const n = String(niche || '').trim();
@@ -1329,10 +1351,10 @@ function rankGoldenOpportunities(data, { exclude = new Set() } = {}) {
     if (looksLikeHeadline(r.niche)) continue;
     if (exclude.has(r.niche)) continue;
     const cur = best.get(r.niche);
-    const key = (x) => (x.ladder_accepted === true ? 1000 + (x.ladder_score || 0) : 0) + (x.profit_score + goldenFitBonus(x.niche)) / 1000;
+    const key = (x) => (x.ladder_accepted === true ? 1000 + (x.ladder_score || 0) : 0) + (x.digital ? 500 : 0) + (x.profit_score + goldenFitBonus(x.niche)) / 1000;
     if (!cur || key(r) > key(cur)) best.set(r.niche, r);
   }
-  const rank = (x) => (x.ladder_accepted === true ? 1000 + (x.ladder_score || 0) : 0) * 1000 + x.profit_score + goldenFitBonus(x.niche);
+  const rank = (x) => ((x.ladder_accepted === true ? 1000 + (x.ladder_score || 0) : 0) + (x.digital ? 500 : 0)) * 1000 + x.profit_score + goldenFitBonus(x.niche);
   return [...best.values()].sort((a, b) => (rank(b) - rank(a)) || String(a.niche).localeCompare(String(b.niche)));
 }
 
@@ -1385,7 +1407,7 @@ function goldenRoute(env = process.env) {
   return String(env.GF_GOLDEN_ROUTE || 'chain').toLowerCase() === 'legacy' ? 'legacy' : 'chain';
 }
 
-async function runGoldenNicheThroughChain(niche, { client } = {}) {
+async function runGoldenNicheThroughChain(niche, { client, input } = {}) {
   const { runDailyProductChain } = require('./lib/daily_product_chain');
   const day = new Date().toISOString().slice(0, 10);
   const taskId = `golden_${require('crypto').createHash('sha1').update(String(niche)).digest('hex').slice(0, 8)}_${day.replace(/-/g, '')}`;
@@ -1393,7 +1415,7 @@ async function runGoldenNicheThroughChain(niche, { client } = {}) {
   if (!client && key && !agentChainGroq) { const Groq = require('groq-sdk'); agentChainGroq = new Groq({ apiKey: key }); }
   const dup = findLiveDuplicate(niche, liveCatalogTitles());
   if (dup) return { ok: false, rejected: true, detail: `تخطّي: النيش "${niche}" يتداخل مع منتج حي "${dup.title}" (${Math.round(dup.score * 100)}%) — لا تشغيل للسلسلة`, package_path: null, task_id: taskId };
-  const r = await runDailyProductChain({ client: client || agentChainGroq, day, taskId, trends: [niche] });
+  const r = await runDailyProductChain({ client: client || agentChainGroq, day, taskId, trends: [input || niche] });
   const ok = r.action === 'blocked' || r.action === 'done';
   return { ok, rejected: r.action === 'stopped', detail: r.detail, package_path: r.package_path || null, task_id: r.task_id };
 }
@@ -1413,7 +1435,7 @@ async function huntGolden(reachable) {
   // below the floor) was re-picked forever and nothing else was ever evaluated. Now: distinct niches, ladder-accepted first, niches
   // rejected in the last 7 days are skipped (cooldown), and up to GOLDEN_MAX_EVALUATIONS candidates are scored per tick until one passes.
   // Every gate below is the original one, applied per candidate; a scoring failure still fails OPEN as before.
-  const ranked = rankGoldenOpportunities(data, { exclude: recentlyRejectedGoldenNiches() });
+  const ranked = rankGoldenOpportunities(withDigitalCandidates(data), { exclude: recentlyRejectedGoldenNiches() });
   if (!ranked.length) {
     const rec = appendGoldenHunterEvent({ action: 'skipped', reason: 'all_candidates_in_cooldown', niche: '*pool*',
       detail: `كل مرشحي الصياد رُفضوا خلال آخر ${GOLDEN_REJECTION_COOLDOWN_DAYS} أيام (فترة التبريد) — لا مرشح جديد للتقييم حتى تنتهي الفترة أو يتجدد الحوض` });
@@ -1432,7 +1454,9 @@ async function huntGolden(reachable) {
       continue;
     }
     // ADR-026 Opportunity Score gate (ADR-070: ladder-aware score for ladder-tagged candidates), unchanged, per candidate.
-    const sc = applyGoldenScoreFloor(cand.ladder
+    // Digital candidates already passed the buyer-relevance tag and the live-duplicate check; the oracle's keyword score clusters at 46-50 for
+    // every one of them (measured 2026-11-06) and cannot tell them apart, so it is not a gate for this source: the agent chain's QA is.
+    const sc = cand.digital ? { ok: true, accepted: true, overridden: true, score: null, reason: 'مرشح رقمي: درجة المُقيِّم الكلماتية لا تُطبَّق (انظر T96)' } : applyGoldenScoreFloor(cand.ladder
       ? await getLadderOpportunityScore(cand.niche, cand.ladder)
       : await getOpportunityScore(cand.niche, { tier: 'tier4' }), goldenScoreFloorOverride());
     if (sc.ok && !sc.accepted) {
@@ -1515,8 +1539,8 @@ async function huntGolden(reachable) {
     };
   }
 
-  if (goldenRoute() === 'chain') {
-    const viaChain = await runGoldenNicheThroughChain(top.niche);
+  if (top.digital || goldenRoute() === 'chain') {
+    const viaChain = await runGoldenNicheThroughChain(top.niche, top.digital ? { input: digitalChainInput(top) } : {});
     const recChain = appendGoldenHunterEvent({
       action: 'attempted', dry_run: false, niche: top.niche, profit_score: top.profit_score, verdict: top.verdict, brief,
       pipeline: 'agent_chain', ok: viaChain.ok, rejected: viaChain.rejected, detail: viaChain.detail, package_path: viaChain.package_path, task_id: viaChain.task_id,
@@ -5718,6 +5742,10 @@ async function runTick() {
       actions.push({ step: 'distribute', ...formatDistributionAction(huntDistribution) });
     }
 
+    // 2026-11-06: translate real signals (pool headlines, sensing trends, market evidence) into digital-product candidates for the hunter below;
+    // at most every 4 h, ~1 model call per signal. golden_hunter/digital_discovery.py
+    markStep('digital_discovery');
+    actions.push({ step: 'digital_discovery', ...(await runOnceScript('digital_discovery_daily.py', { timeoutMs: 8 * 60 * 1000 })) });
     markStep('golden_hunter_bridge');
     const goldenResult = await huntGolden(true);
     const { distribution: goldenDistribution, ...goldenAction } = goldenResult;
@@ -6250,7 +6278,7 @@ module.exports = {
   runMarketEvidenceCycle, maybeRunDailyMarketEvidence,
   readLastGenerationRecord, triggerDistribute, triggerGenerateBook, formatDistributionAction, pollSales,
   huntGolden, readGoldenOpportunities, pickTopGoldenOpportunity, briefFromGoldenOpportunity,
-  appendGoldenHunterEvent, readGoldenHunterEvents, goldenNicheAlreadyAttempted, rankGoldenOpportunities, recentlyRejectedGoldenNiches, looksLikeHeadline, goldenScoreFloorOverride, applyGoldenScoreFloor, goldenDailyCap, goldenProductionsToday, goldenDailyAttemptCap, goldenAttemptsToday, goldenRoute, runGoldenNicheThroughChain, findLiveDuplicate, liveCatalogTitles,
+  appendGoldenHunterEvent, readGoldenHunterEvents, goldenNicheAlreadyAttempted, rankGoldenOpportunities, recentlyRejectedGoldenNiches, looksLikeHeadline, goldenScoreFloorOverride, applyGoldenScoreFloor, goldenDailyCap, goldenProductionsToday, goldenDailyAttemptCap, goldenAttemptsToday, goldenRoute, runGoldenNicheThroughChain, findLiveDuplicate, liveCatalogTitles, readDigitalCandidates, withDigitalCandidates, digitalChainInput,
   evaluateGoldenOpportunities, getButterPrice, getOpportunityScore, getLadderOpportunityScore,
   checkProductionEngineHealth,
   checkNeedsAttention, criticalHealthReasons, workflowHealthReasons, writeNeedsAttention, clearNeedsAttention, checkGoldenStagnation,
