@@ -26,8 +26,9 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
-DATA_OUT = ROOT / "data" / "scout_eval.json"
-REPORT = ROOT / "reports" / "SCOUT_EVAL.md"
+TAG = os.environ.get("SCOUT_EVAL_TAG", "")
+DATA_OUT = ROOT / "data" / (f"scout_eval_{TAG}.json" if TAG else "scout_eval.json")
+REPORT = ROOT / "reports" / (f"SCOUT_EVAL_{TAG}.md" if TAG else "SCOUT_EVAL.md")
 
 TOOL_WORDS = re.compile(r"\b(workbook|spreadsheet|calculator|tracker|planner|template|model|dashboard|tool|toolkit|budget|estimator|pricing|forecast|worksheet|optimizer|analyzer|estimator|simulator|scorecard|allocator|decision)\b", re.I)
 BOOK_WORDS = re.compile(r"\b(journal|diary|coloring|colouring|novel|guide to|ebook|e-book|kdp|cookbook|devotional|affirmations?)\b", re.I)
@@ -109,6 +110,9 @@ def call(system, user, max_tokens=3000, attempts=3):
     """One model call with spaced retries (the host network and the provider both drop requests now and then)."""
     import time
     from ai_capability import orchestrator
+    import book_generator
+    if os.environ.get("SCOUT_EVAL_MODEL"):
+        book_generator.GROQ_MODEL = os.environ["SCOUT_EVAL_MODEL"]  # evaluation only: never changes the live default
     last = None
     for k in range(attempts):
         try:

@@ -39,3 +39,14 @@ def test_idle_after_a_week_and_cost_totals():
 
 def test_an_agent_active_today_is_not_idle():
     assert rows([task("x", "done", at="2026-11-06T07:00:00+00:00")])["x"]["flags"] == []
+
+
+def test_old_failures_do_not_degrade_an_agent_that_recovered():
+    from datetime import timedelta
+    now = datetime(2026, 11, 6, tzinfo=timezone.utc)
+    old = (now - timedelta(days=40)).isoformat()
+    new = (now - timedelta(days=2)).isoformat()
+    tasks = [{"agent": "scout", "status": "failed", "at": old} for _ in range(10)] +             [{"agent": "scout", "status": "done", "at": new} for _ in range(9)]
+    assert "DEGRADED" not in ak.compute([], tasks, [], now=now)["agents"][0]["flags"]
+    bad = [{"agent": "scout", "status": "failed", "at": new} for _ in range(10)]
+    assert "DEGRADED" in ak.compute([], bad, [], now=now)["agents"][0]["flags"]

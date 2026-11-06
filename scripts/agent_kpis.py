@@ -47,10 +47,10 @@ def _ts(v):
         return None
 
 
-def compute(executions, tasks, costs, now=None, idle_days=7, min_tasks=8, bad_rate=0.25):
+def compute(executions, tasks, costs, now=None, idle_days=7, min_tasks=8, bad_rate=0.25, recent_days=14):
     now = now or datetime.now(timezone.utc)
     ag = collections.defaultdict(lambda: {"executions": 0, "ms": [], "tokens": 0, "tasks": collections.Counter(), "last": None,
-                                          "contract_failures": 0, "timeouts": 0, "stop_reasons": collections.Counter()})
+                                          "contract_failures": 0, "timeouts": 0, "stop_reasons": collections.Counter(), "recent": collections.Counter()})
     for r in executions:
         a = r.get("agent")
         if not a:
@@ -80,6 +80,8 @@ def compute(executions, tasks, costs, now=None, idle_days=7, min_tasks=8, bad_ra
         t = _ts(r.get("at"))
         if t and (x["last"] is None or t > x["last"]):
             x["last"] = t
+        if t and (t if t.tzinfo else t.replace(tzinfo=timezone.utc)) >= now - timedelta(days=recent_days):
+            x["recent"][st] += 1
     rows = []
     for a, x in sorted(ag.items()):
         done = x["tasks"].get("done", 0)
@@ -88,7 +90,10 @@ def compute(executions, tasks, costs, now=None, idle_days=7, min_tasks=8, bad_ra
         flags = []
         if x["last"] is None or now - (x["last"] if x["last"].tzinfo else x["last"].replace(tzinfo=timezone.utc)) > timedelta(days=idle_days):
             flags.append("IDLE")
-        if n >= min_tasks and bad / n > bad_rate:
+        # DEGRADED judges the recent window only, so an improvement is visible instead of being buried under old history
+        r_done = x["recent"].get("done", 0)
+        r_bad = x["recent"].get("failed", 0) + x["recent"].get("stopped", 0)
+        if r_done + r_bad >= min_tasks and r_bad / (r_done + r_bad) > bad_rate:
             flags.append("DEGRADED")
         if x["contract_failures"]:
             flags.append("CONTRACT_FAILURES")
@@ -96,7 +101,7 @@ def compute(executions, tasks, costs, now=None, idle_days=7, min_tasks=8, bad_ra
             flags.append("TIMEOUTS")
         ms = sorted(x["ms"])
         rows.append({"agent": a, "executions": x["executions"], "tasks_done": done, "tasks_failed": x["tasks"].get("failed", 0),
-                     "tasks_stopped": x["tasks"].get("stopped", 0), "task_success_rate": round(done / n, 2) if n else None,
+                     "tasks_stopped": x["tasks"].get("stopped", 0), "recent_14d": dict(x["recent"]), "task_success_rate": round(done / n, 2) if n else None,
                      "median_ms": ms[len(ms) // 2] if ms else None, "tokens": x["tokens"],
                      "contract_failures": x["contract_failures"], "timeouts": x["timeouts"],
                      "last_activity": x["last"].isoformat(timespec="minutes") if x["last"] else None,
