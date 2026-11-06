@@ -67,3 +67,9 @@ def test_connector_line_shows_age_clicks_and_overdue():
     stale = {"last_intake": [{"age_hours": 70}], "pin_outbound_clicks": 0, "pins_measured": 0}
     assert "الجولة متأخرة" in msg(connectors=stale)
     assert "لم تُسجَّل جولة بعد" in msg(connectors={"last_intake": []})
+
+
+def test_automation_line_is_shown_when_known():
+    m = msg(automation={"automatic_or_gated": 10, "capabilities": 16, "percent": 62})
+    assert "10 من 16 قدرة آلية أو مشروطة (62%)" in m
+    assert "الآلية:" not in msg()

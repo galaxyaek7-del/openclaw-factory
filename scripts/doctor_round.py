@@ -26,8 +26,10 @@ sys.path.insert(0, str(ROOT / "scripts"))
 
 
 def failed_steps(log_path, now, hours=24):
+    """Per step with failures in the window: how many, the last detail, and whether it is failing NOW (its most recent
+    action is a failure). A step that failed and then ran fine is recovered: listed, not raised as a problem."""
     since = (now - timedelta(hours=hours)).isoformat()
-    c, last = Counter(), {}
+    c, last, latest = Counter(), {}, {}
     try:
         for line in Path(log_path).read_text(encoding="utf-8", errors="ignore").splitlines():
             try:
@@ -37,12 +39,14 @@ def failed_steps(log_path, now, hours=24):
             if str(d.get("timestamp", "")) < since:
                 continue
             for a in d.get("actions", []) or []:
+                st = a.get("step")
+                latest[st] = a.get("action")
                 if a.get("action") == "failed":
-                    c[a.get("step")] += 1
-                    last[a.get("step")] = str(a.get("detail"))[:110].replace("\n", " ")
+                    c[st] += 1
+                    last[st] = str(a.get("detail"))[:110].replace("\n", " ")
     except OSError:
         pass
-    return [{"step": s, "failures": n, "last": last[s]} for s, n in c.most_common()]
+    return [{"step": s, "failures": n, "last": last[s], "failing_now": latest.get(s) == "failed"} for s, n in c.most_common()]
 
 
 def expiring_approvals(path, now, hours=36):
@@ -102,11 +106,13 @@ def run(now=None):
         rep["company_automation"] = {"error": type(e).__name__}
     problems = []
     for f in rep["failed_steps_24h"]:
-        problems.append(f"step {f['step']} failed {f['failures']}x (last: {f['last']})")
+        if f["failing_now"]:
+            problems.append(f"step {f['step']} is failing now ({f['failures']}x in 24h; last: {f['last']})")
     if rep["connector_intake"]["newest_age_hours"] is None or rep["connector_intake"]["newest_age_hours"] > 48:
         problems.append("connector intake older than 48 h: run the connector part of the doctor round")
     for a in rep["approvals_expiring"]:
-        problems.append(f"approval for {a['product']} expires in {a['hours_left']} h")
+        if a["hours_left"] <= 12:  # an approval that outlives the next publishing window is not yet a problem
+            problems.append(f"approval for {a['product']} expires in {a['hours_left']} h")
     rep["agent_problems"] = problems
     return rep
 
@@ -121,6 +127,9 @@ def main(argv=None):
         L += [f"  - {x['stage']}: {x['need']}" for x in rep["needs_founder"]]
         L += ["", "Waiting for real data: " + ", ".join(rep["waiting_on_reality"]), "", "Agent problems:"]
         L += [f"  ! {p}" for p in rep["agent_problems"]] or ["  none"]
+        rec = [f for f in rep["failed_steps_24h"] if not f["failing_now"]]
+        if rec:
+            L += ["", "Recovered in the last 24 h (failed, then ran fine): " + ", ".join(f"{f['step']} x{f['failures']}" for f in rec)]
         L += ["", f"Connector intake: newest {rep['connector_intake']['newest_age_hours']} h, pin outbound clicks {rep['connector_intake']['pin_outbound_clicks']}",
               f"Git: {rep['git']}", f"Company automation: {rep.get('company_automation')}"]
         sys.stdout.buffer.write(("\n".join(L) + "\n").encode("utf-8"))
