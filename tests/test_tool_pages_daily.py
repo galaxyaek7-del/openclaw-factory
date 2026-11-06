@@ -125,3 +125,23 @@ def test_tool_page_waits_until_its_product_is_in_the_catalog_then_commits_both(t
     (site / "catalog.json").write_text(json.dumps({"data": {"products": [{"url": "https://aekraft.gumroad.com/l/old"}, {"url": "https://aekraft.gumroad.com/l/newprod"}]}}), encoding="utf-8")
     r = t.commit_generated(tmp_path)
     assert r["committed"] == 2 and sorted(r["paths"]) == ["customer_site/catalog.json", "customer_site/tool-new.html"]
+
+
+def test_new_site_covers_are_committed_with_the_pages(tmp_path):
+    import json, subprocess
+    import tool_pages_daily as t
+
+    def g(*a):
+        return subprocess.run(["git", *a], cwd=str(tmp_path), capture_output=True, text=True)
+    g("init", "-q"); g("config", "user.email", "t@t"); g("config", "user.name", "t")
+    site = tmp_path / "customer_site"
+    (site / "assets" / "covers").mkdir(parents=True)
+    (site / "catalog.json").write_text(json.dumps({"data": {"products": [{"url": "https://aekraft.gumroad.com/l/p"}]}}), encoding="utf-8")
+    (tmp_path / "sitemap.xml").write_text("<urlset></urlset>", encoding="utf-8")
+    (site / "tools.html").write_text("tools", encoding="utf-8")
+    g("add", "."); g("commit", "-q", "-m", "init")
+    (site / "tool-x.html").write_text('<script type="application/ld+json">{"offers": {"url": "https://aekraft.gumroad.com/l/p"}}</script>', encoding="utf-8")
+    (site / "assets" / "covers" / "X-001.png").write_bytes(b"\x89PNG fake")
+    r = t.commit_generated(tmp_path)
+    assert "customer_site/assets/covers/X-001.png" in r["paths"] and r["committed"] >= 2
+    assert g("status", "--porcelain").stdout.strip() == ""

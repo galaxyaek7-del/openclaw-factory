@@ -86,6 +86,11 @@ def commit_generated(root=ROOT):
     missing = pages_missing_from_catalog(root, paths)
     if missing:
         return {"committed": 0, "paths": [], "waiting_for_catalog": missing}
+    # new or changed cover images in the site folder go in the same commit (an untracked B17-001 cover left the catalog image 404)
+    for line in _git(root, "status", "--porcelain", "-uall", "--", "customer_site/assets/covers").stdout.splitlines():
+        cp = line[3:].strip().strip('"')
+        if cp.endswith(".png") and cp not in paths:
+            paths.append(cp)
     cat = _git(root, "status", "--porcelain", "--", "customer_site/catalog.json").stdout.strip()
     if cat:
         paths.append("customer_site/catalog.json")

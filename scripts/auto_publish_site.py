@@ -35,7 +35,8 @@ PRODUCT_LIKE = re.compile(r"\.(pdf|xlsx|xlsm|docx|zip|epub|pptx)$", re.I)
 SITE_TESTS_PY = ["tests/test_affiliate_disclosure_placement.py", "tests/test_affiliate_static.py",
                  "tests/test_content_qa_terms_and_tokens.py", "tests/test_cycle82.py",
                  "tests/test_exp_c81_utm_regression.py", "tests/test_hold_promotion.py",
-                 "tests/test_no_committed_affiliate_links.py", "tests/test_seo_distribution.py"]
+                 "tests/test_no_committed_affiliate_links.py", "tests/test_seo_distribution.py",
+                 "tests/test_tool_structured_data.py"]  # the test that failed CI three times on 2026-11-06 (catalog twice, cover path once)
 SITE_TESTS_JS = ["tests/test_customer_front_door.js", "tests/test_gf_pageview.js"]
 REPO = "galaxyaek7-del/openclaw-factory"
 
