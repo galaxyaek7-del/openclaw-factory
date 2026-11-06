@@ -122,11 +122,26 @@ def site_changes(base, head):
     return [tuple(l.split("	", 1)) for l in out.splitlines() if "	" in l]
 
 
+def _origin_copy_is_ours(origin, path, depth=60):
+    """True when origin's blob of `path` equals a blob from our own local history of that path. Tree-mode pushes leave origin-only
+    commits, so the merge base is old and every file we published earlier "changed on origin since the base"; that is us, not a
+    foreign edit (it stalled automatic publishing on 2026-11-06, three times in one day)."""
+    o = subprocess.run(["git", "rev-parse", f"{origin}:{path}"], cwd=ROOT, capture_output=True, text=True).stdout.strip()
+    if not o:
+        return False
+    revs = subprocess.run(["git", "log", "main", f"-{depth}", "--format=%H", "--", path], cwd=ROOT, capture_output=True, text=True).stdout.split()
+    for c in revs:
+        b = subprocess.run(["git", "rev-parse", f"{c}:{path}"], cwd=ROOT, capture_output=True, text=True).stdout.strip()
+        if b == o:
+            return True
+    return False
+
+
 def conflicting_paths(base, origin, changes):
-    """Paths we changed that origin ALSO changed since the merge base: never overwritten."""
+    """Paths we changed that origin ALSO changed since the merge base, unless origin's copy is one of our own earlier versions."""
     bad = []
     for _st, path in changes:
-        if subprocess.run(["git", "diff", "--quiet", base, origin, "--", path], cwd=ROOT).returncode != 0:
+        if subprocess.run(["git", "diff", "--quiet", base, origin, "--", path], cwd=ROOT).returncode != 0 and not _origin_copy_is_ours(origin, path):
             bad.append(path)
     return bad
 

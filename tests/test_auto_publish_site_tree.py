@@ -89,3 +89,17 @@ def test_a_failing_gate_pushes_nothing(repos, monkeypatch):
     commit(local, {"scripts/tool.py": "print(1)"}, "code")
     r = aps.run()
     assert r["action"] == "blocked" and "customer_site/b.html" not in origin_files(origin)
+
+
+def test_a_file_we_published_earlier_in_tree_mode_can_be_updated_again(repos):
+    """Tree mode leaves origin-only commits, so the merge base is old: a second edit of a file we ourselves published must go out,
+    not be blocked as a foreign change (it stalled automatic publishing three times on 2026-11-06)."""
+    origin, local = repos
+    commit(local, {"customer_site/a.html": "<p>a v2</p>"}, "site v2")
+    commit(local, {"scripts/tool.py": "print(1)"}, "code, stays local")
+    assert aps.run()["action"] == "pushed"
+    commit(local, {"customer_site/a.html": "<p>a v3</p>"}, "site v3")
+    commit(local, {"scripts/tool2.py": "print(2)"}, "more code")
+    r = aps.run()
+    assert r["action"] == "pushed", r
+    assert g(origin, "show", "main:customer_site/a.html") == "<p>a v3</p>"
