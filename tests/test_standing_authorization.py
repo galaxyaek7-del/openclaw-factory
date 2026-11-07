@@ -204,3 +204,42 @@ class EndToEndGateTests(unittest.TestCase):
     def test_a_product_above_the_price_cap_is_not_covered(self):
         self.product.price_usd = 99
         self.assertFalse(self.decide()["allowed"])
+
+
+def test_scope_can_waive_the_demand_gate_only_when_it_says_so(tmp_path):
+    import json
+    from datetime import datetime, timedelta, timezone
+    import standing_authorization as sa
+    now = datetime(2026, 11, 8, 12, tzinfo=timezone.utc)
+
+    def auth(waive):
+        scope = {"platforms": ["payhip"], "product_types": ["xlsx_tool_bundle"], "max_price_usd": 49}
+        if waive:
+            scope["demand_gate_required"] = False
+        return {"authorization_id": "SA-T", "status": "ACTIVE", "granted_by": "founder", "reference": "founder verbatim reference long enough",
+                "valid_from": (now - timedelta(days=1)).isoformat(), "expires_at": (now + timedelta(days=30)).isoformat(), "scope": scope}
+
+    class Prod:
+        price_usd = 39.0
+    closed = lambda: {"open": False, "why": "no demand"}  # noqa: E731
+    env = {"GF_STANDING_AUTH": "true"}
+    p1 = tmp_path / "a.json"
+    p1.write_text(json.dumps({"authorizations": [auth(False)]}), encoding="utf-8")
+    assert sa.covers(Prod(), "xlsx_tool_bundle", "payhip", path=p1, now=now, demand_fn=closed, environ=env)["covered"] is False
+    p2 = tmp_path / "b.json"
+    p2.write_text(json.dumps({"authorizations": [auth(True)]}), encoding="utf-8")
+    ok = sa.covers(Prod(), "xlsx_tool_bundle", "payhip", path=p2, now=now, demand_fn=closed, environ=env)
+    assert ok["covered"] is True and "demand gate not required" in ok["reason"]
+    # the waiver never widens the other limits
+    assert sa.covers(Prod(), "xlsx_tool_bundle", "etsy", path=p2, now=now, demand_fn=closed, environ=env)["covered"] is False
+    Prod.price_usd = 59.0
+    assert sa.covers(Prod(), "xlsx_tool_bundle", "payhip", path=p2, now=now, demand_fn=closed, environ=env)["covered"] is False
+    assert sa.covers(Prod(), "xlsx_tool_bundle", "payhip", path=p2, now=now, demand_fn=closed, environ={})["covered"] is False
+
+
+def test_the_live_file_carries_the_2026_11_07_authorization_with_its_limits():
+    import standing_authorization as sa
+    live = {a["authorization_id"]: a for a in sa.load()}
+    a = live["SA-20261107-01"]
+    assert a["granted_by"] == "founder" and "تفويض دائم" in a["reference"]
+    assert a["scope"]["max_price_usd"] <= 49 and set(a["scope"]["platforms"]) == {"gumroad", "payhip"} and a["scope"]["demand_gate_required"] is False

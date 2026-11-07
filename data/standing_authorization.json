@@ -18,6 +18,34 @@
         ],
         "max_price_usd": 29
       }
+    },
+    {
+      "authorization_id": "SA-20261107-01",
+      "status": "ACTIVE",
+      "granted_by": "founder",
+      "granted_at": "2026-11-07T18:25:00Z",
+      "valid_from": "2026-11-07T18:25:00Z",
+      "expires_at": "2027-02-05T18:25:00Z",
+      "reference": "Founder in chat 2026-11-07: 'لك تفويض دائم على الانتاج و الرفع الالي دون تدخلي انا' (a standing authorization for production and automatic upload without my intervention), after 'Payhip على B18-007 اعتمد'",
+      "scope": {
+        "platforms": [
+          "gumroad",
+          "payhip"
+        ],
+        "product_types": [
+          "printable",
+          "xlsx_tool_bundle"
+        ],
+        "max_price_usd": 49,
+        "demand_gate_required": false,
+        "max_new_listings_per_platform_per_day": 5,
+        "conditions": [
+          "the product passed the factory's own QA and Quality Gate (Gate 1 still decides)",
+          "same price as the Gumroad listing, never above max_price_usd",
+          "zero new spend, no account creation, no outbound messages to third parties, truth-first copy (brand_dna rules)",
+          "no new platform without a founder-created account; revocable at any time (status REVOKED, delete the file, or remove GF_STANDING_AUTH)"
+        ]
+      }
     }
   ]
 }

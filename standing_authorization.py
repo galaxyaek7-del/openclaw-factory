@@ -97,6 +97,10 @@ def covers(product=None, product_type=None, platform="gumroad", *, path=None, no
         if price is None or cap is None or price <= 0 or price > float(cap):
             why_not.append("%s: price %r not within 0..%r" % (auth.get("authorization_id"), price, cap))
             continue
+        if scope.get("demand_gate_required") is False:
+            # The founder's explicit, quoted order 2026-11-07 removed the demand condition for THIS authorization only.
+            return {"covered": True, "authorization_id": auth.get("authorization_id"), "reference": auth.get("reference"),
+                    "reason": "inside the founder's standing authorization (demand gate not required by its scope)"}
         try:
             if demand_fn is None:
                 import demand_gate
