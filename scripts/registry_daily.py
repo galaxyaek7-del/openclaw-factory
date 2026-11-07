@@ -54,7 +54,16 @@ def _write_offers():
     return doc["summary"]
 
 
-def run_once(today=None, state_path=STATE, runner=None, arms_writer=None, trends_writer=None, offers_writer=None):
+def _sync_catalog():
+    """Bring data/catalog.json up to the live store before the registry reads it (found 2026-11-07: B17-001/002 stayed 'missing from
+    catalog' for days because nothing synced after a publish). Idempotent; adds observed records only, deletes nothing."""
+    import subprocess
+    r = subprocess.run([sys.executable, "-X", "utf8", str(ROOT / "scripts" / "catalog_sync.py"), "--write"],
+                       capture_output=True, text=True, encoding="utf-8", timeout=300, cwd=str(ROOT))
+    return (r.stdout or "").strip().splitlines()[0][:160] if r.returncode == 0 and r.stdout.strip() else f"catalog sync exit {r.returncode}"
+
+
+def run_once(today=None, state_path=STATE, runner=None, arms_writer=None, trends_writer=None, offers_writer=None, catalog_sync=None):
     import product_registry
     today = today or datetime.now(timezone.utc).date().isoformat()
     try:
@@ -63,6 +72,12 @@ def run_once(today=None, state_path=STATE, runner=None, arms_writer=None, trends
         last = None
     if last == today:
         return {"action": "none", "detail": f"registry already rebuilt for {today}"}
+    if catalog_sync is None:
+        catalog_sync = _sync_catalog if runner is None else (lambda: "")
+    try:
+        sync_note = catalog_sync()
+    except Exception as e:  # pragma: no cover - the registry still rebuilds; the drift line shows the gap
+        sync_note = f"catalog sync failed ({type(e).__name__})"
     summary, drift = (runner or (lambda: product_registry.run(write=True, check_pages=True)))()
     tmp = Path(str(state_path) + ".tmp")
     tmp.write_text(json.dumps({"last_day": today, "summary": summary}), encoding="utf-8")
@@ -97,7 +112,7 @@ def run_once(today=None, state_path=STATE, runner=None, arms_writer=None, trends
     issues = {k: v for k, v in dc.items() if v}
     detail = (f"{summary['products']} products {summary['states']}, sales {summary['sales_total']}; "
               + ("drift: " + ", ".join(f"{k}={v}" for k, v in issues.items()) if issues else "no drift")
-              + arms_note)
+              + arms_note + (f"; {sync_note}" if sync_note and "added=0" not in sync_note else ""))
     return {"action": "drift" if issues else "ok", "detail": detail}
 
 

@@ -30,3 +30,12 @@ def test_dead_flag_is_reported(tmp_path):
 
 def test_missing_state_file_is_flagged(tmp_path):
     assert all(x["severity"] == "MEDIUM" for x in a.check_stale_state(tmp_path))
+
+
+def test_daily_registry_syncs_the_catalog_before_rebuilding(tmp_path):
+    import registry_daily as rd
+    order = []
+    summary = {"products": 1, "states": {}, "sales_total": 0, "drift_counts": {}}
+    r = rd.run_once(today="2026-11-07", state_path=tmp_path / "s.json", catalog_sync=lambda: order.append("sync") or "added=2",
+                    runner=lambda: order.append("registry") or (summary, {}))
+    assert order == ["sync", "registry"] and "added=2" in r["detail"]
