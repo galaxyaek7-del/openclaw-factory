@@ -12,7 +12,7 @@ refused with the reason. Nothing here calls a connector or a network.
 
 Record: {"kind", "source", "fetched_at" (ISO UTC), "period": {"from","to"}, "payload": {...}, "dedupe_key"?}
 Kinds: pin_metrics (payload.pins: [{pin_id,title,impressions,saves,pin_clicks,outbound_clicks}], payload.measured),
-       sale_email_check (payload.matching_threads, payload.window_days), connector_status (payload.state, payload.detail).
+       sale_email_check / inquiry_email_check (payload.matching_threads, payload.window_days; the latter counts replies/requests to the site's mailto forms), connector_status (payload.state, payload.detail).
 Truth First: a metric that was not measured is recorded with measured=false, never as 0 clicks.
 Privacy: no email addresses, tokens or message bodies are stored; strings are short and screened.
 """
@@ -101,10 +101,10 @@ def validate(rec, reg=None):
                 for f in PIN_FIELDS:
                     if not isinstance(p.get(f), int) or isinstance(p.get(f), bool) or p[f] < 0:
                         errs.append(f"pin {p.get('pin_id')}: {f} must be a non-negative integer")
-    elif kind == "sale_email_check":
+    elif kind in ("sale_email_check", "inquiry_email_check"):
         for f in ("matching_threads", "window_days"):
             if not isinstance(pl.get(f), int) or pl[f] < 0:
-                errs.append(f"sale_email_check needs a non-negative integer {f}")
+                errs.append(f"{kind} needs a non-negative integer {f}")
     elif kind == "connector_status":
         if pl.get("state") not in STATES:
             errs.append(f"connector_status.state must be one of {STATES}")

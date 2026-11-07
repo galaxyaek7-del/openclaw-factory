@@ -68,3 +68,12 @@ def test_summary_reports_age(tmp_path):
 
 def test_registry_has_no_connector_without_a_permission_class():
     assert REG and all(v.get("permission_class") in ("READ_INTAKE", "PERSONAL_WRITE", "OUTBOUND", "FINANCIAL") for v in REG.values())
+
+
+def test_inquiry_email_check_is_an_intake_kind_with_count_validation():
+    import connector_intake as ci
+    ok = {"kind": "inquiry_email_check", "source": "gmail", "fetched_at": "2026-11-07T12:00+00:00",
+          "period": {"from": "2026-10-08", "to": "2026-11-07"}, "payload": {"matching_threads": 0, "window_days": 30}}
+    assert ci.validate(ok) == []
+    bad = dict(ok, payload={"matching_threads": -1, "window_days": 30})
+    assert any("inquiry_email_check" in e for e in ci.validate(bad))
