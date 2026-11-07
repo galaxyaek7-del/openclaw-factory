@@ -115,7 +115,7 @@
  * and gives its code; then set it here ONCE and every page that loads this file starts counting. Empty = disabled, nothing loads. */
 (function () {
   'use strict';
-  var GF_COUNTER_CODE = '';
+  var GF_COUNTER_CODE = 'aek';
   try {
     if (!GF_COUNTER_CODE || !/^[a-z0-9-]{2,40}$/.test(GF_COUNTER_CODE)) return;
     if (typeof document === 'undefined' || !document.createElement) return;
