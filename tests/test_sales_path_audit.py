@@ -9,7 +9,7 @@ BASE = a.BASE
 
 
 def site(tmp_path, sitemap_urls, pages, catalog):
-    (tmp_path / "customer_site").mkdir(parents=True)
+    (tmp_path / "customer_site").mkdir(parents=True, exist_ok=True)
     (tmp_path / "sitemap.xml").write_text("".join(f"<url><loc>{BASE}{u}</loc></url>" for u in sitemap_urls), encoding="utf-8")
     (tmp_path / "customer_site" / "catalog.json").write_text(json.dumps({"data": {"products": catalog}}), encoding="utf-8")
     for name, body in pages.items():
@@ -32,3 +32,13 @@ def test_sitemap_url_without_file_and_noindex_page_are_reported(tmp_path):
     site(tmp_path, ["customer_site/gone.html", "customer_site/n.html"], {"n.html": '<meta name="robots" content="noindex">'}, [])
     sev = sorted(f["severity"] for f in a.audit(tmp_path))
     assert sev == ["HIGH", "MEDIUM"]
+
+
+def test_page_price_that_differs_from_the_catalog_is_high(tmp_path):
+    cat = [{"id": "P1", "url": "https://x.gumroad.com/l/abc", "price_cents": 2900}]
+    body = '<a href="https://x.gumroad.com/l/abc">P1</a> {"price": "19"}'
+    site(tmp_path, ["customer_site/tool-p1.html"], {"tool-p1.html": body}, cat)
+    assert any("differs from catalog" in f["what"] for f in a.audit(tmp_path))
+    body_ok = body.replace('"19"', '"29"')
+    site(tmp_path, ["customer_site/tool-p1.html"], {"tool-p1.html": body_ok}, cat)
+    assert a.audit(tmp_path) == []

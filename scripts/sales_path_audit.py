@@ -75,6 +75,12 @@ def audit(root=ROOT):
     if unreachable:
         out.append(F("MEDIUM", f"{len(unreachable)} live products have no indexable site page that links to their buy URL (reachable only from Gumroad itself / Pinterest), e.g. {unreachable[:4]}",
                      "legacy listings: add them to a catalog page or accept Gumroad-only; new batches get a tool page automatically"))
+    for c in cat:
+        exp = (c.get("price_cents") or 0) / 100
+        for t in (t for t in tool_text.values() if c["id"] in t):
+            prices = {float(x) for x in re.findall(r'"price":\s*"?([0-9]+(?:\.[0-9]+)?)"?', t)}
+            if prices and prices != {exp}:
+                out.append(F("HIGH", f"{c['id']}: page price {sorted(prices)} differs from catalog ${exp}", "regenerate the page from the catalog"))
     for p, t in tool_text.items():
         urls = set(BUY.findall(t))
         if urls and not (urls & {u.split("?")[0] for u in cat_urls}) and not any(u.split("?")[0] in t for u in cat_urls):
