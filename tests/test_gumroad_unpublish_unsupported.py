@@ -39,11 +39,14 @@ import channels.gumroad_publisher as gp
 class TestNoInventedDisableEndpoint(unittest.TestCase):
     """The factory must never call an unpublish route that does not exist."""
 
-    def test_publisher_never_mentions_a_disable_route(self):
+    def test_publisher_disable_route_is_put_and_write_gated(self):
+        """CORRECTED 2026-11-07: /disable exists as PUT /v2/products/:id/disable (verified live 2026-10-14, used since 2026-11-05).
+        What must never come back is the invented POST variant (HTTP 404), or an ungated call."""
         src = open(gp.__file__, encoding="utf-8").read()
-        self.assertNotIn("/disable", src,
-                         "gumroad_publisher must not call a /disable route: "
-                         "Gumroad's public API has no such endpoint")
+        self.assertIn('"PUT", f"{GUMROAD_API_BASE}/products/{product_id}/disable"', src)
+        self.assertNotIn('"POST", f"{GUMROAD_API_BASE}/products/{product_id}/disable"', src)
+        body = src[src.index("def disable_product("):src.index("def enable_product(")]
+        self.assertIn('_require_write_authorization("disable_product")', body, "unpublish must go through the write gate")
         self.assertIn("/enable", src,
                       "the documented publish route is /enable and must remain")
 
