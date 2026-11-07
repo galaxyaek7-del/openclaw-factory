@@ -195,6 +195,15 @@ def run(now=None):
             problems.append("live products missing from data/catalog.json: run scripts/catalog_sync.py --write, then product_registry.run()")
     except Exception:  # noqa: BLE001  the audit must never stop the round
         pass
+    try:  # can a visitor reach a purchase? (scripts/sales_path_audit.py, local); HIGH = a broken path
+        import sales_path_audit
+        sp = sales_path_audit.audit()
+        rep["sales_path"] = {"high": sum(f["severity"] == "HIGH" for f in sp), "medium": sum(f["severity"] == "MEDIUM" for f in sp)}
+        for f in sp:
+            if f["severity"] == "HIGH":
+                problems.append(f"sales path: {f['what']} -> {f['next']}")
+    except Exception:  # noqa: BLE001  the audit must never stop the round
+        pass
     rep["agent_problems"] = problems
     return rep
 
