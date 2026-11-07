@@ -42,40 +42,15 @@ def save_queue(items: list) -> None:
 
 
 def retry_queue() -> dict:
-    """Attempt each PENDING_CAP item once; stop at first cap signal."""
-    from channels import gumroad_publisher as gp
+    """Report the pending items. It does NOT publish (changed 2026-11-07).
+
+    This module used to create AND enable Gumroad products directly (create_product + enable_product), an auto-publish path that
+    sat outside the per-product approval flow; nothing in the factory called it, and the repository invariant
+    (tests/test_final_rehearsal.py::test_no_autopublish_path) forbids it in affiliate/. Live publication now goes only through
+    scripts/publish_batch14.py / scripts/publish_approved_daily.py, which need the founder's approval naming the product, the
+    Quality Gate and channels/write_gate.py. Live publish from this queue: NOT IMPLEMENTED on purpose.
+    """
     items = load_queue()
-    if not QUEUE_PATH.exists():
-        save_queue(items)
-    done, blocked, errors = [], False, []
-    token = gp.load_token()
-    for it in items:
-        if it.get("status") != "PENDING_CAP":
-            continue
-        try:
-            prod = gp.create_product(token, {"file_path": it["file"],
-                                             "price_cents": int(it["price"] * 100),
-                                             "title": it["title"],
-                                             "description": it["description"]})
-            pid = prod.get("id")
-            gp.enable_product(token, pid)
-            try:
-                gp.update_product(token, pid, {"tags": it.get("tags", ["toolkit"])})
-            except Exception:
-                pass
-            check = gp.get_product(token, pid)
-            assert check.get("price") == int(it["price"] * 100), "price mismatch"
-            assert (check.get("short_url") or check.get("url")), "no URL"
-            it.update({"status": "LIVE", "product_id": pid,
-                       "url": check.get("short_url") or check.get("url"),
-                       "published_at": datetime.now(timezone.utc).isoformat()})
-            done.append(it["slug"])
-        except Exception as e:
-            msg = str(e)[:160]
-            errors.append((it["slug"], msg))
-            if "10 products per day" in msg or "429" in msg or "rate" in msg.lower():
-                blocked = True
-                break
-    save_queue(items)
-    return {"published": done, "cap_blocked": blocked, "errors": errors,
-            "pending": sum(1 for i in items if i.get("status") == "PENDING_CAP")}
+    pending = [i for i in items if i.get("status") == "PENDING_CAP"]
+    return {"published": [], "cap_blocked": False, "errors": [], "pending": len(pending),
+            "note": "report only: publication needs a founder approval naming the product (scripts/publish_batch14.py)"}
