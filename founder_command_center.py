@@ -1031,10 +1031,21 @@ def build_founder_command_center(decisions_path=None):
         "commercial_validation": _commercial_validation(),
         "market_discovery": _market_discovery(),
         "live_market_experiment": _live_market_experiment(),
+        "analytics": _analytics_section(),
         "technical_details": technical_details,
         "note": ("Reads authoritative company state only. Product count is inventory, "
                  "not success. Unknown stays visible as unknown."),
     }
+
+
+def _analytics_section():
+    """Visit analytics (GoatCounter) from the saved snapshot only: a dashboard view never calls the network. Demand signals, not
+    sales: verified revenue stays in the money section. Missing/stale snapshot = UNKNOWN (galaxy_analytics.founder_section)."""
+    try:
+        import galaxy_analytics
+        return galaxy_analytics.founder_section()
+    except Exception:  # noqa: BLE001  additive section: never break the dashboard
+        return {"state": "UNKNOWN", "meaning": "Analytics reader unavailable.", "metrics": {}}
 
 
 def _live_market_experiment():

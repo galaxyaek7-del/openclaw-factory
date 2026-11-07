@@ -5786,6 +5786,10 @@ async function runTick() {
     // at most every 4 h, ~1 model call per signal. golden_hunter/digital_discovery.py
     markStep('digital_discovery');
     actions.push({ step: 'digital_discovery', ...(await runOnceScript('digital_discovery_daily.py', { timeoutMs: 8 * 60 * 1000 })) });
+    // 2026-11-07: hourly read-only snapshot of the visit counter (GoatCounter) for the Founder Dashboard; UNKNOWN until the founder
+    // creates the counter and a read-only API token. Demand signals only, never added to verified revenue. galaxy_analytics.py
+    markStep('analytics_snapshot');
+    actions.push({ step: 'analytics_snapshot', ...(await runOnceScript('analytics_snapshot.py', { timeoutMs: 2 * 60 * 1000 })) });
     markStep('golden_hunter_bridge');
     const goldenResult = await huntGolden(true);
     const { distribution: goldenDistribution, ...goldenAction } = goldenResult;
