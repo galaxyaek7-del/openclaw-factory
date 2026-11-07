@@ -204,6 +204,16 @@ def run(now=None):
                 problems.append(f"sales path: {f['what']} -> {f['next']}")
     except Exception:  # noqa: BLE001  the audit must never stop the round
         pass
+    try:  # pins due in the next 3 days must still lead to a buyable page at the price promised (HTTP GET, paced, ~15 s)
+        import pin_destination_audit
+        pins = pin_destination_audit.audit(3)
+        rep["pin_destinations"] = {"checked": len(pins), "broken": [r["offer_id"] for r in pins if r["status"] == "BROKEN"],
+                                   "unknown": [r["offer_id"] for r in pins if r["status"] == "UNKNOWN"]}
+        for r in pins:
+            if r["status"] == "BROKEN":
+                problems.append(f"pin {r['offer_id']} ({r['scheduled_for']}) leads to a broken or mispriced page: {r['detail']}")
+    except Exception:  # noqa: BLE001  the audit must never stop the round
+        pass
     try:  # the operating-doctrine gate the Master Constitution names as the single gate (scripts/check_doctrine.py, read-only, ~2 s)
         import subprocess
         gate = subprocess.run([sys.executable, "-X", "utf8", str(Path(__file__).resolve().parent / "check_doctrine.py")],
