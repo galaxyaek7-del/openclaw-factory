@@ -126,5 +126,14 @@
     s.src = 'https://gc.zgo.at/count.js';
     s.setAttribute('data-goatcounter', 'https://' + GF_COUNTER_CODE + '.goatcounter.com/count');
     document.head.appendChild(s);
+    // Buy-link clicks as counter events (a conversion PROXY, not a sale): path outbound/gumroad/<page slug>.
+    document.addEventListener('click', function (ev) {
+      try {
+        var a = ev.target && ev.target.closest ? ev.target.closest('a[href^="https://aekraft.gumroad.com/l/"]') : null;
+        if (!a || !window.goatcounter || !window.goatcounter.count) return;
+        var slug = (location.pathname || '').split('/').pop().replace(/\.html?$/, '').replace(/[^a-z0-9_-]/gi, '').slice(0, 60) || 'home';
+        window.goatcounter.count({ path: 'outbound/gumroad/' + slug, title: 'Buy link click', event: true });
+      } catch (e) { /* never throw */ }
+    }, true);
   } catch (e) { /* never throw */ }
 })();
