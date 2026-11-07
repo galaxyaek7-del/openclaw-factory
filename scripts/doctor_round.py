@@ -54,7 +54,25 @@ def failed_steps(log_path, now, hours=24):
     return [{"step": s, "failures": n, "last": last[s], "failing_now": latest.get(s) == "failed"} for s, n in c.most_common()]
 
 
-def expiring_approvals(path, now, hours=36):
+def published_product_ids(root=None):
+    """Product ids with a LIVE publish result that created the listing (a product_id): their approval is spent, its expiry is not a problem."""
+    import glob
+    out = set()
+    for f in glob.glob(str((root or ROOT) / "data" / "batch*_publish_results.json")):
+        try:
+            runs = json.loads(Path(f).read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            continue
+        for run in runs if isinstance(runs, list) else []:
+            if str(run.get("mode", "")).upper() != "LIVE":
+                continue
+            for r in run.get("results", []):
+                if isinstance(r, dict) and r.get("product_id") and r.get("status") in ("PASS", "BLOCKED"):
+                    out.add(r.get("id"))
+    return out
+
+
+def expiring_approvals(path, now, hours=36, spent=frozenset()):
     out = []
     try:
         d = json.loads(Path(path).read_text(encoding="utf-8"))
@@ -71,8 +89,9 @@ def expiring_approvals(path, now, hours=36):
         except ValueError:
             continue
         left = (t - now).total_seconds() / 3600
-        if 0 < left <= hours:
-            out.append({"product": v.get("product_id") or v.get("id") or str(k), "hours_left": round(left, 1)})
+        pid = v.get("product_id") or v.get("id") or str(k)
+        if 0 < left <= hours and pid not in spent:
+            out.append({"product": pid, "hours_left": round(left, 1)})
     return out
 
 
@@ -100,7 +119,7 @@ def run(now=None):
         "waiting_on_reality": [s["name"] for s in stages if s["status"] == "WAITING"],
         "failed_steps_24h": failed_steps(ROOT / "factory_loop.log", now),
         "connector_intake": {"newest_age_hours": min(ages) if ages else None, "pin_outbound_clicks": ci["pin_outbound_clicks"]},
-        "approvals_expiring": expiring_approvals(ROOT / "data" / "publication_approvals.json", now),
+        "approvals_expiring": expiring_approvals(ROOT / "data" / "publication_approvals.json", now, spent=published_product_ids()),
         "git": git_counts(),
     }
     try:
@@ -163,6 +182,18 @@ def run(now=None):
             elif c["verdict"] == "UNKNOWN":
                 problems.append("kill criterion " + c["id"] + " cannot be judged: pin clicks are not measured (fix the Metricool/connector measurement)")
     except Exception:  # noqa: BLE001  the funnel must never stop the round
+        pass
+    try:  # subtle cross-source contradictions (scripts/subtle_audit.py); HIGH findings are agent problems
+        import subtle_audit
+        found = subtle_audit.run_all()
+        rep["subtle_audit"] = {"high": sum(f["severity"] == "HIGH" for f in found), "medium": sum(f["severity"] == "MEDIUM" for f in found)}
+        for f in found:
+            if f["severity"] == "HIGH":
+                problems.append(f"subtle audit [{f['area']}]: {f['what']} -> {f['next']}")
+        reg = subtle_audit.jf(subtle_audit.ROOT / "data" / "product_registry.json", {}) or {}
+        if (reg.get("drift") or {}).get("live_missing_from_catalog"):
+            problems.append("live products missing from data/catalog.json: run scripts/catalog_sync.py --write, then product_registry.run()")
+    except Exception:  # noqa: BLE001  the audit must never stop the round
         pass
     rep["agent_problems"] = problems
     return rep

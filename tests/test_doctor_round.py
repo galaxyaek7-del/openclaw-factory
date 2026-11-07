@@ -45,3 +45,21 @@ def test_diagnose_recovers_when_a_later_tick_carries_diagnosis_checks(tmp_path):
     # but with no later healthy diagnosis it still counts as failing
     p.write_text(json.dumps(rows[0]) + "\n")
     assert {f["step"]: f for f in dr.failed_steps(p, NOW)}["diagnose"]["failing_now"] is True
+
+
+def test_an_approval_for_a_product_already_live_is_not_a_problem(tmp_path):
+    from datetime import timedelta
+    ap = tmp_path / "a.json"
+    exp = (NOW + timedelta(hours=5)).strftime("%Y-%m-%dT%H:%M:%SZ")
+    ap.write_text(json.dumps([{"product_id": "B1-001", "expires_at": exp}, {"product_id": "B1-002", "expires_at": exp}]), encoding="utf-8")
+    assert {a["product"] for a in dr.expiring_approvals(ap, NOW)} == {"B1-001", "B1-002"}
+    assert {a["product"] for a in dr.expiring_approvals(ap, NOW, spent={"B1-001"})} == {"B1-002"}
+
+
+def test_published_product_ids_reads_live_results_that_created_a_listing(tmp_path):
+    (tmp_path / "data").mkdir()
+    (tmp_path / "data" / "batch1_publish_results.json").write_text(json.dumps([
+        {"mode": "LIVE", "results": [{"id": "B1-001", "status": "PASS", "product_id": "p"}, {"id": "B1-002", "status": "BLOCKED"},
+                                     {"id": "B1-003", "status": "BLOCKED", "product_id": "q"}]},
+        {"mode": "DRY", "results": [{"id": "B1-004", "status": "PASS", "product_id": "z"}]}]), encoding="utf-8")
+    assert dr.published_product_ids(tmp_path) == {"B1-001", "B1-003"}

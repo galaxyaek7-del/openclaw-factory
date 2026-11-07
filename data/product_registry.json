@@ -663,19 +663,42 @@
   },
   {
    "internal_id": "B17-001",
-   "external_ids": {},
+   "external_ids": {
+    "gumroad": "N7eHUPjcqOwN2O3UcL80cw=="
+   },
    "title": "European Accessibility Act Penalty Exposure Checker (11 EU Countries)",
    "price_cents": 1900,
-   "published": false,
-   "url": null,
+   "published": true,
+   "url": "https://aekraft.gumroad.com/l/mmpoh",
+   "customizable_price": false,
    "sales_count": 0,
    "sales_usd_cents": 0,
-   "first_published_at": null,
+   "first_published_at": "2026-11-06T17:26:27.011757+00:00",
    "manifest": "books/batch17/B17-001/manifest.json",
-   "primary_state": "READY_FOR_AUTHORIZATION",
+   "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
-    "published_on_platform": false,
-    "in_catalog": false
+    "published_on_platform": true,
+    "in_catalog": true
+   }
+  },
+  {
+   "internal_id": "B17-002",
+   "external_ids": {
+    "gumroad": "kSjV_XOWrQ5Sybl1NQEf7A=="
+   },
+   "title": "US Trademark Ten-Year Cost Calculator (USPTO Fees per Class)",
+   "price_cents": 1200,
+   "published": true,
+   "url": "https://aekraft.gumroad.com/l/hpnrjs",
+   "customizable_price": false,
+   "sales_count": 0,
+   "sales_usd_cents": 0,
+   "first_published_at": "2026-11-06T18:59:11.110565+00:00",
+   "manifest": "books/batch17/B17-002/manifest.json",
+   "primary_state": "PUBLIC_LISTING_VERIFIED",
+   "flags": {
+    "published_on_platform": true,
+    "in_catalog": true
    }
   },
   {
@@ -1025,16 +1048,16 @@
    },
    "title": "The 5-Minute Context Reset Playbook",
    "price_cents": 1500,
-   "published": true,
+   "published": false,
    "url": "https://aekraft.gumroad.com/l/vhofn",
    "customizable_price": false,
    "sales_count": 0,
    "sales_usd_cents": 0,
    "first_published_at": null,
    "manifest": null,
-   "primary_state": "PUBLIC_LISTING_VERIFIED",
+   "primary_state": "UPLOAD_COMPLETED",
    "flags": {
-    "published_on_platform": true,
+    "published_on_platform": false,
     "in_catalog": true
    }
   },
@@ -1265,16 +1288,16 @@
    },
    "title": "EU AI Act Compliance Toolkit — Practical Templates & Implementation Guide for SMEs",
    "price_cents": 0,
-   "published": true,
+   "published": false,
    "url": "https://aekraft.gumroad.com/l/iaiyt",
    "customizable_price": true,
    "sales_count": 0,
    "sales_usd_cents": 0,
    "first_published_at": null,
    "manifest": null,
-   "primary_state": "PUBLIC_LISTING_VERIFIED",
+   "primary_state": "UPLOAD_COMPLETED",
    "flags": {
-    "published_on_platform": true,
+    "published_on_platform": false,
     "in_catalog": true
    }
   },
@@ -1412,7 +1435,7 @@
    "sales_usd_cents": 0,
    "first_published_at": "2026-09-26T00:48:44.128352+00:00",
    "manifest": null,
-   "primary_state": "UPLOAD_COMPLETED",
+   "primary_state": "PUBLIC_LISTING_VERIFIED",
    "flags": {
     "published_on_platform": true,
     "in_catalog": true
@@ -1745,16 +1768,16 @@
    },
    "title": "Amazon FBA Reconciliation Workbook",
    "price_cents": 0,
-   "published": true,
+   "published": false,
    "url": "https://aekraft.gumroad.com/l/wteork",
    "customizable_price": true,
    "sales_count": 0,
    "sales_usd_cents": 0,
    "first_published_at": null,
    "manifest": null,
-   "primary_state": "PUBLIC_LISTING_VERIFIED",
+   "primary_state": "UPLOAD_COMPLETED",
    "flags": {
-    "published_on_platform": true,
+    "published_on_platform": false,
     "in_catalog": true
    }
   },
@@ -1885,16 +1908,16 @@
    },
    "title": "[Unavailable] AI Workflow QA & Stress Test - one agent, reviewed before you demo it to a client",
    "price_cents": 0,
-   "published": true,
+   "published": false,
    "url": "https://aekraft.gumroad.com/l/owtmpe",
    "customizable_price": true,
    "sales_count": 0,
    "sales_usd_cents": 0,
    "first_published_at": null,
    "manifest": null,
-   "primary_state": "PUBLIC_LISTING_VERIFIED",
+   "primary_state": "UPLOAD_COMPLETED",
    "flags": {
-    "published_on_platform": true,
+    "published_on_platform": false,
     "in_catalog": true
    }
   },
@@ -2519,7 +2542,7 @@
    }
   }
  ],
- "generated_at": "2026-11-05T17:41:29.181669+00:00",
+ "generated_at": "2026-11-07T06:42:32.564775+00:00",
  "source": "Gumroad GET /v2/products (read-only) + data/catalog.json + batch manifests + publish results",
  "drift": {
   "live_missing_from_catalog": [],
@@ -2528,11 +2551,13 @@
   "duplicate_live_titles": [
    "The 5-Minute Context Reset Playbook"
   ],
-  "qa_passed_not_listed": [
-   "B17-001"
-  ],
+  "qa_passed_not_listed": [],
   "unpublished_on_platform": [
+   "GR-0fa92aeb1a",
+   "GR-34985d0556",
    "GR-3deb208315",
+   "GR-7a569c5ee4",
+   "GR-95417e1ab2",
    "GR-aa45b7486a",
    "GR-e1d845e3c9"
   ],
