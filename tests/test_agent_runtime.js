@@ -114,3 +114,27 @@ test('no fallback for other errors, explicit models, or when switched off', asyn
   assert.equal(r.ok, false);
   assert.equal(calls, 1);
 });
+
+test('an empty reply is retried once with a larger token budget', async () => {
+  const { invokeAgent: inv } = require('../lib/agent_runtime');
+  const budgets = [];
+  const client = { chat: { completions: { create: async ({ max_tokens }) => {
+    budgets.push(max_tokens);
+    return { choices: [{ message: { content: budgets.length === 1 ? '' : 'real answer' } }], usage: { prompt_tokens: 1, completion_tokens: 1 } };
+  } } } };
+  const logPath = require('path').join(require('os').tmpdir(), `ar3_${process.pid}_${Date.now()}.jsonl`);
+  const r = await inv({ name: 'scout', config: { system: 's' }, message: 'm', client, logPath, maxTokens: 800 });
+  assert.equal(r.ok, true);
+  assert.deepEqual(budgets, [800, 1600]);
+  assert.equal(r.telemetry.empty_retry, true);
+});
+
+test('a reply that stays empty after the retry is still reported invalid, with only one retry', async () => {
+  const { invokeAgent: inv } = require('../lib/agent_runtime');
+  let calls = 0;
+  const client = { chat: { completions: { create: async () => { calls += 1; return { choices: [{ message: { content: '' } }] }; } } } };
+  const logPath = require('path').join(require('os').tmpdir(), `ar4_${process.pid}_${Date.now()}.jsonl`);
+  const r = await inv({ name: 'scout', config: { system: 's' }, message: 'm', client, logPath });
+  assert.equal(r.ok, false);
+  assert.equal(calls, 2);
+});
