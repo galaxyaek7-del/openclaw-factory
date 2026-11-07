@@ -279,7 +279,8 @@ def drift(registry, live, catalog_rows, manifests, now=None):
     live_ids = {p["id"] for p in live}
     cat_ids = {r.get("id") for r in catalog_rows if r.get("channel", "Gumroad") == "Gumroad"}
     by_gid = {p["id"]: p for p in live}
-    titles = collections.Counter(p.get("name") for p in live)
+    # only PUBLIC listings can confuse a buyer: an unpublished draft sharing a title with a live product is not a duplicate (found 2026-11-07)
+    titles = collections.Counter(p.get("name") for p in live if p.get("published"))
     mismatches = []
     for rec in registry["products"]:
         gid = rec["external_ids"].get("gumroad")

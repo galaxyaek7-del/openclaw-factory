@@ -2542,15 +2542,13 @@
    }
   }
  ],
- "generated_at": "2026-11-07T06:42:32.564775+00:00",
+ "generated_at": "2026-11-07T09:46:19.547638+00:00",
  "source": "Gumroad GET /v2/products (read-only) + data/catalog.json + batch manifests + publish results",
  "drift": {
   "live_missing_from_catalog": [],
   "catalog_rows_not_live": [],
   "manifest_live_mismatch": [],
-  "duplicate_live_titles": [
-   "The 5-Minute Context Reset Playbook"
-  ],
+  "duplicate_live_titles": [],
   "qa_passed_not_listed": [],
   "unpublished_on_platform": [
    "GR-0fa92aeb1a",

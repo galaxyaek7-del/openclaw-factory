@@ -71,6 +71,13 @@ class TestStates(unittest.TestCase):
 
 
 class TestDrift(unittest.TestCase):
+    def test_unpublished_draft_with_a_live_title_is_not_a_duplicate(self):
+        live = [{"id": "a", "name": "Same", "published": True, "price": 100}, {"id": "b", "name": "Same", "published": False, "price": 100}]
+        d = pr.drift({"products": []}, live, [], [])
+        self.assertEqual(d["duplicate_live_titles"], [])
+        live[1]["published"] = True
+        self.assertEqual(pr.drift({"products": []}, live, [], [])["duplicate_live_titles"], ["Same"])
+
     def test_drift_lists_every_difference(self):
         reg = build()
         d = pr.drift(reg, LIVE, CATALOG, MANIFESTS)
