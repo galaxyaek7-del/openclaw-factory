@@ -22,6 +22,7 @@ from __future__ import annotations
 import json
 import os
 import re
+from time import sleep
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
@@ -31,6 +32,28 @@ PAGEVIEW_JS = ROOT / "customer_site" / "assets" / "gf-pageview.js"
 CODE_RE = re.compile(r"^[a-z0-9-]{2,40}$")
 PRODUCT_PATH = re.compile(r"(^|/)(tool-[a-z0-9_-]+|products|b12-[a-z0-9_-]+)(\.html)?$", re.I)
 OUTBOUND_PREFIX = "outbound/gumroad/"
+
+
+TOKEN_NAMES = ("GOATCOUNTER_API_TOKEN", "GOATCOUNTER_TOKEN")  # the founder used the second name on 2026-11-07: both accepted
+
+
+def token_from(env, dotenv=ROOT / ".env"):
+    """The read-only API token: process environment first, then ONLY those two names from .env (the loop may predate the edit).
+    Returns the value for the caller to send as a Bearer header; it is never logged or stored."""
+    for n in TOKEN_NAMES:
+        v = (env.get(n) or "").strip()
+        if v:
+            return v
+    if env is not os.environ and not env.get("_READ_DOTENV"):
+        return ""
+    try:
+        for line in Path(dotenv).read_text(encoding="utf-8", errors="ignore").splitlines():
+            k, _, v = line.partition("=")
+            if k.strip() in TOKEN_NAMES and v.strip():
+                return v.strip().strip(chr(34)).strip(chr(39))
+    except OSError:
+        pass
+    return ""
 
 
 def m(value=None, cls="UNKNOWN", note="", source=""):
@@ -77,7 +100,7 @@ def build_snapshot(now=None, env=None, http=default_http, code=None, coverage=No
     now = now or datetime.now(timezone.utc)
     env = os.environ if env is None else env
     code = code if code is not None else counter_code()
-    token = (env.get("GOATCOUNTER_API_TOKEN") or "").strip()
+    token = token_from(env)
     snap = {
         "generated_at": now.isoformat(timespec="seconds"),
         "separation": "Analytics are demand signals, not sales. Verified revenue is config/reality.json only; nothing here is added to it.",
@@ -100,7 +123,7 @@ def build_snapshot(now=None, env=None, http=default_http, code=None, coverage=No
         snap["status"] = "NOT_CONFIGURED"
         return snap
     if not token:
-        reason = "counter code is set but GOATCOUNTER_API_TOKEN is not: the counter may be counting, this dashboard cannot read it"
+        reason = "counter code is set but GOATCOUNTER_API_TOKEN (or GOATCOUNTER_TOKEN) is not set: the counter may be counting, this dashboard cannot read it"
         snap["metrics"] = {k: unknown(reason) for k in keys}
         snap["status"] = "NO_TOKEN"
         return snap
@@ -112,11 +135,15 @@ def build_snapshot(now=None, env=None, http=default_http, code=None, coverage=No
     errors = []
 
     def call(path, extra=None):
-        try:
-            return _get(http, base, path, {**params, **(extra or {})}, token)
-        except Exception as e:  # noqa: BLE001 fail closed: any problem -> UNKNOWN, with a token-free reason
-            errors.append(f"{path}: {type(e).__name__}")
-            return None
+        for attempt in (1, 2):  # one retry: the first call right after a token is created failed once on 2026-11-07, then worked
+            try:
+                return _get(http, base, path, {**params, **(extra or {})}, token)
+            except Exception as e:  # noqa: BLE001 fail closed: any problem -> UNKNOWN, with a token-free reason
+                if attempt == 2:
+                    errors.append(f"{path}: {type(e).__name__}")
+                else:
+                    sleep(1.5)
+        return None
 
     total = call("/stats/total")
     if isinstance(total, dict) and isinstance(total.get("total"), int):

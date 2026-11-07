@@ -88,3 +88,18 @@ def test_counter_code_reader_accepts_only_plain_names(tmp_path):
     assert ga.counter_code(f) is None
     f.write_text("var GF_COUNTER_CODE = 'Bad Name';", encoding="utf-8")
     assert ga.counter_code(f) is None
+
+
+def test_one_transient_failure_is_retried_and_both_token_names_are_accepted(monkeypatch):
+    monkeypatch.setattr(ga, "sleep", lambda s: None)
+    calls = {"n": 0}
+
+    def flaky(url, token):
+        calls["n"] += 1
+        if calls["n"] == 1:
+            raise RuntimeError("transient")
+        return fake_http.__wrapped__(url, token) if hasattr(fake_http, "__wrapped__") else {"total": 7, "total_unique": 5, "hits": [], "stats": []}
+
+    s = ga.build_snapshot(now=NOW, env={"GOATCOUNTER_TOKEN": "tok-SECRET-123"}, http=flaky, code="aek")
+    assert s["metrics"]["pageviews"]["value"] == 7 and s["status"] in ("READ_OK", "READ_PARTIAL")
+    assert ga.token_from({"GOATCOUNTER_TOKEN": "a"}) == "a" and ga.token_from({"GOATCOUNTER_API_TOKEN": "b", "GOATCOUNTER_TOKEN": "a"}) == "b"
