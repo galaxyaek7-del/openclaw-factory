@@ -204,6 +204,25 @@ def run(now=None):
                 problems.append(f"sales path: {f['what']} -> {f['next']}")
     except Exception:  # noqa: BLE001  the audit must never stop the round
         pass
+    try:  # the operating-doctrine gate the Master Constitution names as the single gate (scripts/check_doctrine.py, read-only, ~2 s)
+        import subprocess
+        gate = subprocess.run([sys.executable, "-X", "utf8", str(Path(__file__).resolve().parent / "check_doctrine.py")],
+                              capture_output=True, text=True, encoding="utf-8", timeout=120)
+        doc = json.loads(gate.stdout[gate.stdout.index("{"):])
+        rep["doctrine_gate"] = {"ok": bool(doc.get("ok")), "failed": [c["name"] for c in doc.get("checks", []) if not c.get("ok")]}
+        for name in rep["doctrine_gate"]["failed"]:
+            problems.append(f"doctrine gate: check '{name}' fails (python scripts/check_doctrine.py)")
+    except Exception:  # noqa: BLE001  the gate must never stop the round
+        pass
+    try:  # every module the constitution cites must still exist and be reachable from the running factory
+        import constitution_wiring
+        cw = constitution_wiring.classify(constitution_wiring.cited().keys())
+        rep["constitution_wiring"] = {k: sum(r["status"] == k for r in cw) for k in ("WIRED", "MANUAL", "DORMANT", "MISSING")}
+        for r in cw:
+            if r["status"] in ("MISSING", "DORMANT"):
+                problems.append(f"constitution cites {r['module']} but it is {r['status']}")
+    except Exception:  # noqa: BLE001
+        pass
     rep["agent_problems"] = problems
     return rep
 
