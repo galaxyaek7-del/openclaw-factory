@@ -24,7 +24,9 @@ TAG = b'<script src="assets/gf-pageview.js" defer></script>'
 
 
 def has_beacon(raw):
-    return b"gf-pageview.js" in raw or b"/api/page-view" in raw
+    # Only gf-pageview.js counts (2026-11-07): the old inline /api/page-view beacon posts to a server GitHub Pages does not have, so a
+    # page that carries only that one is invisible to the hosted counter.
+    return b"gf-pageview.js" in raw
 
 
 def missing(site):
@@ -32,6 +34,8 @@ def missing(site):
     for p in sorted(glob.glob(os.path.join(site, "*.html"))):
         with open(p, "rb") as fh:
             raw = fh.read()
+        if b'noindex' in raw and b'name="robots"' in raw:
+            continue  # not part of the public funnel: never counted on purpose (2026-11-07)
         if not has_beacon(raw):
             out.append((p, raw))
     return out
