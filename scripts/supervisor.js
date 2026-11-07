@@ -48,7 +48,7 @@ const fs = require('fs');
 const { spawn } = require('child_process');
 
 const REPO_ROOT = path.join(__dirname, '..');
-const SUPERVISOR_LOG_PATH = path.join(REPO_ROOT, 'supervisor.log');
+const SUPERVISOR_LOG_PATH = process.env.SUPERVISOR_LOG_PATH || path.join(REPO_ROOT, 'supervisor.log');
 
 const TARGET_SCRIPT = process.env.SUPERVISOR_TARGET || path.join(REPO_ROOT, 'server.js');
 const MAX_RESTARTS = parseInt(process.env.SUPERVISOR_MAX_RESTARTS || '5', 10);

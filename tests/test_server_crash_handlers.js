@@ -22,7 +22,8 @@ const { spawn } = require('child_process');
 
 const REPO_ROOT = path.join(__dirname, '..');
 const SERVER_SCRIPT = path.join(REPO_ROOT, 'server.js');
-const CRASH_LOG_PATH = path.join(REPO_ROOT, 'server_crashes.log');
+// Never the real server_crashes.log: forced test crashes would look like real ones to every monitor (found 2026-11-07).
+const CRASH_LOG_PATH = path.join(require('os').tmpdir(), `server_crashes_test_${process.pid}.log`);
 
 function runServerAndForceCrash(kind, timeoutMs = 10000) {
   return new Promise((resolve, reject) => {
@@ -31,6 +32,7 @@ function runServerAndForceCrash(kind, timeoutMs = 10000) {
       env: {
         ...process.env,
         __OPENCLAW_TEST_FORCE_CRASH__: kind,
+        OPENCLAW_CRASH_LOG: CRASH_LOG_PATH,
         MISSION_CONTROL_PASSWORD: 'crash-handler-test-password',
         PORT: '0', // unused in the uncaughtException case (crashes before listen); harmless otherwise
       },

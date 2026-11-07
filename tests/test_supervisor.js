@@ -38,7 +38,8 @@ const SUPERVISOR_SCRIPT = path.join(REPO_ROOT, 'scripts', 'supervisor.js');
 // runs; the third test below verifies alert content by mocking fetch
 // directly instead, so it never lets a real network call through either.
 function buildSupervisorTestEnv(env) {
-  return { ...process.env, TELEGRAM_BOT_TOKEN: '', OPENCLAW_TELEGRAM_CHAT_ID: '', ...env };
+  // SUPERVISOR_LOG_PATH: simulated crashes must not be written to the real supervisor.log (they looked like real crash loops).
+  return { ...process.env, TELEGRAM_BOT_TOKEN: '', OPENCLAW_TELEGRAM_CHAT_ID: '', SUPERVISOR_LOG_PATH: require('path').join(require('os').tmpdir(), `supervisor_test_${process.pid}.log`), ...env };
 }
 
 function runSupervisor(env, timeoutMs = 15000) {

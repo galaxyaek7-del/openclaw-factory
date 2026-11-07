@@ -8318,7 +8318,8 @@ const BIND_HOST = process.env.BIND_HOST || '127.0.0.1';
 // channel), then exits non-zero so scripts/supervisor.js can tell a
 // real crash apart from a clean, intentional shutdown and restart only
 // the former.
-const CRASH_LOG_PATH = path.join(__dirname, 'server_crashes.log');
+// OPENCLAW_CRASH_LOG lets the crash-handler test write to a temp file instead of the real log (2026-11-07: test crashes were showing up as real ones).
+const CRASH_LOG_PATH = process.env.OPENCLAW_CRASH_LOG || path.join(__dirname, 'server_crashes.log');
 
 function logCrash(kind, err) {
   const entry = {

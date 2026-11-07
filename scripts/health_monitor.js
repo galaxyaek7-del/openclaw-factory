@@ -34,7 +34,7 @@ const path = require('path');
 const fs = require('fs');
 
 const REPO_ROOT = path.join(__dirname, '..');
-const LOG_PATH = path.join(REPO_ROOT, 'health_monitor.log');
+const LOG_PATH = process.env.HEALTH_MONITOR_LOG || path.join(REPO_ROOT, 'health_monitor.log');
 
 const HEALTH_URL = process.env.HEALTH_MONITOR_URL || `http://127.0.0.1:${process.env.PORT || 3000}/health`;
 const INTERVAL_MS = parseInt(process.env.HEALTH_MONITOR_INTERVAL_MS || String(5 * 60 * 1000), 10);

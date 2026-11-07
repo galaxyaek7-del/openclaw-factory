@@ -9,6 +9,8 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 
+// Injected statuses (critical/degraded within milliseconds) must not land in the real health_monitor.log (found 2026-11-07).
+process.env.HEALTH_MONITOR_LOG = require('path').join(require('os').tmpdir(), `health_monitor_test_${process.pid}.log`);
 const hm = require('../scripts/health_monitor.js');
 
 test('shouldAlert: never alerts on the first poll (no previous status yet)', () => {
