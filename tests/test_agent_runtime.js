@@ -86,3 +86,31 @@ test('unknown agent and missing client are recorded errors, never a call', async
   assert.equal(called, false);
   assert.equal(rt.readAgentExecutions(log).length, 2);
 });
+
+test('a budget error on the default model retries once on the fallback model and records it', async () => {
+  const { invokeAgent: inv } = require('../lib/agent_runtime');
+  const seen = [];
+  const client = { chat: { completions: { create: async ({ model }) => {
+    seen.push(model);
+    if (model === 'openai/gpt-oss-20b') throw new Error('429 Rate limit reached for model on tokens per day (TPD)');
+    return { choices: [{ message: { content: 'ok text' } }], usage: { prompt_tokens: 3, completion_tokens: 4 } };
+  } } } };
+  const logPath = require('path').join(require('os').tmpdir(), `ar_${process.pid}_${Date.now()}.jsonl`);
+  const r = await inv({ name: 'qa', config: { system: 's' }, message: 'm', client, logPath });
+  assert.equal(r.ok, true);
+  assert.deepEqual(seen, ['openai/gpt-oss-20b', 'openai/gpt-oss-120b']);
+  assert.equal(r.telemetry.fallback_from, 'openai/gpt-oss-20b');
+  assert.equal(r.telemetry.model, 'openai/gpt-oss-120b');
+});
+
+test('no fallback for other errors, explicit models, or when switched off', async () => {
+  const { invokeAgent: inv, fallbackModel } = require('../lib/agent_runtime');
+  assert.equal(fallbackModel('openai/gpt-oss-120b'), null);
+  assert.equal(fallbackModel('openai/gpt-oss-20b', { GF_AGENT_FALLBACK_MODEL: 'off' }), null);
+  let calls = 0;
+  const client = { chat: { completions: { create: async () => { calls += 1; throw new Error('500 server error'); } } } };
+  const logPath = require('path').join(require('os').tmpdir(), `ar2_${process.pid}_${Date.now()}.jsonl`);
+  const r = await inv({ name: 'qa', config: { system: 's' }, message: 'm', client, logPath });
+  assert.equal(r.ok, false);
+  assert.equal(calls, 1);
+});
