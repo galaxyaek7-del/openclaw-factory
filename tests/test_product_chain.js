@@ -125,3 +125,10 @@ test('with FACTORY_LIVE_PUBLISH=true a finished chain still ends blocked with a 
   assert.equal(r.action, 'blocked');
   assert.ok(r.package_path && r.package_path.endsWith('.json'));
 });
+
+test('priceCheck: finance decides, a disagreement with the brief is stated not hidden', () => {
+  const { priceCheck } = require('../lib/product_chain');
+  assert.deepEqual(priceCheck({ price: 29 }, { price_usd: 39 }), { brief_price_usd: 29, final_price_usd: 39, decided_by: 'finance', agree: false });
+  assert.equal(priceCheck({ price: 29 }, { price_usd: 29 }).agree, true);
+  assert.equal(priceCheck(null, null).final_price_usd, null);
+});
