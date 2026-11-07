@@ -53,6 +53,10 @@ const SUPERVISOR_LOG_PATH = path.join(REPO_ROOT, 'supervisor.log');
 const TARGET_SCRIPT = process.env.SUPERVISOR_TARGET || path.join(REPO_ROOT, 'server.js');
 const MAX_RESTARTS = parseInt(process.env.SUPERVISOR_MAX_RESTARTS || '5', 10);
 const WINDOW_MS = parseInt(process.env.SUPERVISOR_WINDOW_MS || String(60 * 1000), 10);
+const COOLDOWN_MS = parseInt(process.env.SUPERVISOR_COOLDOWN_MS === undefined ? String(5 * 60 * 1000) : process.env.SUPERVISOR_COOLDOWN_MS, 10);
+// Hang watchdog: a child that is alive but silent (its heartbeat file not touched for STALE_MS) is killed so it restarts.
+const HEARTBEAT_FILE = process.env.SUPERVISOR_HEARTBEAT_FILE || '';
+const STALE_MS = parseInt(process.env.SUPERVISOR_STALE_MS || String(45 * 60 * 1000), 10);
 const BACKOFF_MS = parseInt(process.env.SUPERVISOR_BACKOFF_MS || '2000', 10);
 
 function log(entry) {
@@ -122,7 +126,7 @@ function spawnChild() {
       return;
     }
 
-    if (code === 0) {
+    if (code === 0 && !(COOLDOWN_MS && process.env.SUPERVISOR_RESTART_ON_CLEAN_EXIT === 'true')) {
       log({ event: 'clean_exit', code });
       process.exit(0);
       return;
@@ -135,13 +139,36 @@ function spawnChild() {
       const reason = `${restartTimestamps.length} restarts within ${WINDOW_MS}ms — crash-loop guard tripped`;
       log({ event: 'giving_up', reason });
       alertGivingUp(reason);
-      process.exit(1);
+      if (!COOLDOWN_MS) { process.exit(1); return; }
+      // 2026-11-07 (founder: the factory must never stop): a crash loop pauses, it does not end supervision.
+      restartTimestamps.length = 0;
+      log({ event: 'cooldown', after_ms: COOLDOWN_MS });
+      setTimeout(spawnChild, COOLDOWN_MS);
       return;
     }
 
     log({ event: 'restarting', after_ms: BACKOFF_MS });
     setTimeout(spawnChild, BACKOFF_MS);
   });
+}
+
+function heartbeatAgeMs(file, now = Date.now()) {
+  try { return now - fs.statSync(file).mtimeMs; } catch { return 0; } // a missing file is not proof of a hang
+}
+
+function startHangWatchdog() {
+  if (!HEARTBEAT_FILE) return null;
+  const t = setInterval(() => {
+    if (stopping || !child || child.killed) return;
+    const age = heartbeatAgeMs(HEARTBEAT_FILE);
+    if (age > STALE_MS) {
+      log({ event: 'hung_child_killed', heartbeat: path.basename(HEARTBEAT_FILE), age_ms: Math.round(age) });
+      try { child.kill('SIGKILL'); } catch { /* the exit handler restarts it */ }
+      try { fs.utimesSync(HEARTBEAT_FILE, new Date(), new Date()); } catch { /* best effort: avoids an immediate re-kill of the new child */ }
+    }
+  }, Math.min(60 * 1000, Math.max(1000, Math.floor(STALE_MS / 4))));
+  t.unref();
+  return t;
 }
 
 function forwardSignal(signal) {
@@ -160,6 +187,7 @@ process.on('SIGTERM', () => forwardSignal('SIGTERM'));
 
 if (require.main === module) {
   spawnChild();
+  startHangWatchdog();
 }
 
-module.exports = { spawnChild, withinCrashLoopLimit, restartTimestamps, MAX_RESTARTS, WINDOW_MS, alertCrashRestart, alertGivingUp };
+module.exports = { heartbeatAgeMs, startHangWatchdog, spawnChild, withinCrashLoopLimit, restartTimestamps, MAX_RESTARTS, WINDOW_MS, alertCrashRestart, alertGivingUp };

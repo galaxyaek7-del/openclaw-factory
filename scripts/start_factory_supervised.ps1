@@ -23,9 +23,9 @@ $procs = Get-CimInstance Win32_Process | Where-Object { $_.CommandLine }
 function Start-Supervised($label, $log, $target) {
   $cmd = "node scripts\supervisor.js >> logs\$log 2>&1"
   if ($DryRun) { Write-Output "[dry-run] would start $label supervisor: $cmd (SUPERVISOR_TARGET=$target)"; return }
-  if ($target) { $env:SUPERVISOR_TARGET = $target } else { Remove-Item Env:SUPERVISOR_TARGET -ErrorAction SilentlyContinue }
+  if ($target) { $env:SUPERVISOR_TARGET = $target; $env:SUPERVISOR_HEARTBEAT_FILE = Join-Path $root 'factory_loop.log'; $env:SUPERVISOR_STALE_MS = '2700000' } else { Remove-Item Env:SUPERVISOR_TARGET -ErrorAction SilentlyContinue }
   Start-Process -FilePath "cmd.exe" -ArgumentList "/c", $cmd -WorkingDirectory $root -WindowStyle Hidden
-  Remove-Item Env:SUPERVISOR_TARGET -ErrorAction SilentlyContinue
+  Remove-Item Env:SUPERVISOR_TARGET, Env:SUPERVISOR_HEARTBEAT_FILE, Env:SUPERVISOR_STALE_MS -ErrorAction SilentlyContinue
   Write-Output "started $label supervisor"
 }
 

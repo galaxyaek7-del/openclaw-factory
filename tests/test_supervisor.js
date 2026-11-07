@@ -93,11 +93,30 @@ test('gives up and exits non-zero after exceeding the crash-loop guard', async (
     SUPERVISOR_BACKOFF_MS: '20',
     SUPERVISOR_MAX_RESTARTS: '3',
     SUPERVISOR_WINDOW_MS: '10000',
+    SUPERVISOR_COOLDOWN_MS: '0',
   });
   assert.equal(result.code, 1, result.stdout);
   assert.match(result.stdout, /"event":"giving_up"/);
   const crashCount = (result.stdout.match(/"event":"crash"/g) || []).length;
   assert.equal(crashCount, 3, 'must stop restarting at exactly SUPERVISOR_MAX_RESTARTS, not before or after');
+});
+
+test('by default a crash loop cools down and keeps supervising instead of ending', async () => {
+  await assert.rejects(runSupervisor({
+    SUPERVISOR_TARGET: path.join(__dirname, 'fixtures', 'always_crash.js'),
+    SUPERVISOR_BACKOFF_MS: '20', SUPERVISOR_MAX_RESTARTS: '3', SUPERVISOR_WINDOW_MS: '10000', SUPERVISOR_COOLDOWN_MS: '100',
+  }, 1500), /did not exit/);
+});
+
+test('heartbeatAgeMs measures a stale file and treats a missing one as not hung', () => {
+  const supervisor = require(SUPERVISOR_SCRIPT);
+  const f = path.join(require('os').tmpdir(), `hb_${process.pid}.txt`);
+  require('fs').writeFileSync(f, 'x');
+  const old = new Date(Date.now() - 3600 * 1000);
+  require('fs').utimesSync(f, old, old);
+  assert.ok(supervisor.heartbeatAgeMs(f) > 3500 * 1000);
+  assert.equal(supervisor.heartbeatAgeMs(f + '.missing'), 0);
+  require('fs').unlinkSync(f);
 });
 
 // Enterprise Upgrade Roadmap Phase 1.2 (2026-07-23): unlike the two
