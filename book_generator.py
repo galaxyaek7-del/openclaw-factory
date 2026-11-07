@@ -1730,7 +1730,7 @@ def _log_ai_cost(model, usage, context=None, log_file=None, latency_ms=None):
         pass  # logging must never break the actual generation call
 
 
-def groq_chat(system_prompt, user_prompt, max_tokens=4096, timeout=30, retries=3, cost_context=None):
+def groq_chat(system_prompt, user_prompt, max_tokens=4096, timeout=30, retries=3, cost_context=None, model=None):
     """Calls Groq with timeout + retry + graceful failure (Constitution §3: Fault Tolerance).
     Auth/bad-request errors (401/403/400) are not retried — retrying can't fix a bad key.
     Return value is unchanged (still just the content string) — real cost
@@ -1740,7 +1740,7 @@ def groq_chat(system_prompt, user_prompt, max_tokens=4096, timeout=30, retries=3
     if not key:
         raise RuntimeError("GROQ_KEY غير موجود في البيئة أو .env")
     payload = json.dumps({
-        "model": GROQ_MODEL,
+        "model": model or GROQ_MODEL,  # optional per-call model: each Groq model has its OWN daily token budget (TPD)
         "max_tokens": max_tokens,
         "messages": [
             {"role": "system", "content": system_prompt},
@@ -1762,7 +1762,7 @@ def groq_chat(system_prompt, user_prompt, max_tokens=4096, timeout=30, retries=3
             with urllib.request.urlopen(req, timeout=timeout) as r:
                 result = json.loads(r.read().decode('utf-8'))
             latency_ms = round((time.time() - _request_started) * 1000)
-            _log_ai_cost(GROQ_MODEL, result.get('usage'), cost_context, latency_ms=latency_ms)
+            _log_ai_cost(model or GROQ_MODEL, result.get('usage'), cost_context, latency_ms=latency_ms)
             msg = result['choices'][0]['message']
             content = msg.get('content') or ""
             # Reasoning-model fallback (found live 2026-08-14 revenue

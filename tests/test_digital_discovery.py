@@ -98,3 +98,18 @@ def test_quality_is_a_deterministic_buyer_relevance_check():
     assert dd.quality({"niche": "Professional Response Templates for Manager Accusations", "topic": "reply to a manager"}) == "weak"
     assert dd.quality({"niche": "Leadership Accountability Checklist", "topic": "team leader price of delays"}) == "weak", "personal workplace advice wins over a money word"
     assert dd.quality({"niche": "Pseudonym Playbook", "topic": "no money or operations decision here"}) == "weak"
+
+
+def test_three_errors_in_a_row_abort_the_run_instead_of_burning_the_queue(tmp_path):
+    n = []
+
+    def boom(system, user):
+        n.append(1)
+        raise RuntimeError("429")
+    r = dd.run(max_signals=10, generate=boom, signals=[("sensing_trend", f"s{i}") for i in range(10)], titles=[], now=NOW,
+               candidates_path=tmp_path / "c.json", state_path=tmp_path / "s.json")
+    assert len(n) == 3 and r["errors"] == 3 and r.get("aborted_after_errors") is True and r["processed"] == 0
+    # errored signals are not recorded as processed: they are retried by the next run
+    ok = dd.run(max_signals=10, generate=lambda s, u: DECLINE, signals=[("sensing_trend", f"s{i}") for i in range(10)], titles=[], now=NOW,
+                candidates_path=tmp_path / "c.json", state_path=tmp_path / "s.json")
+    assert ok["processed"] == 10

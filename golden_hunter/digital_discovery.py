@@ -193,6 +193,26 @@ def load_json(path, default):
         return default
 
 
+def paced_generate(pause=None, max_tokens=1500, model=None):
+    """Model call paced for Groq's limit of 8,000 tokens per MINUTE (a request counts its reserved max_tokens): a pause between calls and a
+    smaller reservation. The first wide run (2026-11-06) called with 2,500 tokens back to back, got 429 on 90 of 100 calls and wasted 49 minutes."""
+    import time
+    from ai_capability import orchestrator
+    pause = float(os.environ.get("GF_DISCOVERY_PAUSE", "15")) if pause is None else pause
+    model = model or os.environ.get("GF_DISCOVERY_MODEL", "openai/gpt-oss-120b")  # not the model the daily chain and Scout live on
+    last = [0.0]
+
+    def generate(system, user):
+        wait = pause - (time.time() - last[0])
+        if wait > 0:
+            time.sleep(wait)
+        try:
+            return orchestrator.generate("analysis", system, user, max_tokens=max_tokens, timeout=90, retries=2, model=model)["content"]
+        finally:
+            last[0] = time.time()
+    return generate
+
+
 def run(max_signals=None, generate=None, signals=None, titles=None, now=None, candidates_path=CANDIDATES, state_path=STATE):
     """Process up to max_signals NEW signals. -> summary dict. `generate(system, user) -> text` is injectable (tests)."""
     now = now or datetime.now(timezone.utc)
@@ -203,17 +223,20 @@ def run(max_signals=None, generate=None, signals=None, titles=None, now=None, ca
     titles = live_titles() if titles is None else titles
     todo = [(s, g) for s, g in (signals if signals is not None else collect_signals()) if sid(g) not in done][:max_signals]
     if generate is None:
-        from ai_capability import orchestrator
-
-        def generate(system, user):
-            return orchestrator.generate("analysis", system, user, max_tokens=2500, timeout=90, retries=2)["content"]
+        generate = paced_generate()
+    streak = 0
     counts = {"processed": 0, "proposed": 0, "declined": 0, "duplicate": 0, "contract_failed": 0, "errors": 0}
     for src, sig in todo:
         try:
             parsed = parse(generate(SYSTEM, prompt(sig)))
         except Exception:  # noqa: BLE001 a model/network failure is retried on a later run, never recorded as an outcome
             counts["errors"] += 1
+            streak += 1
+            if streak >= 3:  # rate limit or outage: stop now, the remaining signals wait for the next run
+                counts["aborted_after_errors"] = True
+                break
             continue
+        streak = 0
         counts["processed"] += 1
         if parsed is None:
             done[sid(sig)] = {"outcome": "contract_failed", "at": now.isoformat(timespec="seconds")}

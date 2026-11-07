@@ -466,6 +466,17 @@ async function main() {
     assert.strictEqual(fl.findVariantOfAttempted('x y', ev, 30, now), null);
   });
 
+  await test('hunter model and budget errors: its own model by default; rate-limit text is recognised and ordinary failures are not', () => {
+    assert.strictEqual(fl.goldenHunterModel({}), 'openai/gpt-oss-120b');
+    assert.strictEqual(fl.goldenHunterModel({ GF_HUNTER_MODEL: 'qwen/qwen3.8-27b' }), 'qwen/qwen3.8-27b');
+    assert.strictEqual(fl.goldenHunterModel({ GF_HUNTER_MODEL: '  ' }), 'openai/gpt-oss-120b');
+    assert.ok(fl.isModelBudgetError('finance_pricing failed: 429 {"error":{"message":"Rate limit reached for model"}}'));
+    assert.ok(fl.isModelBudgetError('tokens per day (TPD): Limit 200000'));
+    assert.ok(!fl.isModelBudgetError('qa REVISE: the title does not state what the workbook computes'));
+    assert.ok(!fl.isModelBudgetError('builder_outline failed: output did not satisfy the step contract'));
+    assert.ok(!fl.isModelBudgetError(''));
+  });
+
   await test('goldenRoute: agent chain by default, legacy only when asked', () => {
     assert.strictEqual(fl.goldenRoute({}), 'chain');
     assert.strictEqual(fl.goldenRoute({ GF_GOLDEN_ROUTE: 'legacy' }), 'legacy');

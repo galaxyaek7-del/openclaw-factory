@@ -1421,6 +1421,16 @@ function findVariantOfAttempted(niche, events, days = 30, nowMs = Date.now(), th
   return null;
 }
 
+// Groq limits each MODEL separately (gpt-oss-20b: 200,000 tokens per day, shared by the daily chain, Scout and everything else; measured
+// 2026-11-06 at 199,490 used). The hunter's chains run on their own model so they cannot starve the daily essentials, and an exhausted
+// budget is a "skipped" tick, not thirteen failures a day.
+function goldenHunterModel(env = process.env) {
+  return String(env.GF_HUNTER_MODEL || 'openai/gpt-oss-120b').trim() || 'openai/gpt-oss-120b';
+}
+function isModelBudgetError(text) {
+  return /rate limit reached|tokens per (day|minute)|\b429\b|rate_limit_exceeded/i.test(String(text || ''));
+}
+
 function goldenRoute(env = process.env) {
   return String(env.GF_GOLDEN_ROUTE || 'chain').toLowerCase() === 'legacy' ? 'legacy' : 'chain';
 }
@@ -1433,9 +1443,11 @@ async function runGoldenNicheThroughChain(niche, { client, input } = {}) {
   if (!client && key && !agentChainGroq) { const Groq = require('groq-sdk'); agentChainGroq = new Groq({ apiKey: key }); }
   const dup = findLiveDuplicate(niche, liveCatalogTitles());
   if (dup) return { ok: false, rejected: true, detail: `تخطّي: النيش "${niche}" يتداخل مع منتج حي "${dup.title}" (${Math.round(dup.score * 100)}%) — لا تشغيل للسلسلة`, package_path: null, task_id: taskId };
-  const r = await runDailyProductChain({ client: client || agentChainGroq, day, taskId, trends: [input || niche] });
+  const { invokeAgent } = require('./lib/agent_runtime');
+  const model = goldenHunterModel();
+  const r = await runDailyProductChain({ client: client || agentChainGroq, day, taskId, trends: [input || niche], invoke: (o) => invokeAgent({ ...o, model }) });
   const ok = r.action === 'blocked' || r.action === 'done';
-  return { ok, rejected: r.action === 'stopped', detail: r.detail, package_path: r.package_path || null, task_id: r.task_id };
+  return { ok, rejected: r.action === 'stopped', rateLimited: !ok && isModelBudgetError(r.detail), detail: r.detail, package_path: r.package_path || null, task_id: r.task_id };
 }
 
 async function huntGolden(reachable) {
@@ -1564,6 +1576,11 @@ async function huntGolden(reachable) {
 
   if (top.digital || goldenRoute() === 'chain') {
     const viaChain = await runGoldenNicheThroughChain(top.niche, top.digital ? { input: digitalChainInput(top) } : {});
+    if (viaChain.rateLimited) {
+      const recBudget = appendGoldenHunterEvent({ action: 'skipped', reason: 'model_budget_exhausted', niche: '*pool*',
+        detail: `ميزانية النموذج (${goldenHunterModel()}) نفدت أو حدّ المعدل — "${top.niche}" يؤجَّل ولا يُحسب محاولة` });
+      return { action: 'skipped', detail: recBudget.detail };
+    }
     const recChain = appendGoldenHunterEvent({
       action: 'attempted', dry_run: false, niche: top.niche, profit_score: top.profit_score, verdict: top.verdict, brief,
       pipeline: 'agent_chain', ok: viaChain.ok, rejected: viaChain.rejected, detail: viaChain.detail, package_path: viaChain.package_path, task_id: viaChain.task_id,
@@ -6301,7 +6318,7 @@ module.exports = {
   runMarketEvidenceCycle, maybeRunDailyMarketEvidence,
   readLastGenerationRecord, triggerDistribute, triggerGenerateBook, formatDistributionAction, pollSales,
   huntGolden, readGoldenOpportunities, pickTopGoldenOpportunity, briefFromGoldenOpportunity,
-  appendGoldenHunterEvent, readGoldenHunterEvents, goldenNicheAlreadyAttempted, rankGoldenOpportunities, recentlyRejectedGoldenNiches, looksLikeHeadline, goldenScoreFloorOverride, applyGoldenScoreFloor, goldenDailyCap, goldenProductionsToday, goldenDailyAttemptCap, goldenAttemptsToday, goldenRoute, runGoldenNicheThroughChain, findLiveDuplicate, liveCatalogTitles, findVariantOfAttempted, readDigitalCandidates, withDigitalCandidates, digitalChainInput,
+  appendGoldenHunterEvent, readGoldenHunterEvents, goldenNicheAlreadyAttempted, rankGoldenOpportunities, recentlyRejectedGoldenNiches, looksLikeHeadline, goldenScoreFloorOverride, applyGoldenScoreFloor, goldenDailyCap, goldenProductionsToday, goldenDailyAttemptCap, goldenAttemptsToday, goldenRoute, runGoldenNicheThroughChain, findLiveDuplicate, liveCatalogTitles, goldenHunterModel, isModelBudgetError, findVariantOfAttempted, readDigitalCandidates, withDigitalCandidates, digitalChainInput,
   evaluateGoldenOpportunities, getButterPrice, getOpportunityScore, getLadderOpportunityScore,
   checkProductionEngineHealth,
   checkNeedsAttention, criticalHealthReasons, workflowHealthReasons, writeNeedsAttention, clearNeedsAttention, checkGoldenStagnation,
