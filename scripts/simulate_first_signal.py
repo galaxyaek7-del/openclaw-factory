@@ -142,9 +142,13 @@ def run():
         open_gate = lambda: {"open": True, "why": "simulated", "daily_cap": 3}  # noqa: E731
         closed_gate = lambda: {"open": False, "why": "simulated closed"}  # noqa: E731
         now = datetime.now(timezone.utc)
+        # Two founder authorizations are on file: SA-20261105-01 (printables <= $29, needs open demand) and SA-20261107-01 (printables and
+        # workbooks <= $49 on Gumroad and Payhip, demand gate NOT required, founder order 2026-11-07).
         cases = [("S7 printable Gumroad $19 + demand: covered", SimpleNamespace(price_usd=19), "printable", "gumroad", open_gate, True),
-                 ("S7 same product, no demand: not covered", SimpleNamespace(price_usd=19), "printable", "gumroad", closed_gate, False),
-                 ("S7 $49 product (over the $29 cap): not covered", SimpleNamespace(price_usd=49), "printable", "gumroad", open_gate, False),
+                 ("S7 same printable, no demand: still covered (SA-20261107-01 waives demand)", SimpleNamespace(price_usd=19), "printable", "gumroad", closed_gate, True),
+                 ("S7 $49 printable: covered only by SA-20261107-01 (cap $49)", SimpleNamespace(price_usd=49), "printable", "gumroad", open_gate, True),
+                 ("S7 $59 product (over both caps): not covered", SimpleNamespace(price_usd=59), "printable", "gumroad", open_gate, False),
+                 ("S7 workbook bundle on Payhip $39: covered", SimpleNamespace(price_usd=39), "xlsx_tool_bundle", "payhip", closed_gate, True),
                  ("S7 Etsy listing: not covered", SimpleNamespace(price_usd=19), "printable", "etsy", open_gate, False),
                  ("S7 non-printable type: not covered", SimpleNamespace(price_usd=19), "software", "gumroad", open_gate, False)]
         for name, prod, ptype, plat, dfn, expect in cases:

@@ -31,6 +31,16 @@ def _fake_env(tmp_path, token="test-token", chat_id="12345"):
 
 
 class TestSendTelegramMessage(unittest.TestCase):
+    def setUp(self):
+        # Root cause of the nightly-gate failures (found 2026-11-08): read_env_value prefers the PROCESS environment, so when the gate
+        # runs inside the factory loop (TELEGRAM vars set) these tests saw the real config instead of their fake .env.
+        patcher = patch.dict('os.environ', {}, clear=False)
+        patcher.start()
+        self.addCleanup(patcher.stop)
+        import os
+        for name in ('TELEGRAM_BOT_TOKEN', 'OPENCLAW_TELEGRAM_CHAT_ID', 'TELEGRAM_CHAT_ID'):
+            os.environ.pop(name, None)
+
     def test_missing_config_is_reported_not_raised(self):
         import tempfile
         with tempfile.TemporaryDirectory() as d:

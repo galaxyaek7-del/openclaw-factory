@@ -28,21 +28,28 @@ out = run('/x/page.html', ['https://aekraft.gumroad.com/l/abc'], { ua: 'Googlebo
 assert.ok(out[0].includes('utm_source=site'), 'tagging is independent of the crawler guard (a bot never clicks, harmless)');
 console.log('test_gf_outbound_utm: ok');
 
-// The hosted counter hook is disabled while GF_COUNTER_CODE is empty: nothing may be injected.
+// The hosted counter hook: nothing may be injected while GF_COUNTER_CODE is empty or invalid, and exactly one script when it is valid.
+// (2026-11-08: the committed file now carries the founder's real code 'aek', so the 'disabled' case is derived by blanking the code.)
 {
-  const appended = [];
-  const document = { querySelectorAll: () => [], querySelector: () => null, body: { getAttribute: () => 'p' }, title: 't',
-    createElement: () => ({ setAttribute() {} }), head: { appendChild: (e) => appended.push(e) } };
-  const ctx = { document, location: { pathname: '/x.html' }, navigator: { userAgent: 'Mozilla/5.0' }, console,
-    sessionStorage: { getItem: () => null, setItem: () => {} }, fetch: () => Promise.resolve({ ok: true }) };
-  ctx.window = ctx;
-  vm.runInNewContext(src, ctx);
-  assert.strictEqual(appended.length, 0, 'counter disabled by default');
-  assert.ok(/var GF_COUNTER_CODE = '';/.test(src), 'code is empty in the committed file');
-  const enabled = src.replace("var GF_COUNTER_CODE = '';", "var GF_COUNTER_CODE = 'galaxyforge';");
-  const ctx2 = Object.assign({}, ctx, { document: Object.assign({}, document, { head: { appendChild: (e) => appended.push(e) } }) });
-  ctx2.window = ctx2;
-  vm.runInNewContext(enabled, ctx2);
-  assert.strictEqual(appended.length, 1, 'enabled code injects exactly one script');
+  const mkCtx = () => {
+    const appended = [];
+    const document = { querySelectorAll: () => [], querySelector: () => null, body: { getAttribute: () => 'p' }, title: 't',
+      createElement: () => ({ setAttribute() {} }), head: { appendChild: (e) => appended.push(e) }, addEventListener() {} };
+    const ctx = { document, location: { pathname: '/x.html' }, navigator: { userAgent: 'Mozilla/5.0' }, console,
+      sessionStorage: { getItem: () => null, setItem: () => {} }, fetch: () => Promise.resolve({ ok: true }) };
+    ctx.window = ctx;
+    return { appended, ctx };
+  };
+  const m = /var GF_COUNTER_CODE = '([^']*)';/.exec(src);
+  assert.ok(m && /^[a-z0-9-]{2,40}$/.test(m[1]), 'the committed file carries a valid counter code');
+  const blank = mkCtx();
+  vm.runInNewContext(src.replace(m[0], "var GF_COUNTER_CODE = '';"), blank.ctx);
+  assert.strictEqual(blank.appended.length, 0, 'counter disabled when the code is empty');
+  const bad = mkCtx();
+  vm.runInNewContext(src.replace(m[0], "var GF_COUNTER_CODE = 'Bad Code!';"), bad.ctx);
+  assert.strictEqual(bad.appended.length, 0, 'counter disabled when the code is invalid');
+  const on = mkCtx();
+  vm.runInNewContext(src, on.ctx);
+  assert.strictEqual(on.appended.length, 1, 'a valid code injects exactly one script');
   console.log('test_gf_outbound_utm counter hook: ok');
 }

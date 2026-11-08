@@ -110,7 +110,9 @@ def covers(product=None, product_type=None, platform="gumroad", *, path=None, no
         except Exception as e:  # fail closed
             return {"covered": False, "reason": "demand gate could not be evaluated: %s" % e}
         if not demand.get("open"):
-            return {"covered": False, "reason": "demand gate closed: " + str(demand.get("why"))}
+            # Do not stop at the first matching authorization: a later one (e.g. SA-20261107-01) may waive the demand gate in its scope.
+            why_not.append("%s: demand gate closed: %s" % (auth.get("authorization_id"), demand.get("why")))
+            continue
         return {"covered": True, "authorization_id": auth.get("authorization_id"),
                 "reference": auth.get("reference"), "reason": "inside the founder's standing authorization"}
     return {"covered": False, "reason": "; ".join(why_not) or "no matching authorization"}
