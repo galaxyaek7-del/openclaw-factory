@@ -5790,6 +5790,10 @@ async function runTick() {
     // creates the counter and a read-only API token. Demand signals only, never added to verified revenue. galaxy_analytics.py
     markStep('analytics_snapshot');
     actions.push({ step: 'analytics_snapshot', ...(await runOnceScript('analytics_snapshot.py', { timeoutMs: 2 * 60 * 1000 })) });
+    // 2026-11-08 (founder: the factory works periodically in the agent's absence): the local doctor round every 6 h, one Telegram message
+    // only when the set of agent-owned problems changes. data/doctor_round_latest.json. scripts/doctor_round_periodic.py
+    markStep('doctor_round_periodic');
+    actions.push({ step: 'doctor_round_periodic', ...(await runOnceScript('doctor_round_periodic.py', { timeoutMs: 6 * 60 * 1000 })) });
     markStep('golden_hunter_bridge');
     const goldenResult = await huntGolden(true);
     const { distribution: goldenDistribution, ...goldenAction } = goldenResult;
