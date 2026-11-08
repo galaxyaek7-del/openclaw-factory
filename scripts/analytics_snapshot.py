@@ -25,8 +25,10 @@ def run_once(now=None, snapshot_path=None, builder=None):
     now = now or datetime.now(timezone.utc)
     path = Path(snapshot_path) if snapshot_path else ga.SNAPSHOT
     try:
-        last = datetime.fromisoformat(json.loads(path.read_text(encoding="utf-8"))["generated_at"])
-        if now - last < MIN_GAP:
+        prev = json.loads(path.read_text(encoding="utf-8"))
+        last = datetime.fromisoformat(prev["generated_at"])
+        gap = MIN_GAP if prev.get("status") in ("READ_OK", "NOT_CONFIGURED", "NO_TOKEN") else timedelta(minutes=10)  # a partial read is retried sooner
+        if now - last < gap:
             return {"action": "none", "detail": f"analytics snapshot is {int((now - last).total_seconds() / 60)} min old; refreshed hourly"}
     except (OSError, ValueError, KeyError):
         pass

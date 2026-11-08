@@ -103,3 +103,12 @@ def test_one_transient_failure_is_retried_and_both_token_names_are_accepted(monk
     s = ga.build_snapshot(now=NOW, env={"GOATCOUNTER_TOKEN": "tok-SECRET-123"}, http=flaky, code="aek")
     assert s["metrics"]["pageviews"]["value"] == 7 and s["status"] in ("READ_OK", "READ_PARTIAL")
     assert ga.token_from({"GOATCOUNTER_TOKEN": "a"}) == "a" and ga.token_from({"GOATCOUNTER_API_TOKEN": "b", "GOATCOUNTER_TOKEN": "a"}) == "b"
+
+
+def test_a_partial_snapshot_is_retried_after_ten_minutes_not_an_hour(tmp_path):
+    import analytics_snapshot as step
+    p = tmp_path / "s.json"
+    partial = lambda: {**ga.build_snapshot(now=NOW, env={}, code=""), "status": "READ_PARTIAL"}  # noqa: E731
+    assert step.run_once(NOW, p, partial)["action"] == "ran"
+    assert step.run_once(NOW + timedelta(minutes=5), p, partial)["action"] == "none"
+    assert step.run_once(NOW + timedelta(minutes=11), p, partial)["action"] == "ran"

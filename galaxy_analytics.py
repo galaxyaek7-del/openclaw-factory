@@ -73,7 +73,7 @@ def counter_code(path=PAGEVIEW_JS):
     return code if CODE_RE.match(code) else None
 
 
-def default_http(url, token, timeout=20):
+def default_http(url, token, timeout=(15, 30)):
     import requests  # local import: the module stays importable and testable without network libs
     r = requests.get(url, headers={"Authorization": f"Bearer {token}", "Content-Type": "application/json"}, timeout=timeout)
     r.raise_for_status()
@@ -135,14 +135,14 @@ def build_snapshot(now=None, env=None, http=default_http, code=None, coverage=No
     errors = []
 
     def call(path, extra=None):
-        for attempt in (1, 2):  # one retry: the first call right after a token is created failed once on 2026-11-07, then worked
+        for attempt in (1, 2, 3):  # up to two retries (a ConnectTimeout survived one retry on 2026-11-08): the first call right after a token is created failed once on 2026-11-07, then worked
             try:
                 return _get(http, base, path, {**params, **(extra or {})}, token)
             except Exception as e:  # noqa: BLE001 fail closed: any problem -> UNKNOWN, with a token-free reason
-                if attempt == 2:
+                if attempt == 3:
                     errors.append(f"{path}: {type(e).__name__}")
                 else:
-                    sleep(1.5)
+                    sleep(1.5 * attempt)
         return None
 
     total = call("/stats/total")
