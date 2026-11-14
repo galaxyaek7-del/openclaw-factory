@@ -69,6 +69,16 @@ class DemandGateTests(unittest.TestCase):
         ]))
         self.assertFalse(self.ev()["open"])
 
+    def test_synthetic_interest_rows_never_open_it(self):
+        _write(self.root, "data/customer_interest.jsonl", _jsonl([
+            {"email": "e2e@galaxyforge.dev", "message": "synthetic e2e", "synthetic": True},
+            {"email": "e2e2@galaxyforge.dev", "message": "SYNTHETIC_E2E lead"},
+            {"email": "e2e3@galaxyforge.dev", "message": "real words", "test_label": "SYNTHETIC_E2E"},
+        ]))
+        r = self.ev()
+        self.assertFalse(r["open"])
+        self.assertEqual(0, r["signals"]["BUYER_INTEREST"])
+
     def test_a_real_interest_row_opens_it(self):
         _write(self.root, "data/customer_interest.jsonl", _jsonl([{"email": "owner@agence.dz", "message": "je veux un devis"}]))
         r = self.ev()

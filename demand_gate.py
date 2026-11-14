@@ -68,7 +68,11 @@ def _read_jsonl(path):
 
 def _is_test_text(*values):
     blob = " ".join(str(v or "") for v in values).upper()
-    return "TEST_EVENT" in blob or "SIMULATION" in blob
+    return any(word in blob for word in ("TEST_EVENT", "SIMULATION", "SYNTHETIC"))
+
+
+def _is_synthetic_row(row):
+    return row.get("synthetic") is True or row.get("test") is True or row.get("is_test") is True
 
 
 def sales_signal(root: Path):
@@ -114,7 +118,8 @@ def buyer_interest_signal(root: Path, path=None):
     for r in _read_jsonl(path or root / "data" / "customer_interest.jsonl"):
         email = str(r.get("email") or "").lower()
         domain = email.rsplit("@", 1)[-1] if "@" in email else ""
-        if _is_test_text(r.get("message"), r.get("name"), r.get("source")):
+        if _is_synthetic_row(r) or _is_test_text(
+                r.get("message"), r.get("name"), r.get("source"), r.get("test_label")):
             continue
         if not email or domain in _FAKE_EMAIL_DOMAINS:
             continue
@@ -127,7 +132,9 @@ def market_demand_signal(root: Path, path=None):
     for r in _read_jsonl(path or root / "data" / "market_evidence.jsonl"):
         if r.get("event_type") not in BUYER_EVENT_TYPES:
             continue
-        if _is_test_text(r.get("note"), json.dumps(r.get("payload") or {}, ensure_ascii=False), r.get("source")):
+        if _is_synthetic_row(r) or _is_test_text(
+                r.get("note"), json.dumps(r.get("payload") or {}, ensure_ascii=False),
+                r.get("source"), r.get("test_label")):
             continue
         n += 1
     return n

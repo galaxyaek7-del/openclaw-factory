@@ -6,9 +6,6 @@
     <title>GPSR Compliance Checklist - Free Download</title>
     <meta name="description" content="Free GPSR compliance checklist for non-EU sellers: responsible person, labeling, traceability. Practical guidance, not legal advice.">
     <meta name="robots" content="index, follow">
-    <meta property="og:title" content="GPSR Compliance Checklist - Free Download">
-    <meta property="og:description" content="Free checklist for EU product safety compliance. Practical guidance, not legal advice.">
-    <meta property="og:type" content="article">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; background: #f5f5f5; }
@@ -100,7 +97,12 @@
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({email: email, message: 'GPSR Compliance Checklist request', source: 'gpsr_landing_page', campaign: 's3_exec_05'})
             }).then(function(r){ return r.json(); }).then(function(body){
-                if (body && body.success) { alert('Thank you! Your request was recorded. A real person will follow up by email.'); }
+                if (body && body.success) {
+                    if (body.status === 'duplicate') { alert('This request is already on file. A real person will follow up by email.'); }
+                    else if (body.status === 'stopped') { alert('Automatic intake is paused right now. Please email galaxyaek7@gmail.com directly.'); }
+                    else if (body.status === 'accepted' && body.signal_id) { alert('Thank you! Your request was recorded. A real person will follow up by email.'); }
+                    else { alert('Thank you. A real person will follow up by email.'); }
+                }
                 else { tier2Fallback(); }
             }).catch(function() { tier2Fallback(); });
             // The deployed site is static: /api/customer/interest only answers
@@ -108,13 +110,13 @@
             // shows "noted" while recording nothing anywhere -- a false
             // confirmation that silently loses the lead. Tier 2 reuses the
             // same formsubmit route contact.html already uses, then a mailto
-            // fallback that never claims recording it did not do.
+            // fallback that never claims a local record it did not create.
             function tier2Fallback(){
               fetch('https://formsubmit.co/ajax/galaxyaek7@gmail.com', {
                 method: 'POST', headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
                 body: JSON.stringify({email: email, message: 'GPSR Compliance Checklist request', source: 'gpsr_landing_page', campaign: 's3_exec_05'})
               }).then(function(r){ return r.json(); }).then(function(body){
-                if (body && body.success !== false && body.success !== 'false') { alert('Thank you! Your request was recorded. A real person will follow up by email.'); }
+                if (body && body.success !== false && body.success !== 'false') { alert('Thank you! Your request was sent by email. A real person will follow up.'); }
                 else { alert('Sending is offline right now — please email galaxyaek7@gmail.com directly and we will send the checklist.'); }
               }).catch(function(){ alert('Sending is offline right now — please email galaxyaek7@gmail.com directly and we will send the checklist.'); });
             }

@@ -52,3 +52,61 @@ test('the mail body carries the fields the visitor actually typed', () => {
     assert.ok(home.includes(field), `the fallback mail body is missing ${field}`);
   }
 });
+
+test('every local support form renders the returned response text', () => {
+  const pages = ['index.html', 'contact.html'];
+  for (const page of pages) {
+    const html = read(page);
+    assert.ok(html.includes('/api/customer/support-ticket'), `${page} must post to the local support route`);
+    assert.match(html, /res\.body\.response/, `${page} must render the local response text`);
+  }
+});
+
+test('lead forms feed the real demand ledger, not the support queue', () => {
+  const pages = [
+    'eu-ai-act-compliance-toolkit.html',
+    'guide-etsy-suspension-appeal.html',
+    'service-verified-lead-lists.html',
+  ];
+  for (const page of pages) {
+    const html = read(page);
+    assert.ok(html.includes('/api/customer/interest'), `${page} must post to the local interest route`);
+    assert.ok(!html.includes('/api/customer/support-ticket'), `${page} must not route a sales lead into support tickets`);
+    assert.match(html, /res\.body\.status/, `${page} must handle accepted/duplicate/stopped outcomes`);
+  }
+});
+
+test('the GPSR email fallback never claims a local record it did not create', () => {
+  const html = read('gpsr-landing.html');
+  const start = html.indexOf('function tier2Fallback');
+  const end = html.indexOf('</script>', start);
+  assert.ok(start > -1 && end > start, 'the tier-2 fallback exists');
+  const fallback = html.slice(start, end);
+  assert.doesNotMatch(fallback, /recorded/i, 'the email fallback must not say the request was recorded');
+  assert.match(fallback, /sent by email/i, 'the email fallback must state what actually happened');
+});
+
+test('GPSR only claims a local record when the API returned a signal id', () => {
+  const html = read('gpsr-landing.html');
+  assert.match(html, /body\.status === 'duplicate'/, 'GPSR must handle duplicate');
+  assert.match(html, /body\.status === 'stopped'/, 'GPSR must handle stopped');
+  assert.match(html, /body\.status === 'accepted' && body\.signal_id/, 'GPSR must require a signal id before claiming a record');
+});
+
+test('the interest page only claims a local record when the API returned a signal id', () => {
+  const html = read('interest.html');
+  assert.match(html, /res\.body\.status === 'duplicate'/, 'interest must handle duplicate');
+  assert.match(html, /res\.body\.status === 'stopped'/, 'interest must handle stopped');
+  assert.match(html, /res\.body\.status === 'accepted' && res\.body\.signal_id/, 'interest must require a signal id before claiming a record');
+});
+
+test('login on the static copy explains the account service is unavailable', () => {
+  const html = read('login.html');
+  const start = html.indexOf('.catch(function(){');
+  const end = html.indexOf('});', start);
+  assert.ok(start > -1 && end > start, 'the login failure handler exists');
+  const failure = html.slice(start, end);
+  assert.match(failure, /account service is unavailable/i, 'the failure must name the unavailable account service');
+  assert.match(failure, /galaxyaek7@gmail\.com/, 'the failure must hand over the real contact address');
+  assert.doesNotMatch(failure, /please try again/i, 'retrying cannot work on the static copy');
+});

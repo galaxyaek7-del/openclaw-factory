@@ -1,3 +1,21 @@
+# HANDOFF — 2026-11-14 verification cycle (current)
+
+## State at handoff
+- Lead forms on `eu-ai-act-compliance-toolkit.html`, `guide-etsy-suspension-appeal.html`, and `service-verified-lead-lists.html` now post to `/api/customer/interest`; GPSR/interest only claim a local record when the API returns `accepted` plus a `signal_id`.
+- `lib/customer_evidence.py` now stores `synthetic`/`test_label` and marks provenance `synthetic_test`; `demand_gate.py` skips synthetic/test rows, so test submissions cannot open the gate.
+- E2E overlay proof passed: three real form payloads produced three synthetic ledger rows, `demand_before=0`, `demand_after=0`, `synthetic_counted=0`, live ledger hash unchanged.
+- `write_guard` live-path warning fixed at the test source: `tests/test_lead_funnel.py` now points `evidence_engine.DEFAULT_LEDGER_PATH` at a temp dir, and `tests/test_customer_pipeline.py` points `revenue_os.ORDERS_PATH` at a temp dir. The only remaining redirected paths are the intentional E2E `data/customer_interest.jsonl` and its lock file.
+- Audit covered all 10 customer_site forms: no remaining false stored-record or fallback-success claim. `login.html` now says the account service is unavailable on the static copy and gives the real contact address instead of asking for a retry.
+- Tests: 39/39 Node (`customer_site_static_fallback`, `customer_response`, `response_router`, `response_intents`); 126/126 Python (lead E2E, customer evidence, demand gate, lead funnel, customer workflow, customer pipeline, GPSR claims).
+- Commercial truth unchanged: 0 verified sales, $0 verified revenue, 0 verified transactions.
+- Public GitHub Pages still cannot reach the local Express API; static forms fall back to FormSubmit/mailto.
+- A single local commit contains this cycle's lead-path work. Do not push or publish.
+
+## Required next steps
+1. Find the next highest-impact visitor→verified-lead defect.
+
+---
+
 # HANDOFF — Galaxy Forge commercial ops (2026-10-11, post-C91)
 
 ## C91 — THE ONE THING THAT UNBLOCKS REVENUE

@@ -21,6 +21,7 @@ if str(_FACTORY_ROOT) not in sys.path:
     sys.path.insert(0, str(_FACTORY_ROOT))
 
 import customer_pipeline as cp
+import revenue_os
 
 
 def _temp_path(suffix=".json"):
@@ -55,6 +56,13 @@ class BasePipelineTest(unittest.TestCase):
         self._notify_patcher = patch.object(cp, "_notify_founder")
         self._notify_patcher.start()
         self.addCleanup(self._notify_patcher.stop)
+        # check_all_awaiting_payments() has no orders-ledger override; point the
+        # revenue ledger at this test's temp dir so a paid fixture never appends
+        # to the live data/orders.jsonl.
+        self._orders_path = revenue_os.ORDERS_PATH
+        revenue_os.ORDERS_PATH = Path(_temp_path(".jsonl"))
+        self.addCleanup(setattr, revenue_os, "ORDERS_PATH", self._orders_path)
+        self.addCleanup(lambda: os.path.exists(revenue_os.ORDERS_PATH) and os.remove(revenue_os.ORDERS_PATH))
 
     def tearDown(self):
         for p in (self.requests_path, self.state_path, self.paddle_products_path):

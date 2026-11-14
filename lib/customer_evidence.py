@@ -138,6 +138,14 @@ def validate_and_classify(payload):
     message = str(payload.get("interest") or payload.get("message") or "").strip()
     name = str(payload.get("name") or "").strip()
     product_interest = str(payload.get("product_interest") or payload.get("product_id") or "").strip()
+    test_label = str(payload.get("test_label") or "").strip()
+    label_upper = test_label.upper()
+    synthetic = (
+        payload.get("synthetic") is True
+        or payload.get("test") is True
+        or payload.get("is_test") is True
+        or any(word in label_upper for word in ("TEST", "SYNTHETIC", "SIMULATION"))
+    )
 
     if not email or not EMAIL_RE.match(email):
         return False, None, "valid email required", None
@@ -155,6 +163,8 @@ def validate_and_classify(payload):
         "message": message,
         "product_interest": product_interest or None,
         "classification": classification,
+        "synthetic": synthetic,
+        "test_label": test_label or None,
         "dedup_hash": _dedup_hash(email, message),
     }
     return True, classification, "ok", enriched
@@ -234,11 +244,13 @@ def record_interest_signal(payload, ledger_path=None, rejected_ledger_path=None)
             "channel": "customer_site",
             "source": "web_form",
             "classification": classification,
-            "provenance_quality": "direct_inbound",
+            "provenance_quality": "synthetic_test" if enriched["synthetic"] else "direct_inbound",
             "email": enriched["email"],
             "name": enriched["name"],
             "message": enriched["message"],
             "product_interest": enriched["product_interest"],
+            "synthetic": enriched["synthetic"],
+            "test_label": enriched["test_label"],
             "dedup_hash": enriched["dedup_hash"],
         }
         ledger.parent.mkdir(parents=True, exist_ok=True)
@@ -268,26 +280,28 @@ def generate_evidence_report(ledger_path=None, rejected_ledger_path=None):
     UNKNOWN; the factory does not decide commercial sufficiency."""
     signals = read_signals(ledger_path)
     rejections = read_rejections(rejected_ledger_path)
+    genuine = [s for s in signals if s.get("synthetic") is not True]
+    synthetic = len(signals) - len(genuine)
     counts = {"MARKET": 0, "PRODUCT": 0, "CUSTOMER": 0, "TRANSACTION": 0}
-    for s in signals:
+    for s in genuine:
         c = s.get("classification")
         if c in counts:
             counts[c] += 1
-    provenance_ok = sum(1 for s in signals if s.get("provenance_quality") == "direct_inbound")
+    provenance_ok = sum(1 for s in genuine if s.get("provenance_quality") == "direct_inbound")
 
     return {
-        "A_genuine_inbound_signals": len(signals),
+        "A_genuine_inbound_signals": len(genuine),
         "B_valid_product_evidence": counts["PRODUCT"],
         "C_valid_customer_evidence": counts["CUSTOMER"],
         "D_valid_transaction_evidence": counts["TRANSACTION"],
-        "E_rejected_synthetic_duplicate": len(rejections),
-        "F_provenance_quality": (f"{provenance_ok}/{len(signals)} direct_inbound" if signals else "no signals"),
+        "E_rejected_synthetic_duplicate": len(rejections) + synthetic,
+        "F_provenance_quality": (f"{provenance_ok}/{len(genuine)} direct_inbound" if genuine else "no signals"),
         "G_reputation_status": "UNKNOWN",
         "H_unit_economics_status": "UNKNOWN",
         "I_current_product_status": ("No REAL PRODUCT accepted with ADR-121 Proof-of-Payment; Offers DEFERRED; "
                                      "published_books=[]; revenue=$0 — evidence-only collection window"),
         "J_gate_assessment": ("Controlled live evidence window ACTIVE. NOT sufficient for commercial progression — "
-                              f"{len(signals)} genuine CUSTOMER signals recorded; founder must decide sufficiency."),
+                              f"{len(genuine)} genuine CUSTOMER signals recorded; founder must decide sufficiency."),
         "K_exact_founder_decision_required": ("Founder must decide sufficiency and the next gate before any "
                                               "HOLD→PROCEED, outbound, payment, publishing, or ARM 9. "
                                               "PRODUCT/TRANSACTION evidence requires separate authorization."),

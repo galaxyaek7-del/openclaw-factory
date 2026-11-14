@@ -50,6 +50,29 @@ def test_valid_signal_is_customer_classification(tmp_path):
     assert rec["received_at"].endswith("+00:00") or rec["received_at"].endswith("Z")
 
 
+def test_synthetic_signal_is_stored_but_not_genuine(tmp_path):
+    ledger = tmp_path / "customer_interest.jsonl"
+    rejected = tmp_path / "customer_interest_rejected.jsonl"
+    payload = {
+        "email": "e2e.lead@galaxyforge.dev",
+        "message": "SYNTHETIC_E2E lead from the EU AI Act form.",
+        "synthetic": True,
+        "test_label": "SYNTHETIC_E2E_2026-11-14",
+    }
+    res = customer_evidence.record_interest_signal(
+        payload, ledger_path=str(ledger), rejected_ledger_path=str(rejected))
+    assert res["status"] == "accepted"
+    rec = json.loads(ledger.read_text(encoding="utf-8").strip())
+    assert rec["synthetic"] is True
+    assert rec["test_label"] == "SYNTHETIC_E2E_2026-11-14"
+    assert rec["provenance_quality"] == "synthetic_test"
+    report = customer_evidence.generate_evidence_report(
+        ledger_path=str(ledger), rejected_ledger_path=str(rejected))
+    assert report["A_genuine_inbound_signals"] == 0
+    assert report["C_valid_customer_evidence"] == 0
+    assert report["E_rejected_synthetic_duplicate"] == 1
+
+
 def test_honeypot_is_rejected_and_logged(tmp_path):
     ledger = tmp_path / "customer_interest.jsonl"
     rejected = tmp_path / "customer_interest_rejected.jsonl"

@@ -9,6 +9,7 @@ import tempfile
 import unittest
 from unittest import mock
 
+import evidence_engine
 import lead_discovery as ld
 
 
@@ -19,6 +20,12 @@ class FunnelCase(unittest.TestCase):
         self.path = os.path.join(self.tmp.name, "prospect_pipeline.jsonl")
         with open(self.path, "w", encoding="utf-8") as f:
             f.write(json.dumps({"schema_version": 1, "prospects": []}) + "\n")
+        # transition_lead() records a CUSTOMER evidence row. Point the evidence
+        # engine at this test's temp directory so the test never defaults to the
+        # live data/evidence_ledger.jsonl (write_guard used to redirect it).
+        self._evidence_ledger = evidence_engine.DEFAULT_LEDGER_PATH
+        evidence_engine.DEFAULT_LEDGER_PATH = os.path.join(self.tmp.name, "evidence_ledger.jsonl")
+        self.addCleanup(setattr, evidence_engine, "DEFAULT_LEDGER_PATH", self._evidence_ledger)
 
     def _approvals(self, status):
         p = os.path.join(self.tmp.name, "approvals.jsonl")

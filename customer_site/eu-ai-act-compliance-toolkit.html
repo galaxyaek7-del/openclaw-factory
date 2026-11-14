@@ -180,21 +180,25 @@ footer{border-top:1px solid var(--border-soft); padding:3rem 0 2.5rem; margin-to
     if (data.website) return; // honeypot
     btn.disabled = true; btn.textContent = 'Sending…';
     status.style.display = 'none';
-    var payload = { name: data.name, email: data.email,
+    var lead = { name: data.name, email: data.email,
       message: 'LEAD: EU AI Act 10-point self-check request from eu-ai-act-compliance-toolkit. Send the self-check list.',
+      source: 'eu_ai_act_toolkit', campaign: 'eu_ai_act_selfcheck' };
+    var payload = { name: lead.name, email: lead.email, message: lead.message,
       _subject: 'Lead: EU self-check request', _template: 'table', _captcha: 'false' };
-    function ok(){ status.textContent = 'Self-check requested. It arrives by email — a real person sends it.'; status.style.display = 'block'; form.reset(); btn.disabled = false; btn.textContent = 'Send it'; }
+    function ok(msg){ status.textContent = msg; status.style.display = 'block'; form.reset(); btn.disabled = false; btn.textContent = 'Send it'; }
     function fail(){
       var mailto = 'mailto:galaxyaek7@gmail.com?subject=' + encodeURIComponent('EU self-check request') + '&body=' + encodeURIComponent('Please send the 10-point self-check. Name: ' + data.name);
       status.innerHTML = 'Direct send is offline — <a href="' + mailto + '">click here to request by email</a>.';
       status.style.display = 'block'; btn.disabled = false; btn.textContent = 'Send it';
     }
-    fetch('/api/customer/support-ticket', { method: 'POST', credentials: 'same-origin',
-      headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) })
+    fetch('/api/customer/interest', { method: 'POST', credentials: 'same-origin',
+      headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(lead) })
       .then(function(r){ return r.json().then(function(b){ return { ok: r.ok, body: b }; }); })
       .then(function(res){
         if (!res.ok || res.body.success === false) throw new Error('local-offline');
-        ok();
+        if (res.body.status === 'duplicate') ok('This request is already on file. A real person will reply by email.');
+        else if (res.body.status === 'stopped') ok('Automatic intake is paused right now. Please email galaxyaek7@gmail.com and a real person will help.');
+        else ok('Request received. A real person will send the self-check by email.');
       })
       .catch(function(){
         fetch('https://formsubmit.co/ajax/galaxyaek7@gmail.com', { method: 'POST',
@@ -202,7 +206,7 @@ footer{border-top:1px solid var(--border-soft); padding:3rem 0 2.5rem; margin-to
           body: JSON.stringify(payload) })
           .then(function(r){ return r.json(); })
           .then(function(body){
-            if (body && body.success !== false && body.success !== 'false') ok();
+            if (body && body.success !== false && body.success !== 'false') ok('Your request was sent by email. A real person will follow up.');
             else fail();
           }).catch(fail);
       });
