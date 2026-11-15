@@ -79,6 +79,16 @@ class DemandGateTests(unittest.TestCase):
         self.assertFalse(r["open"])
         self.assertEqual(0, r["signals"]["BUYER_INTEREST"])
 
+    def test_true_like_synthetic_flags_never_open_it(self):
+        _write(self.root, "data/customer_interest.jsonl", _jsonl([
+            {"email": "e2e@galaxyforge.dev", "message": "Please send the toolkit", "synthetic": 1},
+            {"email": "e2e2@galaxyforge.dev", "message": "Please send the checklist", "test": "true"},
+            {"email": "e2e3@galaxyforge.dev", "message": "Please send the guide", "is_test": "yes"},
+        ]))
+        r = self.ev()
+        self.assertFalse(r["open"])
+        self.assertEqual(0, r["signals"]["BUYER_INTEREST"])
+
     def test_unverified_external_leads_never_open_it(self):
         _write(self.root, "data/customer_interest.jsonl", _jsonl([
             {"email": "lead@example.com", "message": "Please send the toolkit",
@@ -89,6 +99,22 @@ class DemandGateTests(unittest.TestCase):
         _write(self.root, "data/market_evidence.jsonl", _jsonl([
             {"event_type": "demo_request", "payload": {"who": "unverified lead"},
              "verification_status": "UNVERIFIED_EXTERNAL", "counted_as_demand": False},
+        ]))
+        r = self.ev()
+        self.assertFalse(r["open"])
+        self.assertEqual(0, r["signals"]["BUYER_INTEREST"])
+        self.assertEqual(0, r["signals"]["MARKET_DEMAND"])
+
+    def test_false_like_counted_as_demand_values_never_open_it(self):
+        _write(self.root, "data/customer_interest.jsonl", _jsonl([
+            {"email": "lead@example.com", "message": "Please send the toolkit",
+             "verification_status": "VERIFIED", "counted_as_demand": 0},
+            {"email": "lead2@example.com", "message": "Please send the checklist",
+             "verification_status": "VERIFIED", "counted_as_demand": "false"},
+        ]))
+        _write(self.root, "data/market_evidence.jsonl", _jsonl([
+            {"event_type": "demo_request", "payload": {"who": "unverified lead"},
+             "verification_status": "VERIFIED", "counted_as_demand": "0"},
         ]))
         r = self.ev()
         self.assertFalse(r["open"])

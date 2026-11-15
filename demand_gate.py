@@ -71,13 +71,33 @@ def _is_test_text(*values):
     return any(word in blob for word in ("TEST_EVENT", "SIMULATION", "SYNTHETIC"))
 
 
+def _is_true_flag(value):
+    if value is True or value == 1:
+        return True
+    if isinstance(value, str) and value.strip().lower() in {"true", "1", "yes"}:
+        return True
+    return False
+
+
 def _is_synthetic_row(row):
-    return row.get("synthetic") is True or row.get("test") is True or row.get("is_test") is True
+    return (
+        _is_true_flag(row.get("synthetic"))
+        or _is_true_flag(row.get("test"))
+        or _is_true_flag(row.get("is_test"))
+    )
+
+
+def _is_false_flag(value):
+    if value is False or value == 0:
+        return True
+    if isinstance(value, str) and value.strip().lower() in {"false", "0", "no"}:
+        return True
+    return False
 
 
 def _is_unverified_row(row):
     status = str(row.get("verification_status") or "").strip().upper()
-    return status in {"UNVERIFIED", "UNVERIFIED_EXTERNAL"} or row.get("counted_as_demand") is False
+    return status in {"UNVERIFIED", "UNVERIFIED_EXTERNAL"} or _is_false_flag(row.get("counted_as_demand"))
 
 
 def sales_signal(root: Path):
