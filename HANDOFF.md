@@ -1,15 +1,16 @@
 # HANDOFF — 2026-11-15 public lead-ingest preparation (current)
 
 ## State at handoff
-- Local commit `c32b6bfa` — `Prepare public lead ingest behind an off flag` — contains the public lead-ingest preparation. Not pushed, not deployed.
+- Local commits `c32b6bfa`, `959fe480`, and `c9083f71` contain the public lead-ingest preparation and compatibility fixes. Not pushed, not deployed.
 - `cloudflare/lead-ingest/` implements a free-tier Cloudflare Worker + KV option. It is **OFF by default** (`PUBLIC_LEAD_INGEST_ENABLED = "false"`); a POST while OFF returns `503 disabled` and writes nothing.
 - Every accepted worker lead is stored as `verification_status: "UNVERIFIED_EXTERNAL"`, `provenance_quality: "external_unverified"`, `counted_as_demand: false`, `synthetic: false`. No raw IP is stored; only a salted SHA-256 `ip_hash`.
+- The worker matches the local API's accepted fields: `message` or `interest`, plus optional `product_interest`/`product_id`; the name limit is 200 to match the forms. A dedup write failure after the lead is stored still returns `accepted`.
 - `demand_gate.py` skips `UNVERIFIED`/`UNVERIFIED_EXTERNAL`/`counted_as_demand: false` rows in both `buyer_interest_signal` and `market_demand_signal`.
 - Five lead pages (`eu-ai-act-compliance-toolkit`, `guide-etsy-suspension-appeal`, `service-verified-lead-lists`, `interest`, `gpsr-landing`) load `customer_site/assets/public-lead-config.js` and use `window.GF_PUBLIC_LEAD_ENDPOINT || '/api/customer/interest'`. The config value is empty, so default behavior is unchanged.
 - `customer_site/contact.html` FormSubmit fallback now says “Message sent by email. A real person will reply by email.” The unrelated unstaged hunks in that file were left untouched.
 - `.gitignore` now includes `data/contact_log.jsonl`. `lib/contact_tracker.js` remains gitignored at line 158 under the 2026-10-18 founder rule.
 - `docs/factory/PUBLIC_LEAD_INGEST.md` compares the three $0 options and gives the manual Cloudflare setup. `cloudflare/lead-ingest/wrangler.toml` still contains `REPLACE_WITH_KV_NAMESPACE_ID`.
-- Tests: `test_public_lead_ingest.js` 12/12, `test_customer_site_static_fallback.js` 13/13, `test_demand_gate.py` 15/15, `test_factory_loop_golden.js` 69/69. `test_low_disk_mode.js` fails independently of this work (`factory_loop.js` is untouched). `test_api_contract.js` did not pass locally: one service-envelope failure plus 180s timeouts, likely local `server.js`/service state.
+- Tests: `test_public_lead_ingest.js` 15/15, `test_customer_site_static_fallback.js` 13/13, `test_demand_gate.py` 15/15, `test_factory_loop_golden.js` 69/69. `test_low_disk_mode.js` fails independently of this work (`factory_loop.js` is untouched). `test_api_contract.js` did not pass locally: one service-envelope failure plus 180s timeouts, likely local `server.js`/service state.
 - Tracked-only Python groups were run; remaining failures come from unrelated local artifacts: untracked `affiliate/publish_queue.py`, local `customer_site/catalog.json` drift, local `server.js` changes, and a local filesystem junction.
 - Commercial truth unchanged: 0 verified sales, $0 verified revenue, 0 verified transactions.
 - Public GitHub Pages still cannot reach the local Express API. The worker is prepared but not deployed, so no public stored-lead path is proven yet.
