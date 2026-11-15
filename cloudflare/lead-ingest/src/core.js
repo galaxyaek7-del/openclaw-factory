@@ -1,7 +1,7 @@
 'use strict';
 
 const MAX_BODY_BYTES = 8192;
-const MAX_NAME = 120;
+const MAX_NAME = 200;
 const MAX_MESSAGE = 4000;
 const MAX_PRODUCT_INTEREST = 2000;
 const MAX_SOURCE = 80;
@@ -291,7 +291,12 @@ async function handleLeadRequest(request, env, deps) {
     await env.LEADS.put(`lead:${id}`, JSON.stringify(record), {
       metadata: { verification_status: 'UNVERIFIED_EXTERNAL' },
     });
-    await env.LEADS.put(dedupKey, id, { expirationTtl: DEDUP_TTL_SECONDS });
+    try {
+      await env.LEADS.put(dedupKey, id, { expirationTtl: DEDUP_TTL_SECONDS });
+    } catch (_) {
+      // The lead is already stored; a dedup failure must not turn a stored
+      // lead into a false error that pushes the visitor to the email fallback.
+    }
 
     return jsonResponse(200, {
       success: true,

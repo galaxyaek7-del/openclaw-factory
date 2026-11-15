@@ -99,6 +99,16 @@ test('enabled ingest stores an unverified external lead and never counts it as d
   assert.equal(record.source, 'eu_ai_act_compliance_toolkit');
 });
 
+test('a name at the form maximum is accepted and one character more is rejected', () => {
+  const ok = validatePayload(baseBody({ name: 'A'.repeat(200) }));
+  assert.equal(ok.ok, true);
+  assert.equal(ok.lead.name.length, 200);
+
+  const tooLong = validatePayload(baseBody({ name: 'A'.repeat(201) }));
+  assert.equal(tooLong.ok, false);
+  assert.equal(tooLong.error, 'name_too_long');
+});
+
 test('the worker accepts the local API interest alias and product_id alias', () => {
   const ok = validatePayload({
     email: 'a@example.com',
@@ -232,6 +242,22 @@ test('duplicate submissions return the first lead id without storing twice', asy
 
   const leadKeys = Array.from(env.LEADS.data.keys()).filter((key) => key.startsWith('lead:'));
   assert.deepEqual(leadKeys, ['lead:lead_test_1']);
+});
+
+test('a dedup write failure after the lead is stored still returns accepted', async () => {
+  class FlakyDedupKV extends MemoryKV {
+    async put(key, value, options) {
+      if (key.startsWith('dedup:')) throw new Error('dedup write failed');
+      return super.put(key, value, options);
+    }
+  }
+  const env = makeEnv({ LEADS: new FlakyDedupKV() });
+  const response = await handleLeadRequest(makeRequest({ body: baseBody() }), env, deps());
+  const body = await response.json();
+
+  assert.equal(response.status, 200);
+  assert.equal(body.status, 'accepted');
+  assert.ok(await env.LEADS.get('lead:lead_test_1'));
 });
 
 test('Turnstile is required when configured and verified before storage', async () => {

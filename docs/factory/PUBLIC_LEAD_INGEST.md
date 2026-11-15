@@ -79,6 +79,7 @@ Append reviewed rows to a local inbox with `verification_status: "UNVERIFIED_EXT
 ## Limitations
 
 - KV rate limiting is approximate; it is not an atomic counter.
+- Dedup is best-effort: if the dedup write fails after the lead is stored, the lead is still accepted and a retry could create a duplicate.
 - There is no automatic email notification and no automatic local import.
 - Turnstile is optional; without it the worker still uses the honeypot, size, origin, dedup, and rate controls.
 - A stored lead is not a sale, a verified buyer, or demand. The only success definition remains `FIRST_SALE_VERIFIED`.
