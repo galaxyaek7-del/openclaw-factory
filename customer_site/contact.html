@@ -155,7 +155,7 @@ footer{border-top:1px solid var(--border-soft); padding:3rem 0 2.5rem; margin-to
           .then(function(r){ return r.json(); })
           .then(function(body){
             if (body && body.success !== false && body.success !== 'false') {
-              status.textContent = 'Message received. A real person will reply by email.';
+              status.textContent = 'Message sent by email. A real person will reply by email.';
               status.className = 'success';
               form.reset();
             } else { mailtoFallback(); }

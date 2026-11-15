@@ -53,10 +53,6 @@ footer{border-top:1px solid var(--border-soft); padding:3rem 0 2.5rem; margin-to
 @media (max-width:600px){ .nav-links{display:none;} }
 </style>
     <script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebPage", "url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/interest.html", "name": "Product Interest — Galaxy Forge", "publisher": {"@type": "Organization", "name": "Galaxy Forge"}}</script>
-    <meta property="og:title" content="Product Interest — Galaxy Forge">
-    <meta property="og:description" content="Tell Galaxy Forge what you&#x27;re interested in. We read every message — no automation, no sales pressure.">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://galaxyaek7-del.github.io/openclaw-factory/customer_site/interest.html">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Galaxy Forge">
 <meta property="og:image" content="https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/og-default.png">
@@ -106,6 +102,7 @@ footer{border-top:1px solid var(--border-soft); padding:3rem 0 2.5rem; margin-to
   </div>
 </main>
 <footer><div class="footer-wrap">© <span id="year"></span> Galaxy Forge.</div></footer>
+<script src="assets/public-lead-config.js"></script>
 <script>
 (function(){
   "use strict";
@@ -122,14 +119,18 @@ footer{border-top:1px solid var(--border-soft); padding:3rem 0 2.5rem; margin-to
     btn.disabled = true; btn.textContent = 'Sending…';
 
     var data = Object.fromEntries(new FormData(form).entries());
-    fetch('/api/customer/interest', {
-      method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' },
+    var endpoint = window.GF_PUBLIC_LEAD_ENDPOINT || '/api/customer/interest';
+    fetch(endpoint, {
+      method: 'POST', credentials: endpoint.charAt(0) === '/' ? 'same-origin' : 'omit', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
     })
       .then(function(r){ return r.json().then(function(body){ return { ok: r.ok, body: body }; }); })
       .then(function(res){
         if (!res.ok || res.body.success === false) throw new Error((res.body && res.body.error) || 'Something went wrong — please try again.');
-        status.textContent = 'Thanks — your interest signal has been recorded. A real person may follow up by email.';
+        if (res.body.status === 'duplicate') status.textContent = 'This request is already on file. A real person may follow up by email.';
+        else if (res.body.status === 'stopped') status.textContent = 'Automatic intake is paused right now. Please email galaxyaek7@gmail.com directly.';
+        else if (res.body.status === 'accepted' && res.body.signal_id) status.textContent = 'Thanks — your interest signal has been recorded. A real person may follow up by email.';
+        else status.textContent = 'Thanks — a real person may follow up by email.';
         status.className = 'success';
         form.reset();
       })

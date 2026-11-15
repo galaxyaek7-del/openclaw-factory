@@ -465,7 +465,7 @@ footer{border-top:1px solid var(--border-soft); padding:3rem 0 2.5rem;}
       <div class="section-head">
         <div class="eyebrow"><span class="dot"></span> Support center</div>
         <h2>Already working with us? Get real help.</h2>
-        <p>Tickets are logged for founder review, with no automated bot triage. If it's about an existing request, include the request ID from your tracking link.</p>
+        <p>Tickets are logged for founder review. A deterministic assistant acknowledges receipt instantly; every escalation goes to a human. If it's about an existing request, include the request ID from your tracking link.</p>
       </div>
       <div class="support-panel">
         <div class="request-notes">
@@ -852,7 +852,7 @@ footer{border-top:1px solid var(--border-soft); padding:3rem 0 2.5rem;}
           throw new Error((res.body && res.body.error) || 'Something went wrong — please try again.');
         }
         var requestId = res.body.request_id;
-        statusEl.innerHTML = 'Request received and already running through our real evaluation gate. '
+        statusEl.innerHTML = 'Request received and queued for our real evaluation gate. '
           + (requestId ? 'Track it live: <a href="status.html?id=' + encodeURIComponent(requestId) + '">' + requestId + '</a> — bookmark this link, it\'s the only way back to your status.' : 'A real person will review it and reply by email.');
         statusEl.className = 'success';
         form.reset();
@@ -948,7 +948,9 @@ footer{border-top:1px solid var(--border-soft); padding:3rem 0 2.5rem;}
       .then(function(r){ return r.json().then(function(body){ return { ok: r.ok, body: body }; }); })
       .then(function(res){
         if (!res.ok || res.body.success === false) throw new Error((res.body && res.body.error) || 'Something went wrong — please try again.');
-        supportStatus.textContent = 'Ticket received. A real person will reply by email.';
+        supportStatus.textContent = (res.body && res.body.response && res.body.response.text)
+          ? res.body.response.text
+          : 'Ticket received. A real person will reply by email.';
         supportStatus.className = 'success';
         supportForm.reset();
       })

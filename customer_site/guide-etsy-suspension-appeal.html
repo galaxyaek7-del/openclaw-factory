@@ -31,9 +31,6 @@ p{margin:0 0 1rem}
 .cta{background:var(--bg-elev);border:1px solid var(--border);border-radius:var(--radius);padding:1.2rem 1.4rem;margin:2rem 0}
 footer{border-top:1px solid #1a1e2a;padding:2rem 0;text-align:center;color:var(--ink-faint);font-size:.8rem}
 </style>
-<meta property="og:title" content="Etsy shop suspended? The fix-first appeal method (2026)">
-<meta property="og:description" content="Triage, fix, then file one appeal. Free method; no guaranteed outcomes.">
-<meta property="og:type" content="article">
 <link rel="canonical" href="https://galaxyaek7-del.github.io/openclaw-factory/customer_site/guide-etsy-suspension-appeal.html">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Galaxy Forge">
@@ -142,6 +139,7 @@ Not ready to buy? <a href="mailto:galaxyaek7@gmail.com?subject=FIRST-BUYER-FREE%
 </section>
 </main>
 <footer>Galaxy Forge · honest guides · no fake reviews, no scarcity claims.</footer>
+<script src="assets/public-lead-config.js"></script>
 <script>
 try {
   
@@ -158,8 +156,10 @@ try {
     if (data.website) return; // honeypot
     btn.disabled = true; btn.textContent = 'Sending…';
     status.style.display = 'none';
-    var payload = { name: data.name, email: data.email,
+    var lead = { name: data.name, email: data.email,
       message: 'LEAD: Etsy appeal checklist request from guide-etsy-suspension-appeal. Send the 1-page filing checklist.',
+      source: 'etsy_suspension_guide', campaign: 'etsy_appeal_checklist' };
+    var payload = { name: lead.name, email: lead.email, message: lead.message,
       _subject: 'Lead: Etsy checklist request', _template: 'table', _captcha: 'false' };
     function ok(msg){ status.textContent = msg; status.style.display = 'block'; form.reset(); btn.disabled = false; btn.textContent = 'Send it'; }
     function fail(){
@@ -167,12 +167,16 @@ try {
       status.innerHTML = 'Direct send is offline — <a href="' + mailto + '">click here to request by email</a>.';
       status.style.display = 'block'; btn.disabled = false; btn.textContent = 'Send it';
     }
-    fetch('/api/customer/support-ticket', { method: 'POST', credentials: 'same-origin',
-      headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) })
+    var endpoint = window.GF_PUBLIC_LEAD_ENDPOINT || '/api/customer/interest';
+    fetch(endpoint, { method: 'POST', credentials: endpoint.charAt(0) === '/' ? 'same-origin' : 'omit',
+      headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(lead) })
       .then(function(r){ return r.json().then(function(b){ return { ok: r.ok, body: b }; }); })
       .then(function(res){
         if (!res.ok || res.body.success === false) throw new Error('local-offline');
-        ok('Checklist requested. It arrives by email — a real person sends it.');
+        if (res.body.status === 'duplicate') ok('This request is already on file. A real person will reply by email.');
+        else if (res.body.status === 'stopped') ok('Automatic intake is paused right now. Please email galaxyaek7@gmail.com and a real person will help.');
+        else if (res.body.status === 'accepted' && res.body.signal_id) ok('Request received. A real person will send the checklist by email.');
+        else ok('Thank you. A real person may follow up by email.');
       })
       .catch(function(){
         fetch('https://formsubmit.co/ajax/galaxyaek7@gmail.com', { method: 'POST',
@@ -180,7 +184,7 @@ try {
           body: JSON.stringify(payload) })
           .then(function(r){ return r.json(); })
           .then(function(body){
-            if (body && body.success !== false && body.success !== 'false') ok('Checklist requested. It arrives by email — a real person sends it.');
+            if (body && body.success !== false && body.success !== 'false') ok('Your request was sent by email. A real person will follow up.');
             else fail();
           }).catch(fail);
       });

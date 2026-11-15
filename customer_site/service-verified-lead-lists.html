@@ -42,7 +42,7 @@ footer{border-top:1px solid #1a1e2a;padding:2rem 0;text-align:center;color:var(-
 <div class="wrap">
 <div class="eyebrow">Service offer · manual delivery</div>
 <h1>Verified B2B Lead Lists — $30–$250 by volume</h1>
-<div class="sub">Most bought lead lists fail on wrong titles, stale emails, and duplicates against your base — wasted outreach and bounced mail. We build your database to exact criteria instead: decision-maker titles, verified fields, no duplicates against your base. Delivered as CSV/Google Sheets within 6 days. No subscription.</div>
+<div class="sub">Most bought lead lists fail on wrong titles, stale emails, and duplicates against your base — wasted outreach and bounced mail. We build your database to exact criteria instead: decision-maker titles, verified fields, no duplicates against your base. Planned delivery is CSV/Google Sheets within 6 days of confirmed scope, subject to coverage and verification; this is a target, not a guarantee. No paid delivery has been recorded as of 25 October 2026. No subscription.</div>
 <div class="disclosure"><b>Disclosure:</b> This is a manual research service. Each list is built individually after you confirm criteria. We make no conversion or revenue promises. If your criteria are outside our coverage, we will say so before any payment.</div>
 <h2>What you receive</h2>
 <div class="box"><ol>
@@ -72,10 +72,11 @@ footer{border-top:1px solid #1a1e2a;padding:2rem 0;text-align:center;color:var(-
 <div id="leadStatusB2b" style="font-size:.85rem;margin-top:.6rem;display:none"></div>
 </form></div>
 <h2>Price and terms</h2>
-<p>$30–$250 fixed by volume and verification depth, quoted after criteria are confirmed, payable on delivery. No subscription, no retainer. This page is the offer; no account needed to inquire.</p>
+<p>$30–$250 fixed by volume and verification depth, quoted after criteria are confirmed. Payment terms are confirmed in writing before work starts; no payment is collected on this page. No subscription, no retainer. This page is the offer; no account needed to inquire.</p>
 </div>
 <footer>Galaxy Forge · 2026 · Manual service.</footer>
 </div>
+<script src="assets/public-lead-config.js"></script>
 <script>
 
 (function(){
@@ -90,21 +91,27 @@ footer{border-top:1px solid #1a1e2a;padding:2rem 0;text-align:center;color:var(-
     if (data.website) return; // honeypot
     btn.disabled = true; btn.textContent = 'Sending…';
     status.style.display = 'none';
-    var payload = { name: data.name, email: data.email,
+    var lead = { name: data.name, email: data.email,
       message: 'LEAD B2B: criteria request from service-verified-lead-lists. Criteria: ' + (data.criteria || ''),
+      source: 'verified_lead_lists', campaign: 'b2b_lead_list' };
+    var payload = { name: lead.name, email: lead.email, message: lead.message,
       _subject: 'Lead B2B: criteria request', _template: 'table', _captcha: 'false' };
-    function ok(){ status.textContent = 'Criteria received. A real person replies within 2 business days with scope and fixed price.'; status.style.display = 'block'; form.reset(); btn.disabled = false; btn.textContent = 'Request quote'; }
+    function ok(msg){ status.textContent = msg; status.style.display = 'block'; form.reset(); btn.disabled = false; btn.textContent = 'Request quote'; }
     function fail(){
       var mailto = 'mailto:galaxyaek7@gmail.com?subject=' + encodeURIComponent('Verified lead list request') + '&body=' + encodeURIComponent('Criteria: ' + (data.criteria || '') + '\nName: ' + data.name);
       status.innerHTML = 'Direct send is offline — <a href="' + mailto + '">click here to send by email</a>.';
       status.style.display = 'block'; btn.disabled = false; btn.textContent = 'Request quote';
     }
-    fetch('/api/customer/support-ticket', { method: 'POST', credentials: 'same-origin',
-      headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: data.name, email: data.email, message: 'B2B criteria: ' + (data.criteria || '') }) })
+    var endpoint = window.GF_PUBLIC_LEAD_ENDPOINT || '/api/customer/interest';
+    fetch(endpoint, { method: 'POST', credentials: endpoint.charAt(0) === '/' ? 'same-origin' : 'omit',
+      headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(lead) })
       .then(function(r){ return r.json().then(function(b){ return { ok: r.ok, body: b }; }); })
       .then(function(res){
         if (!res.ok || res.body.success === false) throw new Error('local-offline');
-        ok();
+        if (res.body.status === 'duplicate') ok('This request is already on file. A real person will reply by email.');
+        else if (res.body.status === 'stopped') ok('Automatic intake is paused right now. Please email galaxyaek7@gmail.com and a real person will help.');
+        else if (res.body.status === 'accepted' && res.body.signal_id) ok('Criteria received. A real person replies within 2 business days with scope and fixed price.');
+        else ok('Thank you. A real person may follow up by email.');
       })
       .catch(function(){
         fetch('https://formsubmit.co/ajax/galaxyaek7@gmail.com', { method: 'POST',
@@ -112,7 +119,7 @@ footer{border-top:1px solid #1a1e2a;padding:2rem 0;text-align:center;color:var(-
           body: JSON.stringify(payload) })
           .then(function(r){ return r.json(); })
           .then(function(body){
-            if (body && body.success !== false && body.success !== 'false') ok();
+            if (body && body.success !== false && body.success !== 'false') ok('Your request was sent by email. A real person will follow up.');
             else fail();
           }).catch(fail);
       });
