@@ -79,6 +79,22 @@ class DemandGateTests(unittest.TestCase):
         self.assertFalse(r["open"])
         self.assertEqual(0, r["signals"]["BUYER_INTEREST"])
 
+    def test_unverified_external_leads_never_open_it(self):
+        _write(self.root, "data/customer_interest.jsonl", _jsonl([
+            {"email": "lead@example.com", "message": "Please send the toolkit",
+             "verification_status": "UNVERIFIED_EXTERNAL", "counted_as_demand": False},
+            {"email": "lead2@example.com", "message": "Please send the checklist",
+             "verification_status": "UNVERIFIED"},
+        ]))
+        _write(self.root, "data/market_evidence.jsonl", _jsonl([
+            {"event_type": "demo_request", "payload": {"who": "unverified lead"},
+             "verification_status": "UNVERIFIED_EXTERNAL", "counted_as_demand": False},
+        ]))
+        r = self.ev()
+        self.assertFalse(r["open"])
+        self.assertEqual(0, r["signals"]["BUYER_INTEREST"])
+        self.assertEqual(0, r["signals"]["MARKET_DEMAND"])
+
     def test_a_real_interest_row_opens_it(self):
         _write(self.root, "data/customer_interest.jsonl", _jsonl([{"email": "owner@agence.dz", "message": "je veux un devis"}]))
         r = self.ev()

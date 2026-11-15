@@ -76,6 +76,7 @@ footer{border-top:1px solid #1a1e2a;padding:2rem 0;text-align:center;color:var(-
 </div>
 <footer>Galaxy Forge · 2026 · Manual service.</footer>
 </div>
+<script src="assets/public-lead-config.js"></script>
 <script>
 
 (function(){
@@ -101,14 +102,16 @@ footer{border-top:1px solid #1a1e2a;padding:2rem 0;text-align:center;color:var(-
       status.innerHTML = 'Direct send is offline — <a href="' + mailto + '">click here to send by email</a>.';
       status.style.display = 'block'; btn.disabled = false; btn.textContent = 'Request quote';
     }
-    fetch('/api/customer/interest', { method: 'POST', credentials: 'same-origin',
+    var endpoint = window.GF_PUBLIC_LEAD_ENDPOINT || '/api/customer/interest';
+    fetch(endpoint, { method: 'POST', credentials: endpoint.charAt(0) === '/' ? 'same-origin' : 'omit',
       headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(lead) })
       .then(function(r){ return r.json().then(function(b){ return { ok: r.ok, body: b }; }); })
       .then(function(res){
         if (!res.ok || res.body.success === false) throw new Error('local-offline');
         if (res.body.status === 'duplicate') ok('This request is already on file. A real person will reply by email.');
         else if (res.body.status === 'stopped') ok('Automatic intake is paused right now. Please email galaxyaek7@gmail.com and a real person will help.');
-        else ok('Criteria received. A real person replies within 2 business days with scope and fixed price.');
+        else if (res.body.status === 'accepted' && res.body.signal_id) ok('Criteria received. A real person replies within 2 business days with scope and fixed price.');
+        else ok('Thank you. A real person may follow up by email.');
       })
       .catch(function(){
         fetch('https://formsubmit.co/ajax/galaxyaek7@gmail.com', { method: 'POST',

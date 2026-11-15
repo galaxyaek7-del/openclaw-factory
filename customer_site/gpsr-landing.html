@@ -86,14 +86,15 @@
         </div>
     </div>
 
+    <script src="assets/public-lead-config.js"></script>
     <script>
         document.getElementById('emailForm').addEventListener('submit', function(e) {
             e.preventDefault();
             var email = document.getElementById('email').value;
-            // Real lead capture: existing /api/customer/interest endpoint (rate-limited, honeypot-aware).
-            fetch('/api/customer/interest', {
+            var endpoint = window.GF_PUBLIC_LEAD_ENDPOINT || '/api/customer/interest';
+            fetch(endpoint, {
                 method: 'POST',
-                credentials: 'same-origin',
+                credentials: endpoint.charAt(0) === '/' ? 'same-origin' : 'omit',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({email: email, message: 'GPSR Compliance Checklist request', source: 'gpsr_landing_page', campaign: 's3_exec_05'})
             }).then(function(r){ return r.json(); }).then(function(body){

@@ -102,6 +102,7 @@ footer{border-top:1px solid var(--border-soft); padding:3rem 0 2.5rem; margin-to
   </div>
 </main>
 <footer><div class="footer-wrap">© <span id="year"></span> Galaxy Forge.</div></footer>
+<script src="assets/public-lead-config.js"></script>
 <script>
 (function(){
   "use strict";
@@ -118,8 +119,9 @@ footer{border-top:1px solid var(--border-soft); padding:3rem 0 2.5rem; margin-to
     btn.disabled = true; btn.textContent = 'Sending…';
 
     var data = Object.fromEntries(new FormData(form).entries());
-    fetch('/api/customer/interest', {
-      method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' },
+    var endpoint = window.GF_PUBLIC_LEAD_ENDPOINT || '/api/customer/interest';
+    fetch(endpoint, {
+      method: 'POST', credentials: endpoint.charAt(0) === '/' ? 'same-origin' : 'omit', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
     })
       .then(function(r){ return r.json().then(function(body){ return { ok: r.ok, body: body }; }); })

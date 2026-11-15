@@ -75,6 +75,11 @@ def _is_synthetic_row(row):
     return row.get("synthetic") is True or row.get("test") is True or row.get("is_test") is True
 
 
+def _is_unverified_row(row):
+    status = str(row.get("verification_status") or "").strip().upper()
+    return status in {"UNVERIFIED", "UNVERIFIED_EXTERNAL"} or row.get("counted_as_demand") is False
+
+
 def sales_signal(root: Path):
     p = root / "data" / "product_registry.json"
     try:
@@ -118,7 +123,7 @@ def buyer_interest_signal(root: Path, path=None):
     for r in _read_jsonl(path or root / "data" / "customer_interest.jsonl"):
         email = str(r.get("email") or "").lower()
         domain = email.rsplit("@", 1)[-1] if "@" in email else ""
-        if _is_synthetic_row(r) or _is_test_text(
+        if _is_synthetic_row(r) or _is_unverified_row(r) or _is_test_text(
                 r.get("message"), r.get("name"), r.get("source"), r.get("test_label")):
             continue
         if not email or domain in _FAKE_EMAIL_DOMAINS:
@@ -132,7 +137,7 @@ def market_demand_signal(root: Path, path=None):
     for r in _read_jsonl(path or root / "data" / "market_evidence.jsonl"):
         if r.get("event_type") not in BUYER_EVENT_TYPES:
             continue
-        if _is_synthetic_row(r) or _is_test_text(
+        if _is_synthetic_row(r) or _is_unverified_row(r) or _is_test_text(
                 r.get("note"), json.dumps(r.get("payload") or {}, ensure_ascii=False),
                 r.get("source"), r.get("test_label")):
             continue

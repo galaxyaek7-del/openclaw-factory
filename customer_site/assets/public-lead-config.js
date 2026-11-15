@@ -1,0 +1,1 @@
+window.GF_PUBLIC_LEAD_ENDPOINT = '';

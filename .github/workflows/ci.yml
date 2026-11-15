@@ -238,7 +238,7 @@ jobs:
         run: node scripts/run_js_group.js tests/test_harden_file_acls.js tests/test_health_checks.js tests/test_health_monitor.js tests/test_health_trend.js
 
       - name: JS batch 10 of 19
-        run: node scripts/run_js_group.js tests/test_index_html_xss_fix.js tests/test_infrastructure_intelligence.js
+        run: node scripts/run_js_group.js tests/test_index_html_xss_fix.js tests/test_infrastructure_intelligence.js tests/test_public_lead_ingest.js
 
       - name: JS batch 11 of 19
         run: node scripts/run_js_group.js tests/test_job_queue.js tests/test_jsonl.js

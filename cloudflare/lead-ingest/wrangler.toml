@@ -1,0 +1,11 @@
+name = "galaxy-forge-lead-ingest"
+main = "src/index.mjs"
+compatibility_date = "2026-11-14"
+workers_dev = true
+
+[vars]
+PUBLIC_LEAD_INGEST_ENABLED = "false"
+
+[[kv_namespaces]]
+binding = "LEADS"
+id = "REPLACE_WITH_KV_NAMESPACE_ID"

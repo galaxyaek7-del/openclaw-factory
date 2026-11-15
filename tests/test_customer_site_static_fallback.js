@@ -100,6 +100,58 @@ test('the interest page only claims a local record when the API returned a signa
   assert.match(html, /res\.body\.status === 'accepted' && res\.body\.signal_id/, 'interest must require a signal id before claiming a record');
 });
 
+test('every local lead form requires accepted plus a signal id before saying received', () => {
+  const pages = [
+    'eu-ai-act-compliance-toolkit.html',
+    'guide-etsy-suspension-appeal.html',
+    'service-verified-lead-lists.html',
+  ];
+  for (const page of pages) {
+    const html = read(page);
+    assert.match(
+      html,
+      /res\.body\.status === 'accepted' && res\.body\.signal_id/,
+      `${page} must require accepted plus a signal id before claiming the lead was received`
+    );
+    assert.match(html, /Thank you\. A real person may follow up by email\./, `${page} needs an honest non-accepted fallback`);
+  }
+});
+
+test('public lead forms can switch to the disabled public ingest endpoint without changing default behavior', () => {
+  const pages = [
+    'eu-ai-act-compliance-toolkit.html',
+    'guide-etsy-suspension-appeal.html',
+    'service-verified-lead-lists.html',
+    'interest.html',
+    'gpsr-landing.html',
+  ];
+  for (const page of pages) {
+    const html = read(page);
+    assert.match(html, /public-lead-config\.js/, `${page} must load the public lead config`);
+    assert.match(html, /window\.GF_PUBLIC_LEAD_ENDPOINT \|\| '\/api\/customer\/interest'/, `${page} must keep the local endpoint as the default`);
+    assert.match(html, /credentials: endpoint\.charAt\(0\) === '\/' \? 'same-origin' : 'omit'/, `${page} must not send local credentials to an external endpoint`);
+  }
+  const config = read('assets/public-lead-config.js');
+  assert.match(config, /window\.GF_PUBLIC_LEAD_ENDPOINT = '';/, 'the public endpoint must be empty until deployment');
+});
+
+test('the contact email fallback says the message was sent, not recorded locally', () => {
+  const html = read('contact.html');
+  const start = html.indexOf("fetch('https://formsubmit.co/ajax/");
+  const end = html.indexOf('</script>', start);
+  assert.ok(start > -1 && end > start, 'the contact FormSubmit fallback exists');
+  const fallback = html.slice(start, end);
+  assert.match(fallback, /Message sent by email/, 'the fallback must state what actually happened');
+  assert.doesNotMatch(fallback, /recorded/i, 'the fallback must not claim a local record');
+});
+
+test('the SaaS portal form is a browser-only preview and never claims an upload', () => {
+  const html = read('saas-portal.html');
+  assert.match(html, /saved in this browser only/, 'the portal must say the draft is local');
+  assert.match(html, /No file was uploaded/, 'the portal must say no file was uploaded');
+  assert.match(html, /No Paddle product was created/, 'the portal must say no Paddle product was created');
+});
+
 test('login on the static copy explains the account service is unavailable', () => {
   const html = read('login.html');
   const start = html.indexOf('.catch(function(){');
