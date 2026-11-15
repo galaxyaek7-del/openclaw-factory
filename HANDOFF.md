@@ -1,18 +1,25 @@
-# HANDOFF — 2026-11-14 verification cycle (current)
+# HANDOFF — 2026-11-15 public lead-ingest preparation (current)
 
 ## State at handoff
-- Lead forms on `eu-ai-act-compliance-toolkit.html`, `guide-etsy-suspension-appeal.html`, and `service-verified-lead-lists.html` now post to `/api/customer/interest`; GPSR/interest only claim a local record when the API returns `accepted` plus a `signal_id`.
-- `lib/customer_evidence.py` now stores `synthetic`/`test_label` and marks provenance `synthetic_test`; `demand_gate.py` skips synthetic/test rows, so test submissions cannot open the gate.
-- E2E overlay proof passed: three real form payloads produced three synthetic ledger rows, `demand_before=0`, `demand_after=0`, `synthetic_counted=0`, live ledger hash unchanged.
-- `write_guard` live-path warning fixed at the test source: `tests/test_lead_funnel.py` now points `evidence_engine.DEFAULT_LEDGER_PATH` at a temp dir, and `tests/test_customer_pipeline.py` points `revenue_os.ORDERS_PATH` at a temp dir. The only remaining redirected paths are the intentional E2E `data/customer_interest.jsonl` and its lock file.
-- Audit covered all 10 customer_site forms: no remaining false stored-record or fallback-success claim. `login.html` now says the account service is unavailable on the static copy and gives the real contact address instead of asking for a retry.
-- Tests: 39/39 Node (`customer_site_static_fallback`, `customer_response`, `response_router`, `response_intents`); 126/126 Python (lead E2E, customer evidence, demand gate, lead funnel, customer workflow, customer pipeline, GPSR claims).
+- Local commit `c32b6bfa` — `Prepare public lead ingest behind an off flag` — contains the public lead-ingest preparation. Not pushed, not deployed.
+- `cloudflare/lead-ingest/` implements a free-tier Cloudflare Worker + KV option. It is **OFF by default** (`PUBLIC_LEAD_INGEST_ENABLED = "false"`); a POST while OFF returns `503 disabled` and writes nothing.
+- Every accepted worker lead is stored as `verification_status: "UNVERIFIED_EXTERNAL"`, `provenance_quality: "external_unverified"`, `counted_as_demand: false`, `synthetic: false`. No raw IP is stored; only a salted SHA-256 `ip_hash`.
+- `demand_gate.py` skips `UNVERIFIED`/`UNVERIFIED_EXTERNAL`/`counted_as_demand: false` rows in both `buyer_interest_signal` and `market_demand_signal`.
+- Five lead pages (`eu-ai-act-compliance-toolkit`, `guide-etsy-suspension-appeal`, `service-verified-lead-lists`, `interest`, `gpsr-landing`) load `customer_site/assets/public-lead-config.js` and use `window.GF_PUBLIC_LEAD_ENDPOINT || '/api/customer/interest'`. The config value is empty, so default behavior is unchanged.
+- `customer_site/contact.html` FormSubmit fallback now says “Message sent by email. A real person will reply by email.” The unrelated unstaged hunks in that file were left untouched.
+- `.gitignore` now includes `data/contact_log.jsonl`. `lib/contact_tracker.js` remains gitignored at line 158 under the 2026-10-18 founder rule.
+- `docs/factory/PUBLIC_LEAD_INGEST.md` compares the three $0 options and gives the manual Cloudflare setup. `cloudflare/lead-ingest/wrangler.toml` still contains `REPLACE_WITH_KV_NAMESPACE_ID`.
+- Tests: `test_public_lead_ingest.js` 12/12, `test_customer_site_static_fallback.js` 13/13, `test_demand_gate.py` 15/15, `test_factory_loop_golden.js` 69/69. `test_low_disk_mode.js` fails independently of this work (`factory_loop.js` is untouched). `test_api_contract.js` did not pass locally: one service-envelope failure plus 180s timeouts, likely local `server.js`/service state.
+- Tracked-only Python groups were run; remaining failures come from unrelated local artifacts: untracked `affiliate/publish_queue.py`, local `customer_site/catalog.json` drift, local `server.js` changes, and a local filesystem junction.
 - Commercial truth unchanged: 0 verified sales, $0 verified revenue, 0 verified transactions.
-- Public GitHub Pages still cannot reach the local Express API; static forms fall back to FormSubmit/mailto.
-- A single local commit contains this cycle's lead-path work. Do not push or publish.
+- Public GitHub Pages still cannot reach the local Express API. The worker is prepared but not deployed, so no public stored-lead path is proven yet.
+- The lead path does not import `lib/contact_tracker.js`; that dependency belongs only to the automated customer-response stack (`lib/response_router.js` → `server.js` response routes).
 
 ## Required next steps
-1. Find the next highest-impact visitor→verified-lead defect.
+1. Founder action: create the Cloudflare KV namespace, put its id in `cloudflare/lead-ingest/wrangler.toml`, deploy with the flag still false, verify `503 disabled`, then flip the flag and test one submission.
+2. Set `window.GF_PUBLIC_LEAD_ENDPOINT` to the worker URL only after the disabled-mode check passes.
+3. Separately, decide whether to track the reviewed `lib/contact_tracker.js` response dependency; it is not needed for the public lead path.
+4. Do not count any stored worker lead as demand until a human proves the buyer and the purchase.
 
 ---
 

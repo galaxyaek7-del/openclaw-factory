@@ -3,6 +3,7 @@
 const MAX_BODY_BYTES = 8192;
 const MAX_NAME = 120;
 const MAX_MESSAGE = 4000;
+const MAX_PRODUCT_INTEREST = 2000;
 const MAX_SOURCE = 80;
 const MAX_CAMPAIGN = 80;
 const MAX_PAGE = 200;
@@ -72,8 +73,9 @@ function validatePayload(payload) {
   }
 
   const email = String(payload.email || '').trim().toLowerCase();
-  const message = String(payload.message || '').trim();
+  const message = String(payload.message || payload.interest || '').trim();
   const name = String(payload.name || '').trim();
+  const productInterest = String(payload.product_interest || payload.product_id || '').trim();
   const source = String(payload.source || 'customer_site').trim();
   const campaign = String(payload.campaign || '').trim();
   const page = String(payload.page || '').trim();
@@ -89,6 +91,9 @@ function validatePayload(payload) {
   }
   if (name.length > MAX_NAME) {
     return { ok: false, error: 'name_too_long' };
+  }
+  if (productInterest.length > MAX_PRODUCT_INTEREST) {
+    return { ok: false, error: 'product_interest_too_long' };
   }
   if (source.length > MAX_SOURCE) {
     return { ok: false, error: 'source_too_long' };
@@ -110,6 +115,7 @@ function validatePayload(payload) {
       email,
       message,
       name: name || null,
+      product_interest: productInterest || null,
       source: source || 'customer_site',
       campaign: campaign || null,
       page: page || null,
@@ -270,6 +276,7 @@ async function handleLeadRequest(request, env, deps) {
       email: validation.lead.email,
       name: validation.lead.name,
       message: validation.lead.message,
+      product_interest: validation.lead.product_interest,
       source: validation.lead.source,
       campaign: validation.lead.campaign,
       page: validation.lead.page,
@@ -304,6 +311,7 @@ module.exports = {
   ALLOWED_ORIGINS,
   MAX_BODY_BYTES,
   MAX_MESSAGE,
+  MAX_PRODUCT_INTEREST,
   RATE_LIMIT_MAX,
   handleLeadRequest,
   isEnabled,

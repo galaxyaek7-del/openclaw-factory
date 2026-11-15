@@ -32,6 +32,7 @@ A POST while OFF returns `503 disabled` and writes nothing.
   - `https://galaxyaek7-del.github.io`
   - `http://localhost:3000`
   - `http://127.0.0.1:3000`
+- Accepts `message` or the local API's `interest` alias as the required message, and stores `product_interest`/`product_id` when supplied.
 - Rejects non-POST methods, disallowed origins, non-JSON bodies, bodies over 8 KB, invalid emails, missing messages, messages over 4,000 characters, and messages with more than 3 links.
 - Uses a hidden `website` honeypot field and returns `200 ignored` without storing.
 - Limits each hashed client IP to 5 submissions per 10-minute window.
@@ -54,12 +55,13 @@ The worker does not write `data/customer_interest.jsonl`, does not call `demand_
 3. Run `wrangler login`.
 4. Create the KV namespace: `wrangler kv namespace create LEADS`.
 5. Put the returned namespace id into `cloudflare/lead-ingest/wrangler.toml`.
-6. Optional but recommended: create a Turnstile widget and run `wrangler secret put TURNSTILE_SECRET` from `cloudflare/lead-ingest`. Do not set this secret until the forms include a Turnstile widget; without a token the worker rejects every form POST with `turnstile_required` and the forms fall back to email.
-7. Deploy while the flag is false: `wrangler deploy`.
-8. Verify a POST returns `503 disabled`.
-9. Set `PUBLIC_LEAD_INGEST_ENABLED = "true"` and deploy again.
-10. Submit one real test lead and confirm the KV record says `UNVERIFIED_EXTERNAL`.
-11. Set `window.GF_PUBLIC_LEAD_ENDPOINT` in `customer_site/assets/public-lead-config.js` to the worker URL. The forms keep using the local endpoint while this value is empty.
+6. Set a random IP salt: `wrangler secret put LEAD_IP_SALT`. Without it the worker uses a public default salt, so the stored IP hash could be brute-forced for IPv4.
+7. Optional but recommended: create a Turnstile widget and run `wrangler secret put TURNSTILE_SECRET` from `cloudflare/lead-ingest`. Do not set this secret until the forms include a Turnstile widget; without a token the worker rejects every form POST with `turnstile_required` and the forms fall back to email.
+8. Deploy while the flag is false: `wrangler deploy`.
+9. Verify a POST returns `503 disabled`.
+10. Set `PUBLIC_LEAD_INGEST_ENABLED = "true"` and deploy again.
+11. Submit one real test lead and confirm the KV record says `UNVERIFIED_EXTERNAL`.
+12. Set `window.GF_PUBLIC_LEAD_ENDPOINT` in `customer_site/assets/public-lead-config.js` to the worker URL. The forms keep using the local endpoint while this value is empty.
 
 No secret belongs in the repository. The only committed value is the public endpoint URL after deployment.
 

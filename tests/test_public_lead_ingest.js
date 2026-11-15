@@ -51,6 +51,7 @@ function baseBody(overrides) {
     name: 'Amina',
     email: 'amina@example.com',
     message: 'Please send the EU AI Act toolkit details.',
+    product_interest: 'EU AI Act toolkit',
     source: 'eu_ai_act_compliance_toolkit',
     ...(overrides || {}),
   };
@@ -94,7 +95,19 @@ test('enabled ingest stores an unverified external lead and never counts it as d
   assert.equal(record.counted_as_demand, false);
   assert.equal(record.synthetic, false);
   assert.equal(record.email, 'amina@example.com');
+  assert.equal(record.product_interest, 'EU AI Act toolkit');
   assert.equal(record.source, 'eu_ai_act_compliance_toolkit');
+});
+
+test('the worker accepts the local API interest alias and product_id alias', () => {
+  const ok = validatePayload({
+    email: 'a@example.com',
+    interest: 'Please send the checklist',
+    product_id: 'gpsr_checklist',
+  });
+  assert.equal(ok.ok, true);
+  assert.equal(ok.lead.message, 'Please send the checklist');
+  assert.equal(ok.lead.product_interest, 'gpsr_checklist');
 });
 
 test('the worker never stores the raw client IP', async () => {

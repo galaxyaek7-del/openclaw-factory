@@ -16,9 +16,10 @@ node --test tests/test_public_lead_ingest.js
 
 1. Create a Cloudflare account and KV namespace.
 2. Replace `REPLACE_WITH_KV_NAMESPACE_ID` in `wrangler.toml`.
-3. Optionally set `TURNSTILE_SECRET` with `wrangler secret put TURNSTILE_SECRET`.
-4. Deploy with the flag still false and verify POST returns `503 disabled`.
-5. Set `PUBLIC_LEAD_INGEST_ENABLED = "true"`, deploy again, and test one submission.
-6. Set `window.GF_PUBLIC_LEAD_ENDPOINT` in `customer_site/assets/public-lead-config.js` to the worker URL.
+3. Set a random `LEAD_IP_SALT` with `wrangler secret put LEAD_IP_SALT`.
+4. Optionally set `TURNSTILE_SECRET` with `wrangler secret put TURNSTILE_SECRET`.
+5. Deploy with the flag still false and verify POST returns `503 disabled`.
+6. Set `PUBLIC_LEAD_INGEST_ENABLED = "true"`, deploy again, and test one submission.
+7. Set `window.GF_PUBLIC_LEAD_ENDPOINT` in `customer_site/assets/public-lead-config.js` to the worker URL.
 
 No secret belongs in this repository.
