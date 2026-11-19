@@ -73,6 +73,21 @@ test('an agent failure is detected, retried within bounds, and stops the chain',
   assert.match(state.at(-1).error, /step contract/);
 });
 
+test('a rejected step contract records a bounded, redacted sample of the raw output', async () => {
+  const p = tmp();
+  const junk = 'I cannot produce that. token=local-diagnostic-value and key 0123456789abcdef0123456789abcdef01234567 end.';
+  const client = fakeClient({ scout: [junk, junk], qa: [] });
+  const r = await runChain({ taskId: 'T4', steps: researchSteps(), client, statePath: p.state, agentLogPath: p.agents, env: {} });
+  assert.equal(r.status, 'failed');
+  const row = readTaskState('T4', p.state).at(-1);
+  assert.equal(row.output_chars, junk.length, 'the raw length is kept even though the text is not');
+  assert.ok(row.sample && row.sample.length <= 300, 'the sample is bounded');
+  assert.match(row.sample, /cannot produce/, 'the refusal text survives, so a failure can be diagnosed');
+  assert.ok(!row.sample.includes('local-diagnostic-value'), 'an env-style assignment is redacted');
+  assert.ok(!row.sample.includes('0123456789abcdef0123456789abcdef01234567'), 'a long opaque run is redacted');
+  assert.match(r.steps.at(-1).sample, /cannot produce/, 'the returned report carries the same sample');
+});
+
 test('re-running a task never repeats completed steps', async () => {
   const p = tmp();
   const c1 = fakeClient({ scout: [SCOUT_REPLY], qa: [new Error('timeout'), new Error('timeout')] });
