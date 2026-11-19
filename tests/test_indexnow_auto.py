@@ -86,6 +86,26 @@ class TestIndexNowAuto(unittest.TestCase):
             with self.assertRaises(wg.WriteNotAuthorized):
                 ia.submit([ia.BASE + "customer_site/a.html"])
 
+    def test_closed_gate_is_blocked_not_failed_and_sends_nothing(self):
+        # 2026-11-19: with the founder gate closed the step was reported as a
+        # failure on every tick (39x/24h). It must report blocked, before any
+        # page is fetched, and write nothing.
+        env = {"FACTORY_LIVE_PUBLISH": "", wg.SEARCH_PING_ENV: ""}
+        fetched = []
+
+        def live(url):
+            fetched.append(url)
+            return True
+
+        with patch.dict(os.environ, env), patch("urllib.request.urlopen", side_effect=AssertionError("network")):
+            r = ia.run(pages={"customer_site/a.html": "b1"}, live=live, today="2026-10-24",
+                       state_path=self.state, ledger_path=self.ledger)
+        self.assertEqual(r["action"], "blocked")
+        self.assertIn("search ping disabled", r["detail"])
+        self.assertEqual(fetched, [])
+        self.assertFalse(self.ledger.exists())
+        self.assertFalse(self.state.exists())
+
 
 if __name__ == "__main__":
     unittest.main()

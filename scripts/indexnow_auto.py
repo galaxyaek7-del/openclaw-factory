@@ -131,11 +131,25 @@ def submit(urls, timeout=30):
         return e.code
 
 
+def gate_open():
+    """The search-ping gate's own decision, read before doing any work.
+
+    Without this the closed gate only surfaced inside submit(), so every tick
+    reported the step as FAILED (39 times in 24 h on 2026-11-19) when in fact
+    it was correctly refused. A closed gate is "blocked", not a failure.
+    """
+    from channels.write_gate import check_platform_write
+    return check_platform_write("indexnow", "submit_urls", search_ping=True).allowed
+
+
 def run(*, dry_run=False, today=None, state_path=STATE, ledger_path=LEDGER, pages=None, live=is_live, post=submit):
     today = today or dt.datetime.now(dt.timezone.utc).date().isoformat()
     state = read_state(state_path)
     if not dry_run and state.get("last_day") == today:
         return {"action": "none", "detail": f"IndexNow already ran for {today}"}
+    if not dry_run and post is submit and not gate_open():
+        return {"action": "blocked",
+                "detail": "search ping disabled: FACTORY_LIVE_PUBLISH and GF_ALLOW_SEARCH_PING are both off (founder gate); nothing was sent"}
     pages = pages if pages is not None else published_pages()
     todo = changed(pages, state)[:MAX_URLS]
     if not todo:
