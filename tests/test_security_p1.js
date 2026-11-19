@@ -35,7 +35,7 @@ async function waitForServer(timeoutMs = 15000) {
   const start = Date.now();
   while (Date.now() - start < timeoutMs) {
     try {
-      const res = await fetch(`${BASE_URL}/api/dashboard`);
+      const res = await fetch(`${BASE_URL}/health`);
       if (res.status) return;
     } catch {
       // not up yet
@@ -84,7 +84,7 @@ test.after(() => {
 });
 
 test('every response carries the security headers (fix 4)', async () => {
-  const res = await fetch(`${BASE_URL}/api/dashboard`);
+  const res = await fetch(`${BASE_URL}/health`);
   assert.equal(res.status, 200);
   assert.equal(res.headers.get('x-content-type-options'), 'nosniff');
   assert.equal(res.headers.get('x-frame-options'), 'SAMEORIGIN');
@@ -113,8 +113,8 @@ test('the next production request is rate-limited (429) once the window budget i
 });
 
 test('rate limiting one production route does not bleed into unrelated routes', async () => {
-  const dashboard = await fetch(`${BASE_URL}/api/dashboard`);
-  assert.equal(dashboard.status, 200, 'GET /api/dashboard must be unaffected by the /api/distribute limiter');
+  const dashboard = await fetch(`${BASE_URL}/health`);
+  assert.equal(dashboard.status, 200, 'GET /health must be unaffected by the /api/distribute limiter');
   const login = await fetch(`${BASE_URL}/api/mission-control/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
