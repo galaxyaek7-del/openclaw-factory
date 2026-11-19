@@ -1,0 +1,110 @@
+{
+ "subject": "batch19 pricing decision after content review",
+ "decided_at": "2026-11-19T17:12:00Z",
+ "decided_by": "agent under founder delegation 2026-11-19 ('لك كل التفويض في تحديد السعر')",
+ "price_cents": 4900,
+ "currency": "USD",
+ "applies_to": "B19-001..B19-010",
+ "reason": [
+  "Depth raised before pricing: formula walkthrough with substituted numbers, downside cases at -15% and -30%, and a computed sensitivity table (each input moved 10% alone).",
+  "Parity rule: B18-001 sells at 49 USD with a 7-page guide; batch19 is now 5-6 pages but carries three analyses B18 does not.",
+  "Zero measured comparables still holds, so any price is a tier decision, not evidence. 49 is the highest tier that parity can defend."
+ ],
+ "not_defensible_yet": [
+  "99 USD: needs 8+ pages and a measured comparable.",
+  "Any price above 49 without a verified sale."
+ ],
+ "publisher_audit": "10/10 products PASS every check (files, cover, listing, metadata, pricing evidence, registry, authorization) on 2026-11-19T17:12Z.",
+ "products": [
+  {
+   "id": "B19-001",
+   "pages": 5,
+   "words": 818,
+   "price_cents": 4900,
+   "sensitivity_table": true,
+   "downside_table": true,
+   "formula_walkthrough": true
+  },
+  {
+   "id": "B19-002",
+   "pages": 6,
+   "words": 852,
+   "price_cents": 4900,
+   "sensitivity_table": true,
+   "downside_table": true,
+   "formula_walkthrough": true
+  },
+  {
+   "id": "B19-003",
+   "pages": 5,
+   "words": 728,
+   "price_cents": 4900,
+   "sensitivity_table": true,
+   "downside_table": true,
+   "formula_walkthrough": true
+  },
+  {
+   "id": "B19-004",
+   "pages": 5,
+   "words": 785,
+   "price_cents": 4900,
+   "sensitivity_table": true,
+   "downside_table": true,
+   "formula_walkthrough": true
+  },
+  {
+   "id": "B19-005",
+   "pages": 5,
+   "words": 753,
+   "price_cents": 4900,
+   "sensitivity_table": true,
+   "downside_table": true,
+   "formula_walkthrough": true
+  },
+  {
+   "id": "B19-006",
+   "pages": 5,
+   "words": 760,
+   "price_cents": 4900,
+   "sensitivity_table": true,
+   "downside_table": true,
+   "formula_walkthrough": true
+  },
+  {
+   "id": "B19-007",
+   "pages": 5,
+   "words": 776,
+   "price_cents": 4900,
+   "sensitivity_table": true,
+   "downside_table": true,
+   "formula_walkthrough": true
+  },
+  {
+   "id": "B19-008",
+   "pages": 5,
+   "words": 824,
+   "price_cents": 4900,
+   "sensitivity_table": true,
+   "downside_table": true,
+   "formula_walkthrough": true
+  },
+  {
+   "id": "B19-009",
+   "pages": 5,
+   "words": 815,
+   "price_cents": 4900,
+   "sensitivity_table": true,
+   "downside_table": true,
+   "formula_walkthrough": true
+  },
+  {
+   "id": "B19-010",
+   "pages": 5,
+   "words": 793,
+   "price_cents": 4900,
+   "sensitivity_table": true,
+   "downside_table": true,
+   "formula_walkthrough": true
+  }
+ ]
+}

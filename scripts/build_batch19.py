@@ -63,7 +63,7 @@ SPECS = [
     dict(
         id="B19-001", slug="surety-bonding-capacity-pack",
         title="Surety Bonding Capacity & Submission Pack",
-        price_cents=7900, category="Business & Finance",
+        price_cents=4900, category="Business & Finance",
         tags=["surety bond", "bonding capacity", "contractor", "working capital", "underwriting"],
         promise="Work out the single and aggregate bond limits a surety will actually look at, "
                 "before you spend a week assembling a submission.",
@@ -120,7 +120,7 @@ SPECS = [
     dict(
         id="B19-002", slug="loan-covenant-headroom-dashboard",
         title="Loan Covenant Headroom Dashboard (12 Months)",
-        price_cents=6900, category="Business & Finance",
+        price_cents=4900, category="Business & Finance",
         tags=["covenant", "loan compliance", "dscr", "leverage", "bank reporting"],
         promise="Know which covenant breaks first, and by how much, before the bank's compliance "
                 "certificate goes out.",
@@ -180,7 +180,7 @@ SPECS = [
     dict(
         id="B19-003", slug="saas-renewal-risk-nrr-model",
         title="SaaS Renewal Risk & NRR Model",
-        price_cents=5900, category="Business & Finance",
+        price_cents=4900, category="Business & Finance",
         tags=["saas", "nrr", "churn", "renewal", "revenue retention"],
         promise="Turn a renewal calendar into a defensible net revenue retention forecast, and see "
                 "which accounts are quietly eroding it.",
@@ -287,7 +287,7 @@ SPECS = [
     dict(
         id="B19-005", slug="payer-mix-denial-leakage-model",
         title="Medical Practice Payer Mix & Denial Leakage Model",
-        price_cents=9900, category="Business & Finance",
+        price_cents=4900, category="Business & Finance",
         tags=["medical practice", "payer mix", "denial management", "revenue cycle", "healthcare finance"],
         promise="Quantify what denials and payer mix are costing a practice per month, in dollars a "
                 "practice manager can act on.",
@@ -338,7 +338,7 @@ SPECS = [
     dict(
         id="B19-006", slug="freight-broker-margin-detention-recovery",
         title="Freight Broker Margin & Detention Recovery Tracker",
-        price_cents=5900, category="Business & Finance",
+        price_cents=4900, category="Business & Finance",
         tags=["freight broker", "margin", "detention", "accessorial", "logistics"],
         promise="See true margin per load after accessorials, and stop giving away detention you are "
                 "entitled to bill.",
@@ -391,7 +391,7 @@ SPECS = [
     dict(
         id="B19-007", slug="change-order-profit-recovery-ledger",
         title="Change Order Profit Recovery Ledger",
-        price_cents=6900, category="Business & Finance",
+        price_cents=4900, category="Business & Finance",
         tags=["construction", "change order", "profit recovery", "job costing", "claims"],
         promise="Recover the margin that change orders quietly eat, with a ledger that ties every "
                 "variation to a priced, signed document.",
@@ -441,7 +441,7 @@ SPECS = [
     dict(
         id="B19-008", slug="equipment-rent-vs-buy-residual-model",
         title="Equipment Rent vs Buy & Residual Value Model",
-        price_cents=7900, category="Business & Finance",
+        price_cents=4900, category="Business & Finance",
         tags=["equipment finance", "lease vs buy", "residual value", "cash flow", "capex"],
         promise="Compare renting, financing and buying outright on the same cash-flow basis, including "
                 "the residual you are quietly betting on.",
@@ -497,7 +497,7 @@ SPECS = [
     dict(
         id="B19-009", slug="payroll-tax-registration-readiness",
         title="Multi-State Payroll Tax Registration Readiness Pack",
-        price_cents=8900, category="Business & Finance",
+        price_cents=4900, category="Business & Finance",
         tags=["payroll tax", "multi-state", "registration", "compliance", "remote employees"],
         promise="Map every state where you now owe payroll tax, the registration each one needs, and "
                 "the cost of getting it wrong, before the first remote hire starts.",
@@ -549,7 +549,7 @@ SPECS = [
     dict(
         id="B19-010", slug="franchise-unit-economics-break-even",
         title="Franchise Unit Economics & Break-Even Model",
-        price_cents=9900, category="Business & Finance",
+        price_cents=4900, category="Business & Finance",
         tags=["franchise", "unit economics", "break-even", "royalty", "franchise fee"],
         promise="Price a franchise decision the way a lender will: total investment, royalty drag, "
                 "break-even month and cash-on-cash return.",
@@ -881,7 +881,79 @@ def build_guide(spec, path):
                              ("TEXTCOLOR", (0, len(spec["inputs"]) + 2), (-1, len(spec["inputs"]) + 2), colors.white),
                              ("GRID", (0, 0), (-1, -1), 0.4, colors.HexColor("#BFBFBF")),
                              ("ALIGN", (1, 0), (1, -1), "RIGHT")]))
-    story += [tbl, Spacer(1, 14)]
+    story += [tbl, Spacer(1, 14), PageBreak()]
+    story.append(Paragraph("Every formula, spelled out", H2))
+    story.append(Paragraph("The Model sheet shows each formula. This shows the same formula with your "
+                           "default numbers substituted, so the arithmetic can be checked by hand once "
+                           "and then trusted as cells change.", BODY))
+    frows = [["Output", "Formula with these numbers", "Result"]]
+    for key, label, _f, _fn, kind in spec["outputs"]:
+        expr = EXPR[spec["id"]][key]
+
+        def sub(m):
+            tok = m.group(0)
+            if tok in values and isinstance(values[tok], (int, float)):
+                return "{:,.0f}".format(values[tok])
+            return tok
+
+        frows.append([Paragraph(label, BODY), Paragraph(IDENT.sub(sub, expr), BODY),
+                      Paragraph(fmt(values[key], kind), BODY)])
+    ftbl = Table(frows, colWidths=[2.0 * inch, 3.1 * inch, 0.9 * inch])
+    ftbl.setStyle(TableStyle([("GRID", (0, 0), (-1, -1), 0.4, colors.HexColor("#BFBFBF")),
+                              ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#1F3864")),
+                              ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
+                              ("FONTSIZE", (0, 0), (-1, 0), 9),
+                              ("VALIGN", (0, 0), (-1, -1), "TOP")]))
+    story += [ftbl, Spacer(1, 12)]
+    story.append(Paragraph("If the numbers come in worse", H2))
+    story.append(Paragraph("Every money input scaled to 85% and to 70%, everything else unchanged. If "
+                           "the conclusion flips in either column, the decision was never the "
+                           "arithmetic; it was the optimism in the inputs.", BODY))
+    money_inputs = [k for k, _l, _d, kind in spec["inputs"] if kind == "money"]
+    d85 = compute_values(spec, {k: next(d for kk, _l, d, _kd in spec["inputs"] if kk == k) * 0.85
+                                for k in money_inputs})
+    d70 = compute_values(spec, {k: next(d for kk, _l, d, _kd in spec["inputs"] if kk == k) * 0.70
+                                for k in money_inputs})
+    srows = [["Output", "Default", "-15%", "-30%"]]
+    for key, label, _f, _fn, kind in spec["outputs"]:
+        srows.append([Paragraph(label, BODY), fmt(values[key], kind), fmt(d85[key], kind),
+                      fmt(d70[key], kind)])
+    stbl = Table(srows, colWidths=[3.3 * inch, 1.1 * inch, 1.1 * inch, 1.1 * inch])
+    stbl.setStyle(TableStyle([("GRID", (0, 0), (-1, -1), 0.4, colors.HexColor("#BFBFBF")),
+                              ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#1F3864")),
+                              ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
+                              ("ALIGN", (1, 0), (-1, -1), "RIGHT"),
+                              ("FONTSIZE", (0, 0), (-1, -1), 9)]))
+    story += [stbl, Spacer(1, 14), PageBreak()]
+    story.append(Paragraph("What each input actually moves", H2))
+    story.append(Paragraph("Each money input is moved by 10% on its own, everything else held, and the "
+                           "largest percentage change it causes in any output is reported. This is "
+                           "where the argument usually is: the input that moves the answer most is the "
+                           "one worth verifying twice.", BODY))
+    base_keys = [k for k, _l, _f, _fn, _k in spec["outputs"]]
+    irows = [["Input", "Default", "Biggest move from +10%", "Output it moves"]]
+    for key, label, default, kind in spec["inputs"]:
+        bumped = compute_values(spec, {key: default * 1.10})
+        worst, worst_key = 0.0, ""
+        for out in base_keys:
+            base = values[out]
+            if abs(base) < 1e-9:
+                continue
+            share = abs(bumped[out] - base) / abs(base)
+            if share > worst:
+                worst, worst_key = share, out
+        moved = next((l for k, l, _f, _fn, _k in spec["outputs"] if k == worst_key),
+                     "no output in this sheet") if worst_key else "no material effect on any output"
+        irows.append([Paragraph(label, BODY), fmt(default, kind),
+                      "%.1f%%" % (worst * 100), Paragraph(moved, BODY)])
+    itbl = Table(irows, colWidths=[2.7 * inch, 1.0 * inch, 1.2 * inch, 1.3 * inch])
+    itbl.setStyle(TableStyle([("GRID", (0, 0), (-1, -1), 0.4, colors.HexColor("#BFBFBF")),
+                              ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#1F3864")),
+                              ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
+                              ("ALIGN", (1, 0), (2, -1), "RIGHT"),
+                              ("VALIGN", (0, 0), (-1, -1), "TOP"),
+                              ("FONTSIZE", (0, 0), (-1, -1), 8.5)]))
+    story += [itbl, Spacer(1, 14)]
     story.append(Paragraph("Checklist before you rely on a number", H2))
     for item in spec["checklists"]:
         story.append(Paragraph(item, BUL, bulletText="\u2022"))
