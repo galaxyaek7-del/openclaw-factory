@@ -221,3 +221,6 @@ data/discoverability_*.json
 # Telegram pairing (chat id and one-time code hash)
 data/telegram_binding.json
 data/telegram_pairing.json
+
+# 6 MB ffmpeg archive used locally by tools/video; not source
+tools/ffmpeg/
