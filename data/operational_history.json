@@ -1,6 +1,6 @@
 {
  "schema": "operational_history/v1",
- "generated_at": "2026-10-19T18:07:44.794808+00:00",
+ "generated_at": "2026-10-24T11:31:13.644030+00:00",
  "milestones": [
   "BUILD_COMPLETE",
   "QA_PASS",
@@ -111,7 +111,7 @@
    "next_required": "FIRST_SALE_VERIFIED",
    "verified_count": 6,
    "out_of_order": [],
-   "registry_state": "READY_FOR_REVIEW"
+   "registry_state": "PUBLISHED_AND_VERIFIED"
   },
   {
    "product_id": "B12-002",
@@ -191,7 +191,7 @@
    "next_required": "UPLOAD_COMPLETED",
    "verified_count": 3,
    "out_of_order": [],
-   "registry_state": "READY_FOR_REVIEW"
+   "registry_state": "READY_FOR_AUTHORIZATION"
   },
   {
    "product_id": "B12-003",
@@ -278,7 +278,7 @@
    "next_required": "FIRST_SALE_VERIFIED",
    "verified_count": 6,
    "out_of_order": [],
-   "registry_state": "READY_FOR_REVIEW"
+   "registry_state": "PUBLISHED_AND_VERIFIED"
   },
   {
    "product_id": "B12-004",
@@ -292,7 +292,7 @@
      "source": "books/batch12",
      "evidence": [
       "books/batch12/B12-004_meeting_cost_roi_calculator.xlsx (12865 bytes, sha256 87ecb1cd223ebf61...)",
-      "books/batch12/B12-004_meeting_method_guide.pdf (9639 bytes, sha256 2c964edcfc8a9dcf...)"
+      "books/batch12/B12-004_meeting_method_guide.pdf (9639 bytes, sha256 3a8ef339eb07e11b...)"
      ],
      "note": null
     },
@@ -363,7 +363,7 @@
    "next_required": "FIRST_SALE_VERIFIED",
    "verified_count": 6,
    "out_of_order": [],
-   "registry_state": "READY_FOR_REVIEW"
+   "registry_state": "PUBLISHED_AND_VERIFIED"
   },
   {
    "product_id": "B12-005",
@@ -388,7 +388,7 @@
      "source": "reports/B12-005/GATE_FINAL_2026-10-19.json",
      "evidence": [
       "verdict: APPROVED at $8.00",
-      "QA_FACTS verdict: missing"
+      "QA_FACTS verdict: PASS"
      ],
      "note": null
     },
@@ -443,7 +443,7 @@
    "next_required": "UPLOAD_COMPLETED",
    "verified_count": 3,
    "out_of_order": [],
-   "registry_state": "READY_FOR_REVIEW"
+   "registry_state": "READY_FOR_AUTHORIZATION"
   },
   {
    "product_id": "B12-006",
@@ -456,18 +456,20 @@
      "at": null,
      "source": "books/batch12",
      "evidence": [
-      "books/batch12/B12-006_home_office_method_guide.pdf (3270 bytes, sha256 e6560135e0900630...)",
-      "books/batch12/B12-006_home_office_expense_log.xlsx (7886 bytes, sha256 fb8252cded40ebb7...)"
+      "books/batch12/B12-006_home_office_method_guide.pdf (18614 bytes, sha256 ad7d6ce894a602fd...)",
+      "books/batch12/B12-006_home_office_expense_log.xlsx (16462 bytes, sha256 e4abe2866a470bfa...)"
      ],
      "note": null
     },
     "QA_PASS": {
-     "status": "UNKNOWN",
-     "label": "UNKNOWN",
+     "status": "NOT_VERIFIED",
+     "label": "DERIVED",
      "at": null,
-     "source": null,
-     "evidence": [],
-     "note": "no GATE_FINAL record exists for this product"
+     "source": "reports/B12-006/GATE_FINAL_2026-10-19.json",
+     "evidence": [
+      "verdict: REPAIRED_QA_PASS_AWAITING_PRICE_TIER_AND_LISTING_AUTHORIZATION"
+     ],
+     "note": "gate verdict is not an approval: REPAIRED_QA_PASS_AWAITING_PRICE_TIER_AND_LISTING_AUTHORIZATION"
     },
     "READY_FOR_AUTHORIZATION": {
      "status": "NOT_VERIFIED",
@@ -520,7 +522,7 @@
    "next_required": "QA_PASS",
    "verified_count": 1,
    "out_of_order": [],
-   "registry_state": "READY_FOR_REVIEW"
+   "registry_state": "QA_FAIL__NOT_LOCAL_READY"
   },
   {
    "product_id": "B12-007",
@@ -533,18 +535,20 @@
      "at": null,
      "source": "books/batch12",
      "evidence": [
-      "books/batch12/B12-007_digital_declutter_plan.pdf (4036 bytes, sha256 a70b55d9aba3ec4a...)",
-      "books/batch12/B12-007_digital_inventory.xlsx (8115 bytes, sha256 5b0b7088e7bea270...)"
+      "books/batch12/B12-007_digital_declutter_plan.pdf (14824 bytes, sha256 b25c4e0f7d3e243c...)",
+      "books/batch12/B12-007_digital_inventory.xlsx (9374 bytes, sha256 6ff62c7847c3dbce...)"
      ],
      "note": null
     },
     "QA_PASS": {
-     "status": "UNKNOWN",
-     "label": "UNKNOWN",
+     "status": "NOT_VERIFIED",
+     "label": "DERIVED",
      "at": null,
-     "source": null,
-     "evidence": [],
-     "note": "no GATE_FINAL record exists for this product"
+     "source": "reports/B12-007/GATE_FINAL_2026-10-20.json",
+     "evidence": [
+      "verdict: REPAIRED_QA_PASS_AWAITING_PRICE_TIER_AND_LISTING_AUTHORIZATION"
+     ],
+     "note": "gate verdict is not an approval: REPAIRED_QA_PASS_AWAITING_PRICE_TIER_AND_LISTING_AUTHORIZATION"
     },
     "READY_FOR_AUTHORIZATION": {
      "status": "NOT_VERIFIED",
@@ -597,7 +601,7 @@
    "next_required": "QA_PASS",
    "verified_count": 1,
    "out_of_order": [],
-   "registry_state": "READY_FOR_REVIEW"
+   "registry_state": "QA_FAIL__NOT_LOCAL_READY"
   },
   {
    "product_id": "B12-008",
@@ -610,18 +614,21 @@
      "at": null,
      "source": "books/batch12",
      "evidence": [
-      "books/batch12/B12-008_moving_checklist.pdf (4311 bytes, sha256 d3803cd831106cfb...)",
-      "books/batch12/B12-008_moving_budget_tracker.xlsx (7629 bytes, sha256 1e42132bf63d3c2b...)"
+      "books/batch12/B12-008_moving_checklist.pdf (17945 bytes, sha256 769074972b7fc90e...)",
+      "books/batch12/B12-008_moving_budget_tracker.xlsx (17408 bytes, sha256 89cc470444e4dd7e...)"
      ],
      "note": null
     },
     "QA_PASS": {
-     "status": "UNKNOWN",
-     "label": "UNKNOWN",
+     "status": "NOT_VERIFIED",
+     "label": "DERIVED",
      "at": null,
-     "source": null,
-     "evidence": [],
-     "note": "no GATE_FINAL record exists for this product"
+     "source": "reports/B12-008/GATE_FINAL_2026-10-20.json",
+     "evidence": [
+      "verdict: missing",
+      "gate price: $18.0"
+     ],
+     "note": "gate verdict is not an approval: missing"
     },
     "READY_FOR_AUTHORIZATION": {
      "status": "NOT_VERIFIED",
@@ -674,7 +681,7 @@
    "next_required": "QA_PASS",
    "verified_count": 1,
    "out_of_order": [],
-   "registry_state": "READY_FOR_REVIEW"
+   "registry_state": "QA_FAIL__NOT_LOCAL_READY"
   },
   {
    "product_id": "B12-009",
@@ -687,17 +694,19 @@
      "at": null,
      "source": "books/batch12",
      "evidence": [
-      "books/batch12/B12-009_pet_sitter_handover_kit.pdf (4283 bytes, sha256 2b2069c950627ea1...)"
+      "books/batch12/B12-009_pet_sitter_handover_kit.pdf (16718 bytes, sha256 43d488f20958db76...)"
      ],
      "note": null
     },
     "QA_PASS": {
-     "status": "UNKNOWN",
-     "label": "UNKNOWN",
+     "status": "NOT_VERIFIED",
+     "label": "DERIVED",
      "at": null,
-     "source": null,
-     "evidence": [],
-     "note": "no GATE_FINAL record exists for this product"
+     "source": "reports/B12-009/GATE_FINAL_2026-10-20.json",
+     "evidence": [
+      "verdict: REPAIRED_QA_PASS_AWAITING_PRICE_TIER_AND_LISTING_AUTHORIZATION"
+     ],
+     "note": "gate verdict is not an approval: REPAIRED_QA_PASS_AWAITING_PRICE_TIER_AND_LISTING_AUTHORIZATION"
     },
     "READY_FOR_AUTHORIZATION": {
      "status": "NOT_VERIFIED",
@@ -750,7 +759,7 @@
    "next_required": "QA_PASS",
    "verified_count": 1,
    "out_of_order": [],
-   "registry_state": "READY_FOR_REVIEW"
+   "registry_state": "QA_FAIL__NOT_LOCAL_READY"
   },
   {
    "product_id": "B12-010",
@@ -765,9 +774,9 @@
      "evidence": [
       "books/batch12/B12-010_grant_pipeline_tracker.xlsx (38765 bytes, sha256 df49cecaf704cb06...)",
       "books/batch12/B12-010_grant_pipeline_guide.pdf (45453 bytes, sha256 b7ad0849a7d248db...)",
-      "reports/B12-010/MANIFEST_2026-10-19.json declares all 2 artifact(s)"
+      "reports/B12-010/MANIFEST_2026-10-19.json declares all 2 artifact(s); byte size and sha256 match"
      ],
-     "note": "artifact set matches the recorded manifest"
+     "note": "artifact set, byte size and sha256 match the recorded manifest"
     },
     "QA_PASS": {
      "status": "VERIFIED",
@@ -776,10 +785,10 @@
      "source": "reports/B12-010/GATE_FINAL_2026-10-19.json",
      "evidence": [
       "verdict: APPROVED at $15.00",
-      "QA_FACTS verdict: PASS_WITH_DISCLOSED_LIMITATIONS",
+      "QA_FACTS verdict: {'status': 'PASS', 'identity_revalidated': True, 'scope': 'identity, page/section count, placeholder/mojibake scan, formula count, cover identity', 'not_re_run_from_scratch': ['cross_artifact_consistency', 'metrics_rederivation']}",
       "native recalc: 0 error cell(s), verdict PASS - every displayed value agrees with the documented rule and no cell shows an Excel error."
      ],
-     "note": null
+     "note": "gate approved but the QA record's verdict is {'status': 'PASS', 'identity_revalidated': True, 'scope': 'identity, page/section count, placeholder/mojibake scan, formula count, cover identity', 'not_re_run_from_scratch': ['cross_artifact_consistency', 'metrics_rederivation']}"
     },
     "READY_FOR_AUTHORIZATION": {
      "status": "VERIFIED",
@@ -832,16 +841,253 @@
    "next_required": "UPLOAD_COMPLETED",
    "verified_count": 3,
    "out_of_order": [],
-   "registry_state": "READY_FOR_REVIEW"
+   "registry_state": "READY_FOR_AUTHORIZATION"
+  },
+  {
+   "product_id": "B13-001",
+   "title": "Renovation Allowance & Change-Order Control",
+   "registry_price_usd": 15.0,
+   "milestones": {
+    "BUILD_COMPLETE": {
+     "status": "VERIFIED",
+     "label": "OBSERVED",
+     "at": null,
+     "source": "books/batch13",
+     "evidence": [
+      "books/batch13/B13-001_renovation_allowance_control.xlsx (23894 bytes, sha256 6a48ebc859a064ac...)",
+      "books/batch13/B13-001_renovation_allowance_control_guide.pdf (41858 bytes, sha256 7f8218938a794392...)"
+     ],
+     "note": null
+    },
+    "QA_PASS": {
+     "status": "VERIFIED",
+     "label": "DERIVED",
+     "at": null,
+     "source": "reports/B13-001/GATE_FINAL_2026-10-20.json",
+     "evidence": [
+      "verdict: APPROVED"
+     ],
+     "note": null
+    },
+    "READY_FOR_AUTHORIZATION": {
+     "status": "VERIFIED",
+     "label": "DERIVED",
+     "at": null,
+     "source": "reports/B13-001/GATE_FINAL_2026-10-20.json",
+     "evidence": [
+      "gate approved; no publication authorization is recorded"
+     ],
+     "note": "ready and awaiting a product-specific authorization; nothing has been published"
+    },
+    "UPLOAD_COMPLETED": {
+     "status": "NOT_VERIFIED",
+     "label": "OBSERVED",
+     "at": null,
+     "source": null,
+     "evidence": [
+      "no draft/create read-back exists"
+     ],
+     "note": "no upload has been observed for this product"
+    },
+    "PUBLIC_LISTING_VERIFIED": {
+     "status": "UNKNOWN",
+     "label": "UNKNOWN",
+     "at": null,
+     "source": null,
+     "evidence": [],
+     "note": "no external read-back exists for this product"
+    },
+    "CHECKOUT_VERIFIED": {
+     "status": "UNKNOWN",
+     "label": "UNKNOWN",
+     "at": null,
+     "source": null,
+     "evidence": [],
+     "note": "no external read-back exists for this product"
+    },
+    "FIRST_SALE_VERIFIED": {
+     "status": "NOT_VERIFIED",
+     "label": "OBSERVED",
+     "at": null,
+     "source": null,
+     "evidence": [
+      "no sale ledger, Gumroad transaction record, or finance sale record exists"
+     ],
+     "note": "no real transaction exists for this product"
+    }
+   },
+   "highest_contiguous_verified": "READY_FOR_AUTHORIZATION",
+   "next_required": "UPLOAD_COMPLETED",
+   "verified_count": 3,
+   "out_of_order": [],
+   "registry_state": "READY_FOR_AUTHORIZATION"
+  },
+  {
+   "product_id": "B13-002",
+   "title": "Grant Endgame: No-Cost Extension & Unspent Funds Kit",
+   "registry_price_usd": 19.0,
+   "milestones": {
+    "BUILD_COMPLETE": {
+     "status": "VERIFIED",
+     "label": "OBSERVED",
+     "at": null,
+     "source": "books/batch13",
+     "evidence": [
+      "books/batch13/B13-002_grant_endgame_nce_unspent_funds.xlsx (31683 bytes, sha256 aeb9ec2e839fe999...)",
+      "books/batch13/B13-002_grant_endgame_nce_unspent_funds_guide.pdf (69647 bytes, sha256 3b986c2ddde6bca4...)"
+     ],
+     "note": null
+    },
+    "QA_PASS": {
+     "status": "VERIFIED",
+     "label": "DERIVED",
+     "at": null,
+     "source": "reports/B13-002/GATE_FINAL_2026-10-23.json",
+     "evidence": [
+      "verdict: APPROVED"
+     ],
+     "note": null
+    },
+    "READY_FOR_AUTHORIZATION": {
+     "status": "VERIFIED",
+     "label": "DERIVED",
+     "at": null,
+     "source": "reports/B13-002/GATE_FINAL_2026-10-23.json",
+     "evidence": [
+      "gate approved; no publication authorization is recorded"
+     ],
+     "note": "ready and awaiting a product-specific authorization; nothing has been published"
+    },
+    "UPLOAD_COMPLETED": {
+     "status": "NOT_VERIFIED",
+     "label": "OBSERVED",
+     "at": null,
+     "source": null,
+     "evidence": [
+      "no draft/create read-back exists"
+     ],
+     "note": "no upload has been observed for this product"
+    },
+    "PUBLIC_LISTING_VERIFIED": {
+     "status": "UNKNOWN",
+     "label": "UNKNOWN",
+     "at": null,
+     "source": null,
+     "evidence": [],
+     "note": "no external read-back exists for this product"
+    },
+    "CHECKOUT_VERIFIED": {
+     "status": "UNKNOWN",
+     "label": "UNKNOWN",
+     "at": null,
+     "source": null,
+     "evidence": [],
+     "note": "no external read-back exists for this product"
+    },
+    "FIRST_SALE_VERIFIED": {
+     "status": "NOT_VERIFIED",
+     "label": "OBSERVED",
+     "at": null,
+     "source": null,
+     "evidence": [
+      "no sale ledger, Gumroad transaction record, or finance sale record exists"
+     ],
+     "note": "no real transaction exists for this product"
+    }
+   },
+   "highest_contiguous_verified": "READY_FOR_AUTHORIZATION",
+   "next_required": "UPLOAD_COMPLETED",
+   "verified_count": 3,
+   "out_of_order": [],
+   "registry_state": "READY_FOR_AUTHORIZATION"
+  },
+  {
+   "product_id": "B13-003",
+   "title": "Caregiver Command Kit: Emergency, Medication, Appointments",
+   "registry_price_usd": 16.99,
+   "milestones": {
+    "BUILD_COMPLETE": {
+     "status": "VERIFIED",
+     "label": "OBSERVED",
+     "at": null,
+     "source": "books/batch13",
+     "evidence": [
+      "books/batch13/B13-003_caregiver_command_kit.xlsx (32518 bytes, sha256 37d0f7919340b4ed...)",
+      "books/batch13/B13-003_caregiver_command_kit_guide.pdf (55506 bytes, sha256 6cb4290981b53692...)"
+     ],
+     "note": null
+    },
+    "QA_PASS": {
+     "status": "VERIFIED",
+     "label": "DERIVED",
+     "at": null,
+     "source": "reports/B13-003/GATE_FINAL_2026-10-24.json",
+     "evidence": [
+      "verdict: APPROVED"
+     ],
+     "note": null
+    },
+    "READY_FOR_AUTHORIZATION": {
+     "status": "VERIFIED",
+     "label": "DERIVED",
+     "at": null,
+     "source": "reports/B13-003/GATE_FINAL_2026-10-24.json",
+     "evidence": [
+      "gate approved; no publication authorization is recorded"
+     ],
+     "note": "ready and awaiting a product-specific authorization; nothing has been published"
+    },
+    "UPLOAD_COMPLETED": {
+     "status": "NOT_VERIFIED",
+     "label": "OBSERVED",
+     "at": null,
+     "source": null,
+     "evidence": [
+      "no draft/create read-back exists"
+     ],
+     "note": "no upload has been observed for this product"
+    },
+    "PUBLIC_LISTING_VERIFIED": {
+     "status": "UNKNOWN",
+     "label": "UNKNOWN",
+     "at": null,
+     "source": null,
+     "evidence": [],
+     "note": "no external read-back exists for this product"
+    },
+    "CHECKOUT_VERIFIED": {
+     "status": "UNKNOWN",
+     "label": "UNKNOWN",
+     "at": null,
+     "source": null,
+     "evidence": [],
+     "note": "no external read-back exists for this product"
+    },
+    "FIRST_SALE_VERIFIED": {
+     "status": "NOT_VERIFIED",
+     "label": "OBSERVED",
+     "at": null,
+     "source": null,
+     "evidence": [
+      "no sale ledger, Gumroad transaction record, or finance sale record exists"
+     ],
+     "note": "no real transaction exists for this product"
+    }
+   },
+   "highest_contiguous_verified": "READY_FOR_AUTHORIZATION",
+   "next_required": "UPLOAD_COMPLETED",
+   "verified_count": 3,
+   "out_of_order": [],
+   "registry_state": "READY_FOR_AUTHORIZATION"
   }
  ],
  "summary": {
-  "products": 10,
+  "products": 13,
   "by_highest": {
    "null": 0,
    "BUILD_COMPLETE": 4,
    "QA_PASS": 0,
-   "READY_FOR_AUTHORIZATION": 3,
+   "READY_FOR_AUTHORIZATION": 6,
    "UPLOAD_COMPLETED": 0,
    "PUBLIC_LISTING_VERIFIED": 0,
    "CHECKOUT_VERIFIED": 3,

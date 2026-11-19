@@ -11,7 +11,7 @@
       ],
       "audience": "Freelancers and solo consultants worldwide.",
       "problem": "Freelancers guess their rates and undercharge for years.",
-      "state": "READY_FOR_REVIEW",
+      "state": "PUBLISHED_AND_VERIFIED",
       "issues": [],
       "distribution_channels": [
         "gumroad"
@@ -76,7 +76,23 @@
       "publish_gate": "LOCKED until the founder says 'APPROVE B12-001 PUBLISH'; the founder publishes by hand",
       "missing_fields": {
         "measurable_value": "no measured customer result exists yet; the $120.29/hr in the listing is an example output from default inputs, not a measurement"
-      }
+      },
+      "state_reconciled_at": "2026-10-21",
+      "state_reconciliation_report": "reports/B12_STATE_RECONCILIATION_2026-10-21.json",
+      "publication_status": "PUBLISHED_AND_VERIFIED",
+      "published": true,
+      "gumroad_product_id": "W9FpZXpQB-fNiVCteT6Cow==",
+      "gumroad_url": "https://aekraft.gumroad.com/l/blayvb",
+      "published_at": "2026-10-19",
+      "live_price_usd": 14.99,
+      "publication_evidence": [
+        "data/cycle94_live_verification.json",
+        "reports/CYCLE94_PUBLICATION_EXECUTION_2026-10-18.md",
+        "reports/LIVE_CATALOG_READ_2026-10-21.json",
+        "data/product_batch_12_gumroad_prep.json"
+      ],
+      "authorization_status": "PUBLICATION_ALREADY_EFFECTIVE",
+      "sales_observed": 0
     },
     {
       "id": "B12-002",
@@ -106,11 +122,22 @@
       "gate_report": "reports/B12-002/GATE_FINAL_2026-10-18.json",
       "qa_report": "reports/B12-002/QA_2026-10-18.json",
       "ready_to_publish": true,
-      "state": "READY_FOR_REVIEW",
+      "state": "READY_FOR_AUTHORIZATION",
       "issues": [],
       "distribution_channels": [
         "gumroad"
-      ]
+      ],
+      "state_reconciled_at": "2026-10-21",
+      "state_reconciliation_report": "reports/B12_STATE_RECONCILIATION_2026-10-21.json",
+      "authorization_status": "NOT_GRANTED",
+      "state_evidence": [
+        "reports/B12-002/GATE_FINAL_2026-10-18.json",
+        "reports/B12-002/QA_2026-10-18.json",
+        "data/product_batch_12_gumroad_prep.json"
+      ],
+      "gumroad_product_id": null,
+      "gumroad_url": null,
+      "published_at": null
     },
     {
       "id": "B12-003",
@@ -122,7 +149,7 @@
       ],
       "audience": "Solo founders and one-person businesses who are the single point of failure for everything the business needs.",
       "problem": "If a solo founder is unreachable, nobody else knows what the business runs on or how to restore access, and writing the passwords on paper is the unsafe answer.",
-      "state": "READY_FOR_REVIEW",
+      "state": "PUBLISHED_AND_VERIFIED",
       "issues": [],
       "distribution_channels": [
         "gumroad"
@@ -159,7 +186,23 @@
       "publication_authorization": null,
       "price_basis": "FOUNDER_DECISION_BELOW_COMPARABLE",
       "pricing_date": "2026-10-19",
-      "price_decision_source": "CYCLE99_FOUNDER_DIRECTIVE_2026-10-19"
+      "price_decision_source": "CYCLE99_FOUNDER_DIRECTIVE_2026-10-19",
+      "state_reconciled_at": "2026-10-21",
+      "state_reconciliation_report": "reports/B12_STATE_RECONCILIATION_2026-10-21.json",
+      "publication_status": "PUBLISHED_AND_VERIFIED",
+      "published": true,
+      "gumroad_product_id": "TFeaaWXO3zySimrs2Jbjbw==",
+      "gumroad_url": "https://aekraft.gumroad.com/l/svlky",
+      "published_at": "2026-10-19",
+      "live_price_usd": 8.0,
+      "publication_evidence": [
+        "data/cycle99_b12_003_live_verification.json",
+        "reports/CYCLE99_B12-003_PUBLISH_2026-10-19.md",
+        "reports/LIVE_CATALOG_READ_2026-10-21.json",
+        "data/product_batch_12_gumroad_prep.json"
+      ],
+      "authorization_status": "PUBLICATION_ALREADY_EFFECTIVE",
+      "sales_observed": 0
     },
     {
       "id": "B12-004",
@@ -174,11 +217,28 @@
       ],
       "audience": "Team leads, managers, and founders with calendars full of status calls.",
       "problem": "Teams lose thousands of dollars a month to recurring meetings nobody priced.",
-      "state": "READY_FOR_REVIEW",
+      "state": "PUBLISHED_AND_VERIFIED",
       "issues": [],
       "distribution_channels": [
         "gumroad"
-      ]
+      ],
+      "state_reconciled_at": "2026-10-21",
+      "state_reconciliation_report": "reports/B12_STATE_RECONCILIATION_2026-10-21.json",
+      "publication_status": "PUBLISHED_AND_VERIFIED",
+      "published": true,
+      "gumroad_product_id": "-cbRBfZyJMTKpl-Xk8Oz3Q==",
+      "gumroad_url": "https://aekraft.gumroad.com/l/ieashv",
+      "published_at": "2026-10-18",
+      "live_price_usd": 11.99,
+      "publication_evidence": [
+        "data/cycle99_b12_004_live_verification.json",
+        "data/cycle98_b12_004_live_verification.json",
+        "reports/CYCLE98_B12-004_PUBLISHED_2026-10-18.md",
+        "reports/LIVE_CATALOG_READ_2026-10-21.json",
+        "data/product_batch_12_gumroad_prep.json"
+      ],
+      "authorization_status": "PUBLICATION_ALREADY_EFFECTIVE",
+      "sales_observed": 0
     },
     {
       "id": "B12-005",
@@ -190,12 +250,23 @@
       ],
       "audience": "Founders, freelancers, and authors seeking podcast appearances.",
       "problem": "Cold podcast pitches get ignored because they are generic and followed up into spam.",
-      "state": "READY_FOR_REVIEW",
+      "state": "READY_FOR_AUTHORIZATION",
       "issues": [],
       "distribution_channels": [
         "gumroad"
       ],
-      "price_note": "was $29.00 (pre-evidence placeholder); repriced to $8.00 by the mandatory market-realism policy for an 8-page guide (reports/B12-005/GATE_FINAL_2026-10-19.json)"
+      "price_note": "was $29.00 (pre-evidence placeholder); repriced to $8.00 by the mandatory market-realism policy for an 8-page guide (reports/B12-005/GATE_FINAL_2026-10-19.json)",
+      "state_reconciled_at": "2026-10-21",
+      "state_reconciliation_report": "reports/B12_STATE_RECONCILIATION_2026-10-21.json",
+      "authorization_status": "NOT_GRANTED",
+      "state_evidence": [
+        "reports/B12-005/GATE_FINAL_2026-10-19.json",
+        "reports/B12-005/QA_FACTS_2026-10-19.json",
+        "data/product_batch_12_gumroad_prep.json"
+      ],
+      "gumroad_product_id": null,
+      "gumroad_url": null,
+      "published_at": null
     },
     {
       "id": "B12-006",
@@ -207,11 +278,26 @@
       ],
       "audience": "US remote workers and self-employed filers.",
       "problem": "Home-office deductions fail on missing receipts and misunderstood exclusive-use rules.",
-      "state": "READY_FOR_REVIEW",
+      "state": "QA_FAIL__NOT_LOCAL_READY",
       "issues": [],
       "distribution_channels": [
         "gumroad"
-      ]
+      ],
+      "state_reconciled_at": "2026-10-21",
+      "state_reconciliation_report": "reports/B12_STATE_RECONCILIATION_2026-10-21.json",
+      "qa_failure": {
+        "words": 254,
+        "words_required": 2900,
+        "reason": "content depth below the per-dollar requirement; not authorized for listing",
+        "source": "reports/CYCLE104/PRODUCT_QA_RESULTS.json"
+      },
+      "state_evidence": [
+        "reports/CYCLE104/PRODUCT_QA_RESULTS.json",
+        "data/product_batch_12_gumroad_prep.json"
+      ],
+      "gumroad_product_id": null,
+      "gumroad_url": null,
+      "published_at": null
     },
     {
       "id": "B12-007",
@@ -223,11 +309,26 @@
       ],
       "audience": "Overwhelmed professionals and households.",
       "problem": "Accounts, files, and subscriptions pile up for years; backups that were never restore-tested are not backups.",
-      "state": "READY_FOR_REVIEW",
+      "state": "QA_FAIL__NOT_LOCAL_READY",
       "issues": [],
       "distribution_channels": [
         "gumroad"
-      ]
+      ],
+      "state_reconciled_at": "2026-10-21",
+      "state_reconciliation_report": "reports/B12_STATE_RECONCILIATION_2026-10-21.json",
+      "qa_failure": {
+        "words": 273,
+        "words_required": 1900,
+        "reason": "content depth below the per-dollar requirement; not authorized for listing",
+        "source": "reports/CYCLE104/PRODUCT_QA_RESULTS.json"
+      },
+      "state_evidence": [
+        "reports/CYCLE104/PRODUCT_QA_RESULTS.json",
+        "data/product_batch_12_gumroad_prep.json"
+      ],
+      "gumroad_product_id": null,
+      "gumroad_url": null,
+      "published_at": null
     },
     {
       "id": "B12-008",
@@ -239,11 +340,26 @@
       ],
       "audience": "Renters and homeowners planning a move.",
       "problem": "Moves bleed money through single quotes, uninsured movers, and forgotten address changes.",
-      "state": "READY_FOR_REVIEW",
+      "state": "QA_FAIL__NOT_LOCAL_READY",
       "issues": [],
       "distribution_channels": [
         "gumroad"
-      ]
+      ],
+      "state_reconciled_at": "2026-10-21",
+      "state_reconciliation_report": "reports/B12_STATE_RECONCILIATION_2026-10-21.json",
+      "qa_failure": {
+        "words": 273,
+        "words_required": 2900,
+        "reason": "content depth below the per-dollar requirement; not authorized for listing",
+        "source": "reports/CYCLE104/PRODUCT_QA_RESULTS.json"
+      },
+      "state_evidence": [
+        "reports/CYCLE104/PRODUCT_QA_RESULTS.json",
+        "data/product_batch_12_gumroad_prep.json"
+      ],
+      "gumroad_product_id": null,
+      "gumroad_url": null,
+      "published_at": null
     },
     {
       "id": "B12-009",
@@ -254,11 +370,26 @@
       ],
       "audience": "Pet owners who travel.",
       "problem": "Sitters left without vet info, meds schedules, or authorization details cannot act in an emergency.",
-      "state": "READY_FOR_REVIEW",
+      "state": "QA_FAIL__NOT_LOCAL_READY",
       "issues": [],
       "distribution_channels": [
         "gumroad"
-      ]
+      ],
+      "state_reconciled_at": "2026-10-21",
+      "state_reconciliation_report": "reports/B12_STATE_RECONCILIATION_2026-10-21.json",
+      "qa_failure": {
+        "words": 233,
+        "words_required": 1900,
+        "reason": "content depth below the per-dollar requirement; not authorized for listing",
+        "source": "reports/CYCLE104/PRODUCT_QA_RESULTS.json"
+      },
+      "state_evidence": [
+        "reports/CYCLE104/PRODUCT_QA_RESULTS.json",
+        "data/product_batch_12_gumroad_prep.json"
+      ],
+      "gumroad_product_id": null,
+      "gumroad_url": null,
+      "published_at": null
     },
     {
       "id": "B12-010",
@@ -270,7 +401,7 @@
       ],
       "audience": "Small nonprofits, fiscal sponsors and volunteer grant writers.",
       "problem": "Grant work is lost to applications that were never eligible and to post-award reports that live in one person's memory.",
-      "state": "READY_FOR_REVIEW",
+      "state": "READY_FOR_AUTHORIZATION",
       "issues": [],
       "distribution_channels": [
         "gumroad"
@@ -291,7 +422,7 @@
         "market": 70
       },
       "gate_report": "reports/B12-010/GATE_FINAL_2026-10-19.json",
-      "qa_report": "reports/B12-010/QA_FACTS_2026-10-19.json",
+      "qa_report": "reports/B12-010/QA_FACTS_2026-10-21.json",
       "manifest_report": "reports/B12-010/MANIFEST_2026-10-19.json",
       "ready_to_publish": false,
       "ready_to_publish_reason": "Not published and not authorized. Publication requires a founder authorization phrase; the derived price is not a founder price approval.",
@@ -312,7 +443,19 @@
       "price_basis": "HIGHEST_PRICE_PASSING_ALL_MANDATORY_GATES",
       "pricing_date": "2026-10-19",
       "price_decision_source": "CYCLE100_PRICING_RULE_2026-10-19",
-      "updated_at_utc": "2026-10-19T11:38:19Z"
+      "updated_at_utc": "2026-10-21T09:49:08Z",
+      "state_reconciled_at": "2026-10-21",
+      "state_reconciliation_report": "reports/B12_STATE_RECONCILIATION_2026-10-21.json",
+      "authorization_status": "NOT_GRANTED",
+      "state_evidence": [
+        "reports/B12-010/GATE_FINAL_2026-10-19.json",
+        "reports/B12-010/IDENTITY_REVALIDATION_2026-10-21.json",
+        "reports/B12-010/QA_FACTS_2026-10-21.json",
+        "data/product_batch_12_gumroad_prep.json"
+      ],
+      "gumroad_product_id": null,
+      "gumroad_url": null,
+      "published_at": null
     }
   ]
 }

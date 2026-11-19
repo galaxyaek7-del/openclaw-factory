@@ -1,0 +1,177 @@
+{
+  "probe": "b12_state_reconciliation",
+  "generated_at": "2026-10-21",
+  "read_only_outside_registry": true,
+  "publication_attempted": false,
+  "authorization_granted": false,
+  "spend_usd": 0,
+  "inputs": {
+    "registry": "data/product_batch_12.json",
+    "historical_prep_snapshot": "data/product_batch_12_gumroad_prep.json",
+    "live_catalog_snapshot": "reports/LIVE_CATALOG_READ_2026-10-21.json",
+    "qa_results": "reports/CYCLE104/PRODUCT_QA_RESULTS.json"
+  },
+  "backup": {
+    "path": "data/product_batch_12.pre_reconciliation.bak.json",
+    "sha256": "7773ee906baf3214dba302da4b41ad63f6ba2bc515eb7d616995bf9ca68d5cf4"
+  },
+  "after": {
+    "path": "data/product_batch_12.json",
+    "sha256": "28615fbb070315e05bbbad3203f860f1d0298da482195f4c4c7d3faee2f3908b",
+    "records": 10
+  },
+  "historical_prep_file": {
+    "path": "data/product_batch_12_gumroad_prep.json",
+    "sha256": "18d263a525bc45d4f250a405f34374e35ecae655ad1188af51e1af9f09811342",
+    "modified": false,
+    "note": "Its registry_corrections.applied=false is now stale as a status flag, but the prep content itself agrees with the repaired registry. Editing a dated historical snapshot was rejected."
+  },
+  "state_map": {
+    "PUBLISHED_AND_VERIFIED": [
+      {
+        "id": "B12-001",
+        "gumroad_product_id": "W9FpZXpQB-fNiVCteT6Cow==",
+        "url": "https://aekraft.gumroad.com/l/blayvb",
+        "live_price_usd": 14.99,
+        "first_published": "2026-10-19",
+        "sales_observed": 0,
+        "evidence": [
+          "data/cycle94_live_verification.json",
+          "reports/CYCLE94_PUBLICATION_EXECUTION_2026-10-18.md",
+          "reports/LIVE_CATALOG_READ_2026-10-21.json"
+        ]
+      },
+      {
+        "id": "B12-003",
+        "gumroad_product_id": "TFeaaWXO3zySimrs2Jbjbw==",
+        "url": "https://aekraft.gumroad.com/l/svlky",
+        "live_price_usd": 8.0,
+        "first_published": "2026-10-19",
+        "sales_observed": 0,
+        "evidence": [
+          "data/cycle99_b12_003_live_verification.json",
+          "reports/CYCLE99_B12-003_PUBLISH_2026-10-19.md",
+          "reports/LIVE_CATALOG_READ_2026-10-21.json"
+        ]
+      },
+      {
+        "id": "B12-004",
+        "gumroad_product_id": "-cbRBfZyJMTKpl-Xk8Oz3Q==",
+        "url": "https://aekraft.gumroad.com/l/ieashv",
+        "live_price_usd": 11.99,
+        "first_published": "2026-10-18",
+        "sales_observed": 0,
+        "gate_verdict": "UNKNOWN -- no gate approval is recorded in the registry; publication is independently verified, so no gate verdict was invented",
+        "evidence": [
+          "data/cycle98_b12_004_live_verification.json",
+          "data/cycle99_b12_004_live_verification.json",
+          "reports/CYCLE98_B12-004_PUBLISHED_2026-10-18.md",
+          "reports/LIVE_CATALOG_READ_2026-10-21.json"
+        ]
+      }
+    ],
+    "READY_FOR_AUTHORIZATION": [
+      {
+        "id": "B12-002",
+        "authorization_status": "NOT_GRANTED",
+        "gate": "reports/B12-002/GATE_FINAL_2026-10-18.json",
+        "evidence": [
+          "reports/B12-002/QA_2026-10-18.json",
+          "data/product_batch_12_gumroad_prep.json"
+        ]
+      },
+      {
+        "id": "B12-005",
+        "authorization_status": "NOT_GRANTED",
+        "gate": "reports/B12-005/GATE_FINAL_2026-10-19.json",
+        "evidence": [
+          "reports/B12-005/QA_FACTS_2026-10-19.json",
+          "data/product_batch_12_gumroad_prep.json"
+        ]
+      },
+      {
+        "id": "B12-010",
+        "authorization_status": "NOT_GRANTED",
+        "identity_preserved": true,
+        "ready_to_publish_preserved": false,
+        "gate": "reports/B12-010/GATE_FINAL_2026-10-19.json",
+        "evidence": [
+          "reports/B12-010/IDENTITY_REVALIDATION_2026-10-21.json",
+          "reports/B12-010/QA_FACTS_2026-10-21.json",
+          "data/product_batch_12_gumroad_prep.json"
+        ]
+      }
+    ],
+    "QA_FAIL__NOT_LOCAL_READY": [
+      {
+        "id": "B12-006",
+        "words": 254,
+        "words_required": 2900,
+        "failing_dimensions": ["content depth", "formula count (3)"],
+        "source": "reports/CYCLE104/PRODUCT_QA_RESULTS.json"
+      },
+      {
+        "id": "B12-007",
+        "words": 273,
+        "words_required": 1900,
+        "failing_dimensions": ["content depth"],
+        "source": "reports/CYCLE104/PRODUCT_QA_RESULTS.json"
+      },
+      {
+        "id": "B12-008",
+        "words": 273,
+        "words_required": 2900,
+        "failing_dimensions": ["sheet depth"],
+        "source": "reports/CYCLE104/PRODUCT_QA_RESULTS.json"
+      },
+      {
+        "id": "B12-009",
+        "words": 233,
+        "words_required": 1900,
+        "failing_dimensions": ["content depth"],
+        "source": "reports/CYCLE104/PRODUCT_QA_RESULTS.json"
+      }
+    ]
+  },
+  "repaired_findings": {
+    "registry_lag_resolved": 3,
+    "state_conflicts_resolved": 6,
+    "registry_lag_ids": ["B12-001", "B12-003", "B12-004"],
+    "state_conflict_ids": ["B12-002", "B12-005", "B12-006", "B12-007", "B12-008", "B12-009"]
+  },
+  "pre_existing_integrity_drift_not_caused_by_this_pass": {
+    "command": "python -X utf8 scripts/check_b12_integrity.py",
+    "exit": 1,
+    "findings": [
+      "HASH DRIFT: books/batch12/B12-008_moving_budget_tracker.xlsx",
+      "SIZE DRIFT: books/batch12/B12-008_moving_budget_tracker.xlsx",
+      "HASH DRIFT: books/batch12/B12-008_moving_checklist.pdf",
+      "SIZE DRIFT: books/batch12/B12-008_moving_checklist.pdf",
+      "workbook QA evidence is stale for B12-008: re-run native_workbook_qa.py"
+    ],
+    "current_observed": {
+      "books/batch12/B12-008_moving_budget_tracker.xlsx": {
+        "bytes": 17408,
+        "sha256": "89cc470444e4dd7e51ed9c65019638f53edcb6c861e698a15625eedea1b30e85",
+        "recorded_baseline": "48225a83e8ddd030e34d26e80594a34b34462b74ec7039e86d20a7cf8ad0155e / 16860 B"
+      },
+      "books/batch12/B12-008_moving_checklist.pdf": {
+        "bytes": 17945,
+        "sha256": "769074972b7fc90e9dfa2cab9145b280f1bdb86482fd6c028e4a594ecb8251e9",
+        "recorded_baseline": "246bc6fc4dab990228ffd72828df812e5ff2719b2144151072ad639832dccf6b / 17339 B"
+      }
+    },
+    "git_state": "both B12-008 files are untracked; this pass did not modify either file",
+    "action": "NOT re-baselined. B12-008 remains QA_FAIL__NOT_LOCAL_READY. Re-run native_workbook_qa.py and re-inspect the PDF before changing any baseline."
+  },
+  "not_done": [
+    "No listing was created, published, unpublished, or repriced.",
+    "No founder listing authorization was granted or implied.",
+    "B12-002/005/010 remain local-only and unauthorized.",
+    "B12-006/007/008/009 content was not repaired; they remain not local-ready."
+  ],
+  "tests": {
+    "command": "python -X utf8 -m pytest tests/test_catalog_sync.py tests/test_catalog_integrity.py -q",
+    "result": "60 passed"
+  }
+}
