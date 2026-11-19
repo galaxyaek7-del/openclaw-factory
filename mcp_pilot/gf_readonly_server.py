@@ -4,7 +4,7 @@ A Model Context Protocol server over STDIO: newline-delimited JSON-RPC 2.0
 on stdin/stdout, as the MCP stdio transport specifies. It opens no network
 listener. Approved as "Option B" in reports/MCP_FEASIBILITY_AUDIT_2026-10-15.md.
 
-It exposes seven READ-ONLY tools, each a thin wrapper over code or files that
+It exposes twelve READ-ONLY tools, each a thin wrapper over code or files that
 already exist and are already tested:
 
   ci_status               ci_health_detector.detect()   (anonymous GitHub GETs)
@@ -14,7 +14,13 @@ already exist and are already tested:
   distribution_status     data/distribution_dashboard.json           (2026-10-24)
   pinterest_queue_status  data/pinterest_queue.json + Metricool records (2026-10-24)
   video_studio_status     video_studio/projects + build records      (2026-10-24)
-The four 2026-10-24 tools read fixed files only: no arguments, no caller path.
+  factory_status          supervisor.log + data/factory_state.json + /health  (2026-11-18)
+  tasks_status            TASKS.md + WORKLOG.md                      (2026-11-18)
+  test_status             data/regression_status.json, read not run  (2026-11-18)
+  revenue_evidence        data/verified_transactions.jsonl + registry (2026-11-18)
+  recent_logs             tail of a whitelisted log, secrets redacted (2026-11-18)
+The 2026-10-24 and 2026-11-18 tools read fixed files only: no arguments that
+name a path, no caller-supplied file.
 
 What it deliberately does NOT do:
   * no shell, no eval, no generic file read/write, no generic HTTP
@@ -438,6 +444,316 @@ def tool_video_studio_status(args):
             "note": "renders are local only; nothing is uploaded; publication also needs rights CLEARED and a founder approval"}
 
 
+# --- agent-facing state readers (2026-11-18) --------------------------------
+# Founder mission: expose factory state to agents, read-only. Same discipline as
+# the 2026-10-24 readers: fixed files, no caller path, no writes, no .env.
+# Every path is a module global so a test can point it at a temp file.
+
+SUPERVISOR_LOG = ROOT / "supervisor.log"
+FACTORY_STATE = ROOT / "data" / "factory_state.json"
+TASKS_MD = ROOT / "TASKS.md"
+WORKLOG_MD = ROOT / "WORKLOG.md"
+REGRESSION_STATUS = ROOT / "data" / "regression_status.json"
+VERIFIED_TX = ROOT / "data" / "verified_transactions.jsonl"
+FINANCE_JSON = ROOT / "finance_data.json"
+HEALTH_URL = os.environ.get("GF_MCP_HEALTH_URL", "http://127.0.0.1:3000/health")
+HEALTH_TIMEOUT_S = 2.0
+LOG_SOURCES = {
+    "factory_loop": ROOT / "factory_loop.log",
+    "supervisor": ROOT / "supervisor.log",
+    "server_crashes": ROOT / "server_crashes.log",
+    "server_errors": ROOT / "errors.log",
+}
+LOG_TAIL_BYTES = 256 * 1024
+REGISTRY_STALE_S = 36 * 3600   # a recorded test result older than this is STALE, not PASS
+
+_ENV_ASSIGNMENT = re.compile(r"^\s*(?:export\s+)?[A-Z][A-Z0-9_]{1,60}\s*=")
+
+
+def _age_or_none(iso):
+    return _age_s(iso)
+
+
+def _read_tail(path, max_bytes=LOG_TAIL_BYTES):
+    """Last max_bytes of a file, decoded, as a list of complete lines.
+
+    A partial first line (the window cut it) is dropped, never reported as a
+    real log line.
+    """
+    p = Path(path)
+    with p.open("rb") as fh:
+        fh.seek(0, 2)
+        size = fh.tell()
+        start = max(0, size - max_bytes)
+        fh.seek(start)
+        raw = fh.read()
+    text = raw.decode("utf-8", "replace")
+    if start > 0:
+        nl = text.find("\n")
+        text = text[nl + 1:] if nl != -1 else ""
+    return text.splitlines(), size
+
+
+def _probe_health():
+    """Bounded localhost GET. Returns OBSERVED status or an explicit absence.
+
+    Uses http.client against the parsed host/port with a 2 s timeout: no
+    arbitrary URL is ever fetched and no redirect is followed.
+    """
+    if os.environ.get("GF_MCP_PROBE_HEALTH", "1").strip() == "0":
+        return {"state": "NOT_MEASURED", "why": "health probe disabled for this process"}
+    try:
+        import http.client
+        from urllib.parse import urlsplit
+
+        u = urlsplit(HEALTH_URL)
+        if u.hostname not in ("127.0.0.1", "localhost", "::1"):
+            return {"state": "NOT_MEASURED", "why": "health URL is not loopback"}
+        conn = http.client.HTTPConnection(u.hostname, u.port or 80, timeout=HEALTH_TIMEOUT_S)
+        try:
+            conn.request("GET", u.path or "/", headers={"Accept": "application/json"})
+            resp = conn.getresponse()
+            body = json.loads(resp.read(256 * 1024).decode("utf-8", "replace"))
+        finally:
+            conn.close()
+        return {"state": "OBSERVED", "http": resp.status,
+                "status": body.get("status"), "status_source": body.get("status_source"),
+                "timestamp": body.get("timestamp"),
+                "reality": body.get("reality"), "publish_gate": body.get("publish_gate")}
+    except Exception as exc:  # noqa: BLE001 -- absence must be reported, never guessed
+        if isinstance(exc, TimeoutError) or "timed out" in str(exc).lower():
+            return {"state": "UNREACHABLE", "why": "health endpoint did not answer within 2s"}
+        return {"state": "UNREACHABLE", "why": f"{type(exc).__name__}"}
+
+
+def tool_factory_status(args):
+    _no_args("factory_status", args)
+    state = _read_json(FACTORY_STATE, "factory state")
+    try:
+        lines, log_bytes = _read_tail(SUPERVISOR_LOG)
+    except FileNotFoundError:
+        lines, log_bytes = [], 0
+    events = []
+    for line in lines:
+        try:
+            events.append(json.loads(line))
+        except ValueError:
+            continue
+    by_target = {}
+    crashes_24h = 0
+    cutoff = time.time() - 24 * 3600
+    for ev in events:
+        try:
+            ts = datetime.fromisoformat(str(ev.get("at")).replace("Z", "+00:00")).timestamp()
+        except (TypeError, ValueError):
+            ts = None
+        if ev.get("event") == "crash" and ts and ts >= cutoff:
+            crashes_24h += 1
+        target = Path(str(ev.get("target") or "")).name
+        if not target:
+            continue
+        if target not in by_target or (ts and ts >= by_target[target].get("_ts", 0)):
+            by_target[target] = {k: ev.get(k) for k in ("at", "event")}
+            by_target[target]["_ts"] = ts or 0
+    for rec in by_target.values():
+        rec.pop("_ts", None)
+    updated = state.get("updated_at")
+    age = _age_or_none(updated)
+    task = state.get("current_task") or {}
+    checkpoint = state.get("last_successful_checkpoint") or {}
+    healthy = (age is not None and age < 1200) and not state.get("recovery_info", {}).get("interrupted")
+    return {
+        "status": "OK" if healthy else "DEGRADED",
+        "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        "loop": {
+            "state_age_seconds": age,
+            "updated_at": updated,
+            "current_task": task.get("name") or None,
+            "current_step": task.get("step") or None,
+            "task_started_at": task.get("started_at"),
+            "last_checkpoint": {"stage": checkpoint.get("stage"), "at": checkpoint.get("at")},
+            "interrupted": bool((state.get("recovery_info") or {}).get("interrupted")),
+            "pending_retries": len(state.get("pending_retries") or []),
+        },
+        "supervisor": {"log_bytes": log_bytes, "last_event_by_target": by_target,
+                       "crashes_24h": crashes_24h},
+        "server_health": _probe_health(),
+        "note": ("state is OBSERVED from files on disk; loop freshness uses a 20-minute "
+                 "threshold for a ~10-minute tick"),
+    }
+
+
+def _md_rows(text, prefix):
+    rows = []
+    current = None
+    for raw in text.splitlines():
+        line = raw.rstrip()
+        if line.startswith("## "):
+            current = line[3:].strip()
+        stripped = line.lstrip()
+        if stripped.startswith("[x] ") or stripped.startswith("[ ] "):
+            rows.append({"section": current, "done": stripped[1].lower() == "x",
+                         "text": stripped[4:].strip()[:300]})
+    return rows
+
+
+def tool_tasks_status(args):
+    _no_args("tasks_status", args)
+    try:
+        tasks_text = Path(TASKS_MD).read_text(encoding="utf-8", errors="replace")
+    except FileNotFoundError:
+        tasks_text = ""
+    try:
+        worklog_text = Path(WORKLOG_MD).read_text(encoding="utf-8", errors="replace")
+    except FileNotFoundError:
+        worklog_text = ""
+    rows = _md_rows(tasks_text, "[")
+    blocked = [r["text"] for r in rows if "BLOCKED" in r["text"].upper()]
+    done = sum(1 for r in rows if r["done"])
+    sections = []
+    for r in rows:
+        if r["section"] and r["section"] not in sections:
+            sections.append(r["section"])
+    entries = []
+    for block in worklog_text.split("\n### ")[1:]:
+        head = block.splitlines()[0].strip()
+        first_bullet = next((ln.strip("- ").strip() for ln in block.splitlines()[1:]
+                             if ln.strip().startswith("-")), None)
+        entries.append({"heading": head[:180], "first_item": (first_bullet or "")[:240]})
+    return {
+        "status": "OK" if rows else "UNKNOWN",
+        "source": "TASKS.md + WORKLOG.md (parsed, nothing executed)",
+        "tasks": {"total": len(rows), "done": done, "pending": len(rows) - done},
+        "sections": sections,
+        "blocked_items": blocked,
+        "items": [{"done": r["done"], "text": r["text"]} for r in rows],
+        "worklog_recent": entries[-5:][::-1],
+        "note": ("a [ ] row is pending; BLOCKED text marks a row that needs a founder "
+                 "decision or an external credential"),
+    }
+
+
+def tool_test_status(args):
+    _no_args("test_status", args)
+    doc = _read_json(REGRESSION_STATUS, "recorded regression result")
+    age = _age_or_none(doc.get("at"))
+    failed = int(doc.get("failed") or 0)
+    if age is None:
+        verdict = "UNKNOWN"
+    elif failed:
+        verdict = "FAILED"
+    elif age > REGISTRY_STALE_S:
+        verdict = "STALE"
+    else:
+        verdict = "PASS"
+    return {
+        "status": verdict,
+        "recorded_at": doc.get("at"),
+        "age_seconds": age,
+        "stale_after_seconds": REGISTRY_STALE_S,
+        "python": doc.get("python"),
+        "node": doc.get("node"),
+        "failed": failed,
+        "failures": (doc.get("failures") or [])[:20],
+        "skipped_missing": (doc.get("skipped_missing") or [])[:20],
+        "source": "data/regression_status.json — RECORDED by scripts/factory_regression.py; this tool never runs a test",
+    }
+
+
+def _verified_rows():
+    rows = []
+    try:
+        text = Path(VERIFIED_TX).read_text(encoding="utf-8", errors="replace")
+    except FileNotFoundError:
+        return None, 0
+    bad = 0
+    for line in text.splitlines():
+        line = line.strip()
+        if not line:
+            continue
+        try:
+            row = json.loads(line)
+        except ValueError:
+            bad += 1
+            continue
+        if row.get("simulation") is True or row.get("test") is True:
+            continue                    # simulated/test money is never revenue
+        rows.append(row)
+    return rows, bad
+
+
+def tool_revenue_evidence(args):
+    _no_args("revenue_evidence", args)
+    rows, bad_lines = _verified_rows()
+    registry = _read_json(PRODUCT_REGISTRY, "product registry")
+    products = registry.get("products") or []
+    units = sum(int(p.get("sales_count") or 0) for p in products)
+    cents = sum(int(p.get("sales_usd_cents") or 0) for p in products)
+    try:
+        finance = json.loads(Path(FINANCE_JSON).read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        finance = None
+    if rows is None:
+        evidence = {"state": "NO_VERIFIED_TRANSACTION_RECORD",
+                    "source": "data/verified_transactions.jsonl is absent",
+                    "transactions": [], "verified_revenue_usd": 0}
+    else:
+        total = sum(int(r.get("amount_cents") or 0) for r in rows)
+        evidence = {"state": "VERIFIED_ROWS_PRESENT" if rows else "EMPTY_LEDGER",
+                    "source": "data/verified_transactions.jsonl",
+                    "transactions": [{"offer_id": r.get("offer_id"), "platform": r.get("platform"),
+                                      "amount_cents": r.get("amount_cents"),
+                                      "currency": r.get("currency") or "USD",
+                                      "at": r.get("at") or r.get("recorded_at")} for r in rows[:20]],
+                    "row_count": len(rows),
+                    "unparseable_lines": bad_lines,
+                    "verified_revenue_usd": round(total / 100.0, 2)}
+    return {
+        "status": "OK",
+        "verified": evidence,
+        "registry": {"sales_units": units, "sales_usd": round(cents / 100.0, 2),
+                     "generated_at": registry.get("generated_at"),
+                     "age_seconds": _age_or_none(registry.get("generated_at"))},
+        "finance_file": None if finance is None else {
+            "totalSales": finance.get("totalSales"), "lastUpdated": finance.get("lastUpdated")},
+        "note": ("only data/verified_transactions.jsonl rows count as verified revenue; "
+                 "page views, drafts, clicks and simulated rows never do. 0 with an explicit "
+                 "state means no verified transaction exists"),
+    }
+
+
+def _log_source(name):
+    if not isinstance(name, str) or name not in LOG_SOURCES:
+        raise ToolError(f"source must be one of {sorted(LOG_SOURCES)}")
+    return LOG_SOURCES[name]
+
+
+def tool_recent_logs(args):
+    extra = set(args) - {"source", "lines"}
+    if extra:
+        raise ToolError(f"unexpected argument(s): {sorted(extra)}")
+    src = _log_source(args.get("source", "factory_loop"))
+    lines_wanted = args.get("lines", 40)
+    if not isinstance(lines_wanted, int) or isinstance(lines_wanted, bool) or not 1 <= lines_wanted <= 200:
+        raise ToolError("lines must be an integer between 1 and 200")
+    try:
+        lines, size = _read_tail(src)
+    except FileNotFoundError:
+        raise ToolError(f"log not found ({Path(src).name}); it may not have been written yet")
+    except OSError as exc:
+        raise ToolError(f"log unreadable ({type(exc).__name__})")
+    out, dropped = [], 0
+    for line in lines[-lines_wanted:]:
+        if _ENV_ASSIGNMENT.match(line):
+            dropped += 1                  # an env-style assignment never leaves the server
+            continue
+        out.append(sanitize_text(line[:500]))
+    return {"status": "OK", "source": Path(src).name, "log_bytes": size,
+            "returned_lines": len(out), "dropped_env_style_lines": dropped,
+            "lines": out,
+            "note": "credential-shaped text is redacted; env-style assignments are dropped, not shown"}
+
+
 def _schema(props, required=()):
     return {"type": "object", "properties": props, "required": list(required), "additionalProperties": False}
 
@@ -495,6 +811,42 @@ TOOLS = {
         "description": ("Read-only. Video studio projects: rendered or not, duration, rights status, and which "
                         "could be published. Reads video_studio/projects and build records only; uploads nothing."),
         "inputSchema": _schema({}),
+    },
+    "factory_status": {
+        "fn": tool_factory_status,
+        "description": ("Read-only. Factory runtime: supervisor last event per target and crashes in 24 h, loop "
+                        "state age, current task/step, last checkpoint, and a bounded 2 s GET to the local "
+                        "/health endpoint. Starts no cycle and writes nothing."),
+        "inputSchema": _schema({}),
+    },
+    "tasks_status": {
+        "fn": tool_tasks_status,
+        "description": ("Read-only. Parses TASKS.md checkboxes (done/pending, BLOCKED rows) and the last five "
+                        "WORKLOG.md entries. Executes nothing."),
+        "inputSchema": _schema({}),
+    },
+    "test_status": {
+        "fn": tool_test_status,
+        "description": ("Read-only. Last RECORDED regression result from data/regression_status.json with age "
+                        "and a PASS/FAILED/STALE/UNKNOWN verdict. Never runs a test."),
+        "inputSchema": _schema({}),
+    },
+    "revenue_evidence": {
+        "fn": tool_revenue_evidence,
+        "description": ("Read-only. Verified revenue only: rows from data/verified_transactions.jsonl (test and "
+                        "simulation rows excluded), plus registry and finance totals. Returns 0 with an explicit "
+                        "state when no verified transaction exists; invents nothing."),
+        "inputSchema": _schema({}),
+    },
+    "recent_logs": {
+        "fn": tool_recent_logs,
+        "description": ("Read-only. Tail of one whitelisted log (factory_loop, supervisor, server_crashes, "
+                        "server_errors). Credential-shaped text is redacted and env-style assignments are "
+                        "dropped. No caller-supplied path."),
+        "inputSchema": _schema({
+            "source": {"type": "string", "enum": sorted(LOG_SOURCES), "default": "factory_loop"},
+            "lines": {"type": "integer", "minimum": 1, "maximum": 200, "default": 40},
+        }),
     },
 }
 

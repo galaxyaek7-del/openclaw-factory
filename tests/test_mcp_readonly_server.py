@@ -44,8 +44,11 @@ def _rpc(lines, cwd=ROOT, env=None):
 
 
 ALL_TOOLS = ["ci_status", "write_gate_status", "verify_render",
-             "factory_products", "distribution_status", "pinterest_queue_status", "video_studio_status"]
-FILE_TOOLS = ALL_TOOLS[3:]          # 2026-10-24: fixed-file readers, no arguments
+             "factory_products", "distribution_status", "pinterest_queue_status", "video_studio_status",
+             "factory_status", "tasks_status", "test_status", "revenue_evidence", "recent_logs"]
+# Fixed-file readers with no arguments (2026-10-24 + the 2026-11-18 additions
+# except recent_logs, which takes a whitelisted source and a line count).
+FILE_TOOLS = ALL_TOOLS[3:-1]
 
 INIT = {"jsonrpc": "2.0", "id": 0, "method": "initialize",
         "params": {"protocolVersion": "2025-06-18", "capabilities": {}, "clientInfo": {"name": "t", "version": "0"}}}
@@ -294,13 +297,31 @@ class TestFactoryStateTools(unittest.TestCase):
                          "items": [{"offer_id": "B14-001", "status": "BLOCKED_NO_BOARD", "when_local": "2026-10-27T10:00:00",
                                     "call": {"reviewers": "founder@example.com", "info": "{}"}}]})
         w("brand.json", {"label": "galaxyaek7", "connected_networks": {"pinterest": "p", "tiktok": "t"}, "post_creation": "BLOCKED_NEEDS_BOARD"})
+        # 2026-11-18 agent-facing readers: hermetic temp sources, no health probe.
+        w("state.json", {"updated_at": "2026-10-24T00:00:00+00:00", "current_task": {},
+                          "last_successful_checkpoint": {"stage": "learning", "at": "2026-10-24T00:00:00+00:00"}})
+        w("regression.json", {"at": "2026-10-24T00:00:00+00:00", "failed": 0, "failures": []})
+        (self.d / "supervisor.log").write_text("", encoding="utf-8")
+        (self.d / "TASKS.md").write_text("[ ] one\n[x] two\n", encoding="utf-8")
+        (self.d / "WORKLOG.md").write_text("### 2026-10-24\n- did a thing\n", encoding="utf-8")
+        (self.d / "finance.json").write_text(json.dumps({"totalSales": 0}), encoding="utf-8")
+        self.hp = mock.patch.dict(os.environ, {"GF_MCP_PROBE_HEALTH": "0"})
+        self.hp.start()
+        self.addCleanup(self.hp.stop)
         self.patches = [mock.patch.object(S, "PRODUCT_REGISTRY", self.d / "reg.json"),
                         mock.patch.object(S, "DIST_DASHBOARD", self.d / "dash.json"),
                         mock.patch.object(S, "PINTEREST_QUEUE", self.d / "queue.json"),
                         mock.patch.object(S, "METRICOOL_BRAND", self.d / "brand.json"),
                         mock.patch.object(S, "METRICOOL_ATTEMPTS", self.d / "attempts.jsonl"),
                         mock.patch.object(S, "VIDEO_PROJECTS", self.d / "projects"),
-                        mock.patch.object(S, "VIDEO_OUTPUT", self.d / "output")]
+                        mock.patch.object(S, "VIDEO_OUTPUT", self.d / "output"),
+                        mock.patch.object(S, "FACTORY_STATE", self.d / "state.json"),
+                        mock.patch.object(S, "SUPERVISOR_LOG", self.d / "supervisor.log"),
+                        mock.patch.object(S, "TASKS_MD", self.d / "TASKS.md"),
+                        mock.patch.object(S, "WORKLOG_MD", self.d / "WORKLOG.md"),
+                        mock.patch.object(S, "REGRESSION_STATUS", self.d / "regression.json"),
+                        mock.patch.object(S, "VERIFIED_TX", self.d / "verified.jsonl"),
+                        mock.patch.object(S, "FINANCE_JSON", self.d / "finance.json")]
         for p in self.patches:
             p.start()
             self.addCleanup(p.stop)
