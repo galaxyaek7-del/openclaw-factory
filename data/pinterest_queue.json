@@ -1,699 +1,1825 @@
 {
- "generated_at": "2026-10-24T07:24:09+00:00",
- "board": null,
- "board_lookup": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']",
+ "generated_at": "2026-11-19T17:20:55+00:00",
+ "board": {
+  "id": "1106619008379856440",
+  "name": "Small Business Finance Tools",
+  "privacy": "public",
+  "url": "/galaxyaek7/small-business-finance-tools/"
+ },
+ "board_lookup": "found 'Small Business Finance Tools' (1106619008379856440)",
  "timezone": "Europe/Paris",
  "items": [
   {
    "offer_id": "B14-001",
    "title": "13-Week Cash Flow Forecast for Small Business",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b14-001.jpg",
-   "when_local": "2026-10-27T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2026-11-20T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2026-11-20T10:00:00+01:00",
+    "info": "{\"text\": \"See every week's cash position for the next quarter, spot the tight weeks before they happen, and track forecast against actual. $19, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b14-001.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2026-11-20T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"13-Week Cash Flow Forecast for Small Business\", \"pinLink\": \"https://aekraft.gumroad.com/l/dliccs?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-b14-001-202611&utm_content=b14-001-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "fde92e250b2fc4a8"
+  },
+  {
+   "offer_id": "B13-001",
+   "title": "Renovation Allowance & Change-Order Control",
+   "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b13-001.jpg",
+   "when_local": "2026-11-21T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2026-11-21T10:00:00+01:00",
+    "info": "{\"text\": \"A renovation budget usually fails in two places: allowances nobody tracks, and change orders nobody signs. This workbook keeps both attached to the money. $15, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b13-001.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2026-11-21T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"Renovation Allowance & Change-Order Control\", \"pinLink\": \"https://aekraft.gumroad.com/l/wsfwvz?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-b13-001-202611&utm_content=b13-001-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "628286e15473002a"
+  },
+  {
+   "offer_id": "B13-002",
+   "title": "Grant Endgame: No-Cost Extension & Unspent Funds Kit",
+   "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b13-002.jpg",
+   "when_local": "2026-11-22T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2026-11-22T10:00:00+01:00",
+    "info": "{\"text\": \"Most grant budgets do not fail because the math is hard. They fail in the last 120 days, when money is spread across lines, commitments are not in the bank balance, and the no-cost-extension notice window is already close. $19, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b13-002.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2026-11-22T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"Grant Endgame: No-Cost Extension & Unspent Funds Kit\", \"pinLink\": \"https://aekraft.gumroad.com/l/plvoxx?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-b13-002-202611&utm_content=b13-002-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "b84aa103ce718368"
+  },
+  {
+   "offer_id": "B13-003",
+   "title": "Caregiver Command Kit: Emergency, Medication, and Appointment Organizer",
+   "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b13-003.jpg",
+   "when_local": "2026-11-23T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2026-11-23T10:00:00+01:00",
+    "info": "{\"text\": \"When the phone rings at 2 a.m., you do not need another app. You need the facts in one place. $16.99, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b13-003.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2026-11-23T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"Caregiver Command Kit: Emergency, Medication, and Appointment Organizer\", \"pinLink\": \"https://aekraft.gumroad.com/l/swscqu?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-b13-003-202611&utm_content=b13-003-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "633783e62c06a0a2"
   },
   {
    "offer_id": "B14-002",
    "title": "Rental Property Deal Analyzer",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b14-002.jpg",
-   "when_local": "2026-10-28T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2026-11-24T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2026-11-24T10:00:00+01:00",
+    "info": "{\"text\": \"Compare up to 25 buy-and-hold rental deals side by side: monthly cash flow, cap rate, cash-on-cash return, DSCR and a clear verdict against your own targets. $24, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b14-002.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2026-11-24T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"Rental Property Deal Analyzer\", \"pinLink\": \"https://aekraft.gumroad.com/l/mfpqin?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-b14-002-202611&utm_content=b14-002-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "57ef33ba5a9801df"
   },
   {
    "offer_id": "B14-003",
    "title": "Debt Payoff Planner (Avalanche or Snowball)",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b14-003.jpg",
-   "when_local": "2026-10-29T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2026-11-25T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2026-11-25T10:00:00+01:00",
+    "info": "{\"text\": \"A real month-by-month payoff schedule for up to six debts: your debt-free month, total interest, and how much you save against paying minimums only. $12, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b14-003.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2026-11-25T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"Debt Payoff Planner (Avalanche or Snowball)\", \"pinLink\": \"https://aekraft.gumroad.com/l/ebuszz?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-b14-003-202611&utm_content=b14-003-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "a313fb26d074e84e"
   },
   {
    "offer_id": "B14-004",
    "title": "Self-Employed Quarterly Tax Set-Aside Planner (US, 2026)",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b14-004.jpg",
-   "when_local": "2026-10-30T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2026-11-26T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2026-11-26T10:00:00+01:00",
+    "info": "{\"text\": \"Log income and expenses as they happen and see, each quarter, how much to set aside and pay for federal income tax, self-employment tax and state tax. $12, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b14-004.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2026-11-26T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"Self-Employed Quarterly Tax Set-Aside Planner (US, 2026)\", \"pinLink\": \"https://aekraft.gumroad.com/l/ydgbnh?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-b14-004-202611&utm_content=b14-004-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "b33483698cc7d7e4"
   },
   {
    "offer_id": "B14-005",
    "title": "Etsy & Shopify Product Profit Calculator",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b14-005.jpg",
-   "when_local": "2026-10-31T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2026-11-27T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2026-11-27T10:00:00+01:00",
+    "info": "{\"text\": \"The real profit on every product after platform fees, payment processing, Offsite Ads, shipping, packaging and ad spend, plus the price you need for the margin you want. $12, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b14-005.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2026-11-27T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"Etsy & Shopify Product Profit Calculator\", \"pinLink\": \"https://aekraft.gumroad.com/l/ntbvq?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-b14-005-202611&utm_content=b14-005-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "256f4314c3f494bb"
   },
   {
    "offer_id": "B14-006",
    "title": "Service Business Pricing & Break-Even Calculator",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b14-006.jpg",
-   "when_local": "2026-11-01T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2026-11-28T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2026-11-28T10:00:00+01:00",
+    "info": "{\"text\": \"Price every service from your real costs and capacity: cost per billable hour, minimum price, target-margin price, and whether next month's plan covers your costs and your own pay. $15, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b14-006.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2026-11-28T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"Service Business Pricing & Break-Even Calculator\", \"pinLink\": \"https://aekraft.gumroad.com/l/czhxhu?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-b14-006-202611&utm_content=b14-006-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "56e89a13e7df1b50"
   },
   {
    "offer_id": "B14-007",
    "title": "Inventory Reorder Point & Stock Tracker",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b14-007.jpg",
-   "when_local": "2026-11-02T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2026-11-29T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2026-11-29T10:00:00+01:00",
+    "info": "{\"text\": \"Know what to reorder, when and how much: reorder points with safety stock, days of stock left, and a suggested order list for every SKU. $15, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b14-007.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2026-11-29T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"Inventory Reorder Point & Stock Tracker\", \"pinLink\": \"https://aekraft.gumroad.com/l/jydqg?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-b14-007-202611&utm_content=b14-007-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "ace6080288e52b8c"
   },
   {
    "offer_id": "B14-008",
    "title": "Client Pipeline & Proposal Tracker",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b14-008.jpg",
-   "when_local": "2026-11-03T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2026-11-30T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2026-11-30T10:00:00+01:00",
+    "info": "{\"text\": \"Track every lead and proposal from first contact to won or lost: weighted pipeline value, win rate, follow-ups due, and which lead sources actually bring paying clients. $14, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b14-008.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2026-11-30T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"Client Pipeline & Proposal Tracker\", \"pinLink\": \"https://aekraft.gumroad.com/l/qevzns?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-b14-008-202611&utm_content=b14-008-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "40cb93e352768b18"
   },
   {
    "offer_id": "B14-009",
    "title": "Startup Runway & Burn Planner",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b14-009.jpg",
-   "when_local": "2026-11-04T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2026-12-01T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2026-12-01T10:00:00+01:00",
+    "info": "{\"text\": \"Month by month for three years: revenue, costs, burn and cash. See your runway, your break-even month, and whether you reach break-even before the money runs out, with a second scenario to compare. $15, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b14-009.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2026-12-01T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"Startup Runway & Burn Planner\", \"pinLink\": \"https://aekraft.gumroad.com/l/mcwusn?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-b14-009-202611&utm_content=b14-009-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "34845ae72346fcfc"
   },
   {
    "offer_id": "B14-010",
    "title": "Zero-Based Monthly Budget Planner",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b14-010.jpg",
-   "when_local": "2026-11-05T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2026-12-02T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2026-12-02T10:00:00+01:00",
+    "info": "{\"text\": \"Give every dollar of this month's income a job, log spending as it happens, and see category by category where the money actually went. $9, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b14-010.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2026-12-02T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"Zero-Based Monthly Budget Planner\", \"pinLink\": \"https://aekraft.gumroad.com/l/uubnbi?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-b14-010-202611&utm_content=b14-010-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "d8617609ad262e29"
+  },
+  {
+   "offer_id": "B15-001",
+   "title": "Refinance Break-Even & Loan Comparison Calculator",
+   "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b15-001.jpg",
+   "when_local": "2026-12-03T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2026-12-03T10:00:00+01:00",
+    "info": "{\"text\": \"Find out whether a refinance really pays: monthly savings, break-even month, and the true cost difference over the years you will actually keep the loan. $15, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b15-001.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2026-12-03T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"Refinance Break-Even & Loan Comparison Calculator\", \"pinLink\": \"https://aekraft.gumroad.com/l/ckwqjc?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-b15-001-202611&utm_content=b15-001-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "9140c4da1c33fceb"
+  },
+  {
+   "offer_id": "B15-002",
+   "title": "Employee True Cost Calculator (US Small Business)",
+   "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b15-002.jpg",
+   "when_local": "2026-12-04T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2026-12-04T10:00:00+01:00",
+    "info": "{\"text\": \"What a hire really costs beyond the salary: employer payroll taxes, benefits, workers' comp, equipment and paid time off, with the true cost per productive hour. $15, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b15-002.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2026-12-04T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"Employee True Cost Calculator (US Small Business)\", \"pinLink\": \"https://aekraft.gumroad.com/l/fdjqyp?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-b15-002-202611&utm_content=b15-002-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "6b8e4860df8fe0e3"
+  },
+  {
+   "offer_id": "B15-003",
+   "title": "Car Buy vs Lease Calculator: Total Cost Over the Same Period",
+   "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b15-003.jpg",
+   "when_local": "2026-12-05T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2026-12-05T10:00:00+01:00",
+    "info": "{\"text\": \"Compare buying with a loan and leasing on the same footing: everything you pay over the lease period, minus what the car is worth to you at the end. $12, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b15-003.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2026-12-05T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"Car Buy vs Lease Calculator: Total Cost Over the Same Period\", \"pinLink\": \"https://aekraft.gumroad.com/l/bqnvfq?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-b15-003-202611&utm_content=b15-003-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "d11e98b2d8e3f443"
+  },
+  {
+   "offer_id": "B15-004",
+   "title": "Wedding Budget & Vendor Payment Planner",
+   "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b15-004.jpg",
+   "when_local": "2026-12-06T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2026-12-06T10:00:00+01:00",
+    "info": "{\"text\": \"Split your budget across categories, record every quote and contract, track deposits and the balances still due, and see at once which category has gone over. $12, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b15-004.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2026-12-06T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"Wedding Budget & Vendor Payment Planner\", \"pinLink\": \"https://aekraft.gumroad.com/l/kidohv?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-b15-004-202611&utm_content=b15-004-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "b032753b08028eee"
+  },
+  {
+   "offer_id": "B15-005",
+   "title": "Home Renovation Budget & Contractor Quote Comparison",
+   "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b15-005.jpg",
+   "when_local": "2026-12-07T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2026-12-07T10:00:00+01:00",
+    "info": "{\"text\": \"Compare contractor quotes line by line, catch the quote that leaves items out, choose per item, and see your total with a contingency against the budget. $14, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b15-005.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2026-12-07T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"Home Renovation Budget & Contractor Quote Comparison\", \"pinLink\": \"https://aekraft.gumroad.com/l/ghszog?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-b15-005-202611&utm_content=b15-005-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "4ae4c0acfcd18392"
+  },
+  {
+   "offer_id": "B15-006",
+   "title": "Price Increase Impact Calculator",
+   "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b15-006.jpg",
+   "when_local": "2026-12-08T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2026-12-08T10:00:00+01:00",
+    "info": "{\"text\": \"Before you raise prices, see how many sales you could lose and still earn more, and what profit each increase gives at the loss you actually expect. $12, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b15-006.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2026-12-08T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"Price Increase Impact Calculator\", \"pinLink\": \"https://aekraft.gumroad.com/l/sfcpyb?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-b15-006-202611&utm_content=b15-006-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "70471cbee701f8fc"
+  },
+  {
+   "offer_id": "B15-007",
+   "title": "Customer Lifetime Value & CAC Payback Calculator",
+   "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b15-007.jpg",
+   "when_local": "2026-12-09T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2026-12-09T10:00:00+01:00",
+    "info": "{\"text\": \"For each marketing channel: what a customer costs to win, what they are worth in gross profit, the value-to-cost ratio, and how many months it takes to earn the cost back. $15, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b15-007.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2026-12-09T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"Customer Lifetime Value & CAC Payback Calculator\", \"pinLink\": \"https://aekraft.gumroad.com/l/xmbbls?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-b15-007-202611&utm_content=b15-007-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "d778a116546cf901"
+  },
+  {
+   "offer_id": "B15-008",
+   "title": "Shift Schedule & Labor Cost Planner",
+   "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b15-008.jpg",
+   "when_local": "2026-12-10T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2026-12-10T10:00:00+01:00",
+    "info": "{\"text\": \"Plan the week's shifts, see each person's hours and overtime, and check the week's labor cost as a share of forecast sales before the schedule goes out. $14, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b15-008.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2026-12-10T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"Shift Schedule & Labor Cost Planner\", \"pinLink\": \"https://aekraft.gumroad.com/l/ucgjwf?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-b15-008-202611&utm_content=b15-008-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "7cd2edfd0b9b4428"
+  },
+  {
+   "offer_id": "B15-009",
+   "title": "Business Mileage Log & Deduction Tracker (US)",
+   "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b15-009.jpg",
+   "when_local": "2026-12-11T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2026-12-11T10:00:00+01:00",
+    "info": "{\"text\": \"A trip-by-trip mileage log with the date, destination, purpose and odometer readings, totals by purpose, odometer error checks, and the standard-mileage deduction at the rate you enter. $9, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b15-009.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2026-12-11T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"Business Mileage Log & Deduction Tracker (US)\", \"pinLink\": \"https://aekraft.gumroad.com/l/rlgdc?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-b15-009-202611&utm_content=b15-009-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "ef8b09fb151b4217"
+  },
+  {
+   "offer_id": "B15-010",
+   "title": "Sinking Funds & Emergency Fund Planner",
+   "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b15-010.jpg",
+   "when_local": "2026-12-12T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2026-12-12T10:00:00+01:00",
+    "info": "{\"text\": \"Turn the irregular bills that wreck a budget (insurance, car repairs, holidays, gifts) into a fixed monthly amount, and see when your emergency fund will be complete with what is left. $9, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b15-010.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2026-12-12T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"Sinking Funds & Emergency Fund Planner\", \"pinLink\": \"https://aekraft.gumroad.com/l/krrtdf?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-b15-010-202611&utm_content=b15-010-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "ef27e0666775fe66"
+  },
+  {
+   "offer_id": "B16-001",
+   "title": "SAFE Conversion & Dilution Calculator (Post-Money SAFEs)",
+   "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b16-001.jpg",
+   "when_local": "2026-12-13T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2026-12-13T10:00:00+01:00",
+    "info": "{\"text\": \"Enter your post-money SAFEs and the terms of the priced round; see how many shares each SAFE converts into, the round price per share, and who owns what afterwards. $19, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b16-001.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2026-12-13T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"SAFE Conversion & Dilution Calculator (Post-Money SAFEs)\", \"pinLink\": \"https://aekraft.gumroad.com/l/ffsehk?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-b16-001-202611&utm_content=b16-001-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "00481ded6784273d"
+  },
+  {
+   "offer_id": "B16-002",
+   "title": "Solar Panel Payback & 25-Year Savings Calculator",
+   "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b16-002.jpg",
+   "when_local": "2026-12-14T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2026-12-14T10:00:00+01:00",
+    "info": "{\"text\": \"Net system cost, year-by-year production with panel ageing, rising electricity prices, maintenance, and the year your panels pay for themselves. $12, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b16-002.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2026-12-14T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"Solar Panel Payback & 25-Year Savings Calculator\", \"pinLink\": \"https://aekraft.gumroad.com/l/zbvxmr?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-b16-002-202611&utm_content=b16-002-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "aaa651529489902b"
+  },
+  {
+   "offer_id": "B16-003",
+   "title": "Rent vs Buy Home Calculator: Net Worth Year by Year",
+   "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b16-003.jpg",
+   "when_local": "2026-12-15T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2026-12-15T10:00:00+01:00",
+    "info": "{\"text\": \"Compare buying a home with renting and investing the difference: net worth under each choice for every year up to 30, the break-even year, and the answer for the number of years you plan to stay. $12, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b16-003.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2026-12-15T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"Rent vs Buy Home Calculator: Net Worth Year by Year\", \"pinLink\": \"https://aekraft.gumroad.com/l/gwwpri?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-b16-003-202611&utm_content=b16-003-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "88f936d0b5af4e46"
+  },
+  {
+   "offer_id": "B16-004",
+   "title": "PTO Accrual & Leave Balance Tracker for Small Teams",
+   "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b16-004.jpg",
+   "when_local": "2026-12-16T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2026-12-16T10:00:00+01:00",
+    "info": "{\"text\": \"Hours accrued each pay period, hours used and booked, balances held at your policy cap, hours lost to the cap, over-booked leave flagged, and the dollar value of the leave you owe. $12, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b16-004.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2026-12-16T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"PTO Accrual & Leave Balance Tracker for Small Teams\", \"pinLink\": \"https://aekraft.gumroad.com/l/dhtppr?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-b16-004-202611&utm_content=b16-004-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "b5307f90b842f003"
+  },
+  {
+   "offer_id": "B16-005",
+   "title": "Event Budget & Ticket Break-Even Planner",
+   "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b16-005.jpg",
+   "when_local": "2026-12-17T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2026-12-17T10:00:00+01:00",
+    "info": "{\"text\": \"List fixed and per-attendee costs, set the ticket price and fees, and see the break-even attendance, the break-even ticket price, and profit or loss at every attendance level up to capacity. $12, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b16-005.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2026-12-17T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"Event Budget & Ticket Break-Even Planner\", \"pinLink\": \"https://aekraft.gumroad.com/l/jorsyy?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-b16-005-202611&utm_content=b16-005-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "0f5ce1ebadea55f7"
+  },
+  {
+   "offer_id": "B16-006",
+   "title": "Membership & Subscription MRR and Churn Forecaster",
+   "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b16-006.jpg",
+   "when_local": "2026-12-18T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2026-12-18T10:00:00+01:00",
+    "info": "{\"text\": \"Project members, monthly recurring revenue and net revenue after fees for 24 months from your price, sign-ups, growth and churn, with the steady-state member count and customer lifetime value. $15, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b16-006.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2026-12-18T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"Membership & Subscription MRR and Churn Forecaster\", \"pinLink\": \"https://aekraft.gumroad.com/l/qhmtd?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-b16-006-202611&utm_content=b16-006-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "255bdf6440d9c937"
+  },
+  {
+   "offer_id": "B16-007",
+   "title": "Freelance Project Profitability & Effective Hourly Rate Tracker",
+   "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b16-007.jpg",
+   "when_local": "2026-12-19T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2026-12-19T10:00:00+01:00",
+    "info": "{\"text\": \"Log each fixed-fee project's fee, estimated and actual hours and direct costs, and see the hourly rate you really earned, hour overruns, and how far each project fell short of your target rate. $12, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b16-007.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2026-12-19T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"Freelance Project Profitability & Effective Hourly Rate Tracker\", \"pinLink\": \"https://aekraft.gumroad.com/l/xiimbr?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-b16-007-202611&utm_content=b16-007-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "1a17f33cccaaee03"
+  },
+  {
+   "offer_id": "B16-008",
+   "title": "Restaurant Menu Engineering Worksheet (Stars, Plowhorses, Puzzles, Dogs)",
+   "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b16-008.jpg",
+   "when_local": "2026-12-20T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2026-12-20T10:00:00+01:00",
+    "info": "{\"text\": \"Enter each dish's price, plate cost and units sold, and the worksheet classifies every item by contribution margin and popularity using the standard menu-engineering method, with food cost % and menu mix. $19, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b16-008.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2026-12-20T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"Restaurant Menu Engineering Worksheet (Stars, Plowhorses, Puzzles, Dogs)\", \"pinLink\": \"https://aekraft.gumroad.com/l/kftdyp?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-b16-008-202611&utm_content=b16-008-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "c6a3fe9955c50613"
+  },
+  {
+   "offer_id": "B16-009",
+   "title": "Roommate & Shared House Bill Splitter (Equal, Income or Room Size)",
+   "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b16-009.jpg",
+   "when_local": "2026-12-21T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2026-12-21T10:00:00+01:00",
+    "info": "{\"text\": \"Split rent, utilities and shared costs between up to five housemates, choosing for each bill whether it is shared equally, by income or by room size, and see who owes whom at the end of the month. $7, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b16-009.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2026-12-21T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"Roommate & Shared House Bill Splitter (Equal, Income or Room Size)\", \"pinLink\": \"https://aekraft.gumroad.com/l/zhgrkk?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-b16-009-202611&utm_content=b16-009-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "8a67fc5fd952fcd4"
+  },
+  {
+   "offer_id": "B16-010",
+   "title": "Tiered Sales Commission Calculator for Small Sales Teams",
+   "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b16-010.jpg",
+   "when_local": "2026-12-22T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2026-12-22T10:00:00+01:00",
+    "info": "{\"text\": \"Set up to four commission tiers and a quota bonus, enter each rep's base pay, quota and sales, and see commission paid band by band, quota attainment, total pay and what the plan costs as a share of sales. $12, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b16-010.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2026-12-22T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"Tiered Sales Commission Calculator for Small Sales Teams\", \"pinLink\": \"https://aekraft.gumroad.com/l/khqbui?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-b16-010-202611&utm_content=b16-010-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "44bb1939adce6728"
+  },
+  {
+   "offer_id": "B17-001",
+   "title": "European Accessibility Act Penalty Exposure Checker (11 EU Countries)",
+   "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b17-001.jpg",
+   "when_local": "2026-12-23T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2026-12-23T10:00:00+01:00",
+    "info": "{\"text\": \"Enter your turnover and company size and see the maximum fine each of eleven EU countries' own EAA law sets for a company like yours, with the exact provision and a link to the official text for every figure. $19, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b17-001.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2026-12-23T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"European Accessibility Act Penalty Exposure Checker (11 EU Countries)\", \"pinLink\": \"https://aekraft.gumroad.com/l/mmpoh?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-b17-001-202611&utm_content=b17-001-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "274e1228c3106113"
+  },
+  {
+   "offer_id": "B17-002",
+   "title": "US Trademark Ten-Year Cost Calculator (USPTO Fees per Class)",
+   "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b17-002.jpg",
+   "when_local": "2026-12-24T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2026-12-24T10:00:00+01:00",
+    "info": "{\"text\": \"Enter your number of classes and how you file and see the USPTO government fees from application to the year-10 renewal, line by line, with the fee table read from the official schedule. $12, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b17-002.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2026-12-24T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"US Trademark Ten-Year Cost Calculator (USPTO Fees per Class)\", \"pinLink\": \"https://aekraft.gumroad.com/l/hpnrjs?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-b17-002-202611&utm_content=b17-002-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "1ecda28debbff920"
+  },
+  {
+   "offer_id": "B18-001",
+   "title": "Contractor Job Costing & WIP Schedule (Over/Under Billing)",
+   "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b18-001.jpg",
+   "when_local": "2026-12-25T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2026-12-25T10:00:00+01:00",
+    "info": "{\"text\": \"Track every job's cost to date, estimated cost to complete and billings, and see earned revenue, over/under billing, projected margin and margin fade on one work-in-progress schedule. $49, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b18-001.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2026-12-25T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"Contractor Job Costing & WIP Schedule (Over/Under Billing)\", \"pinLink\": \"https://aekraft.gumroad.com/l/ytaqjk?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-b18-001-202611&utm_content=b18-001-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "129a174cd9f91ec1"
+  },
+  {
+   "offer_id": "B18-002",
+   "title": "Owner-Operator Cost per Mile & Load Profitability Model",
+   "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b18-002.jpg",
+   "when_local": "2026-12-26T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2026-12-26T10:00:00+01:00",
+    "info": "{\"text\": \"Turn your real monthly costs into a cost per mile and a break-even rate per loaded mile, then test every load before you accept it. $39, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b18-002.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2026-12-26T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"Owner-Operator Cost per Mile & Load Profitability Model\", \"pinLink\": \"https://aekraft.gumroad.com/l/ryzoro?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-b18-002-202611&utm_content=b18-002-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "15733b64bc19e152"
+  },
+  {
+   "offer_id": "B18-003",
+   "title": "Small Business Valuation & Offer Price Model (SDE, DCF, Assets)",
+   "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b18-003.jpg",
+   "when_local": "2026-12-27T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2026-12-27T10:00:00+01:00",
+    "info": "{\"text\": \"Rebuild a small business's seller's discretionary earnings, value it three ways, blend the results into an offer range and check that the deal can carry its own debt. $49, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b18-003.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2026-12-27T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"Small Business Valuation & Offer Price Model (SDE, DCF, Assets)\", \"pinLink\": \"https://aekraft.gumroad.com/l/duzghq?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-b18-003-202611&utm_content=b18-003-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "9ded09be99deb412"
+  },
+  {
+   "offer_id": "B18-004",
+   "title": "Agency Utilization & Capacity Planner (Billable Hours, Bench Cost, Hiring Trigger)",
+   "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b18-004.jpg",
+   "when_local": "2026-12-28T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2026-12-28T10:00:00+01:00",
+    "info": "{\"text\": \"See each person's utilization against their break-even and target, what the unbilled hours cost, and when the pipeline really justifies a hire. $39, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b18-004.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2026-12-28T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"Agency Utilization & Capacity Planner (Billable Hours, Bench Cost, Hiring Trigger)\", \"pinLink\": \"https://aekraft.gumroad.com/l/atynt?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-b18-004-202611&utm_content=b18-004-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "ce8c47cbbc72cc69"
+  },
+  {
+   "offer_id": "B18-005",
+   "title": "Equipment Lease vs Buy Model with MACRS Depreciation & Tax Shield (US)",
+   "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b18-005.jpg",
+   "when_local": "2026-12-29T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2026-12-29T10:00:00+01:00",
+    "info": "{\"text\": \"Compare buying with a loan against leasing the same equipment over five years, after tax, with MACRS depreciation, interest deductions, resale proceeds and recapture, discounted to today's money. $39, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b18-005.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2026-12-29T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"Equipment Lease vs Buy Model with MACRS Depreciation & Tax Shield (US)\", \"pinLink\": \"https://aekraft.gumroad.com/l/pgoxt?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-b18-005-202611&utm_content=b18-005-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "34921349c7eccdbe"
+  },
+  {
+   "offer_id": "B18-006",
+   "title": "Retirement Drawdown Stress Test: Sequence-of-Returns Scenarios",
+   "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b18-006.jpg",
+   "when_local": "2026-12-30T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2026-12-30T10:00:00+01:00",
+    "info": "{\"text\": \"Run the same retirement spending through a steady market, an early crash and a late crash, year by year with inflation, Social Security and a pension, and see how long the money lasts. $39, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b18-006.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2026-12-30T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"Retirement Drawdown Stress Test: Sequence-of-Returns Scenarios\", \"pinLink\": \"https://aekraft.gumroad.com/l/rwrcw?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-b18-006-202611&utm_content=b18-006-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "b6eb562cbbab6934"
+  },
+  {
+   "offer_id": "B18-007",
+   "title": "Brick-and-Mortar Store Opening Feasibility & Break-Even Model",
+   "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b18-007.jpg",
+   "when_local": "2026-12-31T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2026-12-31T10:00:00+01:00",
+    "info": "{\"text\": \"Total up what opening a shop really costs, ramp the sales over 24 months, and see the break-even sales, the first profitable month, the payback month and the cash you must have before you sign the lease. $39, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b18-007.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2026-12-31T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"Brick-and-Mortar Store Opening Feasibility & Break-Even Model\", \"pinLink\": \"https://aekraft.gumroad.com/l/ogypx?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-b18-007-202611&utm_content=b18-007-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "379fb9c57fd43100"
+  },
+  {
+   "offer_id": "B18-008",
+   "title": "Small Farm Crop Enterprise Budget & Break-Even Planner",
+   "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b18-008.jpg",
+   "when_local": "2027-01-01T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2027-01-01T10:00:00+01:00",
+    "info": "{\"text\": \"Budget every crop per acre, allocate the farm's fixed costs, and see the break-even yield and break-even price for each crop and for the whole farm before you plant. $29, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b18-008.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2027-01-01T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"Small Farm Crop Enterprise Budget & Break-Even Planner\", \"pinLink\": \"https://aekraft.gumroad.com/l/zzudjn?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-b18-008-202611&utm_content=b18-008-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "64c46f12196dd9eb"
+  },
+  {
+   "offer_id": "B18-009",
+   "title": "Wholesale Price Waterfall & Channel Margin Stack Calculator",
+   "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b18-009.jpg",
+   "when_local": "2027-01-02T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2027-01-02T10:00:00+01:00",
+    "info": "{\"text\": \"Work back from your unit cost through your wholesale price, the distributor and the retailer to the shelf price, and test whether your planned retail price leaves you a margin in every channel. $29, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b18-009.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2027-01-02T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"Wholesale Price Waterfall & Channel Margin Stack Calculator\", \"pinLink\": \"https://aekraft.gumroad.com/l/yzmmz?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-b18-009-202611&utm_content=b18-009-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "8a10187cf3bc0c73"
+  },
+  {
+   "offer_id": "B18-010",
+   "title": "Digital Course Launch Break-Even Model (Pessimistic, Base, Optimistic)",
+   "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b18-010.jpg",
+   "when_local": "2027-01-03T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2027-01-03T10:00:00+01:00",
+    "info": "{\"text\": \"Model a course or digital-product launch from email list and ad spend to buyers, refunds, fees and profit, in three scenarios, and see how many sales you need to break even before you spend a dollar. $29, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/b18-010.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2027-01-03T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"Digital Course Launch Break-Even Model (Pessimistic, Base, Optimistic)\", \"pinLink\": \"https://aekraft.gumroad.com/l/joytjk?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-b18-010-202611&utm_content=b18-010-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "903fcc9e86777dc7"
   },
   {
    "offer_id": "GR-003d8ce46f",
    "title": "Trademark DIY Filing Action Kit",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-003d8ce46f.jpg",
-   "when_local": "2026-11-06T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2027-01-04T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2027-01-04T10:00:00+01:00",
+    "info": "{\"text\": \"Trademark DIY Filing Action Kit $69, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-003d8ce46f.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2027-01-04T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"Trademark DIY Filing Action Kit\", \"pinLink\": \"https://aekraft.gumroad.com/l/vkqogv?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-gr-003d8ce46f-202611&utm_content=gr-003d8ce46f-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "ddbc78bf46be573c"
   },
   {
    "offer_id": "GR-04864e2091",
    "title": "EU AI Act Transparency & AI Literacy Quickstart Checklist",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-04864e2091.jpg",
-   "when_local": "2026-11-07T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2027-01-05T10:00:00",
+   "status": "REJECTED",
+   "reason": "offer is not eligible: listing state is UPLOAD_COMPLETED, not PUBLIC_LISTING_VERIFIED"
   },
   {
    "offer_id": "GR-05cd19f99c",
    "title": "Gulf Job-Landing ATS CV System",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-05cd19f99c.jpg",
-   "when_local": "2026-11-08T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2027-01-06T10:00:00",
+   "status": "REJECTED",
+   "reason": "offer is not eligible: listing state is UPLOAD_COMPLETED, not PUBLIC_LISTING_VERIFIED"
   },
   {
    "offer_id": "GR-06bad25d25",
    "title": "Mindfulness Journal for Stress Relief",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-06bad25d25.jpg",
-   "when_local": "2026-11-09T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2027-01-07T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2027-01-07T10:00:00+01:00",
+    "info": "{\"text\": \"A guided journaling framework for busy professionals who want to manage stress in under 10 minutes a day. $7, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-06bad25d25.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2027-01-07T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"Mindfulness Journal for Stress Relief\", \"pinLink\": \"https://aekraft.gumroad.com/l/jvuelq?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-gr-06bad25d25-202611&utm_content=gr-06bad25d25-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "f1604ecdd4b96669"
   },
   {
    "offer_id": "GR-0b1dd2739c",
    "title": "Restaurant Health Inspection Readiness Kit",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-0b1dd2739c.jpg",
-   "when_local": "2026-11-10T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2027-01-08T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2027-01-08T10:00:00+01:00",
+    "info": "{\"text\": \"One failed health visit costs fines, ratings damage, and in the worst case closure — and the violations that fail most visits repeat visit after visit because nobody runs a system against them. $49, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-0b1dd2739c.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2027-01-08T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"Restaurant Health Inspection Readiness Kit\", \"pinLink\": \"https://aekraft.gumroad.com/l/dvfvm?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-gr-0b1dd2739c-202611&utm_content=gr-0b1dd2739c-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "07c89af77ea5fe3d"
   },
   {
    "offer_id": "GR-0c1ef5afd5",
    "title": "Freelancer Payment Protection & Scope-Control Toolkit",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-0c1ef5afd5.jpg",
-   "when_local": "2026-11-11T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2027-01-09T10:00:00",
+   "status": "REJECTED",
+   "reason": "offer is not eligible: listing state is UPLOAD_COMPLETED, not PUBLIC_LISTING_VERIFIED"
   },
   {
    "offer_id": "GR-0eb6de052c",
    "title": "EUDR Due Diligence Starter",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-0eb6de052c.jpg",
-   "when_local": "2026-11-12T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2027-01-10T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2027-01-10T10:00:00+01:00",
+    "info": "{\"text\": \"Practical registers, logs, and letters to organize EUDR due diligence files for coffee, cocoa, soy, palm, rubber, and wood lots. A starter kit for importers, first-placers, and SME traders placing in-scope goods on the EU market. $69, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-0eb6de052c.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2027-01-10T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"EUDR Due Diligence Starter\", \"pinLink\": \"https://aekraft.gumroad.com/l/brwrta?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-gr-0eb6de052c-202611&utm_content=gr-0eb6de052c-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "aa73cfac31e3e90b"
   },
   {
    "offer_id": "GR-10d84cb5ad",
    "title": "Landlord Rent Ledger: Court-Ready Records for Self-Managing Owners",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-10d84cb5ad.jpg",
-   "when_local": "2026-11-13T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2027-01-11T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2027-01-11T10:00:00+01:00",
+    "info": "{\"text\": \"A dated rent ledger system with running balances, partial-payment log, notice-content checklist, fee register, and year-end summary for independent landlords. $49, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-10d84cb5ad.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2027-01-11T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"Landlord Rent Ledger: Court-Ready Records for Self-Managing Owners\", \"pinLink\": \"https://aekraft.gumroad.com/l/odqlk?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-gr-10d84cb5ad-202611&utm_content=gr-10d84cb5ad-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "21cb5dd481d83d5b"
   },
   {
    "offer_id": "GR-163a547dcc",
    "title": "Cottage Food Compliance Kit",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-163a547dcc.jpg",
-   "when_local": "2026-11-14T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2027-01-12T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2027-01-12T10:00:00+01:00",
+    "info": "{\"text\": \"Track state rules, labels, allergens, registrations, and sales caps for home-based food sales. A practical record-keeping kit for cottage food operators dealing with state-by-state variance in caps, labels, and registration. $49, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-163a547dcc.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2027-01-12T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"Cottage Food Compliance Kit\", \"pinLink\": \"https://aekraft.gumroad.com/l/ursxh?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-gr-163a547dcc-202611&utm_content=gr-163a547dcc-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "2a9503aa46ed5445"
   },
   {
    "offer_id": "GR-1b31fa3983",
    "title": "Fleet Maintenance and Damage Documentation Bundle",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-1b31fa3983.jpg",
-   "when_local": "2026-11-15T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2027-01-13T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2027-01-13T10:00:00+01:00",
+    "info": "{\"text\": \"A paper-and-spreadsheet system for independent rental fleets of 2 to 20 vehicles: VIN register, maintenance log with due-date formulas, inspection forms, and a damage claim tracker with claim letter. Independent rental operators lose money three ways: missed service that shortens vehicle life, undocumented damage that cannot be billed or claimed, and denied warranty and insurance claims caused by incomplete records. $49, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-1b31fa3983.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2027-01-13T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"Fleet Maintenance and Damage Documentation Bundle\", \"pinLink\": \"https://aekraft.gumroad.com/l/oerot?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-gr-1b31fa3983-202611&utm_content=gr-1b31fa3983-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "3c7afc71b27342ab"
   },
   {
    "offer_id": "GR-1c352a7aac",
    "title": "B2B Late-Payment Collections Operating System",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-1c352a7aac.jpg",
-   "when_local": "2026-11-16T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2027-01-14T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2027-01-14T10:00:00+01:00",
+    "info": "{\"text\": \"Invoices aging past 90 days rarely pay themselves, and agency contingency fees of 25-50% by age (OBSERVED: AgentCollect 2026 fee guide, accessed 2026-09-25) take half the balance when you wait too long. This kit is the in-house discipline that makes those facts work for you instead of against you. $59, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-1c352a7aac.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2027-01-14T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"B2B Late-Payment Collections Operating System\", \"pinLink\": \"https://aekraft.gumroad.com/l/wsbqr?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-gr-1c352a7aac-202611&utm_content=gr-1c352a7aac-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "25a4f3a892e80ee0"
   },
   {
    "offer_id": "GR-23e0647791",
    "title": "Diminished Value Claim Kit",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-23e0647791.jpg",
-   "when_local": "2026-11-17T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2027-01-15T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2027-01-15T10:00:00+01:00",
+    "info": "{\"text\": \"Your car was repaired after a not-at-fault accident — but its resale value wasn't. That CARFAX flag costs real money at trade-in, and insurers won't volunteer to pay it. $59, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-23e0647791.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2027-01-15T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"Diminished Value Claim Kit\", \"pinLink\": \"https://aekraft.gumroad.com/l/dyjavs?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-gr-23e0647791-202611&utm_content=gr-23e0647791-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "867ac7002ccba929"
   },
   {
    "offer_id": "GR-2562d0b4d2",
    "title": "Meeting Cost & ROI Calculator",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-2562d0b4d2.jpg",
-   "when_local": "2026-11-18T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2027-01-16T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2027-01-16T10:00:00+01:00",
+    "info": "{\"text\": \"Your recurring meetings have a price tag — this workbook calculates it. Give each meeting its attendee count and a fully-loaded hourly rate, and it returns the weekly and annual cost, the person-hours, and the one number worth arguing about: cost per decision. Sort by annual cost and cut from the top. $11.99, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-2562d0b4d2.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2027-01-16T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"Meeting Cost & ROI Calculator\", \"pinLink\": \"https://aekraft.gumroad.com/l/ieashv?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-gr-2562d0b4d2-202611&utm_content=gr-2562d0b4d2-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "4c2f79eb6744d803"
   },
   {
    "offer_id": "GR-267ea1d084",
    "title": "Home-Service Quoting & Deposit Protection System",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-267ea1d084.jpg",
-   "when_local": "2026-11-19T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2027-01-17T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2027-01-17T10:00:00+01:00",
+    "info": "{\"text\": \"Free estimates that never close, vague scopes that invite creep, and deposits too small to cover materials are the three leaks this system closes — and most residential contractors suffer all three at once. A typical week tells the story: hours of driving to site visits, proposals emailed into silence, a schedule held on a verbal yes that evaporates, and extras absorbed because nobody priced them before the labor went in. $49, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-267ea1d084.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2027-01-17T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"Home-Service Quoting & Deposit Protection System\", \"pinLink\": \"https://aekraft.gumroad.com/l/behmhy?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-gr-267ea1d084-202611&utm_content=gr-267ea1d084-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "17786c6ef09c0c60"
   },
   {
    "offer_id": "GR-2dad0445dd",
    "title": "UK Deposit Recovery Action Pack",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-2dad0445dd.jpg",
-   "when_local": "2026-11-20T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2027-01-18T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2027-01-18T10:00:00+01:00",
+    "info": "{\"text\": \"UK tenant deposit recovery action pack: deposit tracker with recovery estimate, evidence scorecard (file at 8+), deadline tracker, challenge and escalation letter templates, and a step-by-step filing guide for deposit protection adjudication. Information and organization only — not legal advice, no outcome promised. Instant ZIP download (Excel + PDF). $29, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-2dad0445dd.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2027-01-18T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"UK Deposit Recovery Action Pack\", \"pinLink\": \"https://aekraft.gumroad.com/l/edgiq?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-gr-2dad0445dd-202611&utm_content=gr-2dad0445dd-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "20b20b8bdfebbe10"
   },
   {
    "offer_id": "GR-30cce4848c",
    "title": "Short-Term Rental Damage Claim Evidence Kit (Airbnb & VRBO)",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-30cce4848c.jpg",
-   "when_local": "2026-11-21T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2027-01-19T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2027-01-19T10:00:00+01:00",
+    "info": "{\"text\": \"A damage claim lives or dies on evidence and timing. Hosts lose valid reimbursement when photos are missing, pre-stay condition was never recorded, or the filing window closed during a back-to-back turnover. $49, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-30cce4848c.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2027-01-19T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"Short-Term Rental Damage Claim Evidence Kit (Airbnb & VRBO)\", \"pinLink\": \"https://aekraft.gumroad.com/l/xwbbb?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-gr-30cce4848c-202611&utm_content=gr-30cce4848c-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "4cff8bb52403efab"
   },
   {
    "offer_id": "GR-3228cc6b63",
    "title": "Freelancer Scope-Creep Contract Kit",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-3228cc6b63.jpg",
-   "when_local": "2026-11-22T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2027-01-20T10:00:00",
+   "status": "REJECTED",
+   "reason": "offer is not eligible: listing state is UPLOAD_COMPLETED, not PUBLIC_LISTING_VERIFIED"
   },
   {
    "offer_id": "GR-342e45a45f",
    "title": "Tech Job Offer Evaluation & Negotiation System",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-342e45a45f.jpg",
-   "when_local": "2026-11-23T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2027-01-21T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2027-01-21T10:00:00+01:00",
+    "info": "{\"text\": \"Most tech candidates negotiate base salary only, accept equity at face value, and obey deadlines that serve the employer — leaving substantial lifetime value unclaimed. This kit is the structured DIY alternative at the price of the lowest tier: the same sequencing, math, and scripts a coach would walk through, in reusable sheets and letters. $49, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-342e45a45f.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2027-01-21T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"Tech Job Offer Evaluation & Negotiation System\", \"pinLink\": \"https://aekraft.gumroad.com/l/qpuagh?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-gr-342e45a45f-202611&utm_content=gr-342e45a45f-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "db6a24ee1ad5f73c"
   },
   {
    "offer_id": "GR-34985d0556",
    "title": "EU AI Act Compliance Toolkit — Practical Templates & Implementation Guide for SMEs",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-34985d0556.jpg",
-   "when_local": "2026-11-24T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2027-01-22T10:00:00",
+   "status": "REJECTED",
+   "reason": "offer is not eligible: listing state is UPLOAD_COMPLETED, not PUBLIC_LISTING_VERIFIED; on HOLD (hold_policy.py): internal quality audit recorded 11 critical content-accuracy findings, including Annex III categories that do not appear in the Act and an incorrect prohibition on high-risk GPAI models. Recorded as an internal finding, not a legal ruling.; delivery audit (GUMROAD_DELIVERY_AUDIT_2026-11-15.json): PREVIEW_FILE_DELIVERED; repair before promoting"
   },
   {
    "offer_id": "GR-36a9097179",
    "title": "Handbook Acknowledgment Tracker",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-36a9097179.jpg",
-   "when_local": "2026-11-25T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2027-01-23T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2027-01-23T10:00:00+01:00",
+    "info": "{\"text\": \"Version register, acknowledgment log, chase list, refusal form, and annual review calendar for small businesses without HR staff.edules annual review. Includes a plain-language guide with setup steps, weekly routines, illustrative examples labeled illustrative, checklists, FAQ, limitations, and disclosure. WHAT IS INCLUDED: $49, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-36a9097179.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2027-01-23T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"Handbook Acknowledgment Tracker\", \"pinLink\": \"https://aekraft.gumroad.com/l/fydjid?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-gr-36a9097179-202611&utm_content=gr-36a9097179-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "3764c5aad313c5b3"
   },
   {
    "offer_id": "GR-3e9d6d26a6",
    "title": "Suspended Seller First-Appeal POA System",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-3e9d6d26a6.jpg",
-   "when_local": "2026-11-26T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2027-01-24T10:00:00",
+   "status": "REJECTED",
+   "reason": "offer is not eligible: listing state is UPLOAD_COMPLETED, not PUBLIC_LISTING_VERIFIED"
   },
   {
    "offer_id": "GR-4050e1ff8a",
    "title": "Severance Agreement Review Checklist",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-4050e1ff8a.jpg",
-   "when_local": "2026-11-27T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2027-01-25T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2027-01-25T10:00:00+01:00",
+    "info": "{\"text\": \"Severance Agreement Review Checklist - $29. $29, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-4050e1ff8a.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2027-01-25T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"Severance Agreement Review Checklist\", \"pinLink\": \"https://aekraft.gumroad.com/l/vunrqm?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-gr-4050e1ff8a-202611&utm_content=gr-4050e1ff8a-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "7459a3e41460f493"
   },
   {
    "offer_id": "GR-40b960a83d",
    "title": "Salon Commission Pay Kit",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-40b960a83d.jpg",
-   "when_local": "2026-11-28T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2027-01-26T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2027-01-26T10:00:00+01:00",
+    "info": "{\"text\": \"Commission payroll kit for salons and spas: sales log, tier calculator, payout statements, dispute log, and agreement template. A commission pay kit for independent salons and spas with commission staff: a daily service and retail sales log, a tier calculator with exact formulas, per-stylist payout statements, a dispute log, and a commission agreement template. Each payout line shows its arithmetic so staff can verify it. $39, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-40b960a83d.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2027-01-26T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"Salon Commission Pay Kit\", \"pinLink\": \"https://aekraft.gumroad.com/l/xwacbo?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-gr-40b960a83d-202611&utm_content=gr-40b960a83d-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "9d7bf85a55eb5cb9"
   },
   {
    "offer_id": "GR-41d87224ab",
    "title": "Freelancer Rate & Raise Calculator",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-41d87224ab.jpg",
-   "when_local": "2026-11-29T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2027-01-27T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2027-01-27T10:00:00+01:00",
+    "info": "{\"text\": \"Stop guessing your rates. This spreadsheet computes YOUR minimum hourly rate from your own numbers — not from an average pulled off the internet, and not from a rate you picked because someone else charges it. $14.99, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-41d87224ab.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2027-01-27T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"Freelancer Rate & Raise Calculator\", \"pinLink\": \"https://aekraft.gumroad.com/l/blayvb?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-gr-41d87224ab-202611&utm_content=gr-41d87224ab-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "814ddffe360dd194"
   },
   {
    "offer_id": "GR-4409859130",
    "title": "SaaS Spend & Renewal Audit System for Small Teams",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-4409859130.jpg",
-   "when_local": "2026-11-30T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2027-01-28T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2027-01-28T10:00:00+01:00",
+    "info": "{\"text\": \"Unused seats, duplicate tools, and auto-renewals nobody approved quietly drain small-team budgets. $49, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-4409859130.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2027-01-28T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"SaaS Spend & Renewal Audit System for Small Teams\", \"pinLink\": \"https://aekraft.gumroad.com/l/pahxdv?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-gr-4409859130-202611&utm_content=gr-4409859130-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "b3a456695e1b8719"
   },
   {
    "offer_id": "GR-460da4d6b2",
    "title": "PCI SAQ Readiness Kit for Small Merchants",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-460da4d6b2.jpg",
-   "when_local": "2026-12-01T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2027-01-29T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2027-01-29T10:00:00+01:00",
+    "info": "{\"text\": \"A plain-language kit that helps US small merchants pick a candidate SAQ path, shrink card-data scope, and prepare an organized attestation file. A plain-language readiness kit for US small merchants that accept card payments. $59, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-460da4d6b2.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2027-01-29T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"PCI SAQ Readiness Kit for Small Merchants\", \"pinLink\": \"https://aekraft.gumroad.com/l/qezxe?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-gr-460da4d6b2-202611&utm_content=gr-460da4d6b2-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "9a3c5a03d2d42456"
   },
   {
    "offer_id": "GR-465bb926a7",
    "title": "Dental Insurance Verification Kit",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-465bb926a7.jpg",
-   "when_local": "2026-12-02T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2027-01-30T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2027-01-30T10:00:00+01:00",
+    "info": "{\"text\": \"8-point pre-visit verification system for dental teams: eligibility, benefits, limitations, coordination of benefits, and preauthorization review 48 to 72 hours before the visit. $59, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-465bb926a7.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2027-01-30T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"Dental Insurance Verification Kit\", \"pinLink\": \"https://aekraft.gumroad.com/l/diboaf?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-gr-465bb926a7-202611&utm_content=gr-465bb926a7-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "411558ecbc2db844"
   },
   {
    "offer_id": "GR-49bd37f875",
    "title": "Food Truck Permit Navigator",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-49bd37f875.jpg",
-   "when_local": "2026-12-03T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2027-01-31T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2027-01-31T10:00:00+01:00",
+    "info": "{\"text\": \"Permit map, cost and timeline estimator, application tracker, renewal calendar, and inspection checklist for first-time operators. $59, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-49bd37f875.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2027-01-31T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"Food Truck Permit Navigator\", \"pinLink\": \"https://aekraft.gumroad.com/l/cdfdcy?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-gr-49bd37f875-202611&utm_content=gr-49bd37f875-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "c18ee51673a4dd4b"
   },
   {
    "offer_id": "GR-4ad7472b8c",
    "title": "Real Estate Transaction Deadline Kit",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-4ad7472b8c.jpg",
-   "when_local": "2026-12-04T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2027-02-01T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2027-02-01T10:00:00+01:00",
+    "info": "{\"text\": \"An agent-side operations kit for solo agents and transaction coordinators juggling multiple deals: multi-deal tracker with deadline formulas, document checklist, inspection appraisal loan contingency log, and post-close review. $29, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-4ad7472b8c.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2027-02-01T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"Real Estate Transaction Deadline Kit\", \"pinLink\": \"https://aekraft.gumroad.com/l/vwlmeo?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-gr-4ad7472b8c-202611&utm_content=gr-4ad7472b8c-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "7736c1476fd65785"
   },
   {
    "offer_id": "GR-4b3f22e75e",
    "title": "ADA Demand-Letter Response & Triage Kit",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-4b3f22e75e.jpg",
-   "when_local": "2026-12-05T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2027-02-02T10:00:00",
+   "status": "REJECTED",
+   "reason": "offer is not eligible: listing state is UPLOAD_COMPLETED, not PUBLIC_LISTING_VERIFIED"
   },
   {
    "offer_id": "GR-52aa3d878c",
    "title": "Security Deposit Demand Kit for Tenants",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-52aa3d878c.jpg",
-   "when_local": "2026-12-06T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2027-02-03T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2027-02-03T10:00:00+01:00",
+    "info": "{\"text\": \"Security Deposit Demand Kit for Tenants - $29. $29, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-52aa3d878c.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2027-02-03T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"Security Deposit Demand Kit for Tenants\", \"pinLink\": \"https://aekraft.gumroad.com/l/yiqba?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-gr-52aa3d878c-202611&utm_content=gr-52aa3d878c-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "89cc53967b38a8b3"
   },
   {
    "offer_id": "GR-541c7ced0a",
    "title": "Subscription Renewal Compliance Kit",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-541c7ced0a.jpg",
-   "when_local": "2026-12-07T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2027-02-04T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2027-02-04T10:00:00+01:00",
+    "info": "{\"text\": \"Organize disclosure, consent, and cancellation reviews for subscription offers with checklists, test scripts, and a 30/60/90-day plan. A practical operations kit for US subscription and membership sellers reviewing auto-renewal disclosure, consent records, and cancellation paths under ROSCA and state automatic-renewal statutes. Includes an operating guide. $69, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-541c7ced0a.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2027-02-04T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"Subscription Renewal Compliance Kit\", \"pinLink\": \"https://aekraft.gumroad.com/l/xouyjy?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-gr-541c7ced0a-202611&utm_content=gr-541c7ced0a-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "d43d521de37cee0b"
   },
   {
    "offer_id": "GR-57ef021040",
    "title": "Stripe Chargeback Defense Kit for Digital Sellers",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-57ef021040.jpg",
-   "when_local": "2026-12-08T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2027-02-05T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2027-02-05T10:00:00+01:00",
+    "info": "{\"text\": \"Selling digital products? One chargeback can wipe out 10 sales. This 15-page kit shows how to build evidence packets Stripe actually accepts: digital activity logs as delivery proof, prevention checklists for listings, and delivery-proof discipline for every order. Built for sellers of ebooks, templates, software, and courses. Practical templates, not legal advice. No guaranteed outcomes, no reviews yet, no hype. $29, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-57ef021040.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2027-02-05T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"Stripe Chargeback Defense Kit for Digital Sellers\", \"pinLink\": \"https://aekraft.gumroad.com/l/ceiwk?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-gr-57ef021040-202611&utm_content=gr-57ef021040-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "b4da181134bc7b3c"
   },
   {
    "offer_id": "GR-59f3f65424",
    "title": "Food-Contact Materials Starter",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-59f3f65424.jpg",
-   "when_local": "2026-12-09T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2027-02-06T10:00:00",
+   "status": "REJECTED",
+   "reason": "offer is not eligible: listing state is UPLOAD_COMPLETED, not PUBLIC_LISTING_VERIFIED"
   },
   {
    "offer_id": "GR-5bd18ab656",
    "title": "STR Direct Booking Revenue Kit",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-5bd18ab656.jpg",
-   "when_local": "2026-12-10T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2027-02-07T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2027-02-07T10:00:00+01:00",
+    "info": "{\"text\": \"Since December 2025, Airbnb takes 15.5% of every booking from hosts. Booking.com takes 15–18%. $59, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-5bd18ab656.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2027-02-07T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"STR Direct Booking Revenue Kit\", \"pinLink\": \"https://aekraft.gumroad.com/l/ppsluq?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-gr-5bd18ab656-202611&utm_content=gr-5bd18ab656-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "970cdb43881fa924"
   },
   {
    "offer_id": "GR-6275a223a6",
    "title": "SaaS Churn Email Pack",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-6275a223a6.jpg",
-   "when_local": "2026-12-11T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2027-02-08T10:00:00",
+   "status": "REJECTED",
+   "reason": "offer is not eligible: listing state is UPLOAD_COMPLETED, not PUBLIC_LISTING_VERIFIED"
   },
   {
    "offer_id": "GR-673041e16c",
    "title": "Legal Case Research Automation for Solo Attorneys",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-673041e16c.jpg",
-   "when_local": "2026-12-12T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2027-02-09T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2027-02-09T10:00:00+01:00",
+    "info": "{\"text\": \"Legal case research for solo attorneys who have to move faster than their research tools allow. $29, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-673041e16c.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2027-02-09T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"Legal Case Research Automation for Solo Attorneys\", \"pinLink\": \"https://aekraft.gumroad.com/l/uldlwa?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-gr-673041e16c-202611&utm_content=gr-673041e16c-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "3e65a1e3c2d2bab2"
   },
   {
    "offer_id": "GR-67795d0eb5",
    "title": "EU Green Claims Review Kit",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-67795d0eb5.jpg",
-   "when_local": "2026-12-13T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2027-02-10T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2027-02-10T10:00:00+01:00",
+    "info": "{\"text\": \"Inventory, evidence-linking, and review tools to clean up eco claims for EU consumers under Empowering Consumers rules from 27 Sep 2026. A review kit for D2C, e-commerce, fashion, and cosmetics brands marketing environmental claims to EU consumers. $69, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-67795d0eb5.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2027-02-10T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"EU Green Claims Review Kit\", \"pinLink\": \"https://aekraft.gumroad.com/l/uyzuu?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-gr-67795d0eb5-202611&utm_content=gr-67795d0eb5-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "5cad5c87bc2ad60d"
   },
   {
    "offer_id": "GR-6be7a41899",
    "title": "Landlord Move-In Inspection Pack",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-6be7a41899.jpg",
-   "when_local": "2026-12-14T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2027-02-11T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2027-02-11T10:00:00+01:00",
+    "info": "{\"text\": \"Room-by-room condition reports, photo logs, and signatures for move-in day. A move-in documentation pack for independent landlords focused on condition evidence: room-by-room condition notes, timestamped photo inventory, signature tracking with copy-delivery logging, plain wear-vs-damage reference, and state-notice rule notes. Includes a printable condition report form and tenant acknowledgment packet. $49, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-6be7a41899.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2027-02-11T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"Landlord Move-In Inspection Pack\", \"pinLink\": \"https://aekraft.gumroad.com/l/gzbdaz?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-gr-6be7a41899-202611&utm_content=gr-6be7a41899-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "7f0b0aa650af40b2"
   },
   {
    "offer_id": "GR-742a42d65f",
    "title": "Vendor Questionnaire Response Kit",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-742a42d65f.jpg",
-   "when_local": "2026-12-15T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2027-02-12T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2027-02-12T10:00:00+01:00",
+    "info": "{\"text\": \"An enterprise prospect just sent a 100+ question security questionnaire — SIG Lite, SIG Core, or a cloud CAIQ variant — and your deal stalls until it is answered well. This kit turns that pile into a two-week, evidence-backed response program. $89, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-742a42d65f.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2027-02-12T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"Vendor Questionnaire Response Kit\", \"pinLink\": \"https://aekraft.gumroad.com/l/pyzqa?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-gr-742a42d65f-202611&utm_content=gr-742a42d65f-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "2c21e59b162051fb"
   },
   {
    "offer_id": "GR-78692be074",
    "title": "Digital-Product Refund Policy Pack",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-78692be074.jpg",
-   "when_local": "2026-12-16T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2027-02-13T10:00:00",
+   "status": "REJECTED",
+   "reason": "offer is not eligible: listing state is UPLOAD_COMPLETED, not PUBLIC_LISTING_VERIFIED"
   },
   {
    "offer_id": "GR-7a569c5ee4",
    "title": "Amazon FBA Reconciliation Workbook",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-7a569c5ee4.jpg",
-   "when_local": "2026-12-17T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2027-02-14T10:00:00",
+   "status": "REJECTED",
+   "reason": "offer is not eligible: listing state is UPLOAD_COMPLETED, not PUBLIC_LISTING_VERIFIED; on HOLD (hold_policy.py): listed as a workbook; the delivered file is a one-page, 331-word PDF with empty tables and outcome claims the content does not support.; delivery audit (GUMROAD_DELIVERY_AUDIT_2026-11-15.json): PROMISES_SPREADSHEET_NOT_ATTACHED; repair before promoting"
   },
   {
    "offer_id": "GR-7ec42de401",
    "title": "Etsy Suspension Appeal Kit",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-7ec42de401.jpg",
-   "when_local": "2026-12-18T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2027-02-15T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2027-02-15T10:00:00+01:00",
+    "info": "{\"text\": \"Etsy shop suspended? You have 6 months to appeal a permanent suspension - and most sellers do not realise how short that window really feels. $29, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-7ec42de401.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2027-02-15T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"Etsy Suspension Appeal Kit\", \"pinLink\": \"https://aekraft.gumroad.com/l/fgruzn?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-gr-7ec42de401-202611&utm_content=gr-7ec42de401-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "f0367e51e0b1073f"
   },
   {
    "offer_id": "GR-84e347793d",
    "title": "CCPA Compliance Action Kit for Small Business",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-84e347793d.jpg",
-   "when_local": "2026-12-19T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2027-02-16T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2027-02-16T10:00:00+01:00",
+    "info": "{\"text\": \"A practical CCPA/CPRA action system for small US businesses with websites: applicability check, privacy policy disclosures, Do Not Sell or Share opt-out, GPC handling, 45-day consumer request workflow, and vendor contracts. 13-page PDF. Practical guide — not legal advice. $29, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-84e347793d.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2027-02-16T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"CCPA Compliance Action Kit for Small Business\", \"pinLink\": \"https://aekraft.gumroad.com/l/kaooj?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-gr-84e347793d-202611&utm_content=gr-84e347793d-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "a8b5680088748e15"
   },
   {
    "offer_id": "GR-876de3c06e",
    "title": "Creator Brand-Deal Management System",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-876de3c06e.jpg",
-   "when_local": "2026-12-20T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2027-02-17T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2027-02-17T10:00:00+01:00",
+    "info": "{\"text\": \"Price, triage, and track brand sponsorships without giving away usage or revisions. $49, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-876de3c06e.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2027-02-17T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"Creator Brand-Deal Management System\", \"pinLink\": \"https://aekraft.gumroad.com/l/vzmswo?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-gr-876de3c06e-202611&utm_content=gr-876de3c06e-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "698ac2d82567f3af"
   },
   {
    "offer_id": "GR-8e78d6c337",
    "title": "AI Agent Blueprint for Small SaaS CloudOps Automation",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-8e78d6c337.jpg",
-   "when_local": "2026-12-21T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2027-02-18T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2027-02-18T10:00:00+01:00",
+    "info": "{\"text\": \"A practical automation blueprint for small SaaS teams: incident runbooks, AI-SRE and AI-FinOps patterns, managed-vs-in-house economics, and alert-triage automation. 9-page PDF. $29, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-8e78d6c337.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2027-02-18T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"AI Agent Blueprint for Small SaaS CloudOps Automation\", \"pinLink\": \"https://aekraft.gumroad.com/l/esnpki?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-gr-8e78d6c337-202611&utm_content=gr-8e78d6c337-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "d1ed254a4da346c2"
   },
   {
    "offer_id": "GR-91f851b123",
    "title": "Employee Offboarding & Access-Revocation System",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-91f851b123.jpg",
-   "when_local": "2026-12-22T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2027-02-19T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2027-02-19T10:00:00+01:00",
+    "info": "{\"text\": \"When someone leaves, their access should leave the same day. In companies with 20 or more SaaS tools, it rarely does — leavers keep logins, orphaned seats keep billing, and nobody can prove what was revoked. $49, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-91f851b123.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2027-02-19T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"Employee Offboarding & Access-Revocation System\", \"pinLink\": \"https://aekraft.gumroad.com/l/tjbly?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-gr-91f851b123-202611&utm_content=gr-91f851b123-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "76495ae0824b6728"
   },
   {
    "offer_id": "GR-9201af7c3d",
    "title": "GCC Contractor Payment Command System (V2 Bundle)",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-9201af7c3d.jpg",
-   "when_local": "2026-12-23T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2027-02-20T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2027-02-20T10:00:00+01:00",
+    "info": "{\"text\": \"GCC Contractor Payment Command System (V2 Bundle) - $399. $399, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-9201af7c3d.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2027-02-20T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"GCC Contractor Payment Command System (V2 Bundle)\", \"pinLink\": \"https://aekraft.gumroad.com/l/jlxmez?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-gr-9201af7c3d-202611&utm_content=gr-9201af7c3d-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "af8fa00746a7f77d"
   },
   {
    "offer_id": "GR-97d703401f",
    "title": "Founder Access Continuity Organizer",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-97d703401f.jpg",
-   "when_local": "2026-12-24T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2027-02-21T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2027-02-21T10:00:00+01:00",
+    "info": "{\"text\": \"A one-person business has one single point of failure: you. If you are in hospital, offline for a week, or simply unreachable, the business does not pause — it fails quietly, because nobody else knows what it runs on or how to get back in. This is the organizer that fixes that, without ever writing a password on paper. $8, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-97d703401f.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2027-02-21T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"Founder Access Continuity Organizer\", \"pinLink\": \"https://aekraft.gumroad.com/l/svlky?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-gr-97d703401f-202611&utm_content=gr-97d703401f-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "08e1d561117dc353"
   },
   {
    "offer_id": "GR-99ccfe16de",
    "title": "EU Late Payment Recovery Kit",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-99ccfe16de.jpg",
-   "when_local": "2026-12-25T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2027-02-22T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2027-02-22T10:00:00+01:00",
+    "info": "{\"text\": \"EU Late Payment Recovery Kit - $59. $59, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-99ccfe16de.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2027-02-22T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"EU Late Payment Recovery Kit\", \"pinLink\": \"https://aekraft.gumroad.com/l/ciowwm?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-gr-99ccfe16de-202611&utm_content=gr-99ccfe16de-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "77b252b707ca9331"
   },
   {
    "offer_id": "GR-9c3726734b",
    "title": "Commercial Lease CAM & Operating-Expense Audit Kit",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-9c3726734b.jpg",
-   "when_local": "2026-12-26T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2027-02-23T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2027-02-23T10:00:00+01:00",
+    "info": "{\"text\": \"About 40% of reconciliations contain material errors (OBSERVED — CAMAudit, accessed 2026-09-25), yet most small tenants pay the statement as presented because the jargon defeats review and the professional alternatives cost more than the dispute. This kit reverses that arithmetic with a complete DIY review operation. $59, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-9c3726734b.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2027-02-23T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"Commercial Lease CAM & Operating-Expense Audit Kit\", \"pinLink\": \"https://aekraft.gumroad.com/l/xmbxpz?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-gr-9c3726734b-202611&utm_content=gr-9c3726734b-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "d536beeead9497fc"
   },
   {
    "offer_id": "GR-9ca0823dac",
    "title": "Restaurant Food Cost Control Kit",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-9ca0823dac.jpg",
-   "when_local": "2026-12-27T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2027-02-24T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2027-02-24T10:00:00+01:00",
+    "info": "{\"text\": \"Weekly food cost control kit for independent restaurants: inventory sheets, recipe coster, variance dashboard, waste log, and par reorder discipline. $49, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-9ca0823dac.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2027-02-24T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"Restaurant Food Cost Control Kit\", \"pinLink\": \"https://aekraft.gumroad.com/l/swkgd?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-gr-9ca0823dac-202611&utm_content=gr-9ca0823dac-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "08e606de6b7f3560"
   },
   {
    "offer_id": "GR-9dcaccc0b3",
    "title": "Etsy Ads ROI Playbook + Calculator",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-9dcaccc0b3.jpg",
-   "when_local": "2026-12-28T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2027-02-25T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2027-02-25T10:00:00+01:00",
+    "info": "{\"text\": \"Etsy Ads ROI Playbook + Calculator - $39. $39, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-9dcaccc0b3.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2027-02-25T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"Etsy Ads ROI Playbook + Calculator\", \"pinLink\": \"https://aekraft.gumroad.com/l/hasjmp?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-gr-9dcaccc0b3-202611&utm_content=gr-9dcaccc0b3-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "8dc585a8646f420d"
   },
   {
    "offer_id": "GR-9e454ccff8",
    "title": "Clinic No-Show Reduction Kit",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-9e454ccff8.jpg",
-   "when_local": "2026-12-29T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2027-02-26T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2027-02-26T10:00:00+01:00",
+    "info": "{\"text\": \"A 3-touch reminder and waitlist kit that helps dental and medical practices confirm more visits and refill open slots faster. A front-desk kit for dental and medical outpatient practices that want a steadier appointment book. $59, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-9e454ccff8.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2027-02-26T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"Clinic No-Show Reduction Kit\", \"pinLink\": \"https://aekraft.gumroad.com/l/eiztlg?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-gr-9e454ccff8-202611&utm_content=gr-9e454ccff8-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "56b8a303683fc354"
   },
   {
    "offer_id": "GR-a176706761",
    "title": "Freelancer Scope Control Kit",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-a176706761.jpg",
-   "when_local": "2026-12-30T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2027-02-27T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2027-02-27T10:00:00+01:00",
+    "info": "{\"text\": \"SOW with exclusions, milestone map, change-order form, revision counter, rate card, and pushback scripts for fixed-price and hourly freelancers. $19, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-a176706761.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2027-02-27T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"Freelancer Scope Control Kit\", \"pinLink\": \"https://aekraft.gumroad.com/l/ziiur?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-gr-a176706761-202611&utm_content=gr-a176706761-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "5094cd3128ac4a97"
   },
   {
    "offer_id": "GR-a56ea2e341",
    "title": "Etsy Suspension: Triage + Appeal Bundle (Both Steps, 25+ Pages)",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-a56ea2e341.jpg",
-   "when_local": "2026-12-31T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2027-02-28T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2027-02-28T10:00:00+01:00",
+    "info": "{\"text\": \"Suspended? Two steps, and most sellers do them in the wrong order. $79, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-a56ea2e341.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2027-02-28T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"Etsy Suspension: Triage + Appeal Bundle (Both Steps, 25+ Pages)\", \"pinLink\": \"https://aekraft.gumroad.com/l/bfhpzl?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-gr-a56ea2e341-202611&utm_content=gr-a56ea2e341-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "83980521d2ce7049"
   },
   {
    "offer_id": "GR-a76fa0a9dd",
    "title": "EU Packaging EPR Action Kit",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-a76fa0a9dd.jpg",
-   "when_local": "2027-01-01T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2027-03-01T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2027-03-01T10:00:00+01:00",
+    "info": "{\"text\": \"Since August 2026 the rules changed: VerpackG repealed, the EU Packaging Regulation (PPWR) applies, and foreign distance sellers can no longer self-register in Germany — an Authorised Representative is mandatory. Marketplaces auto-verify registration numbers and auto-block listings without valid proof. Fines reach EUR 200,000 with sales bans attached. $69, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-a76fa0a9dd.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2027-03-01T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"EU Packaging EPR Action Kit\", \"pinLink\": \"https://aekraft.gumroad.com/l/gfsvu?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-gr-a76fa0a9dd-202611&utm_content=gr-a76fa0a9dd-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "e571c594138248d8"
   },
   {
    "offer_id": "GR-a8cfecca6a",
    "title": "SOC 2 Compliance Automation Guide for Startups",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-a8cfecca6a.jpg",
-   "when_local": "2027-01-02T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2027-03-02T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2027-03-02T10:00:00+01:00",
+    "info": "{\"text\": \"A practical SOC 2 readiness system for startups: trust-criteria mapping, evidence automation, vendor management, access controls, and audit economics. 18-page PDF. $29, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-a8cfecca6a.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2027-03-02T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"SOC 2 Compliance Automation Guide for Startups\", \"pinLink\": \"https://aekraft.gumroad.com/l/sjmbrp?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-gr-a8cfecca6a-202611&utm_content=gr-a8cfecca6a-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "6d1bd25ce9d1beab"
   },
   {
    "offer_id": "GR-a8ee3e9d09",
    "title": "Homebuyer Inspection Action Kit",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-a8ee3e9d09.jpg",
-   "when_local": "2027-01-03T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2027-03-03T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2027-03-03T10:00:00+01:00",
+    "info": "{\"text\": \"Buyer-side kit for US first-time home buyers under inspection contingency: turn a long inspection report into a fix, credit, or accept decision with dollar math before the deadline. A buyer-side action kit priced at $29. $29, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-a8ee3e9d09.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2027-03-03T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"Homebuyer Inspection Action Kit\", \"pinLink\": \"https://aekraft.gumroad.com/l/volqjv?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-gr-a8ee3e9d09-202611&utm_content=gr-a8ee3e9d09-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "d71211342e279ee1"
   },
   {
    "offer_id": "GR-b1983191ca",
    "title": "DSAR Response Kit ($59)",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-b1983191ca.jpg",
-   "when_local": "2027-01-04T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2027-03-04T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2027-03-04T10:00:00+01:00",
+    "info": "{\"text\": \"5-stage DSAR workflow with intake log, SLA formulas, verification checklist, source registry, deletion runbook, and 4 response letters for small SaaS teams. $59, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-b1983191ca.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2027-03-04T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"DSAR Response Kit ($59)\", \"pinLink\": \"https://aekraft.gumroad.com/l/uqmqnu?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-gr-b1983191ca-202611&utm_content=gr-b1983191ca-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "6968d59fc2c6b734"
   },
   {
    "offer_id": "GR-b99bdaf89c",
    "title": "FTC Consumer Review Rule Compliance Kit",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-b99bdaf89c.jpg",
-   "when_local": "2027-01-05T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2027-03-05T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2027-03-05T10:00:00+01:00",
+    "info": "{\"text\": \"In December 2025 the FTC sent warning letters to 10 companies over fake and incentivized reviews. $69, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-b99bdaf89c.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2027-03-05T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"FTC Consumer Review Rule Compliance Kit\", \"pinLink\": \"https://aekraft.gumroad.com/l/ekhza?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-gr-b99bdaf89c-202611&utm_content=gr-b99bdaf89c-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "a62e343dd3fd1f75"
   },
   {
    "offer_id": "GR-b9f6e295c0",
    "title": "EU AI Act Audit Logging Kit",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-b9f6e295c0.jpg",
-   "when_local": "2027-01-06T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2027-03-06T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2027-03-06T10:00:00+01:00",
+    "info": "{\"text\": \"EU AI Act Audit Logging Kit - $29. $29, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-b9f6e295c0.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2027-03-06T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"EU AI Act Audit Logging Kit\", \"pinLink\": \"https://aekraft.gumroad.com/l/fwxmms?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-gr-b9f6e295c0-202611&utm_content=gr-b9f6e295c0-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "85c6292fdca02e53"
   },
   {
    "offer_id": "GR-ca2a7d0d18",
    "title": "Newsletter Deliverability & Inbox Placement System",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-ca2a7d0d18.jpg",
-   "when_local": "2027-01-07T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2027-03-07T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2027-03-07T10:00:00+01:00",
+    "info": "{\"text\": \"Your newsletter is written, your list is growing, and half of it lands in spam. The usual causes are unglamorous: missing authentication, a cold list of readers who stopped opening years ago, and no plan for the day metrics collapse. This kit is the structured DIY alternative: the same diagnostic sequence, as a system you run yourself. $49, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-ca2a7d0d18.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2027-03-07T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"Newsletter Deliverability & Inbox Placement System\", \"pinLink\": \"https://aekraft.gumroad.com/l/iwbcmi?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-gr-ca2a7d0d18-202611&utm_content=gr-ca2a7d0d18-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "25e3d938824f261c"
   },
   {
    "offer_id": "GR-cd958b18ca",
    "title": "Turo Guest Dispute Toolkit",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-cd958b18ca.jpg",
-   "when_local": "2027-01-08T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2027-03-08T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2027-03-08T10:00:00+01:00",
+    "info": "{\"text\": \"Got a Turo invoice or damage claim you don't owe? You have 48 hours to dispute an invoice — then the window closes permanently and your card on file gets charged automatically. Built from Turo's own published help pages (checked September 2026) and real guest failure patterns. Practical guide — not legal advice. US guests; policies change, so every deadline tells you to verify the current wording before acting. $29, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-cd958b18ca.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2027-03-08T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"Turo Guest Dispute Toolkit\", \"pinLink\": \"https://aekraft.gumroad.com/l/adyvd?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-gr-cd958b18ca-202611&utm_content=gr-cd958b18ca-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "0dfa1a8cd5bf9af3"
   },
   {
    "offer_id": "GR-d91a1bfc52",
    "title": "Etsy Policy Triage: Find Your Exact Violation in 15 Minutes",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-d91a1bfc52.jpg",
-   "when_local": "2027-01-09T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2027-03-09T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2027-03-09T10:00:00+01:00",
+    "info": "{\"text\": \"Suspended without a reason? The first 15 minutes decide everything, and most sellers spend them writing the wrong appeal. $49, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-d91a1bfc52.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2027-03-09T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"Etsy Policy Triage: Find Your Exact Violation in 15 Minutes\", \"pinLink\": \"https://aekraft.gumroad.com/l/sjrjxq?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-gr-d91a1bfc52-202611&utm_content=gr-d91a1bfc52-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "4c27099ff32e7f64"
   },
   {
    "offer_id": "GR-dc1d67af68",
    "title": "Mechanics Lien Filing Kit for Contractors",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-dc1d67af68.jpg",
-   "when_local": "2027-01-10T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2027-03-10T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2027-03-10T10:00:00+01:00",
+    "info": "{\"text\": \"Mechanics Lien Filing Kit for Contractors - $29. $29, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-dc1d67af68.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2027-03-10T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"Mechanics Lien Filing Kit for Contractors\", \"pinLink\": \"https://aekraft.gumroad.com/l/jibnyt?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-gr-dc1d67af68-202611&utm_content=gr-dc1d67af68-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "4922b16aecac28fa"
   },
   {
    "offer_id": "GR-dd3b61adf3",
    "title": "GPSR EU Seller Action Kit",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-dd3b61adf3.jpg",
-   "when_local": "2027-01-11T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2027-03-11T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2027-03-11T10:00:00+01:00",
+    "info": "{\"text\": \"The DIY compliance route for NON-EU sellers (US, UK, elsewhere) offering consumer products to EU buyers on Etsy, Amazon EU, eBay EU or Shopify. $79, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-dd3b61adf3.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2027-03-11T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"GPSR EU Seller Action Kit\", \"pinLink\": \"https://aekraft.gumroad.com/l/fetmu?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-gr-dd3b61adf3-202611&utm_content=gr-dd3b61adf3-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "3c13bd649bb5d7a6"
   },
   {
    "offer_id": "GR-ddb44115c3",
    "title": "GCC Contractor Payment Command System",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-ddb44115c3.jpg",
-   "when_local": "2027-01-12T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2027-03-12T10:00:00",
+   "status": "REJECTED",
+   "reason": "offer is not eligible: listing state is UPLOAD_COMPLETED, not PUBLIC_LISTING_VERIFIED"
   },
   {
    "offer_id": "GR-e24c0b6c1f",
    "title": "Vendor Onboarding & 1099-Readiness Pack for US Small Business",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-e24c0b6c1f.jpg",
-   "when_local": "2027-01-13T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2027-03-13T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2027-03-13T10:00:00+01:00",
+    "info": "{\"text\": \"Every January the same scramble: missing W-9s, uncertain NEC-versus-MISC calls, and a CPA asking questions your records cannot answer. The authoritative reference is IRS Publication 1099 (2026) (OBSERVED, accessed 2026-09-25), which this kit cites throughout; note also that FIRE retires for TY2026 and IRIS is the electronic path (OBSERVED: IRS Publication 1099 (2026), accessed 2026-09-25). $49, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-e24c0b6c1f.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2027-03-13T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"Vendor Onboarding & 1099-Readiness Pack for US Small Business\", \"pinLink\": \"https://aekraft.gumroad.com/l/ykwdfc?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-gr-e24c0b6c1f-202611&utm_content=gr-e24c0b6c1f-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "c19752aae7321ca4"
   },
   {
    "offer_id": "GR-e46938b960",
    "title": "DTC Returns Abuse Playbook: Fair Tiered Policy with Graduated Responses",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-e46938b960.jpg",
-   "when_local": "2027-01-14T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2027-03-14T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2027-03-14T10:00:00+01:00",
+    "info": "{\"text\": \"A tiered returns system with structured reasons, photo rules for damage claims, account-level scoring, inspection discipline, and warn-before-restrict workflow. $59, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-e46938b960.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2027-03-14T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"DTC Returns Abuse Playbook: Fair Tiered Policy with Graduated Responses\", \"pinLink\": \"https://aekraft.gumroad.com/l/mrecoe?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-gr-e46938b960-202611&utm_content=gr-e46938b960-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "fe693cbd25dbfc11"
   },
   {
    "offer_id": "GR-e5edb1f278",
    "title": "Sales Tax Nexus Tracker",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-e5edb1f278.jpg",
-   "when_local": "2027-01-15T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2027-03-15T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2027-03-15T10:00:00+01:00",
+    "info": "{\"text\": \"Monitor rolling sales by state, track threshold verification dates, organize registrations, and calendar filings with CPA-ready handoffs. A practical operations kit for US remote sellers shipping into multiple states. Includes an operating guide. $79, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-e5edb1f278.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2027-03-15T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"Sales Tax Nexus Tracker\", \"pinLink\": \"https://aekraft.gumroad.com/l/uucxer?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-gr-e5edb1f278-202611&utm_content=gr-e5edb1f278-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "88dcac9ec0fd5dc0"
   },
   {
    "offer_id": "GR-eb5f48c3aa",
    "title": "EU AI Act Compliance Quickstart Checklist",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-eb5f48c3aa.jpg",
-   "when_local": "2027-01-16T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2027-03-16T10:00:00",
+   "status": "REJECTED",
+   "reason": "offer is not eligible: listing state is UPLOAD_COMPLETED, not PUBLIC_LISTING_VERIFIED"
   },
   {
    "offer_id": "GR-ed2a731cba",
    "title": "Battery & WEEE Mini-Guide for Sellers",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-ed2a731cba.jpg",
-   "when_local": "2027-01-17T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2027-03-17T10:00:00",
+   "status": "REJECTED",
+   "reason": "offer is not eligible: listing state is UPLOAD_COMPLETED, not PUBLIC_LISTING_VERIFIED"
   },
   {
    "offer_id": "GR-f32a573dfb",
    "title": "Toy Safety File Starter (EN 71 Lens)",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-f32a573dfb.jpg",
-   "when_local": "2027-01-18T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2027-03-18T10:00:00",
+   "status": "REJECTED",
+   "reason": "offer is not eligible: listing state is UPLOAD_COMPLETED, not PUBLIC_LISTING_VERIFIED"
   },
   {
    "offer_id": "GR-f691a87f7e",
    "title": "Section 8 Notice Validity System (England)",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-f691a87f7e.jpg",
-   "when_local": "2027-01-19T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2027-03-19T10:00:00",
+   "status": "READY",
+   "call": {
+    "blogId": "6965613",
+    "date": "2027-03-19T10:00:00+01:00",
+    "info": "{\"text\": \"Section 8 notice validity system for private landlords in England: validity checklist with do-not-serve verdict, grounds selector, timeline tracker with 12-month deadline, service evidence log, solicitor triggers, operating manual, drafting worksheets, and official-source map (GOV.UK, legislation.gov.uk, Shelter). Works with the official Form 3A — always use the current official version. $59, one-time purchase.\", \"providers\": [{\"network\": \"pinterest\"}], \"media\": [\"https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-f691a87f7e.jpg\"], \"autoPublish\": true, \"publicationDate\": {\"dateTime\": \"2027-03-19T10:00:00\", \"timezone\": \"Europe/Paris\"}, \"pinterestData\": {\"boardId\": \"1106619008379856440\", \"pinTitle\": \"Section 8 Notice Validity System (England)\", \"pinLink\": \"https://aekraft.gumroad.com/l/nmasnb?utm_source=pinterest&utm_medium=social_organic&utm_campaign=gf-gr-f691a87f7e-202611&utm_content=gr-f691a87f7e-pinterest-v1\"}}",
+    "reviewers": "aekgalaxy47@gmail.com",
+    "approvalSystem": "any",
+    "notify": true
+   },
+   "fingerprint": "fb558714f117ba09"
   },
   {
    "offer_id": "GR-f7ddf33a9f",
    "title": "EU Cosmetics Responsible Person Guide",
    "image": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/pins/gr-f7ddf33a9f.jpg",
-   "when_local": "2027-01-20T10:00:00",
-   "status": "BLOCKED_NO_BOARD",
-   "reason": "no public board named 'Small Business Finance Tools'; boards: ['family-home-cooking', 'islamic-quotes', 'plats']"
+   "when_local": "2027-03-20T10:00:00",
+   "status": "REJECTED",
+   "reason": "offer is not eligible: listing state is UPLOAD_COMPLETED, not PUBLIC_LISTING_VERIFIED"
   }
  ],
  "summary": {
-  "BLOCKED_NO_BOARD": 86
+  "READY": 105,
+  "REJECTED": 16
  }
 }
