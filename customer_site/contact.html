@@ -55,10 +55,6 @@ footer{border-top:1px solid var(--border-soft); padding:3rem 0 2.5rem; margin-to
 @media (max-width:600px){ .nav-links{display:none;} }
 </style>
     <script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebPage", "url": "https://galaxyaek7-del.github.io/openclaw-factory/customer_site/contact.html", "name": "Contact — Galaxy Forge", "publisher": {"@type": "Organization", "name": "Galaxy Forge"}}</script>
-    <meta property="og:title" content="Contact — Galaxy Forge">
-    <meta property="og:description" content="Get in touch with Galaxy Forge — every message is read by a real person.">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://galaxyaek7-del.github.io/openclaw-factory/customer_site/contact.html">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Galaxy Forge">
 <meta property="og:image" content="https://galaxyaek7-del.github.io/openclaw-factory/customer_site/assets/og-default.png">
@@ -143,7 +139,8 @@ footer{border-top:1px solid var(--border-soft); padding:3rem 0 2.5rem; margin-to
       .then(function(r){ return r.json().then(function(body){ return { ok: r.ok, body: body }; }); })
       .then(function(res){
         if (!res.ok || res.body.success === false) throw new Error('local-offline');
-        status.textContent = 'Message received. A real person will reply by email.';
+        status.textContent = (res.body && res.body.response && res.body.response.text)
+          || 'Message received. A real person will reply by email.';
         status.className = 'success';
         form.reset();
       })
