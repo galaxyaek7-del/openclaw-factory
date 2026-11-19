@@ -21,6 +21,8 @@ const assert = require('node:assert/strict');
 const { spawn } = require('child_process');
 const net = require('net');
 const path = require('path');
+const fs = require('fs');
+const os = require('os');
 
 const PORT = 3199; // distinct from the interactive-session convention (3099), to avoid any collision if both ever run at once
 const BASE_URL = `http://localhost:${PORT}`;
@@ -30,6 +32,9 @@ const REPO_ROOT = path.join(__dirname, '..');
 
 let serverProcess;
 let cookie;
+// Mutation contract tests (finance/add + delete) must never touch the real
+// protected ledger. The server reads this disposable copy instead.
+const FINANCE_TEST_FILE = path.join(os.tmpdir(), `api_contract_finance_${process.pid}.json`);
 
 // ── Bounded waits (added 2026-10-05, test-only) ──────────────────────────────
 //
@@ -184,14 +189,9 @@ async function waitForServer(timeoutMs = 15000) {
   const start = Date.now();
   while (Date.now() - start < timeoutMs) {
     try {
-      // Bounded, but NOT tighter than a real cold /api/dashboard: that endpoint
-      // runs computeHealthStatus(), which performs live network reachability
-      // probes and legitimately takes 3-5s. A 3s poll here made every attempt
-      // time out and the server was reported as never ready -- a regression I
-      // introduced while adding these bounds, caught by running the suite
-      // rather than by reading the diff. The outer 15s deadline in
-      // waitForServer still bounds the whole wait, exactly as before.
-      const res = await fetchWithTimeout(`${BASE_URL}/api/dashboard`, {}, 10000);
+      // /health (not /api/dashboard, which now requires Mission Control auth
+      // and is heavier). 10s is still comfortably above a cold first compute.
+      const res = await fetchWithTimeout(`${BASE_URL}/health`, {}, 10000);
       if (res.status) return;
     } catch {
       // not up yet
@@ -202,9 +202,16 @@ async function waitForServer(timeoutMs = 15000) {
 }
 
 test.before(async () => {
+  fs.copyFileSync(path.join(REPO_ROOT, 'finance_data.json'), FINANCE_TEST_FILE);
   serverProcess = spawn(process.execPath, ['server.js'], {
     cwd: REPO_ROOT,
-    env: { ...process.env, PORT: String(PORT), MISSION_CONTROL_PASSWORD: TEST_PASSWORD, INTERNAL_SERVICE_TOKEN: TEST_INTERNAL_TOKEN },
+    env: {
+      ...process.env,
+      PORT: String(PORT),
+      MISSION_CONTROL_PASSWORD: TEST_PASSWORD,
+      INTERNAL_SERVICE_TOKEN: TEST_INTERNAL_TOKEN,
+      FINANCE_DATA_FILE: FINANCE_TEST_FILE,
+    },
   });
   await waitForServer();
 
@@ -220,6 +227,16 @@ test.before(async () => {
 
 test.after(() => {
   if (serverProcess) serverProcess.kill();
+  try { fs.unlinkSync(FINANCE_TEST_FILE); } catch (_) { /* already gone */ }
+});
+
+test('GET /health publishes a fail-closed publish gate without auth', async () => {
+  const res = await fetchWithTimeout(`${BASE_URL}/health`);
+  assert.equal(res.status, 200);
+  const body = await res.json();
+  assert.equal(body.publish_gate.live_publish_enabled, false);
+  assert.equal(body.publish_gate.protected, true);
+  assert.equal(body.publish_gate.source, 'FACTORY_LIVE_PUBLISH');
 });
 
 test('GET /api/v1/docs lists every registered service with both a data and health endpoint', async () => {
@@ -454,10 +471,22 @@ test('unknown /api/v1/* path returns a 404 JSON envelope, not the SPA fallback',
   assert.match(contentType, /application\/json/);
 });
 
-test('GET /api/dashboard (pre-existing, unauthenticated) still responds 200', async () => {
-  const res = await fetchWithTimeout(`${BASE_URL}/api/dashboard`);
-  assert.equal(res.status, 200);
-  const body = await res.json();
+test('unknown /api/* path returns a 404 JSON envelope, not the SPA fallback', async () => {
+  const res = await fetchWithTimeout(`${BASE_URL}/api/not-a-real-route`);
+  assert.equal(res.status, 404);
+  const contentType = res.headers.get('content-type');
+  assert.match(contentType, /application\/json/);
+});
+
+test('GET /api/dashboard is 401 unauthenticated and 200 with a Mission Control session', async () => {
+  const anon = await fetchWithTimeout(`${BASE_URL}/api/dashboard`);
+  assert.equal(anon.status, 401);
+  const anonBody = await anon.json();
+  assert.equal(anonBody.success, false);
+
+  const authed = await fetchWithTimeout(`${BASE_URL}/api/dashboard`, { headers: { Cookie: cookie } });
+  assert.equal(authed.status, 200);
+  const body = await authed.json();
   assert.equal(body.success, true);
 });
 
@@ -753,7 +782,7 @@ test('server binds to loopback only, not all interfaces', async () => {
   // reach the server through the host's own non-loopback IPv4. If the server had
   // bound all interfaces this connection would succeed; because it binds
   // loopback only, it must be refused.
-  const loopbackRes = await fetchWithTimeout(`${BASE_URL}/api/dashboard`);
+  const loopbackRes = await fetchWithTimeout(`${BASE_URL}/health`);
   assert.equal(loopbackRes.status, 200,
     'the server must still be reachable on loopback -- this is the control that proves the probe below is meaningful');
 
@@ -792,6 +821,19 @@ test('dashboard.html and mission_control_login.html still serve correctly (no re
   const loginRes = await fetchWithTimeout(`${BASE_URL}/mission_control_login.html`);
   assert.equal(loginRes.status, 200);
   assert.match(loginRes.headers.get('content-type'), /text\/html/);
+});
+
+test('factory_control_center.html is auth-gated, serves when authenticated, and labels itself secondary (V22 BLK-01)', async () => {
+  const unauth = await fetchWithTimeout(`${BASE_URL}/factory_control_center.html`, { redirect: 'manual' });
+  assert.equal(unauth.status, 302);
+  assert.equal(unauth.headers.get('location'), '/mission_control_login.html');
+
+  const authed = await fetchWithTimeout(`${BASE_URL}/factory_control_center.html`, { headers: { Cookie: cookie } });
+  assert.equal(authed.status, 200);
+  assert.match(authed.headers.get('content-type'), /text\/html/);
+  const html = await authed.text();
+  assert.match(html, /SECONDARY VIEW/);
+  assert.match(html, /canonical/i);
 });
 
 test('mission_control_executive_v1.html requires Mission Control auth, and serves when authenticated (CEO review, 2026-07-25 polish pass)', async () => {
