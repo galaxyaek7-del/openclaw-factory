@@ -1,0 +1,90 @@
+{
+  "_comment": "n8n Workflow Blueprint — Notion Affiliate Agent (AI Brokerage Arm). DRAFT / BLUEPRINT — AWAITING FOUNDER ACTIVATION. No workflow has been imported into live n8n. Reuses existing n8n instance at http://localhost:5678 and existing Telegram notification pattern (04_Telegram_Notify).",
+  "name": "Notion Affiliate — Draft Generator & Review Pipeline",
+  "status": "BLUEPRINT — NOT IMPORTED",
+  "version": "1.0",
+  "nodes": [
+    {
+      "id": "trigger_new_calendar_entry",
+      "type": "n8n-nodes-base.manualTrigger OR notionTrigger",
+      "description": "Trigger: New entry created in Notion Content Calendar (Product Tracker relation, Content Type, Platform, Publish Date). For local fallback without Notion API, trigger is Manual Trigger that reads notion_affiliate_agent/local_store.json content_calendar additions.",
+      "config": {
+        "mode": "ManualTrigger for local development; Notion Trigger (databaseId: Content Calendar) for production after NOTION_API_KEY is set",
+        "polling": "On new database item (Notion) or manual (local)"
+      }
+    },
+    {
+      "id": "generate_draft_via_ai",
+      "type": "n8n-nodes-base.httpRequest",
+      "description": "Call GROQ via existing ai_capability/orchestrator.py HTTP endpoint or direct GROQ API. Uses content_pipeline.py prompt for content_type (Review/Comparison/Guide/Template). Passes product_name, audience, competitor.",
+      "config": {
+        "method": "POST",
+        "url": "http://localhost:3000/api/agent/builder (existing GROQ pipeline — reuses groq-sdk, no duplication)",
+        "body": "{{ $json.content_type }} prompt for {{ $json.product_name }} for {{ $json.audience }}",
+        "reuse": "ai_capability/orchestrator.py — existing GROQ SDK, no new infrastructure"
+      }
+    },
+    {
+      "id": "save_draft_for_review",
+      "type": "n8n-nodes-base.writeBinaryFile OR notion",
+      "description": "Save generated draft to notion_affiliate_agent/drafts/<slug>.md AND update local_store.json content_calendar entry Status to 'Draft Ready' + 'Needs Founder Personal Input' flag. For Notion mode, update Notion page Status to 'Draft Ready'.",
+      "config": {
+        "path": "notion_affiliate_agent/drafts/<slug>.md",
+        "local_store_update": "content_calendar[].Status = 'Draft Ready'",
+        "never_auto_publish": true
+      }
+    },
+    {
+      "id": "notify_founder_for_review",
+      "type": "n8n-nodes-base.httpRequest",
+      "description": "Notify Founder for human review via existing Telegram pattern (reuses 04_Telegram_Notify logic). Sends: 'Draft ready: <Title> (<Content Type> for <Audience>) — needs Founder personal input at [specific spot] — review at drafts/<slug>.md'",
+      "config": {
+        "reuse": "lib/telegram_direct.js + existing 04_Telegram_Notify workflow",
+        "method": "POST",
+        "url": "https://api.telegram.org/bot{{ $env.TELEGRAM_BOT_TOKEN }}/sendMessage",
+        "body": {
+          "chat_id": "{{ $env.OPENCLAW_TELEGRAM_CHAT_ID }}",
+          "text": "📝 Notion Affiliate Draft Ready: {{ $json.title }} — Status: DRAFT — AWAITING FOUNDER REVIEW — {{ $json.flags }} — Review at: drafts/{{ $json.slug }}.md"
+        }
+      }
+    }
+  ],
+  "founder_approval_branch": {
+    "_comment": "This branch ONLY executes after Founder manually changes Status to 'Founder Approved' in Notion or local_store.json. It is NOT autonomous.",
+    "trigger": "Notion Trigger: Status changes to 'Founder Approved' OR Manual Trigger: Founder runs notion_affiliate_agent/on_founder_approval.py",
+    "nodes": [
+      {
+        "id": "log_to_tracking_db",
+        "type": "n8n-nodes-base.noOp",
+        "description": "On Founder approval only: log to tracking — update content_calendar Status to 'Founder Approved', record approval timestamp. Do NOT auto-publish."
+      },
+      {
+        "id": "schedule_7day_check",
+        "type": "n8n-nodes-base.wait + httpRequest",
+        "description": "Schedule performance check after 7 days: Wait 7 days, then HTTP Request to log Performance Tracker entry with Status='Pending Check' and Check Date = publish_date + 7 days. Founder manually fills clicks/conversions from Cuelinks dashboard后."
+      }
+    ]
+  },
+  "import_instructions": {
+    "status": "BLUEPRINT ONLY — NOT IMPORTED",
+    "steps": [
+      "1. Founder reviews this blueprint file (notion_affiliate_agent/n8n_blueprint.json)",
+      "2. If approved, import via n8n UI: Workflows → Import from File → select this file, OR via CLI: n8n import:workflow --input=notion_affiliate_agent/n8n_blueprint.json (requires n8n offline, same as ADR-045)",
+      "3. Configure Notion Trigger with NOTION_API_KEY and databaseId (after databases are created)",
+      "4. For local mode, keep Manual Trigger and test with: node notion_affiliate_agent/content_pipeline.py",
+      "5. Toggle Active in n8n UI (manual, same as BLOCKERS.md #1)"
+    ]
+  },
+  "reuse_notes": {
+    "n8n_instance": "Existing http://localhost:5678 — no new instance",
+    "groq": "Existing ai_capability/orchestrator.py + groq-sdk — no new API, no duplication",
+    "telegram": "Existing lib/telegram_direct.js + 04_Telegram_Notify pattern — no new notification infra"
+  },
+  "conversion_strategy_mapping": {
+    "_comment": "How this n8n blueprint maps to the 4-step conversion strategy (separate directive) — all steps are BLUEPRINT only",
+    "step1_web_store": "Notion affiliate content drives to store/landing page — this blueprint's drafts (reviews/comparisons) include product-specific affiliate links that would route to Step 1 store in future",
+    "step2_audience_education": "Content templates (Guide, Template) educate audience — drafts include How to Order copy pattern",
+    "step3_automated_dm": "Blueprint is intentionally NOT connected to live Instagram/Facebook/WhatsApp — would require ManyChat/Make.com connection, flagged as HUMAN-ONLY per standing directive",
+    "step4_pixel_tracking": "Performance Tracker + 7-day check is the data-schema precursor to pixel tracking — actual pixel activation is HUMAN-ONLY"
+  }
+}

@@ -1,0 +1,130 @@
+{
+  "_comment": "Local fallback store for Notion Affiliate Agent — same schema as Notion databases, no API needed. Founder can review this file directly.",
+  "product_tracker": [
+    {
+      "Name": "Notion",
+      "Category": "Notion Core",
+      "Price": "Free, Plus $10/mo, Business $15/mo",
+      "Key Features": "All-in-one workspace, databases, wikis, docs, project management",
+      "Affiliate Link": "",
+      "Cuelinks Status": "No Link",
+      "Commission Rate": "Via Cuelinks — check dashboard after approval",
+      "Rating": "★★★★★",
+      "Pros": "Highly flexible, huge template ecosystem, strong free tier",
+      "Cons": "Steep learning curve, can be slow with large databases",
+      "Last Updated": "2026-05-13",
+      "Status": "Active"
+    },
+    {
+      "Name": "Notion AI",
+      "Category": "Notion AI",
+      "Price": "$10/mo (add-on)",
+      "Key Features": "AI writing, summarization, Q&A over workspace, autofill",
+      "Affiliate Link": "",
+      "Cuelinks Status": "No Link",
+      "Commission Rate": "Via Cuelinks",
+      "Rating": "★★★★",
+      "Pros": "Context-aware (knows your workspace), good summarization",
+      "Cons": "Add-on cost on top of Plus/Business, not as strong as ChatGPT for general tasks",
+      "Last Updated": "2026-05-13",
+      "Status": "Active"
+    },
+    {
+      "Name": "Notion Calendar",
+      "Category": "Notion Calendar",
+      "Price": "Free (with Notion account)",
+      "Key Features": "Time-blocking, Google Calendar sync, Notion database integration",
+      "Affiliate Link": "",
+      "Cuelinks Status": "No Link",
+      "Commission Rate": "Via Cuelinks",
+      "Rating": "★★★★",
+      "Pros": "Excellent for time-blocking with Notion tasks, clean design",
+      "Cons": "Requires Google Calendar, limited standalone calendar features vs Calendly",
+      "Last Updated": "2026-05-13",
+      "Status": "Active"
+    },
+    {
+      "Name": "Clio",
+      "Category": "Legal Practice Management",
+      "Price": "$39/mo (Starter), $69/mo (Boutique), $99/mo (Elite) — per user",
+      "Key Features": "Client intake, matter management, time tracking, billing, trust accounting, integrations",
+      "Affiliate Link": "",
+      "Cuelinks Status": "No Link",
+      "Commission Rate": "Via Cuelinks — check dashboard after approval (if listed)",
+      "Rating": "★★★★",
+      "Pros": "Purpose-built for law firms, strong billing/trust accounting, large integrations marketplace",
+      "Cons": "Higher cost at scale, less flexible than Notion for custom workflows, steeper setup for solo",
+      "Last Updated": "2026-05-13",
+      "Status": "Active"
+    },
+    {
+      "Name": "MyCase",
+      "Category": "Legal Practice Management",
+      "Price": "$49/mo (per user, billed annually)",
+      "Key Features": "Case management, client portal, billing, calendar, task management",
+      "Affiliate Link": "",
+      "Cuelinks Status": "No Link",
+      "Commission Rate": "Via Cuelinks — check dashboard after approval (if listed)",
+      "Rating": "★★★★",
+      "Pros": "All-in-one for small firms, good client portal, integrated payments",
+      "Cons": "Less customizable than Notion, per-user cost adds up, limited database flexibility",
+      "Last Updated": "2026-05-13",
+      "Status": "Active"
+    }
+  ],
+  "content_calendar": [
+    {
+      "Title": "Review: Legal Practice Management OS for solo law firms",
+      "Content Type": "Review",
+      "Platform": "Blog",
+      "Publish Date": "",
+      "Status": "Draft Ready",
+      "Related Product": "Notion",
+      "Author": "AI draft",
+      "Review Notes": "NEEDS FOUNDER PERSONAL INPUT: add your personal experience with client intake pain points or small-firm operational insight at flagged spots",
+      "Disclosure": "This content contains affiliate links",
+      "Affiliate Links Used": "",
+      "Created At": "2026-09-06T00:34:15.683749"
+    },
+    {
+      "Title": "Comparison: Notion vs Clio/MyCase for solo law firms",
+      "Content Type": "Comparison",
+      "Platform": "Blog",
+      "Publish Date": "",
+      "Status": "Draft Ready",
+      "Related Product": "Notion",
+      "Author": "AI draft",
+      "Review Notes": "NEEDS FOUNDER PERSONAL INPUT: add your personal experience with client intake pain points or small-firm operational insight at flagged spots",
+      "Disclosure": "This content contains affiliate links",
+      "Affiliate Links Used": "",
+      "Created At": "2026-09-06T00:34:15.683767"
+    },
+    {
+      "Title": "Guide: How to set up client intake matter billing deadline workflow in Notion",
+      "Content Type": "Guide",
+      "Platform": "Blog",
+      "Publish Date": "",
+      "Status": "Draft Ready",
+      "Related Product": "Notion",
+      "Author": "AI draft",
+      "Review Notes": "NEEDS FOUNDER PERSONAL INPUT: add your personal experience with client intake pain points or small-firm operational insight at flagged spots",
+      "Disclosure": "This content contains affiliate links",
+      "Affiliate Links Used": "",
+      "Created At": "2026-09-06T00:34:15.683778"
+    },
+    {
+      "Title": "Template: Free client intake tracker for solo law firms",
+      "Content Type": "Template",
+      "Platform": "Blog",
+      "Publish Date": "",
+      "Status": "Draft Ready",
+      "Related Product": "Notion",
+      "Author": "AI draft",
+      "Review Notes": "NEEDS FOUNDER PERSONAL INPUT: add your personal experience with client intake pain points or small-firm operational insight at flagged spots",
+      "Disclosure": "This content contains affiliate links",
+      "Affiliate Links Used": "",
+      "Created At": "2026-09-06T00:34:15.683787"
+    }
+  ],
+  "performance_tracker": []
+}

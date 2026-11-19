@@ -1,0 +1,64 @@
+{
+  "_comment": "Notion database structure for Notion Affiliate Agent — 3 tables. This file is the source of truth for creating the databases via Notion API. No database has been created yet — Founder must provide NOTION_API_KEY and run the creation script.",
+  "version": "1.0",
+  "databases": [
+    {
+      "id": "product_tracker",
+      "title": "Notion Product Tracker",
+      "description": "Tracks Notion-related products, features, and affiliate links via Cuelinks",
+      "properties": {
+        "Name": {"type": "title", "description": "Product name (e.g., Notion AI, Notion Calendar)"},
+        "Category": {"type": "select", "options": ["Notion Core", "Notion AI", "Notion Calendar", "Notion Q&A", "Template", "Integration"], "description": "Product category"},
+        "Price": {"type": "rich_text", "description": "Price (e.g., Free, $10/mo, $15/mo)"},
+        "Key Features": {"type": "rich_text", "description": "Top 3-5 key features"},
+        "Affiliate Link": {"type": "url", "description": "Cuelinks affiliate link (empty until Cuelinks approval)"},
+        "Cuelinks Status": {"type": "select", "options": ["No Link", "Pending Approval", "Active", "Expired"], "description": "Cuelinks link status"},
+        "Commission Rate": {"type": "rich_text", "description": "Commission rate if known (Cuelinks dashboard)"},
+        "Rating": {"type": "select", "options": ["★★★★★", "★★★★", "★★★", "★★", "★"], "description": "Our rating"},
+        "Pros": {"type": "rich_text", "description": "Genuine pros (at least 2)"},
+        "Cons": {"type": "rich_text", "description": "Genuine cons/drawbacks (at least 2) — required, no review without drawbacks"},
+        "Last Updated": {"type": "date", "description": "Last verified date"},
+        "Status": {"type": "select", "options": ["Active", "Archived", "Needs Review"], "description": "Product status"}
+      }
+    },
+    {
+      "id": "content_calendar",
+      "title": "Notion Content Calendar",
+      "description": "Content calendar for Notion affiliate content — all entries are DRAFT until Founder approval",
+      "properties": {
+        "Title": {"type": "title", "description": "Content title"},
+        "Content Type": {"type": "select", "options": ["Review", "Comparison", "Guide", "Template"], "description": "Content type"},
+        "Platform": {"type": "select", "options": ["Blog", "Twitter/X", "LinkedIn", "YouTube", "Newsletter"], "description": "Target platform"},
+        "Publish Date": {"type": "date", "description": "Planned publish date (DRAFT — not scheduled)"},
+        "Status": {"type": "select", "options": ["Idea", "Draft Ready", "Needs Founder Personal Input", "Founder Approved", "Published (Founder Manual)"], "description": "Content status — never auto-published"},
+        "Related Product": {"type": "relation", "target": "product_tracker", "description": "Link to Product Tracker entry"},
+        "Author": {"type": "rich_text", "description": "Author (Founder or AI draft)"},
+        "Review Notes": {"type": "rich_text", "description": "Review notes, including NEEDS FOUNDER PERSONAL INPUT flags"},
+        "Disclosure": {"type": "rich_text", "description": "Always: This content contains affiliate links"},
+        "Affiliate Links Used": {"type": "rich_text", "description": "Which affiliate links are embedded"},
+        "Created At": {"type": "date", "description": "Draft creation date"}
+      }
+    },
+    {
+      "id": "performance_tracker",
+      "title": "Notion Performance Tracker",
+      "description": "Tracks performance of published content — populated only after Founder manually publishes and Cuelinks provides data",
+      "properties": {
+        "Content": {"type": "relation", "target": "content_calendar", "description": "Link to Content Calendar entry"},
+        "Period": {"type": "date", "description": "Tracking period (e.g., 7 days post-publish)"},
+        "Clicks": {"type": "number", "description": "Clicks via Cuelinks (from Cuelinks dashboard, manually entered)"},
+        "Conversions": {"type": "number", "description": "Conversions via Cuelinks"},
+        "Commission": {"type": "number", "description": "Commission earned (USD)"},
+        "Notes": {"type": "rich_text", "description": "Notes (e.g., which traffic source worked)"},
+        "Check Date": {"type": "date", "description": "Date of 7-day check"},
+        "Status": {"type": "select", "options": ["Pending Check", "Checked", "No Data"], "description": "Check status"}
+      }
+    }
+  ],
+  "creation_notes": {
+    "notion_api_required": "NOTION_API_KEY must be set in .env (never committed) — Founder must create an internal integration at https://www.notion.so/my-integrations and share the databases with it",
+    "creation_script": "notion_affiliate_agent/create_databases.py — run after NOTION_API_KEY is set (not yet, per directive)",
+    "local_fallback": "For local development without Notion, use notion_affiliate_agent/local_store.json (JSON file, same schema, no API needed)",
+    "status": "STRUCTURE DEFINED — NOT YET CREATED IN NOTION (awaiting Founder NOTION_API_KEY)"
+  }
+}
