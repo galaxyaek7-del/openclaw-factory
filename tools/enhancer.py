@@ -16,7 +16,12 @@ def enhance_digital_asset(file_path):
 
     print(f"[INFO] Inspecting asset: {path}")
 
-    content = path.read_text(encoding="utf-8")
+    # utf-8-sig strips a leading BOM instead of keeping it as U+FEFF. Windows
+    # editors write BOMs; concatenating one after the header put a non-printable
+    # character in the middle of the generated .py and Python refused to import
+    # it (CI's compileall caught exactly that, 2026-11-19). lstrip is the guard
+    # for a BOM that survived decoding for any other reason.
+    content = path.read_text(encoding="utf-8-sig").lstrip("\ufeff")
 
     header = (
         "# ==========================================\n"

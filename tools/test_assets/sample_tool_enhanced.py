@@ -3,5 +3,5 @@
 # Generated enhancement copy — REVIEW REQUIRED
 # ==========================================
 
-﻿def hello():
+def hello():
     return "Galaxy Forge test asset"
