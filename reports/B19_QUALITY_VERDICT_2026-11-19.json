@@ -1,0 +1,130 @@
+{
+ "subject": "batch19 quality and pricing review before any live publication",
+ "reviewed_at": "2026-11-19T17:30:00Z",
+ "reviewer": "agent (pre-publication gate)",
+ "decision": "DO NOT PUBLISH AT CURRENT PRICE",
+ "what_passes": [
+  "Every output is computed twice by different engines and they agree (lib/xlsx_eval vs the expression text).",
+  "All ten workbooks open, every digest matches, bundles are intact, listings carry a disclaimer.",
+  "Method text is specific: each guide states the formula, the assumption and what invalidates it."
+ ],
+ "what_fails": [
+  "Guide depth: 488-577 words and 3 pages per product. Batch 18 shipped 7-page guides at $49.",
+  "Zero measured price evidence (external_price_observations = 0) for every product, while the pricing rationale claims 'replaces a consultant session'. That claim is unsupported.",
+  "No downside scenario, no annotated formula walkthrough, no reference table.",
+  "A $99 product with 488 words invites refunds and a first-review that cannot be undone."
+ ],
+ "pricing_decision": {
+  "ceiling_until_first_sale": 2900,
+  "note": "Until there is a verified sale or a measured comparable, the honest band is $19-$29. Price is a claim about value; the content does not yet back the $49-$99 claim.",
+  "path_back_to_49_99": [
+   "guide >= 8 pages and >= 2,500 words",
+   "worked downside case at -15% and -30%",
+   "annotated formula walkthrough for every output",
+   "one measured paid comparable per product"
+  ]
+ },
+ "approvals_revoked": 10,
+ "products": [
+  {
+   "id": "B19-001",
+   "title": "Surety Bonding Capacity & Submission Pack",
+   "price_cents": 7900,
+   "guide_pages": 3,
+   "listing_chars": 1120,
+   "external_price_observations": 0,
+   "recalc_checked": 6,
+   "recalc_failed": []
+  },
+  {
+   "id": "B19-002",
+   "title": "Loan Covenant Headroom Dashboard (12 Months)",
+   "price_cents": 6900,
+   "guide_pages": 3,
+   "listing_chars": 1175,
+   "external_price_observations": 0,
+   "recalc_checked": 8,
+   "recalc_failed": []
+  },
+  {
+   "id": "B19-003",
+   "title": "SaaS Renewal Risk & NRR Model",
+   "price_cents": 5900,
+   "guide_pages": 3,
+   "listing_chars": 1043,
+   "external_price_observations": 0,
+   "recalc_checked": 7,
+   "recalc_failed": []
+  },
+  {
+   "id": "B19-004",
+   "title": "Restaurant Prime Cost & Menu Profit Audit",
+   "price_cents": 4900,
+   "guide_pages": 3,
+   "listing_chars": 1061,
+   "external_price_observations": 0,
+   "recalc_checked": 6,
+   "recalc_failed": []
+  },
+  {
+   "id": "B19-005",
+   "title": "Medical Practice Payer Mix & Denial Leakage Model",
+   "price_cents": 9900,
+   "guide_pages": 3,
+   "listing_chars": 1083,
+   "external_price_observations": 0,
+   "recalc_checked": 7,
+   "recalc_failed": []
+  },
+  {
+   "id": "B19-006",
+   "title": "Freight Broker Margin & Detention Recovery Tracker",
+   "price_cents": 5900,
+   "guide_pages": 3,
+   "listing_chars": 1050,
+   "external_price_observations": 0,
+   "recalc_checked": 7,
+   "recalc_failed": []
+  },
+  {
+   "id": "B19-007",
+   "title": "Change Order Profit Recovery Ledger",
+   "price_cents": 6900,
+   "guide_pages": 3,
+   "listing_chars": 1031,
+   "external_price_observations": 0,
+   "recalc_checked": 6,
+   "recalc_failed": []
+  },
+  {
+   "id": "B19-008",
+   "title": "Equipment Rent vs Buy & Residual Value Model",
+   "price_cents": 7900,
+   "guide_pages": 3,
+   "listing_chars": 1063,
+   "external_price_observations": 0,
+   "recalc_checked": 8,
+   "recalc_failed": []
+  },
+  {
+   "id": "B19-009",
+   "title": "Multi-State Payroll Tax Registration Readiness Pack",
+   "price_cents": 8900,
+   "guide_pages": 3,
+   "listing_chars": 1158,
+   "external_price_observations": 0,
+   "recalc_checked": 6,
+   "recalc_failed": []
+  },
+  {
+   "id": "B19-010",
+   "title": "Franchise Unit Economics & Break-Even Model",
+   "price_cents": 9900,
+   "guide_pages": 3,
+   "listing_chars": 1033,
+   "external_price_observations": 0,
+   "recalc_checked": 8,
+   "recalc_failed": []
+  }
+ ]
+}
