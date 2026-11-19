@@ -261,12 +261,13 @@ class TestPublishAuthorityAudit(unittest.TestCase):
     def test_read_only_audit_flags_parallel_paths(self):
         out = od.publish_authority_audit()
         by_file = {f["file"]: f for f in out["findings"]}
-        # affiliate/publish_queue.py is parallel-owned and untracked, so it is
-        # absent from any clean checkout (CI). When present it must be flagged;
-        # when absent the audit must say so honestly, never invent a finding.
+        # affiliate/publish_queue.py is tracked (commit e19b9b68) and since
+        # 2026-11-07 is report-only: it no longer creates or enables a Gumroad
+        # product, so the audit must report no create-then-publish path there.
+        # The old expectation (True) described the pre-e19b9b68 code.
         queue = by_file["affiliate/publish_queue.py"]
         if (od.FACTORY_DIR / "affiliate" / "publish_queue.py").is_file():
-            self.assertTrue(queue["creates_then_publishes"])
+            self.assertFalse(queue["creates_then_publishes"])
         else:
             self.assertEqual(queue, {"file": "affiliate/publish_queue.py", "present": False})
         self.assertTrue(by_file["src/publish/auto_publisher.py"]["checks_live_flag"])

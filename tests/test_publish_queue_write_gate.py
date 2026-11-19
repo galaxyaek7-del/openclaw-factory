@@ -1,14 +1,16 @@
 """Regression coverage for the publish queue's write-gate path.
 
-Cycle 109 audit finding: affiliate/publish_queue.py calls only gated
-Gumroad mutators, but nothing proved that. These tests fail closed:
+Cycle 109 audit finding: affiliate/publish_queue.py called Gumroad mutators,
+and nothing proved the calls were gated. Commit e19b9b68 (2026-11-07) removed
+that path (the queue is report-only), so these tests now pin the stronger
+contract, fail closed:
 
-  * the queue's live retry path is denied when FACTORY_LIVE_PUBLISH is
-    unset / false / malformed, before any upload or HTTP call;
-  * create_product/enable_product deny before token or payload validation,
-    so a denial cannot leave a partial remote effect;
-  * a static guard pins the queue to the gated Gumroad calls, so a future
-    edit cannot silently add an ungated mutation.
+  * retry_queue() publishes nothing and touches no network, upload or readback;
+  * the Gumroad mutators themselves deny when FACTORY_LIVE_PUBLISH is unset /
+    false / malformed, before token or payload validation, so a denial cannot
+    leave a partial remote effect;
+  * a static guard requires the queue to call no Gumroad function at all, so a
+    future edit cannot silently introduce an ungated mutation.
 
 No network, no real credential, no real queue file.
 """
@@ -98,8 +100,11 @@ class TestPublishQueueDeniedBeforeNetwork(unittest.TestCase):
         self.assertEqual(result["pending"], 1)
         self.assertEqual(saved[0]["status"], "PENDING_CAP")
         self.assertNotIn("product_id", saved[0])
-        self.assertTrue(result["errors"])
-        self.assertIn("FACTORY_LIVE_PUBLISH", result["errors"][0][1])
+        # Since e19b9b68 (2026-11-07) the queue is report-only: it does not
+        # attempt a publish at all, so there is no gate denial to report here.
+        # The denial itself is proven above on the Gumroad mutators.
+        self.assertEqual(result["errors"], [])
+        self.assertIn("founder approval", result["note"])
         network.assert_not_called()
         upload.assert_not_called()
         readback.assert_not_called()
@@ -120,11 +125,10 @@ class TestPublishQueueCallSurface(unittest.TestCase):
             and isinstance(node.func.value, ast.Name)
             and node.func.value.id == "gp"
         }
-        self.assertEqual(
-            calls,
-            {"load_token", "create_product", "enable_product",
-             "update_product", "get_product"},
-        )
+        # e19b9b68 (2026-11-07) removed the queue's create+enable path entirely,
+        # so the guard is now the strongest form: no Gumroad call at all. A
+        # future edit that adds one fails here before it can reach a network.
+        self.assertEqual(calls, set())
 
     def test_each_queue_mutator_starts_with_the_gate(self):
         tree = ast.parse(
