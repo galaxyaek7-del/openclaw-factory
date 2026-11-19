@@ -549,7 +549,11 @@ def tool_factory_status(args):
             ts = None
         if ev.get("event") == "crash" and ts and ts >= cutoff:
             crashes_24h += 1
-        target = Path(str(ev.get("target") or "")).name
+        # The supervisor records Windows paths even when the harness runs on
+        # Linux, where Path("C:\\x\\server.js").name is the whole string and the
+        # per-target key never matches. Strip both separators so the key is the
+        # script name on every platform (caught by CI, 2026-11-19).
+        target = re.split(r"[\\/]", str(ev.get("target") or ""))[-1]
         if not target:
             continue
         if target not in by_target or (ts and ts >= by_target[target].get("_ts", 0)):
