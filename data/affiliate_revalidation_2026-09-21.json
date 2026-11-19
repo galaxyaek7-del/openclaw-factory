@@ -1,0 +1,397 @@
+{
+ "programs": 17,
+ "table": [
+  {
+   "PROGRAM": "CO-amazon-affiliate",
+   "STATUS": "VERIFIED",
+   "OFFER": "5% typical digital-adjacent categories (20% outlier for games)",
+   "COMMISSION": "5% typical digital-adjacent categories (20% outlier for games)",
+   "PAYOUT": "UNKNOWN (no payout fields on record)",
+   "GEOGRAPHY": "UNKNOWN (no geography field on record)",
+   "TRACKING": "no affiliate click attributed yet",
+   "POLICY_RISK": "no change evidenced",
+   "DISTRIBUTION": "NOT_READY (0 registered links)",
+   "LAST_VERIFIED": "2026-09-20",
+   "EVIDENCE": "Amazon Associates Operating Agreement + Program Policies (effective 2026-04-14, re-checked 2026-09-20): program live; ha",
+   "FUNNEL": "OFFER_QUALIFIED",
+   "ECONOMICS": "QUALIFIED_FOR_TEST",
+   "URL_HEALTH": [
+    {
+     "url": "https://affiliate-program.amazon.com/help/operating/agreement",
+     "ok": false,
+     "status": "HTTPError"
+    }
+   ],
+   "NEXT_ACTION": "hold (no link, no traffic)"
+  },
+  {
+   "PROGRAM": "CO-gumroad-affiliate",
+   "STATUS": "VERIFIED",
+   "OFFER": "10% flat (Gumroad Affiliates) or 1-75% per-creator custom, $10 payout threshold",
+   "COMMISSION": "10% flat (Gumroad Affiliates) or 1-75% per-creator custom, $10 payout threshold",
+   "PAYOUT": "UNKNOWN (no payout fields on record)",
+   "GEOGRAPHY": "UNKNOWN (no geography field on record)",
+   "TRACKING": "no affiliate click attributed yet",
+   "POLICY_RISK": "no change evidenced",
+   "DISTRIBUTION": "NOT_READY (0 registered links)",
+   "LAST_VERIFIED": "2026-09-20",
+   "EVIDENCE": "Gumroad official help: two programs live — own affiliates 1-75% (30-day cookie), Gumroad Affiliates fixed 10% (7-day coo",
+   "FUNNEL": "OFFER_QUALIFIED",
+   "ECONOMICS": "QUALIFIED_FOR_TEST",
+   "URL_HEALTH": [
+    {
+     "url": "https://gumroad.com/help/article/333-affiliates-on-gumroad.html",
+     "ok": true,
+     "status": 200
+    }
+   ],
+   "NEXT_ACTION": "hold (no link, no traffic)"
+  },
+  {
+   "PROGRAM": "CO-gumroad-marketplace",
+   "STATUS": "PARTIALLY_VERIFIED",
+   "OFFER": "COMMISSION_UNKNOWN",
+   "COMMISSION": "COMMISSION_UNKNOWN",
+   "PAYOUT": "UNKNOWN (no payout fields on record)",
+   "GEOGRAPHY": "UNKNOWN (no geography field on record)",
+   "TRACKING": "no affiliate click attributed yet",
+   "POLICY_RISK": "per-program terms re-check due",
+   "DISTRIBUTION": "NOT_READY (0 registered links)",
+   "LAST_VERIFIED": "2026-08-07",
+   "EVIDENCE": "business_development.py::PLATFORM_REGISTRY (ADR-188, WebSearch-evidenced 2026-08-07)",
+   "FUNNEL": "PROGRAM_DISCOVERED",
+   "ECONOMICS": "ECONOMICS_UNKNOWN",
+   "URL_HEALTH": [
+    {
+     "url": "https://gumroad.gumroad.com/p/see-the-products-you-re-an-affiliate-for-with-a-new-dashboard",
+     "ok": true,
+     "status": 200
+    }
+   ],
+   "NEXT_ACTION": "hold (no link, no traffic)"
+  },
+  {
+   "PROGRAM": "CO-paddle-partnership",
+   "STATUS": "PARTIALLY_VERIFIED",
+   "OFFER": "COMMISSION_UNKNOWN",
+   "COMMISSION": "COMMISSION_UNKNOWN",
+   "PAYOUT": "UNKNOWN (no payout fields on record)",
+   "GEOGRAPHY": "UNKNOWN (no geography field on record)",
+   "TRACKING": "no affiliate click attributed yet",
+   "POLICY_RISK": "per-program terms re-check due",
+   "DISTRIBUTION": "NOT_READY (0 registered links)",
+   "LAST_VERIFIED": "2026-08-07",
+   "EVIDENCE": "business_development.py::PLATFORM_REGISTRY (ADR-188, WebSearch-evidenced 2026-08-07)",
+   "FUNNEL": "PROGRAM_DISCOVERED",
+   "ECONOMICS": "ECONOMICS_UNKNOWN",
+   "URL_HEALTH": [
+    {
+     "url": "https://www.paddle.com/partners",
+     "ok": true,
+     "status": 200
+    }
+   ],
+   "NEXT_ACTION": "hold (no link, no traffic)"
+  },
+  {
+   "PROGRAM": "CO-etsy-affiliate",
+   "STATUS": "VERIFIED",
+   "OFFER": "~4% via Awin (third-party network), 2-10 day approval",
+   "COMMISSION": "~4% via Awin (third-party network), 2-10 day approval",
+   "PAYOUT": "UNKNOWN (no payout fields on record)",
+   "GEOGRAPHY": "UNKNOWN (no geography field on record)",
+   "TRACKING": "no affiliate click attributed yet",
+   "POLICY_RISK": "per-program terms re-check due",
+   "DISTRIBUTION": "NOT_READY (0 registered links)",
+   "LAST_VERIFIED": "2026-08-07",
+   "EVIDENCE": "business_development.py::PLATFORM_REGISTRY (ADR-188, WebSearch-evidenced 2026-08-07)",
+   "FUNNEL": "OFFER_QUALIFIED",
+   "ECONOMICS": "QUALIFIED_FOR_TEST",
+   "URL_HEALTH": [
+    {
+     "url": "https://help.etsy.com/hc/en-gb/articles/360000335987-The-Affiliate-Programme",
+     "ok": true,
+     "status": 200
+    }
+   ],
+   "NEXT_ACTION": "hold (no link, no traffic)"
+  },
+  {
+   "PROGRAM": "CO-etsy-marketplace",
+   "STATUS": "PARTIALLY_VERIFIED",
+   "OFFER": "COMMISSION_UNKNOWN",
+   "COMMISSION": "COMMISSION_UNKNOWN",
+   "PAYOUT": "UNKNOWN (no payout fields on record)",
+   "GEOGRAPHY": "UNKNOWN (no geography field on record)",
+   "TRACKING": "no affiliate click attributed yet",
+   "POLICY_RISK": "per-program terms re-check due",
+   "DISTRIBUTION": "NOT_READY (0 registered links)",
+   "LAST_VERIFIED": "2026-08-07",
+   "EVIDENCE": "business_development.py::PLATFORM_REGISTRY (ADR-188, WebSearch-evidenced 2026-08-07)",
+   "FUNNEL": "PROGRAM_DISCOVERED",
+   "ECONOMICS": "ECONOMICS_UNKNOWN",
+   "URL_HEALTH": [
+    {
+     "url": "https://help.etsy.com/hc/en-gb/articles/360000335987-The-Affiliate-Programme",
+     "ok": false,
+     "status": "HTTPError"
+    }
+   ],
+   "NEXT_ACTION": "hold (no link, no traffic)"
+  },
+  {
+   "PROGRAM": "CO-creative_market-affiliate",
+   "STATUS": "VERIFIED",
+   "OFFER": "10-30% depending on purchase type, 30-day cookie, application-based",
+   "COMMISSION": "10-30% depending on purchase type, 30-day cookie, application-based",
+   "PAYOUT": "UNKNOWN (no payout fields on record)",
+   "GEOGRAPHY": "UNKNOWN (no geography field on record)",
+   "TRACKING": "no affiliate click attributed yet",
+   "POLICY_RISK": "no change evidenced",
+   "DISTRIBUTION": "NOT_READY (0 registered links)",
+   "LAST_VERIFIED": "2026-09-20",
+   "EVIDENCE": "Creative Market official affiliate portal via CJ (re-checked 2026-09-20): live; 20% new / 10% returning / 30% membership",
+   "FUNNEL": "OFFER_QUALIFIED",
+   "ECONOMICS": "QUALIFIED_FOR_TEST",
+   "URL_HEALTH": [
+    {
+     "url": "https://portal.creativemarket.com/affiliates",
+     "ok": false,
+     "status": "HTTPError"
+    }
+   ],
+   "NEXT_ACTION": "hold (no link, no traffic)"
+  },
+  {
+   "PROGRAM": "CO-envato-affiliate",
+   "STATUS": "VERIFIED",
+   "OFFER": "Market 30%, Elements up to $120, Placeit 50%/$50, all via Impact, manual review",
+   "COMMISSION": "Market 30%, Elements up to $120, Placeit 50%/$50, all via Impact, manual review",
+   "PAYOUT": "UNKNOWN (no payout fields on record)",
+   "GEOGRAPHY": "UNKNOWN (no geography field on record)",
+   "TRACKING": "no affiliate click attributed yet",
+   "POLICY_RISK": "no change evidenced",
+   "DISTRIBUTION": "NOT_READY (0 registered links)",
+   "LAST_VERIFIED": "2026-09-20",
+   "EVIDENCE": "Envato official affiliate terms via Impact (re-checked 2026-09-20): three programs live; Market 30% first purchase; Elem",
+   "FUNNEL": "OFFER_QUALIFIED",
+   "ECONOMICS": "QUALIFIED_FOR_TEST",
+   "URL_HEALTH": [
+    {
+     "url": "https://help.market.envato.com/hc/en-us/articles/42293429394329-Envato-s-Affiliate-Program-Terms",
+     "ok": true,
+     "status": 200
+    }
+   ],
+   "NEXT_ACTION": "hold (no link, no traffic)"
+  },
+  {
+   "PROGRAM": "CO-adobe-affiliate",
+   "STATUS": "VERIFIED",
+   "OFFER": "6-65% via Partnerize/third-party networks, explicitly welcomes small-audience partners",
+   "COMMISSION": "6-65% via Partnerize/third-party networks, explicitly welcomes small-audience partners",
+   "PAYOUT": "UNKNOWN (no payout fields on record)",
+   "GEOGRAPHY": "UNKNOWN (no geography field on record)",
+   "TRACKING": "no affiliate click attributed yet",
+   "POLICY_RISK": "no change evidenced",
+   "DISTRIBUTION": "NOT_READY (0 registered links)",
+   "LAST_VERIFIED": "2026-09-20",
+   "EVIDENCE": "Adobe official affiliates page via Partnerize (re-checked 2026-09-20): live; 85% first month / 8.33% annual; 30-day cook",
+   "FUNNEL": "OFFER_QUALIFIED",
+   "ECONOMICS": "QUALIFIED_FOR_TEST",
+   "URL_HEALTH": [
+    {
+     "url": "https://www.adobe.com/pr/affiliates.html",
+     "ok": false,
+     "status": "TimeoutError"
+    }
+   ],
+   "NEXT_ACTION": "hold (no link, no traffic)"
+  },
+  {
+   "PROGRAM": "CO-google-affiliate",
+   "STATUS": "VERIFIED",
+   "OFFER": "Up to $27/user via CJ Affiliate, 30-day cookie, no cap",
+   "COMMISSION": "Up to $27/user via CJ Affiliate, 30-day cookie, no cap",
+   "PAYOUT": "UNKNOWN (no payout fields on record)",
+   "GEOGRAPHY": "UNKNOWN (no geography field on record)",
+   "TRACKING": "no affiliate click attributed yet",
+   "POLICY_RISK": "no change evidenced",
+   "DISTRIBUTION": "NOT_READY (0 registered links)",
+   "LAST_VERIFIED": "2026-09-20",
+   "EVIDENCE": "Google Workspace official affiliates page via CJ (re-checked 2026-09-20): live; per-user payouts (e.g. $270/10-user Plus",
+   "FUNNEL": "OFFER_QUALIFIED",
+   "ECONOMICS": "ECONOMICS_UNKNOWN",
+   "URL_HEALTH": [
+    {
+     "url": "https://workspace.google.com/affiliate-program",
+     "ok": true,
+     "status": 200
+    }
+   ],
+   "NEXT_ACTION": "hold (no link, no traffic)"
+  },
+  {
+   "PROGRAM": "CO-canva-affiliate",
+   "STATUS": "THIRD_PARTY_ONLY",
+   "OFFER": "~$36/annual Pro conversion or 80% of first 2 months (monthly), via Impact",
+   "COMMISSION": "~$36/annual Pro conversion or 80% of first 2 months (monthly), via Impact",
+   "PAYOUT": "UNKNOWN (no payout fields on record)",
+   "GEOGRAPHY": "UNKNOWN (no geography field on record)",
+   "TRACKING": "no affiliate click attributed yet",
+   "POLICY_RISK": "per-program terms re-check due",
+   "DISTRIBUTION": "NOT_READY (0 registered links)",
+   "LAST_VERIFIED": "2026-08-07",
+   "EVIDENCE": "business_development.py::PLATFORM_REGISTRY (ADR-188, WebSearch-evidenced 2026-08-07)",
+   "FUNNEL": "PROGRAM_DISCOVERED",
+   "ECONOMICS": "QUALIFIED_FOR_TEST",
+   "URL_HEALTH": [
+    {
+     "url": "https://adspyder.io/blog/canva-affiliate-program/",
+     "ok": true,
+     "status": 200
+    }
+   ],
+   "NEXT_ACTION": "hold (no link, no traffic)"
+  },
+  {
+   "PROGRAM": "CO-zapier-affiliate",
+   "STATUS": "VERIFIED",
+   "OFFER": "30% one-time on a referred customer's first paid subscription, up to $1,000/referral",
+   "COMMISSION": "30% one-time on a referred customer's first paid subscription, up to $1,000/referral",
+   "PAYOUT": "UNKNOWN (no payout fields on record)",
+   "GEOGRAPHY": "UNKNOWN (no geography field on record)",
+   "TRACKING": "no affiliate click attributed yet",
+   "POLICY_RISK": "per-program terms re-check due",
+   "DISTRIBUTION": "NOT_READY (0 registered links)",
+   "LAST_VERIFIED": "2026-08-07",
+   "EVIDENCE": "business_development.py::PLATFORM_REGISTRY (ADR-188, WebSearch-evidenced 2026-08-07)",
+   "FUNNEL": "OFFER_QUALIFIED",
+   "ECONOMICS": "QUALIFIED_FOR_TEST",
+   "URL_HEALTH": [
+    {
+     "url": "https://zapier.com/l/solution-partner",
+     "ok": true,
+     "status": 200
+    }
+   ],
+   "NEXT_ACTION": "hold (no link, no traffic)"
+  },
+  {
+   "PROGRAM": "CO-n8n-affiliate",
+   "STATUS": "VERIFIED",
+   "OFFER": "30% revenue share for 12 months on Starter/Pro plans, self-service application, open to anyone with an audience",
+   "COMMISSION": "30% revenue share for 12 months on Starter/Pro plans, self-service application, open to anyone with an audience",
+   "PAYOUT": "UNKNOWN (no payout fields on record)",
+   "GEOGRAPHY": "UNKNOWN (no geography field on record)",
+   "TRACKING": "no affiliate click attributed yet",
+   "POLICY_RISK": "no change evidenced",
+   "DISTRIBUTION": "NOT_READY (0 registered links)",
+   "LAST_VERIFIED": "2026-09-20",
+   "EVIDENCE": "n8n official affiliates page (re-checked 2026-09-20): live; 30%/12mo Cloud-only; application required. New detail: Partn",
+   "FUNNEL": "OFFER_QUALIFIED",
+   "ECONOMICS": "QUALIFIED_FOR_TEST",
+   "URL_HEALTH": [
+    {
+     "url": "https://n8n.io/affiliates",
+     "ok": true,
+     "status": 200
+    }
+   ],
+   "NEXT_ACTION": "hold (no link, no traffic)"
+  },
+  {
+   "PROGRAM": "CO-digitalocean-affiliate",
+   "STATUS": "VERIFIED",
+   "OFFER": "10 percent of referred customer's monthly spend, paid monthly for one full year per paying user (via Awin network)",
+   "COMMISSION": "10 percent of referred customer's monthly spend, paid monthly for one full year per paying user (via Awin network)",
+   "PAYOUT": "UNKNOWN (no payout fields on record)",
+   "GEOGRAPHY": "UNKNOWN (no geography field on record)",
+   "TRACKING": "no affiliate click attributed yet",
+   "POLICY_RISK": "no change evidenced",
+   "DISTRIBUTION": "NOT_READY (0 registered links)",
+   "LAST_VERIFIED": "2026-09-20",
+   "EVIDENCE": "DigitalOcean official affiliates page + Awin merchant profile ID 123996 (re-checked 2026-09-20): live; 10% recurring/12m",
+   "FUNNEL": "OFFER_QUALIFIED",
+   "ECONOMICS": "ECONOMICS_UNKNOWN",
+   "URL_HEALTH": [
+    {
+     "url": "https://www.digitalocean.com/affiliates",
+     "ok": true,
+     "status": 200
+    }
+   ],
+   "NEXT_ACTION": "hold (no link, no traffic)"
+  },
+  {
+   "PROGRAM": "CO-brevo-affiliate",
+   "STATUS": "VERIFIED",
+   "OFFER": "Fixed CPA per paying account (USD100 per paying customer per official PartnerStack directory page) + $5 CPL per new free account after first paying account",
+   "COMMISSION": "Fixed CPA per paying account (USD100 per paying customer per official PartnerStack directory page) + $5 CPL per new free account after first paying account",
+   "PAYOUT": "UNKNOWN (no payout fields on record)",
+   "GEOGRAPHY": "UNKNOWN (no geography field on record)",
+   "TRACKING": "no affiliate click attributed yet",
+   "POLICY_RISK": "no change evidenced",
+   "DISTRIBUTION": "NOT_READY (0 registered links)",
+   "LAST_VERIFIED": "2026-09-20",
+   "EVIDENCE": "Brevo official affiliates page + PartnerStack directory (re-checked 2026-09-20): live; $100/paying + $5/account; 90-day ",
+   "FUNNEL": "OFFER_QUALIFIED",
+   "ECONOMICS": "ECONOMICS_UNKNOWN",
+   "URL_HEALTH": [
+    {
+     "url": "https://www.brevo.com/partners/affiliates",
+     "ok": true,
+     "status": 200
+    }
+   ],
+   "NEXT_ACTION": "hold (no link, no traffic)"
+  },
+  {
+   "PROGRAM": "CO-aweber-affiliate",
+   "STATUS": "VERIFIED",
+   "OFFER": "30% recurring for 0-99 paid referrals, 40% for 100-499, 50% for 500+ within a trailing 12 months -- paid for the LIFETIME of the referred paid account",
+   "COMMISSION": "30% recurring for 0-99 paid referrals, 40% for 100-499, 50% for 500+ within a trailing 12 months -- paid for the LIFETIME of the referred paid account",
+   "PAYOUT": "UNKNOWN (no payout fields on record)",
+   "GEOGRAPHY": "UNKNOWN (no geography field on record)",
+   "TRACKING": "no affiliate click attributed yet",
+   "POLICY_RISK": "per-program terms re-check due",
+   "DISTRIBUTION": "NOT_READY (0 registered links)",
+   "LAST_VERIFIED": "2026-08-14",
+   "EVIDENCE": "affiliate_discovery.py (directive 2026-08-14 section 1)",
+   "FUNNEL": "OFFER_QUALIFIED",
+   "ECONOMICS": "QUALIFIED_FOR_TEST",
+   "URL_HEALTH": [
+    {
+     "url": "https://www.aweber.com/advocates.htm",
+     "ok": true,
+     "status": 200
+    }
+   ],
+   "NEXT_ACTION": "hold (no link, no traffic)"
+  },
+  {
+   "PROGRAM": "CO-siteground-affiliate",
+   "STATUS": "VERIFIED",
+   "OFFER": "$50 per sale (1-5 sales/mo), $75 (6-10), up to $100 (11-20), custom (21+); 60% of first-year revenue for Website Builder/Ecommerce/AI services sales",
+   "COMMISSION": "$50 per sale (1-5 sales/mo), $75 (6-10), up to $100 (11-20), custom (21+); 60% of first-year revenue for Website Builder/Ecommerce/AI services sales",
+   "PAYOUT": "UNKNOWN (no payout fields on record)",
+   "GEOGRAPHY": "UNKNOWN (no geography field on record)",
+   "TRACKING": "no affiliate click attributed yet",
+   "POLICY_RISK": "no change evidenced",
+   "DISTRIBUTION": "NOT_READY (0 registered links)",
+   "LAST_VERIFIED": "2026-09-20",
+   "EVIDENCE": "SiteGround official affiliates page (re-checked 2026-09-20): live; $50/$75/up-to-$100 tiers; weekly payouts, no minimum.",
+   "FUNNEL": "OFFER_QUALIFIED",
+   "ECONOMICS": "QUALIFIED_FOR_TEST",
+   "URL_HEALTH": [
+    {
+     "url": "https://www.siteground.com/affiliates",
+     "ok": true,
+     "status": 200
+    }
+   ],
+   "NEXT_ACTION": "hold (no link, no traffic)"
+  }
+ ],
+ "verified_at": "2026-09-21T19:13:25.312102+00:00"
+}

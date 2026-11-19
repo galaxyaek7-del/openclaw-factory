@@ -1,0 +1,53 @@
+{
+  "asset_id": "AFF-DO-001",
+  "record_source": "data/commission_opportunities.jsonl",
+  "last_verified": "2026-10-21",
+  "sources": [
+    {
+      "claim": "DigitalOcean pays 10% of a referred customer's monthly spend for one full year per paying user via Awin.",
+      "source_url": "https://www.digitalocean.com/affiliates",
+      "secondary_url": "https://www.digitalocean.com/legal/affiliate-program-agreement",
+      "evidence_date": "2026-10-21",
+      "source_type": "official_program_record"
+    },
+    {
+      "claim": "DigitalOcean's official 'Become an affiliate' button targets Awin merchant profile 123996.",
+      "source_url": "https://www.digitalocean.com/affiliates",
+      "secondary_url": "https://ui.awin.com/merchant-profile/123996",
+      "evidence_date": "2026-10-21",
+      "source_type": "official_program_page"
+    },
+    {
+      "claim": "Awin pays international publishers via Payoneer; the Payoneer account must be set up from Awin, not linked from an existing account. Awin quotes 1.75% for local-currency conversion or SWIFT/intermediary bank fees otherwise, with no monthly or annual fee stated.",
+      "source_url": "https://success.awin.com/articles/en_US/Knowledge/Payoneer-for-Awin-Publishers-FAQs",
+      "evidence_date": "2026-10-21",
+      "source_type": "official_network_help"
+    },
+    {
+      "claim": "The network minimum is USD 20; payments are processed on the 1st and 15th, and a weekend date rolls to the next working day.",
+      "source_url": "https://success.awin.com/articles/en_US/Knowledge/What-are-the-payment-thresholds",
+      "secondary_url": "https://success.awin.com/s/article/When-will-I-receive-payment?language=en_US",
+      "evidence_date": "2026-10-21",
+      "source_type": "official_network_help"
+    },
+    {
+      "claim": "Payoneer's receiving-account fee table lists Algeria at 1% for USD, with a USD 1 minimum.",
+      "source_url": "https://payoneer.custhelp.com/app/answers/detail/a_id/38762",
+      "evidence_date": "2026-10-21",
+      "source_type": "official_provider_help"
+    },
+    {
+      "claim": "Tax documentation is required, but the exact form (W-8BEN or other) is not confirmed on the reviewed pages.",
+      "source_url": "https://www.digitalocean.com/legal/affiliate-program-agreement",
+      "evidence_date": "2026-10-21",
+      "source_type": "official_program_terms"
+    },
+    {
+      "claim": "Approval, actual conversion, commission approval, and payout receipt are not established by the program record.",
+      "source_url": null,
+      "evidence_date": "2026-10-21",
+      "source_type": "disclosed_gap"
+    }
+  ],
+  "notes": "No affiliate link, account, application, or payout has been created. The Awin/Payoneer route is cited, but the Awin account, Payoneer setup, tax documentation, and final Algeria payout still require founder action and confirmation."
+}

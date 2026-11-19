@@ -1,0 +1,44 @@
+{
+  "asset_id": "AFF-N8N-001",
+  "record_source": "data/commission_opportunities.jsonl",
+  "last_verified": "2026-10-21",
+  "sources": [
+    {
+      "claim": "n8n records a 30% revenue share for 12 months on Starter/Pro plans, with a self-service application.",
+      "source_url": "https://n8n.io/affiliates/",
+      "evidence_date": "2026-10-21",
+      "source_type": "official_program_page"
+    },
+    {
+      "claim": "n8n's affiliate FAQ says a PayPal account is required to receive payouts, pays monthly with a EUR 100 minimum, and bans paid ads.",
+      "source_url": "https://n8n.io/affiliates/",
+      "evidence_date": "2026-10-21",
+      "source_type": "official_program_faq"
+    },
+    {
+      "claim": "PartnerStack's n8n directory also lists PayPal, Stripe, and alternative payout methods; this conflicts with n8n's PayPal-required FAQ and is not confirmed by n8n.",
+      "source_url": "https://market.partnerstack.com/page/n8n",
+      "evidence_date": "2026-10-21",
+      "source_type": "official_network_directory"
+    },
+    {
+      "claim": "PayPal's Algeria receive agreement lists Algeria, but requires a linked US bank account or Visa credit card, imposes a 30-day hold, and allows withdrawal only.",
+      "source_url": "https://www.paypal.com/dz/legalhub/paypal/recpymt-full",
+      "evidence_date": "2026-10-21",
+      "source_type": "official_payment_terms"
+    },
+    {
+      "claim": "PayPal Payouts' eligible-country table does not list Algeria.",
+      "source_url": "https://developer.paypal.com/payouts/supported-features",
+      "evidence_date": "2026-10-21",
+      "source_type": "official_payment_api_docs"
+    },
+    {
+      "claim": "The exact n8n/PartnerStack payout rail and Algeria account eligibility are not confirmed.",
+      "source_url": null,
+      "evidence_date": "2026-10-21",
+      "source_type": "disclosed_gap"
+    }
+  ],
+  "notes": "No affiliate link, account, application, or payout has been created. PayPal's Algeria receive agreement makes a conditional route plausible, but n8n's required rail and PartnerStack's payout configuration are still unconfirmed. This draft does not claim that n8n pays in Algeria."
+}
