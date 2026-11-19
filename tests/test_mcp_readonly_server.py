@@ -178,16 +178,24 @@ class TestPathBoundary(unittest.TestCase):
     @unittest.skipUnless(sys.platform == "win32", "directory junctions are Windows-only")
     def test_junction_out_of_the_root_is_refused(self):
         import _winapi
+
+        # tests/write_guard.py redirects os.rmdir for repo paths, so a junction
+        # created with the raw Win32 call must also be removed with the raw call
+        # or it survives the run and breaks the next one.
+        wg = sys.modules.get("write_guard")
+        real_rmdir = wg._real["rmdir"] if wg else os.rmdir
+        junction = S.RENDERS / "zz_junction_probe"
+        if os.path.lexists(junction):
+            real_rmdir(str(junction))
         with tempfile.TemporaryDirectory() as outside:
             (Path(outside) / "evil.mp4").write_bytes(b"\x00" * 16)
-            junction = S.RENDERS / "zz_junction_probe"
             _winapi.CreateJunction(outside, str(junction))
             try:
                 self.assertTrue((junction / "evil.mp4").exists())       # the escape route is real
                 with self.assertRaises(S.ToolError):
                     S._render_path("kids_studio/renders/zz_junction_probe/evil.mp4")
             finally:
-                os.rmdir(junction)                                      # removes the link, not the target
+                real_rmdir(str(junction))                               # removes the link, not the target
 
     def test_verify_render_writes_nothing(self):
         vv = mock.Mock()
