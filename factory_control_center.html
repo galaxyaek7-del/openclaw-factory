@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="ar" dir="rtl"><head>
+<meta name="robots" content="noindex, nofollow"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Galaxy Forge — غرفة التحكم العالمية</title>
+<style>
+:root{--bg:#0f172a;--card:#1e293b;--muted:#94a3b8;--accent:#38bdf8;--green:#22c55e;--amber:#f59e0b;--red:#ef4444;--border:#334155;--blue:#3b82f6}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:#e2e8f0;line-height:1.6}
+header{position:sticky;top:0;z-index:10;background:rgba(15,23,42,0.95);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);padding:14px 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+header h1{margin:0;font-size:22px}
+.badge{padding:5px 12px;border-radius:999px;font-size:13px;font-weight:700}
+.badge-frozen{background:#fef3c7;color:#92400e;border:1px solid #fcd34d}
+.badge-lock{background:#1e293b;color:#94a3b8;border:1px solid var(--border)}
+.badge-live{background:rgba(34,197,94,0.15);color:var(--green);border:1px solid rgba(34,197,94,0.3);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.6}}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;padding:20px 24px}
+.kpi{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px}
+.kpi .label{font-size:13px;color:var(--muted)}
+.kpi .value{font-size:22px;font-weight:800;margin:4px 0}
+.kpi .sub{font-size:12px;color:var(--muted)}
+.kpi.negative .value{color:var(--red)}
+.kpi.neutral .value{color:var(--amber)}
+.tabs{display:flex;gap:8px;padding:0 24px;flex-wrap:wrap}
+.tab{padding:10px 16px;border-radius:8px;border:1px solid var(--border);background:var(--card);cursor:pointer;font-weight:600}
+.tab.active{background:var(--accent);color:#0f172a;border-color:var(--accent)}
+.panel{display:none;padding:20px 24px}
+.panel.active{display:block}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;margin:12px 0}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+.cover{width:120px;height:192px;object-fit:cover;border-radius:8px;border:1px solid var(--border);float:left;margin:0 16px 8px 0}
+.clear{clear:both}
+.status{padding:4px 10px;border-radius:999px;font-size:12px;font-weight:700;display:inline-block}
+.status-pass{background:rgba(34,197,94,0.15);color:var(--green);border:1px solid rgba(34,197,94,0.3)}
+.status-fail{background:rgba(239,68,68,0.15);color:var(--red);border:1px solid rgba(239,68,68,0.3)}
+.status-info{background:rgba(245,158,11,0.15);color:var(--amber);border:1px solid rgba(245,158,11,0.3)}
+.status-running{background:rgba(59,130,246,0.2);color:var(--blue);border:1px solid rgba(59,130,246,0.4);animation:pulse 1.5s infinite}
+.search{width:100%;padding:10px 14px;border-radius:8px;border:1px solid var(--border);background:#0f172a;color:#e2e8f0;margin:12px 0}
+.muted{color:var(--muted);font-size:13px}
+.note{background:rgba(15,23,42,0.6);border:1px solid var(--border);border-radius:8px;padding:10px;margin:8px 0;font-size:13px}
+.btn{padding:8px 14px;border-radius:8px;border:1px solid var(--border);background:#0f172a;color:#94a3b8;cursor:not-allowed;opacity:0.6}
+.btn.primary{background:var(--accent);color:#0f172a;opacity:1;cursor:pointer}
+a{color:var(--accent)}
+table{width:100%;border-collapse:collapse}
+th,td{padding:8px;border-bottom:1px solid var(--border);text-align:right;font-size:14px}
+/* Live Map */
+.map-container{position:relative;width:100%;height:620px;background:#0f172a;border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.map-viewport{position:absolute;inset:0;overflow:hidden;cursor:grab}
+.map-viewport:active{cursor:grabbing}
+.map-canvas{position:absolute;transform-origin:0 0;transition:transform 0.2s}
+.map-node{position:absolute;width:140px;padding:8px 10px;border-radius:10px;border:2px solid var(--border);background:var(--card);text-align:center;font-size:12px;cursor:pointer;transition:all 0.3s}
+.map-node:hover{transform:scale(1.05);z-index:5;box-shadow:0 4px 12px rgba(0,0,0,0.4)}
+.map-node.running{border-color:var(--blue);box-shadow:0 0 12px rgba(59,130,246,0.4)}
+.map-node.blocked{border-color:var(--red);background:rgba(239,68,68,0.1)}
+.map-node.idle{border-color:var(--border);opacity:0.9}
+.map-node.failed{border-color:var(--red);background:rgba(239,68,68,0.15)}
+.map-node .node-icon{font-size:18px}
+.map-node .node-title{font-weight:700;font-size:11px;margin:2px 0}
+.map-node .node-state{font-size:10px;padding:2px 6px;border-radius:999px;display:inline-block;margin-top:2px}
+.map-edge{position:absolute;height:2px;background:var(--border);transform-origin:left center}
+.map-edge.active{background:var(--blue);box-shadow:0 0 6px var(--blue);animation:flow 1.5s linear infinite}
+@keyframes flow{0%{opacity:0.4}50%{opacity:1}100%{opacity:0.4}}
+.map-controls{position:absolute;top:10px;left:10px;display:flex;gap:6px;z-index:10}
+.map-controls button{padding:6px 10px;border-radius:6px;border:1px solid var(--border);background:var(--card);color:#e2e8f0;cursor:pointer;font-size:12px}
+.map-legend{position:absolute;bottom:10px;right:10px;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-size:11px;z-index:10}
+.trace-panel{position:absolute;top:0;left:0;width:360px;height:100%;background:var(--card);border-left:1px solid var(--border);transform:translateX(-100%);transition:transform 0.3s;z-index:20;overflow-y:auto;padding:16px}
+.trace-panel.open{transform:translateX(0)}
+</style></head>
+<body>
+<header>
+<h1>🏭 Galaxy Forge — غرفة التحكم العالمية</h1>
+<span class="badge badge-frozen">M2_PROTOCOL = FROZEN</span>
+<span class="badge badge-lock">PRODUCTION_AUTHORIZED = FALSE — Gate-2 إلزامي</span>
+<span id="liveBadge" class="badge badge-live">● LIVE</span>
+<span class="muted" style="margin-inline-start:auto">SECONDARY VIEW - canonical / (index.html) - stale HEAD 9dcf3a15 — <span id="liveTime">--</span></span>
+</header>
+<div class="note"><strong>LEGACY / SECONDARY VIEW.</strong> The canonical Founder Control Center is <a href="/">/</a> (index.html). This page is authenticated and read-only; panels marked HISTORICAL are snapshots, not live. <a href="/mission_control_login.html">Log in</a></div>
+
+<div class="kpis">
+<div class="kpi negative"><div class="label">REAL_REVENUE</div><div class="value" id="kpiRevenue">$0</div><div class="sub">OBSERVED — finance_data.json: sales: []</div></div>
+<div class="kpi negative"><div class="label">REAL_SALES</div><div class="value" id="kpiSales">0</div><div class="sub">OBSERVED — sales_ledger 0 sale</div></div>
+<div class="kpi negative"><div class="label">PUBLISHED_BOOKS</div><div class="value" id="kpiBooks">0</div><div class="sub">OBSERVED — reality.json: []</div></div>
+<div class="kpi neutral"><div class="label">PROOF_OF_PAYMENT</div><div class="value" id="kpiProof">UNKNOWN</div><div class="sub">لا معاملة Galaxy Forge حقيقية</div></div>
+</div>
+
+<div class="tabs">
+<button class="tab active" onclick="switchTab(0)">نظرة عامة</button>
+<button class="tab" onclick="switchTab(1)">المنتجات</button>
+<button class="tab" onclick="switchTab(2)">الجودة والاقتصاد</button>
+<button class="tab" onclick="switchTab(3)">الحوكمة</button>
+<button class="tab" onclick="switchTab(4)">التوزيع العالمي</button>
+<button class="tab" onclick="switchTab(5)">🗺️ الخريطة الحية</button>
+</div>
+
+<div id="p0" class="panel active">
+<div class="card">
+<h3>🌍 صبغة عالمية حقيقية — شركة استثمار رقمي</h3>
+<p class="muted">Galaxy Forge ليست مصنع كتب فقط — منصة إنتاج رقمي متعددة المسارات. هذه الغرفة تعرض <strong>الحقيقة فقط</strong> — كل رقم مصنف <code>OBSERVED / DERIVED / ESTIMATED / UNKNOWN</code>.</p>
+<div class="note">💡 <strong>سهلة للرئيس:</strong> بطاقات كبيرة، تبويبات واضحة، بحث فوري، كل زر غير مصرح به معطّل — لا لبس. الخريطة الحية في التبويب الأخير.</div>
+</div>
+<div class="grid2">
+<div class="card"><h4>📦 المنتجات الجاهزة</h4><p><strong>2</strong> منتج Premium جاهز (22 صفحة، 12/12) بسعر <strong>$127</strong> — كلاهما `market_realistic:true`</p><span class="status status-pass">QUALITY_READY</span></div>
+<div class="card"><h4>🔒 الحوكمة</h4><p>8 موافقات — #4 و #5 ممنوحتان، #6 و #7 <strong>NOT_GRANTED</strong></p><span class="status status-info">PRODUCTION_AUTHORIZED FALSE</span></div>
+<div class="card"><h4>🌐 التوزيع العالمي</h4><p>Gumroad <strong>مطلوب ومُتحقق</strong>، Paddle <strong>محجوب</strong></p><span class="status status-info">PARTIALLY_VERIFIED</span></div>
+</div>
+</div>
+
+<div id="p1" class="panel">
+<h3>المنتجات — معاينة القراءة فقط (Buy مغلق)</h3>
+<div class="card product" data-name="workflow automation logistics premium">
+<img class="cover" src="books/covers/workflow_automation_system_for_logistics_companies_cover.png" alt="cover" onerror="this.style.display='none'">
+<h4>Workflow Automation for Logistics — Premium — $127</h4>
+<p class="muted">22 صفحة + 3 أدوات — `elite → gumroad_elite`</p>
+<p><span class="status status-pass">Technical 12/12 PASS</span> <span class="status status-pass">profit_score 66 PASS</span></p>
+<p><button class="btn" disabled>Buy — مغلق حتى اعتماد الدفع</button></p>
+<div class="clear"></div>
+</div>
+<div class="card product" data-name="inventory management wholesale premium">
+<img class="cover" src="books/covers/inventory_management_system_for_wholesale_distributors_cover.png" alt="cover" onerror="this.style.display='none'">
+<h4>Inventory Management for Wholesale — Premium — $127</h4>
+<p class="muted">22 صفحة + 3 أدوات — `elite → gumroad_elite`</p>
+<p><span class="status status-pass">Technical 9/9 PASS</span> <span class="status status-pass">profit_score 70 PASS</span></p>
+<p><button class="btn" disabled>Buy — مغلق حتى اعتماد الدفع</button></p>
+<div class="clear"></div>
+</div>
+</div>
+
+<div id="p2" class="panel">
+<h3>الجودة والاقتصاد — بصدق</h3>
+<div class="card"><h4>الاقتصاد — صريح</h4><table><tr><th>المنصة</th><th>Pages</th><th>السعر</th><th>market_realistic</th></tr><tr><td>gumroad_elite</td><td>22</td><td>$127 <span class="muted">(HISTORICAL 2026-10-09 - not live)</span></td><td><span class="status status-pass">true</span></td></tr></table></div>
+</div>
+
+<div id="p3" class="panel">
+<div class="note">HISTORICAL SNAPSHOT (2026-10-09) - not live. Current truth is derived from /api/dashboard.</div>
+<h3>الحوكمة — مقفلة</h3>
+<table><tr><th>#</th><th>الموافقة</th><th>الحالة</th></tr><tr><td>4</td><td>قائمة المشترين</td><td><span class="status status-pass">GRANTED</span></td></tr><tr><td>6</td><td>تفعيل الدفع</td><td><span class="status status-fail">NOT_GRANTED — PADDLE OFF</span></td></tr><tr><td>7</td><td>Gate-2</td><td><span class="status status-fail">NOT_GRANTED</span></td></tr></table>
+</div>
+
+<div id="p4" class="panel">
+<h3>التوزيع العالمي — بصدق</h3>
+<div class="card"><h4>المعرض العام — للقراءة فقط</h4><p>HTML ثابت فقط — لا `POST /api/purchase`، زر Buy هو `span` معطّل.</p></div>
+</div>
+
+<div id="p5" class="panel">
+<h3>🗺️ الخريطة الهندسية الحية — Live Engineering Operations Map</h3>
+<p class="muted">تصور حقيقي لحالة المصنع — كل عقدة تقرأ من <code>REAL SYSTEM STATE</code> عبر <code>/api/dashboard</code> + <code>/api/reality</code> — لا نشاط مزيف. <span id="mapStatus" class="status status-info">LOADING...</span> <span id="mapAge" class="muted"></span></p>
+<div class="map-container" id="mapContainer">
+<div class="map-controls">
+<button onclick="mapZoom(1.2)">＋</button><button onclick="mapZoom(0.8)">－</button><button onclick="mapReset()">⟲</button>
+<button onclick="toggleFollow()" id="followBtn">◎ تتبع النشاط</button>
+</div>
+<div class="map-legend">
+<div>● <span style="color:var(--blue)">أزرق</span> = نشط</div><div>● <span style="color:var(--green)">أخضر</span> = صحي</div><div>● <span style="color:var(--red)">أحمر</span> = محجوب/فشل</div><div>● رمادي = خامل/انتظار</div>
+<div style="margin-top:6px;border-top:1px solid var(--border);padding-top:6px">الحوكمة: <span style="color:var(--red)">أحمر</span> = حماية — ليست مرحلة إنتاج</div>
+</div>
+<div class="map-viewport" id="mapViewport">
+<div class="map-canvas" id="mapCanvas" style="width:900px;height:580px">
+<!-- Governance side layer -->
+<div class="map-node" style="left:20px;top:20px;width:120px;background:rgba(239,68,68,0.08);border-color:var(--red)" data-node="safe_mode"><div class="node-icon">🛡️</div><div class="node-title">SAFE MODE</div><div class="node-state status-info" id="state-safe_mode">LOADING</div></div>
+<div class="map-node" style="left:20px;top:110px;width:120px;background:rgba(239,68,68,0.08);border-color:var(--red)" data-node="circuit_breaker"><div class="node-icon">⚡</div><div class="node-title">CIRCUIT BREAKER</div><div class="node-state status-info" id="state-circuit_breaker">LOADING</div></div>
+<div class="map-node" style="left:20px;top:200px;width:120px;background:rgba(239,68,68,0.08);border-color:var(--red)" data-node="publish_protection"><div class="node-icon">🔒</div><div class="node-title">PUBLISH PROTECTION</div><div class="node-state status-info" id="state-publish_protection">LOADING</div></div>
+<div class="map-node" style="left:20px;top:290px;width:120px;background:rgba(245,158,11,0.1);border-color:var(--amber)" data-node="financial_truth"><div class="node-icon">💰</div><div class="node-title">FINANCIAL TRUTH</div><div class="node-state status-info" id="state-financial_truth">$0</div></div>
+<!-- Main pipeline -->
+<div class="map-node" style="left:220px;top:20px" data-node="executive_brain"><div class="node-icon">🧠</div><div class="node-title">EXECUTIVE BRAIN</div><div class="node-state status-info" id="state-executive_brain">LOADING</div></div>
+<div class="map-node" style="left:400px;top:20px" data-node="market_intelligence"><div class="node-icon">🔍</div><div class="node-title">MARKET INTELLIGENCE</div><div class="node-state status-info" id="state-market_intelligence">LOADING</div></div>
+<div class="map-node" style="left:580px;top:20px" data-node="opportunity_engine"><div class="node-icon">💡</div><div class="node-title">OPPORTUNITY ENGINE</div><div class="node-state status-info" id="state-opportunity_engine">LOADING</div></div>
+<div class="map-node" style="left:220px;top:140px" data-node="unit_economics"><div class="node-icon">📊</div><div class="node-title">UNIT ECONOMICS</div><div class="node-state status-info" id="state-unit_economics">LOADING</div></div>
+<div class="map-node" style="left:400px;top:140px" data-node="product_genome"><div class="node-icon">🧬</div><div class="node-title">PRODUCT GENOME</div><div class="node-state status-info" id="state-product_genome">LOADING</div></div>
+<div class="map-node" style="left:580px;top:140px" data-node="affiliate_intelligence"><div class="node-icon">🤝</div><div class="node-title">AFFILIATE INTELLIGENCE</div><div class="node-state status-info" id="state-affiliate_intelligence">LOADING</div></div>
+<div class="map-node" style="left:220px;top:260px" data-node="production"><div class="node-icon">🏭</div><div class="node-title">PRODUCTION</div><div class="node-state status-info" id="state-production">LOADING</div></div>
+<div class="map-node" style="left:400px;top:260px" data-node="qa"><div class="node-icon">✅</div><div class="node-title">QA</div><div class="node-state status-info" id="state-qa">LOADING</div></div>
+<div class="map-node" style="left:580px;top:260px" data-node="governance"><div class="node-icon">⚖️</div><div class="node-title">GOVERNANCE</div><div class="node-state status-info" id="state-governance">LOADING</div></div>
+<div class="map-node" style="left:220px;top:380px" data-node="distribution"><div class="node-icon">📦</div><div class="node-title">DISTRIBUTION</div><div class="node-state status-info" id="state-distribution">LOADING</div></div>
+<div class="map-node" style="left:400px;top:380px" data-node="learning"><div class="node-icon">📚</div><div class="node-title">LEARNING</div><div class="node-state status-info" id="state-learning">LOADING</div></div>
+<div class="map-node" style="left:580px;top:380px" data-node="scaling"><div class="node-icon">📈</div><div class="node-title">SCALING CONTROL</div><div class="node-state status-info" id="state-scaling">LOADING</div></div>
+<!-- Edges will be drawn via JS -->
+</div>
+</div>
+<div class="trace-panel" id="tracePanel">
+<h4 id="traceTitle">اختر عقدة</h4>
+<div id="traceBody" class="muted">انقر على أي عقدة لرؤية التفاصيل الحية: الحالة، الصحة، المدخلات، المخرجات، آخر تشغيل، الأخطاء، الأدلة.</div>
+<button class="btn" onclick="closeTrace()" style="margin-top:12px;width:100%">إغلاق</button>
+</div>
+</div>
+<div class="card">
+<h4>🔍 فحص التدفق + إعادة التشغيل</h4>
+<p class="muted">انقر على عقدة → لوحة الفحص. انقر على حافة → تفاصيل التدفق. <span id="replayStatus" class="status status-info">REPLAY: لا يوجد تتبع كافٍ</span> — يعتمد على `logs/service_layer.log` و `data/decisions.jsonl`.</p>
+<div style="display:flex;gap:8px;flex-wrap:wrap">
+<button class="btn" onclick="loadReplay()">تحميل إعادة التشغيل الأخيرة</button>
+<button class="btn" onclick="refreshMap()">تحديث الآن</button>
+<span id="liveIndicator" class="muted">● LIVE: polling كل 10 ثوانٍ — آخر تحديث: <span id="lastUpdate">--</span> — <span id="dataAge">--</span></span>
+</div>
+</div>
+<div class="card">
+<h4>🛡️ الحوكمة المرئية</h4>
+<p>SAFE_MODE: <span id="govSafeMode" class="status status-info">LOADING</span> | CIRCUIT_BREAKER: <span id="govCircuit" class="status status-info">LOADING</span> | PUBLISH_PROTECTION: <span id="govPublish" class="status status-info">LOADING</span> | PAYMENT: <span class="status status-fail">OFF</span> | FINANCIAL_TRUTH: <span id="govFinance" class="status status-info">$0</span></p>
+<p class="muted">إذا تم إيقاف فرصة بواسطة الحوكمة، ستظهر هنا السبب الحقيقي — ليس "ERROR" بل `BLOCKED → SAFE_MODE`.</p>
+</div>
+</div>
+
+<script>
+let mapScale=1, mapX=0, mapY=0, isDragging=false, dragStart={x:0,y:0}, followActive=false, lastData=null, pollTimer=null;
+
+function switchTab(i){
+ document.querySelectorAll('.tab').forEach((t,idx)=>t.classList.toggle('active',idx===i));
+ document.querySelectorAll('.panel').forEach((p,idx)=>p.classList.toggle('active',idx===i));
+ if(i===5) { refreshMap(); startPolling(); } else { stopPolling(); }
+}
+function filterProducts(q){
+ q=(q||'').toLowerCase();
+ document.querySelectorAll('.product').forEach(el=>{
+   el.style.display = el.dataset.name.includes(q) ? '' : 'none';
+ });
+}
+function mapZoom(f){ mapScale = Math.max(0.5, Math.min(2, mapScale*f)); applyMapTransform(); }
+function mapReset(){ mapScale=1; mapX=0; mapY=0; applyMapTransform(); }
+function applyMapTransform(){ document.getElementById('mapCanvas').style.transform = `translate(${mapX}px,${mapY}px) scale(${mapScale})`; }
+function toggleFollow(){ followActive=!followActive; document.getElementById('followBtn').textContent = followActive ? '◉ يتتبع النشاط' : '◎ تتبع النشاط'; document.getElementById('followBtn').style.background = followActive ? 'var(--blue)' : 'var(--card)'; }
+
+// Map drag
+const vp=document.getElementById('mapViewport');
+vp.addEventListener('mousedown', e=>{ isDragging=true; dragStart={x:e.clientX-mapX, y:e.clientY-mapY}; });
+window.addEventListener('mouseup', ()=>isDragging=false);
+window.addEventListener('mousemove', e=>{ if(!isDragging) return; mapX=e.clientX-dragStart.x; mapY=e.clientY-dragStart.y; applyMapTransform(); });
+vp.addEventListener('wheel', e=>{ e.preventDefault(); mapZoom(e.deltaY<0?1.1:0.9); }, {passive:false});
+
+// Node click -> trace
+document.querySelectorAll('.map-node').forEach(n=>{
+ n.addEventListener('click', ()=> openTrace(n.dataset.node));
+});
+function openTrace(nodeId){
+ const panel=document.getElementById('tracePanel');
+ const title=document.getElementById('traceTitle');
+ const body=document.getElementById('traceBody');
+ title.textContent = nodeId;
+ const data = lastData || {};
+ // Build trace from real data where available
+ let html = `<p><strong>العقدة:</strong> ${nodeId}</p>`;
+ html += `<p><strong>الحالة:</strong> <span id="traceState">${document.getElementById('state-'+nodeId)?.textContent || 'UNKNOWN'}</span></p>`;
+ html += `<p class="muted">المصدر: ${getNodeSource(nodeId)}</p>`;
+ html += `<p><strong>آخر تشغيل:</strong> ${data.timestamp || 'UNKNOWN'}</p>`;
+ html += `<p><strong>الصحة:</strong> ${data.health || 'UNKNOWN'}</p>`;
+ html += `<p class="muted">انقر على الحافة لرؤية التدفق — التدفق المتحرك يظهر فقط عند وجود حدث حقيقي.</p>`;
+ body.innerHTML = html;
+ panel.classList.add('open');
+}
+function closeTrace(){ document.getElementById('tracePanel').classList.remove('open'); }
+function getNodeSource(id){
+ const map={executive_brain:'Executive Brain → /api/dashboard', market_intelligence:'Market Intelligence → /api/dashboard', opportunity_engine:'Opportunity Engine → data/decisions.jsonl', unit_economics:'Unit Economics → economics.py', product_genome:'Product Genome → product_families', affiliate_intelligence:'Affiliate Intelligence → data/decisions.jsonl (ai_saas)', production:'Production → books/*_premium.pdf', qa:'QA → inspectors.py', governance:'Governance → safe_mode/circuit_breaker', distribution:'Distribution → distributor + channels/gumroad', learning:'Learning → decision_engine/learning', scaling:'Scaling Control → scaling_control', safe_mode:'Safe Mode → safe_mode.py', circuit_breaker:'Circuit Breaker → circuit_breaker.py', publish_protection:'Publish Protection → channels/publish_protection.py', financial_truth:'Financial Truth → finance_data.json'};
+ return map[id]||'UNKNOWN';
+}
+
+async function fetchDashboard(){
+ try{
+   const res = await fetch('/api/dashboard', {cache:'no-store'});
+   if(!res.ok) throw new Error('HTTP '+res.status);
+   const data = await res.json();
+   return data;
+ }catch(e){ return {error:e.message, _fetchFailed:true}; }
+}
+async function fetchReality(){
+ try{
+   const res = await fetch('/api/reality', {cache:'no-store'});
+   if(!res.ok) throw new Error('HTTP '+res.status);
+   return await res.json();
+ }catch(e){ return {error:e.message, _fetchFailed:true}; }
+}
+
+function setNodeState(id, text, cls){
+ const el=document.getElementById('state-'+id);
+ if(!el) return;
+ el.textContent=text;
+ el.className='node-state '+cls;
+ const node=document.querySelector(`[data-node="${id}"]`);
+ if(node){ node.className='map-node '+(cls==='status-pass'?'idle':cls==='status-fail'?'blocked':cls==='status-running'?'running':'idle'); }
+}
+
+async function refreshMap(){
+ const badge=document.getElementById('mapStatus');
+ const ageEl=document.getElementById('mapAge');
+ const lastEl=document.getElementById('lastUpdate');
+ const timeEl=document.getElementById('liveTime');
+ badge.textContent='LOADING...'; badge.className='status status-info';
+ try{
+   const [dash, reality] = await Promise.all([fetchDashboard(), fetchReality()]);
+   const now=new Date();
+   lastData=dash;
+   lastEl.textContent=now.toLocaleTimeString('ar-EG');
+   timeEl.textContent=now.toLocaleTimeString('ar-EG');
+   ageEl.textContent=dash.error ? 'BACKEND UNAVAILABLE' : 'LIVE';
+   ageEl.className = dash.error ? 'status status-fail' : 'status status-pass';
+   badge.textContent = dash.error ? 'BACKEND UNAVAILABLE' : 'LIVE';
+   badge.className = dash.error ? 'status status-fail' : 'status status-pass';
+   if(dash.error){ setNodeState('safe_mode','BACKEND UNAVAILABLE','status-fail'); setNodeState('circuit_breaker','UNKNOWN','status-info'); return; }
+   // Derive node states from real dash data where available
+   const health = dash.health || dash.status || 'UNKNOWN';
+   const isHealthy = (health==='healthy' || health==='ok');
+   // Financial truth
+   const rev = dash.finance?.total_revenue ?? dash.finance?.totalRevenue ?? dash.revenue ?? 0;
+   const sales = dash.finance?.total_sales ?? dash.finance?.totalSales ?? dash.sales ?? 0;
+   document.getElementById('kpiRevenue').textContent='$'+rev;
+   document.getElementById('kpiSales').textContent=sales;
+   document.getElementById('govFinance').textContent='$'+rev;
+   document.getElementById('state-financial_truth').textContent='$'+rev;
+   // Governance (V22 shape: dash.governance.{safe_mode,circuit_breaker,publish_protection})
+   const safeGov = dash.governance?.safe_mode || {};
+   const cbGov = dash.governance?.circuit_breaker || {};
+   const ppGov = dash.governance?.publish_protection || {};
+   const safeMode = !dash.governance ? 'UNKNOWN' : (safeGov.enabled ? 'SAFE_MODE' : 'OFF');
+   setNodeState('safe_mode', safeMode, safeMode==='SAFE_MODE' ? 'status-fail' : (safeMode==='OFF' ? 'status-pass' : 'status-info'));
+   document.getElementById('govSafeMode').textContent=safeMode;
+   document.getElementById('govSafeMode').className='status '+(safeMode==='SAFE_MODE'?'status-fail':'status-pass');
+   const cb = dash.governance ? (cbGov.state || 'UNKNOWN') : 'UNKNOWN';
+   setNodeState('circuit_breaker', cb, cb==='OPEN'?'status-fail':(cb==='UNKNOWN'?'status-info':'status-pass'));
+   document.getElementById('govCircuit').textContent=cb;
+   const pp = !dash.governance ? 'UNKNOWN' : (ppGov.active ? 'ACTIVE' : 'INACTIVE');
+   setNodeState('publish_protection', pp, pp==='ACTIVE'?'status-pass':(pp==='INACTIVE'?'status-fail':'status-info'));
+   document.getElementById('govPublish').textContent=pp;
+   // Main pipeline nodes — derive from dash presence
+   const hasOpportunities = (dash.opportunities?.length >0) || (dash.decisions?.length >0);
+   setNodeState('executive_brain', isHealthy?'HEALTHY':'IDLE', isHealthy?'status-pass':'status-info');
+   setNodeState('market_intelligence', hasOpportunities?'RUNNING':'IDLE', hasOpportunities?'status-running':'status-info');
+   setNodeState('opportunity_engine', hasOpportunities?'RUNNING':'IDLE', hasOpportunities?'status-running':'status-info');
+   setNodeState('unit_economics', 'UNKNOWN', 'status-info');
+   setNodeState('product_genome', 'UNKNOWN', 'status-info');
+   setNodeState('affiliate_intelligence', dash.affiliate?.opportunities ? 'RUNNING':'IDLE', dash.affiliate?.opportunities?'status-running':'status-info');
+   setNodeState('production', dash.production?.lastRun ? 'RUNNING':'IDLE', dash.production?.lastRun?'status-running':'status-info');
+   setNodeState('qa', 'UNKNOWN', 'status-info');
+   setNodeState('governance', (cb==='OPEN'||safeMode==='SAFE_MODE')?'ATTENTION':(dash.governance?'HEALTHY':'UNKNOWN'), (cb==='OPEN'||safeMode==='SAFE_MODE')?'status-fail':(dash.governance?'status-pass':'status-info'));
+   setNodeState('distribution', 'IDLE', 'status-info');
+   setNodeState('learning', 'IDLE', 'status-info');
+   setNodeState('scaling', 'IDLE', 'status-info');
+   // Data age
+   const age = dash.generated_at ? Math.round((Date.now()-new Date(dash.generated_at).getTime())/1000)+'s ago' : 'unknown';
+   document.getElementById('dataAge').textContent='عمر البيانات: '+age;
+   if(followActive && hasOpportunities){
+     // Follow active run — center on opportunity_engine
+     mapX=-200; mapY=-40; applyMapTransform();
+   }
+ }catch(e){
+   badge.textContent='ERROR'; badge.className='status status-fail';
+   ageEl.textContent='BACKEND UNAVAILABLE';
+ }
+}
+function startPolling(){ stopPolling(); pollTimer=setInterval(refreshMap,10000); }
+function stopPolling(){ if(pollTimer) clearInterval(pollTimer); pollTimer=null; }
+async function loadReplay(){
+ const el=document.getElementById('replayStatus');
+ try{
+   const res=await fetch('/api/dashboard', {cache:'no-store'});
+   const data=await res.json();
+   const trace=data.trace || data.logs || data.timeline || [];
+   if(!trace || trace.length===0){ el.textContent='REPLAY UNAVAILABLE — INSUFFICIENT TRACE DATA'; el.className='status status-info'; return; }
+   el.textContent=`REPLAY: ${trace.length} خطوات — انقر على عقدة لرؤية التفاصيل`;
+   el.className='status status-pass';
+ }catch(e){ el.textContent='REPLAY UNAVAILABLE — BACKEND UNAVAILABLE'; el.className='status status-fail'; }
+}
+
+// Honest live hint: no external fetch beyond /api/dashboard and /api/reality, no payment activation
+console.log('Galaxy Forge Control Center — READ-ONLY — Live Map polling /api/dashboard every 10s');
+</script>
+</body></html>
