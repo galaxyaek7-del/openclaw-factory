@@ -1,0 +1,290 @@
+{
+ "registry": [
+  {
+   "channel": "X post (@AekGrafat)",
+   "buyer": "seller/founder followers",
+   "account": "EXISTS (creds verified)",
+   "auth": "user context",
+   "posting": "APPROVED-SINGLE-POST",
+   "api": "posting via API untested (oauthlib present now)",
+   "automation": "draft prep",
+   "human": "ONE approval+post (L2)",
+   "effort": "L2",
+   "cost": "$0",
+   "discovery": "followers + search",
+   "relevance": "HIGH",
+   "status": "READY"
+  },
+  {
+   "channel": "Medium f386",
+   "buyer": "Etsy sellers via search",
+   "account": "EXISTS",
+   "auth": "human session",
+   "posting": "APPROVED-SINGLE-ARTICLE",
+   "api": "NONE",
+   "automation": "verify+measure after",
+   "human": "ONE paste-click (L1+L2)",
+   "effort": "L1",
+   "cost": "$0",
+   "discovery": "search/SEO",
+   "relevance": "HIGH",
+   "status": "READY"
+  },
+  {
+   "channel": "IndieHackers",
+   "buyer": "founders/SMB builders",
+   "account": "REQUIRED (not created)",
+   "auth": "human signup",
+   "posting": "milestones/intros permitted; spam removed",
+   "api": "NONE",
+   "automation": "draft prep",
+   "human": "setup + authentic participation (L2-L3)",
+   "effort": "L2",
+   "cost": "$0",
+   "discovery": "feed + SEO",
+   "relevance": "MEDIUM (founder audience, not seller-specific)",
+   "status": "ONE_TIME_HUMAN_GATE"
+  },
+  {
+   "channel": "HackerNews (Show HN / comments)",
+   "buyer": "technical founders",
+   "account": "REQUIRED",
+   "auth": "human signup + karma culture",
+   "posting": "only genuinely novel technical work survives",
+   "api": "NONE (Firebase reads only)",
+   "automation": "none",
+   "human": "setup + high-effort participation (L3)",
+   "effort": "L3",
+   "cost": "$0",
+   "discovery": "frontpage spikes",
+   "relevance": "LOW for compliance kits (wrong audience)",
+   "status": "ONE_TIME_HUMAN_GATE"
+  },
+  {
+   "channel": "Reddit (niche subs)",
+   "buyer": "sellers/founders per sub",
+   "account": "REQUIRED + karma warming",
+   "auth": "human",
+   "posting": "value-first + sub rules; bans for drive-by links",
+   "api": "BLOCKED (403)",
+   "automation": "draft prep only",
+   "human": "setup + continuous genuine participation (L3-L4)",
+   "effort": "L3",
+   "cost": "$0",
+   "discovery": "search-indexed threads",
+   "relevance": "HIGH (pain threads observed)",
+   "status": "ONE_TIME_HUMAN_GATE"
+  },
+  {
+   "channel": "YouTube (video exists, unpublished)",
+   "buyer": "SMB builders",
+   "account": "REQUIRED (channel)",
+   "auth": "human session",
+   "posting": "upload + description link",
+   "api": "NONE (no API key)",
+   "automation": "none",
+   "human": "setup + upload (L1-L2)",
+   "effort": "L2",
+   "cost": "$0",
+   "discovery": "search + suggested",
+   "relevance": "MEDIUM (systeme video asset ready)",
+   "status": "ONE_TIME_HUMAN_GATE"
+  },
+  {
+   "channel": "Pinterest",
+   "buyer": "Etsy-adjacent sellers/creators",
+   "account": "REQUIRED",
+   "auth": "human signup",
+   "posting": "pins to own boards permitted",
+   "api": "NONE",
+   "automation": "none",
+   "human": "setup + pinning (L2-L3)",
+   "effort": "L3",
+   "cost": "$0",
+   "discovery": "search",
+   "relevance": "MEDIUM",
+   "status": "ONE_TIME_HUMAN_GATE"
+  },
+  {
+   "channel": "TikTok",
+   "buyer": "sellers diversifying (Forbes trend)",
+   "account": "REQUIRED",
+   "auth": "human app",
+   "posting": "short video (production cost high)",
+   "api": "NONE",
+   "automation": "none",
+   "human": "setup + video production (L3-L4)",
+   "effort": "L4",
+   "cost": "$0",
+   "discovery": "algorithmic",
+   "relevance": "MEDIUM (audience match, format cost)",
+   "status": "ONE_TIME_HUMAN_GATE"
+  },
+  {
+   "channel": "Niche newsletters (seller-focused)",
+   "buyer": "subscribed sellers",
+   "account": "N/A (partnership)",
+   "auth": "editor relationship",
+   "posting": "guest post / sponsorship (free tier unlikely)",
+   "api": "NONE",
+   "automation": "pitch drafts",
+   "human": "relationship building (L3)",
+   "effort": "L3",
+   "cost": "$0",
+   "discovery": "borrowed trust",
+   "relevance": "MEDIUM",
+   "status": "ONE_TIME_HUMAN_GATE"
+  },
+  {
+   "channel": "AppSumo marketplace",
+   "buyer": "deal-seeking founders",
+   "account": "REQUIRED (partner approval)",
+   "auth": "human + review",
+   "posting": "deal listing if accepted",
+   "api": "NONE",
+   "automation": "none",
+   "human": "application + assets (L2)",
+   "effort": "L2",
+   "cost": "$0",
+   "discovery": "marketplace browse",
+   "relevance": "MEDIUM (price-sensitive, our $19-39 briefs fit)",
+   "status": "ONE_TIME_HUMAN_GATE"
+  },
+  {
+   "channel": "ProductHunt launch",
+   "buyer": "early adopters/founders",
+   "account": "REQUIRED",
+   "auth": "human",
+   "posting": "one launch (maker account)",
+   "api": "NONE",
+   "automation": "asset prep",
+   "human": "setup + launch day (L2)",
+   "effort": "L2",
+   "cost": "$0",
+   "discovery": "launch-day spike",
+   "relevance": "LOW-MEDIUM (wrong buyer for compliance kits; better for SaaS-ish tools)",
+   "status": "ONE_TIME_HUMAN_GATE"
+  },
+  {
+   "channel": "Capterra/G2 directories",
+   "buyer": "software buyers",
+   "account": "REQUIRED (vendor claim)",
+   "auth": "human + verification",
+   "posting": "product listing (software only)",
+   "api": "NONE",
+   "automation": "none",
+   "human": "claim + maintain (L2-L3)",
+   "effort": "L3",
+   "cost": "$0",
+   "discovery": "category search",
+   "relevance": "LOW (we sell PDFs, not SaaS)",
+   "status": "LOW_VALUE"
+  }
+ ],
+ "packets": [
+  {
+   "id": "PACK-X-001",
+   "platform": "X",
+   "account": "@AekGrafat (verified)",
+   "reason": "shortest path to first measurable exposure; creds + draft ready",
+   "action": "post the 269-char draft verbatim",
+   "text_ref": "data/mission7.json:x_draft",
+   "destination": "own timeline",
+   "time": "~1 minute",
+   "experiment": "X_UTM fetmu link; sales-poll deltas 30d",
+   "rollback": "delete post anytime",
+   "after": "URL verify → UTM check → sales poll → heartbeat diagnosis"
+  },
+  {
+   "id": "PACK-MED-001",
+   "platform": "Medium",
+   "account": "own account",
+   "reason": "highest-intent audience (Etsy sellers searching GPSR)",
+   "action": "paste f386 verbatim + publish + reply URL",
+   "text_ref": "drafts/medium_gpsr_etsy_guide.md (hash c3d5cf32a3dd38db)",
+   "destination": "Medium publication",
+   "time": "~5 minutes",
+   "experiment": "first_cycle 12-checks → measurement open",
+   "rollback": "unpublish anytime; gate re-arms",
+   "after": "verify → measure → diagnose → silent monitoring"
+  },
+  {
+   "id": "PACK-IH-001",
+   "platform": "IndieHackers",
+   "account": "REQUIRED (create)",
+   "reason": "founder audience for fee-escape + SaaS-adjacent kits; intro/milestone format fits",
+   "action": "create account, post intro (draft below), engage genuinely 2 weeks",
+   "text_ref": "IH draft: 'I sell compliance DIY kits to Etsy sellers; GPSR kit live, $79, 0 sales — here is what the data says about seller fee pain' (honest-build-in-public angle)",
+   "destination": "IndieHackers milestones",
+   "time": "setup 15min + ongoing",
+   "experiment": "profile/referral UTM; sales-poll deltas",
+   "rollback": "delete posts; keep account dormant",
+   "after": "monitor replies; answer questions; no links where unwelcome"
+  }
+ ],
+ "service": {
+  "name": "GPSR technical-file prep",
+  "price_hypothesis": "$199/product line",
+  "intake": [
+   "product photos/variants/SKUs",
+   "materials + supplier names",
+   "marketplaces + countries",
+   "prior warnings/letters",
+   "RP status (have/needs)"
+  ],
+  "factory_does": [
+   "parse intake",
+   "standards research per category",
+   "draft file skeleton",
+   "risk rows v1",
+   "label spec",
+   "QA vs 14-point checklist"
+  ],
+  "founder_does": [
+   "20-min review vs review-checklist",
+   "client delivery + Q&A"
+  ],
+  "review_checklist": [
+   "role map correct?",
+   "standards current?",
+   "claims hedged?",
+   "no legal advice language?",
+   "gaps listed explicitly?"
+  ],
+  "delivery": [
+   "completed file draft (PDF)",
+   "gap list + next steps memo",
+   "10-year storage note"
+  ],
+  "followup": [
+   "30-day check-in template",
+   "renewal: new SKUs at $99 (hypothesis)"
+  ],
+  "economics": {
+   "price": 199,
+   "factory_time": "~3h automated",
+   "founder_time": "20min",
+   "variable_cost": "$0",
+   "gross_per_case": "~$199 minus fees",
+   "complexity": "MEDIUM",
+   "legal_boundary": "no advice, no representation, documents only"
+  },
+  "constraints": "no payment acceptance without gate; pilot max 3 cases; founder delivery only",
+  "status": "DEFINED, NOT_OFFERED"
+ },
+ "landing_warnings": {
+  "refund_policy_null": {
+   "class": "TRUST",
+   "action": "PARKED (GPSR frozen + external-edit gate)"
+  },
+  "delivery_unprobed": {
+   "class": "TECHNICAL",
+   "action": "PARKED (no test purchase permitted)"
+  },
+  "license_absent": {
+   "class": "COPY",
+   "action": "PARKED (no evidence it converts; frozen)"
+  }
+ },
+ "priority": "A buyer access, B service test (gated), C inbound, D conversion, E affiliate, F new products"
+}

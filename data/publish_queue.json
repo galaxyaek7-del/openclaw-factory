@@ -1,0 +1,74 @@
+[
+ {
+  "slug": "ppwr_seller_update_pack",
+  "file": "factory_workspace/sprint14/ppwr_seller_update_pack.pdf",
+  "price": 39,
+  "title": "PPWR Seller Update Pack (August 2026 Rules Now Applying)",
+  "description": "Packaging & Packaging Waste Regulation now applying. Orientation, not legal advice.",
+  "tags": [
+   "ppwr",
+   "packaging",
+   "eu compliance",
+   "epr"
+  ],
+  "status": "PENDING_CAP"
+ },
+ {
+  "slug": "marketplace_fee_escape_pack",
+  "file": "factory_workspace/sprint14/marketplace_fee_escape_pack.pdf",
+  "price": 39,
+  "title": "Marketplace Fee Escape Pack (Etsy & Amazon 2026)",
+  "description": "Stay/diversify/leave math for fee-squeezed sellers. Verify current fees.",
+  "tags": [
+   "etsy",
+   "amazon",
+   "fees",
+   "ecommerce"
+  ],
+  "status": "PENDING_CAP"
+ },
+ {
+  "slug": "eudr_due_diligence_starter",
+  "file": "factory_workspace/sprint14/eudr_due_diligence_starter.pdf",
+  "price": 39,
+  "title": "EUDR Due Diligence Starter (Dec 2026 Deadline)",
+  "description": "Deforestation-free proof for commodity importers. Orientation, not legal advice.",
+  "tags": [
+   "eudr",
+   "deforestation",
+   "eu compliance",
+   "import"
+  ],
+  "status": "PENDING_CAP"
+ },
+ {
+  "slug": "svc-spreadsheet-79",
+  "kind": "SERVICE_SKU",
+  "file": "factory_workspace/sprint14/svc_spreadsheet_79_brief.pdf",
+  "price": 79,
+  "title": "Spreadsheet & Catalog Data Cleanup — Done-For-You Service",
+  "description": "Send us your messy spreadsheet; get back a clean QA-checked file. Duplicates, dates, currencies, missing values, SKU cleanup. Pilot: manual review on every order.",
+  "tags": [
+   "spreadsheet",
+   "data-cleanup",
+   "excel",
+   "service"
+  ],
+  "custom_fields": [
+   {
+    "name": "Spreadsheet link (Google Drive/Dropbox URL)",
+    "required": true
+   },
+   {
+    "name": "What must be fixed?",
+    "required": true
+   },
+   {
+    "name": "Contact email for delivery",
+    "required": true
+   }
+  ],
+  "status": "PENDING_CAP",
+  "note": "intake via native checkout custom fields (Gumroad docs verified 2026-09-23)"
+ }
+]
