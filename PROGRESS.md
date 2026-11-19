@@ -185,3 +185,42 @@ No stuck task. Three tests fail on the current tree and are unrelated to publish
 ## 6. Next
 
 Founder: unpublish the 3 "$0+" listings (F6), Telegram secrets (F5), autostart (F2). Agent: re-check n8n `02_Sales_Poll` and `Openclaw_Sensing_Engine` after their next scheduled run.
+
+## 2026-11-19 — CI honesty, batch 19, and the gate that is not code
+
+**CI.** The `test` job had been dying at step 9 (`compileall`) since the enhancer
+copied a BOM into its own output, so 49 steps never ran; the 32 API-contract
+shards also failed 401 != 200 because the tracked suite still probed the now
+authenticated `/api/dashboard`. Fixed in `c7c2448b`, `ca191cf5`, `6e85c61f`
+(factory_control_center.html was never tracked, so its route answered 500),
+then real test failures named by the runner itself: `427cfc60` (two public hold
+pages were selling `engiwk`/`tmhlb`, both `UPLOAD_COMPLETED`,
+`published_on_platform: false`; and factory_status keyed supervisor events by
+`Path(...).name`, which keeps the whole `C:\x\server.js` on Linux).
+
+**Batch 19.** Ten kits, $49 each, real calculation tools. The first build had
+correct numbers in the guide and dead formulas in the workbook (`#VALUE!`,
+circular references) while the manifest said ok=true. Each output is now stated
+once as an expression; the Excel formula is generated from it, Python evaluates
+the same text, and QA re-evaluates the saved workbook with `lib/xlsx_eval.py`.
+Guides went 3 -> 5-6 pages with a substituted-value formula walkthrough, a
+-15%/-30% downside table and a computed per-input sensitivity table.
+`tests/test_batch19_workbooks.py` locks it and skips on CI (paid payload).
+
+**Why nothing was published.** Every path converges on one fact: the Gumroad
+auth state is 11 days old (`age_seconds 954156, stale: true`) and
+`publish_batch14` allows a one-hour session, so `write_gate` answers DENY before
+the token matters. The ten approvals were first written, then REVOKED by the
+quality review ($99 with 488 words and zero measured comparables), then
+re-issued at $49 with the analysis above in place. Publisher audit: 10/10 PASS
+on every check, including authorization and registry.
+
+**Pinterest.** 24 pins were rejected for a schedule in the past
+(2026-10-27..11-18); re-planned from 2026-11-20. READY 81 -> 105, REJECTED
+40 -> 16, and the 16 are correct: their listings are `UPLOAD_COMPLETED`, not
+published. No Metricool call was made.
+
+**The honest finding.** 21 products sit in `UPLOAD_COMPLETED` with
+`first_published_at: null`. They are drafts on Gumroad that were never
+published. The factory does not lack products (137) or pins (105); it lacks one
+authenticated publish cycle.
