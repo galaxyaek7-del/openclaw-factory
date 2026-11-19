@@ -1,0 +1,235 @@
+{
+ "product_id": "B13-003",
+ "title": "Caregiver Command Kit: Emergency, Medication, Appointments",
+ "state": "LOCAL_READY__AWAITS_FOUNDER_PRICE_DECISION_AND_LISTING_AUTHORIZATION",
+ "published": false,
+ "gumroad_call_made": false,
+ "price_usd": 16.99,
+ "price_status": "PLANNING_TARGET_NOT_FOUNDER_APPROVED",
+ "founder_decision": {
+  "decided_at": null,
+  "preferred_price_usd": null,
+  "scope": "No price or publication decision has been recorded for B13-003.",
+  "publication_authorized": false,
+  "live_price_changed": false
+ },
+ "price_realism": {
+  "finding": "At exactly 30 pages, $16.99 clears the per-page ceiling, the short-book ceiling does not apply at 30 pages, and the digital profit floor passes with $15.29 net against a $2.50 floor. The premium tier's $25.00 net floor does not pass at $16.99 ($15.29 net), so gumroad_digital is the only tier where this planning price is both realistic and profitable today. This is a computed option, not a founder decision.",
+  "matrix": [
+   {
+    "price_usd": 16.99,
+    "platform": "gumroad_digital",
+    "pages": 30,
+    "role": "planning target at the published 30-page depth",
+    "profit_floor_cleared": true,
+    "net_profit_usd": 15.291,
+    "min_required_usd": 2.5,
+    "market_realistic": true,
+    "suggested_realistic_price_usd": 16.99
+   },
+   {
+    "price_usd": 16.99,
+    "platform": "gumroad_premium",
+    "pages": 30,
+    "role": "same price on the premium tier",
+    "profit_floor_cleared": false,
+    "net_profit_usd": 15.291,
+    "min_required_usd": 25.0,
+    "market_realistic": true,
+    "suggested_realistic_price_usd": 16.99
+   }
+  ],
+  "selected": null,
+  "alternatives_considered": [
+   "Keep $16.99 on gumroad_digital, where it clears every check at 30 pages.",
+   "Use gumroad_premium, which would need a price of at least $27.78 to clear the $25.00 net floor at these fees; no such price is proposed here.",
+   "Price at $19 to align with three direct-page comparables; this is not proposed without founder input because it is not a market necessity."
+  ]
+ },
+ "files": [
+  {
+   "path": "books/batch13/B13-003_caregiver_command_kit.xlsx",
+   "bytes": 32518,
+   "sha256": "37d0f7919340b4ed9855020e60e9d0e2b4eb04766c261243248d72df35031036"
+  },
+  {
+   "path": "books/batch13/B13-003_caregiver_command_kit_guide.pdf",
+   "bytes": 55506,
+   "sha256": "6cb4290981b53692bd47eea69aaeb353a65ec5316d28ff13af1474a7adababd8"
+  }
+ ],
+ "cover": {
+  "path": "reports/B13-003/B13-003.png",
+  "exists": true,
+  "dimensions": [
+   1280,
+   720
+  ],
+  "sha256": "58a801185d3980b326b3a18886b08b4441227779d6da021b722fe10d3e758e5a"
+ },
+ "cover_note": "No price badge: the cover stays accurate whichever price the founder authorizes.",
+ "customer_page": null,
+ "customer_page_note": "No customer-facing page was created. It is a separate reviewable step and is not required for a Gumroad listing.",
+ "listing_copy": {
+  "path": "drafts/b13_003_listing_copy.txt",
+  "text": "Caregiver Command Kit: Emergency, Medication, Appointments\n\nWhen the phone rings at 2 a.m., you do not need another app. You need the facts in one place.\n\nThis kit is a 14-sheet Excel workbook plus a 30-page PDF guide for the family caregiver who is holding medication schedules, appointment notes, emergency contacts, insurance details, and document locations in their head. It is built for the handoff: the aide on Monday, the sibling on the weekend, the triage nurse at midnight.\n\nInside the 14-sheet Excel workbook (162 live formulas, no macros):\n\n- Start Here - the color key, the privacy rule, and the order to fill the file\n- Care Profile - stable facts: legal and preferred name, diagnoses, allergies, mobility, baseline, clinicians, contacts, and care wishes\n- Emergency One-Pager - a printable page for the refrigerator or go-bag, with the current medication list and what the ER should know\n- Medications - name, dose, purpose, prescriber, schedule, pharmacy, refill date, status, last reconciled, and days to refill\n- Appointments - date, provider, purpose, questions to ask, transport, after-visit notes, next step, and follow-up\n- Care Team - the people and organizations a fill-in helper may need to call, with role, phone, portal, and preferred contact method\n- Daily Log - a short daily record of mood, appetite, sleep, mobility, pain, hydration, what changed, and caregiver initials\n- Hospital & Discharge - a go-bag checklist and an admission-to-discharge task list with owners and status\n- Documents & Access - where each important document lives, who holds it, and when it was last reviewed (locations, not passwords or account numbers)\n- Insurance & Benefits - plan, customer service, card location, renewal date, prior authorization notes, status, and days to renewal\n- Expenses & Mileage - dated costs, category, paid to, amount, reimbursable flag, miles, mileage value, and notes\n- Respite & Backup - who can cover what, when, and with how much notice\n- Questions & Decisions - the decision log: question, options, who decides, decision, review date, status, and days to review\n- Summary - one page with twelve integrity checks that counts what is current and flags missing doses, missing prescribers, missing providers, missing owners, missing allergies, stale documents, stale decisions, and past-due refills\n\nThe workbook ships with one worked example: an older adult with mild cognitive impairment and several chronic conditions, five active medications, a family and neighbor support network, a clinic visit, a refill review, an eye exam, and a short daily log. Every name, date, contact, and amount is illustrative. Replace the yellow rows with your own facts, keep the blue formula rows, and delete the examples you do not need.\n\nAlso included: a 30-page PDF guide. It covers the first 20 minutes, the emergency page, medication reconciliation, appointment preparation, the care-team directory, the daily log, hospital admission and discharge, document locations, insurance calls, expenses and mileage, respite and backup coverage, family decisions, cognitive changes and falls, privacy, legal boundaries, and the weekly reset. The guide includes a worked example, a one-page care plan, a family meeting agenda, a clinician call script, a hospital go-bag list, and a first-week checklist.\n\nBuilt for Excel. The workbook uses standard formulas only, no macros and no add-ins. LibreOffice Calc and Google Sheets have not been tested by me, so if anything misbehaves, reply to your receipt and I will fix it.\n\nThis is an organizing and handoff tool, not medical, legal, or financial advice. It does not replace a clinician, a pharmacist, an attorney, or the official advance directive. In an emergency, call 911. Confirm medication and care decisions with a qualified professional.\n\nNew product from Galaxy Forge: no sales recorded yet, no reviews. Support: reply to your Gumroad receipt email.\n",
+  "tags": [
+   "caregiver binder",
+   "caregiver planner",
+   "medication tracker",
+   "emergency binder",
+   "elder care organizer",
+   "aging parent",
+   "caregiver spreadsheet",
+   "medical binder",
+   "family care",
+   "caregiver gift"
+  ],
+  "category": "Lifestyle > Home & Family / Caregiving"
+ },
+ "brand_check": {
+  "passed": true,
+  "failed_checks": [],
+  "results": {
+   "brand_reputation": {
+    "status": "PASS",
+    "evidence": null,
+    "reason": "لا عبارات ادّعاء بنية تحتية غير حقيقية موجودة في نص المحتوى (فحص جزئي)"
+   },
+   "content_neutrality": {
+    "status": "PASS",
+    "evidence": null,
+    "reason": "لا عبارات مخالفة لمبادئ الحياد التنفيذي موجودة في نص المحتوى (فحص جزئي)"
+   },
+   "copyright_trademark": {
+    "status": "PASS",
+    "evidence": null,
+    "reason": "لا عبارات ادّعاء انتماء/ترخيص علامة تجارية موجودة في نص المحتوى (فحص جزئي)"
+   },
+   "fake_urgency": {
+    "status": "PASS",
+    "evidence": null,
+    "reason": "لا عبارات استعجال/ندرة مصطنعة موجودة في نص المحتوى (فحص جزئي)"
+   }
+  },
+  "generated_at": "2026-10-24T07:39:59.912227+00:00"
+ },
+ "price_evidence": {
+  "competitors": [
+   {
+    "name": "Caregiver Command Center by AgingSteady (direct page, $27)",
+    "price_usd": 27.0,
+    "url": "https://www.agingsteady.com/caregiver-command-center",
+    "source_type": "direct page fetch",
+    "captured_at": "2026-10-24"
+   },
+   {
+    "name": "Caregiver Binder for Aging Parents by Reveri Art Studio (direct page, 111 pages, $19)",
+    "price_usd": 19.0,
+    "url": "https://www.reveriartstudio.com/caregiver-binder",
+    "source_type": "direct page fetch",
+    "captured_at": "2026-10-24"
+   },
+   {
+    "name": "The Family Care Binder (direct page, 24 pages, $19)",
+    "price_usd": 19.0,
+    "url": "https://family-care-binder.vercel.app/guides/caregiver-binder-checklist",
+    "source_type": "direct page fetch",
+    "captured_at": "2026-10-24"
+   },
+   {
+    "name": "Complete Caregiving Binder by AmeriDisability (direct page, 73 pages, $29)",
+    "price_usd": 29.0,
+    "url": "https://www.ameridisability.com/product/complete-caregiving-binder",
+    "source_type": "direct page fetch",
+    "captured_at": "2026-10-24"
+   },
+   {
+    "name": "Caregiver Binder Printable, Family Care Command Center (Etsy listing 4590901212, $16.99)",
+    "price_usd": 16.99,
+    "url": "https://www.etsy.com/listing/4590901212/",
+    "source_type": "Etsy search index",
+    "captured_at": "2026-10-24"
+   },
+   {
+    "name": "Medication Tracker Printable, Fillable PDF Caregiver Binder (Etsy market page, $4.99)",
+    "price_usd": 4.99,
+    "url": "https://www.etsy.com/market/caregiver_medication_tracker_printable",
+    "source_type": "Etsy search index",
+    "captured_at": "2026-10-24"
+   }
+  ],
+  "competitors_note": "Six sourced public offers captured on 2026-10-24: four direct product pages fetched successfully ($19, $19, $27, $29) and two Etsy search-index entries ($16.99, $4.99). Etsy direct page loads returned HTTP 403, so those two prices are search-index evidence, not a live re-scrape. $16.99 is below all four direct pages and below the highest comparable.",
+  "payment_evidence": "none - no sale exists anywhere in this factory",
+  "observed_min_usd": 4.99,
+  "observed_max_usd": 29.0
+ },
+ "listing_asset_audit": {
+  "verdict": "LOCAL_CHECKS_PASS__AWAITING_PRICE_AND_PUBLICATION_DECISION",
+  "problems": [],
+  "counts": {
+   "workbook_formulas": 162,
+   "workbook_sheets": 14,
+   "summary_checks": 12,
+   "medication_rows": 30,
+   "appointment_rows": 25,
+   "care_team_rows": 20,
+   "daily_log_rows": 31,
+   "expense_rows": 30,
+   "decision_rows": 20,
+   "guide_pages": 30
+  },
+  "copy_claims": {
+   "formula_count_claim": true,
+   "sheet_count_claim": true,
+   "summary_check_claim": true,
+   "guide_page_claim": true,
+   "no_macros_claim": true,
+   "worked_example_claim": true,
+   "no_sales_claim": true,
+   "medical_disclaimer_claim": true
+  },
+  "additional_preview_images": "NOT_CREATED",
+  "preview_note": "Only the 1280x720 cover exists. Additional preview images were not produced in this round; they are optional for a Gumroad listing and remain an explicit gap before a final visual review."
+ },
+ "verification_evidence": {
+  "gate": "reports/B13-003/GATE_FINAL_2026-10-24.json",
+  "gate_verdict": "APPROVED",
+  "gate_layers": {
+   "core_value": {
+    "status": "PASS",
+    "score": 100
+   },
+   "content_quality": {
+    "status": "PASS",
+    "score": 100
+   },
+   "market_reality": {
+    "status": "PASS",
+    "score": 70
+   }
+  },
+  "gate_price_checked_usd": 16.99,
+  "payment_evidence": "none - no sale exists anywhere in this factory",
+  "guide_inspection": "reports/B13-003/GUIDE_INSPECTION_2026-10-24.json",
+  "guide_pages": 30,
+  "guide_words": 10378,
+  "guide_verdict": "PASS",
+  "workbook_qa": "reports/B13-003/WORKBOOK_QA_2026-10-24.json",
+  "workbook_verdict": "PASS",
+  "workbook_formula_cells": 162,
+  "workbook_validations": 6,
+  "value_check": "reports/B13-003/VALUE_INDEPENDENT_CHECK_2026-10-24.json",
+  "value_check_verdict": "PASS",
+  "value_fields_compared": 24,
+  "value_mismatches": []
+ },
+ "authorization_required": {
+  "blocked_by": "No founder price decision and no listing or publication authorization. A read-only gate check on 2026-10-24 returned DENY: the live-publish flag was false in that MCP process and no scope was supplied. The Gumroad auth state was VERIFIED and 276 seconds old at that check, but the live flag still blocked a write. No Gumroad call was made.",
+  "exact_minimal_action": "Founder records a price/tier decision and explicitly authorizes a listing attempt; a fresh Gumroad auth check and an explicit scope are required immediately before any attempt.",
+  "price_decision_required_first": true,
+  "publication_separately_gated": true,
+  "no_call_made": true
+ },
+ "problems": []
+}

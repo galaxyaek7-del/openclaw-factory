@@ -1,0 +1,98 @@
+{
+ "product_id": "B13-002",
+ "recorded_at": "2026-10-23T12:38:39+00:00",
+ "found_in_own_draft": [
+  {
+   "id": "D1",
+   "severity": "medium",
+   "what": "The first workbook build applied percentage formatting to the wrong column, so a text column would have displayed as a percentage while the numeric percentage column stayed unformatted.",
+   "found_by": "reading the number-format map against the sheet headers before the first recalculation",
+   "fix": "The number-format map was corrected, the workbook rebuilt, and the native Excel probe now reports the expected formula count with zero error cells."
+  },
+  {
+   "id": "D2",
+   "severity": "medium",
+   "what": "The first guide build placed a page break after every one of 31 sections, producing a 57-word page and several half-empty pages.",
+   "found_by": "rendering page 7 and reading its word count (57) after the first build",
+   "fix": "Removed the per-section breaks, kept the text dense, and added eleven printable worksheets as the page-depth layer; the final guide is 30 pages and 12,662 gate words, with no page under 80 words."
+  },
+  {
+   "id": "D3",
+   "severity": "low",
+   "what": "The first evidence model summed the net budget-line changes as 'approved rebudget' and got $0, while the workbook correctly reports $7,500 of approved transfers. Netting transfers across lines cancels them; the Summary is asking for the total approved, not the net.",
+   "found_by": "the independent-vs-Excel comparison disagreeing on Summary!B6 while every other field matched",
+   "fix": "The model now sums each approved request once for the total and separately applies the transfer to its source and destination lines for the revised budget; the field matches $7,500 and the revised budget stays $120,000."
+  },
+  {
+   "id": "D4",
+   "severity": "high",
+   "what": "NCE Planner!B6 was hardcoded to 2026-05-31 (30 days before the end), while the guide said the workbook calculates the 10-day rule deadline. A user changing the award end date would keep a stale notice deadline.",
+   "found_by": "reading the workbook formula inventory against the guide's page 8 and page 13 claims",
+   "fix": "B6 is now =IF($B$3=\"\",\"\",$B$3-10); the guide, independent model, and expected notice date were updated to June 20, 2026 and 66 days."
+  },
+  {
+   "id": "D5",
+   "severity": "medium",
+   "what": "The Unspent Decision approval-required validation allowed only Yes/No/Not sure while the example rows used Not required, so valid example data was outside its own list.",
+   "found_by": "comparing the data-validation formula with the example values",
+   "fix": "Not required was added to the F2:F21 list."
+  },
+  {
+   "id": "D6",
+   "severity": "high",
+   "what": "Rebudget Log!H counted an amount when an approval date was filled even if the request status was still Sent, so a pending request could change the budget before approval.",
+   "found_by": "reading the H formula against the guide's statement that a pending request has zero effect",
+   "fix": "H now counts only when the request requires no approval or its status is Approved; the independent model uses the same status rule."
+  },
+  {
+   "id": "D7",
+   "severity": "medium",
+   "what": "Summary!B20 added the award end date and closeout days without a blank guard; clearing the end date would display a 1900 date instead of a blank.",
+   "found_by": "testing the summary formula chain against optional inputs",
+   "fix": "B20 now returns a blank unless both inputs exist."
+  },
+  {
+   "id": "D8",
+   "severity": "medium",
+   "what": "The Summary had no check that the total award equals the original budget, and its open-rebudget count ignored blank statuses on real request rows.",
+   "found_by": "reviewing the check list against the workbook's own fields",
+   "fix": "Added B34 award-vs-original-budget check and changed B15 to count every non-terminal request with a row."
+  },
+  {
+   "id": "D9",
+   "severity": "medium",
+   "what": "Example dates were stored as text even though they carried date number formats, making formulas depend on locale-specific implicit coercion.",
+   "found_by": "reading openpyxl data types for Award Profile, Unspent Decision, Rebudget Log, Funder Rules, and Communication Log",
+   "fix": "The builder now writes real date values for every example date input; formula cells remain formulas."
+  },
+  {
+   "id": "D10",
+   "severity": "medium",
+   "what": "The Rebudget Log accepted free-text from/to lines and unvalidated amounts, so a typo could silently break the SUMIF budget change.",
+   "found_by": "checking the sheet's validations against its stated control purpose",
+   "fix": "Added a Budget vs Spend line list for E:F and a non-negative decimal rule for G:H."
+  },
+  {
+   "id": "D11",
+   "severity": "high",
+   "what": "The guide contained stale or contradictory claims: ACF was described as a 10-day rule using a dead URL, the final report was described as due in 30 days, the final reconciliation and refund pointers did not match the checklist, and the denial example omitted the $1,000 unallocated balance.",
+   "found_by": "reading the full extracted guide text against the workbook tasks, formulas, and source pages",
+   "fix": "Corrected the ACF deadline and URL to the current OCSE/RCD pages, corrected NIH/NSF sources, aligned the report/reconciliation/refund language with the checklist, and changed the denial example to $7,000."
+  },
+  {
+   "id": "D12",
+   "severity": "medium",
+   "what": "The listing copy still said the workbook has 371 live formulas and eleven Summary checks, while the rebuilt workbook has 373 formulas and twelve checks.",
+   "found_by": "comparing every numeric claim in the listing copy against the rebuilt workbook before packaging",
+   "fix": "The copy now states 373 formulas and twelve checks; a permanent test compares those claims to the workbook itself."
+  }
+ ],
+ "not_reverted": [
+  "No release artifact was published, listed, or committed in this round. The workbook and guide exist only as local files under books/batch13 and reports/B13-002."
+ ],
+ "open_unknowns": [
+  "No founder price decision exists yet for B13-002; $19.00 is a planning target, not an approval.",
+  "No live Etsy page was re-read because Etsy returned HTTP 403; competitor prices are the captured search-result values.",
+  "No payment proof exists for this niche in this factory, so the market layer relies on six sourced competitors and a price inside the observed range. Four Etsy prices are search-index evidence because direct Etsy fetches returned HTTP 403; the two non-Etsy prices were read from directly fetched product pages."
+ ]
+}

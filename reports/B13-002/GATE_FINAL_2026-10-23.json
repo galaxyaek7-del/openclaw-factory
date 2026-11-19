@@ -1,0 +1,168 @@
+{
+ "product_id": "B13-002",
+ "checked_at": "2026-10-23T12:38:39+00:00",
+ "engine": "src/quality/quality_enforcer.py::inspect(stage='full')",
+ "price_checked_usd": 19.0,
+ "price_basis": "planning target chosen for the $19 / 30+ page tier; no founder price decision recorded yet",
+ "pdf_pages": 30,
+ "verdict": "APPROVED",
+ "blocked": false,
+ "reasons": [],
+ "thresholds": {
+  "core_value": 70,
+  "content_quality": 70,
+  "market_reality": 65
+ },
+ "layers": {
+  "core_value": {
+   "status": "PASS",
+   "score": 100,
+   "checks": {
+    "audience_specific": true,
+    "problem_stated": true,
+    "outcome_stated": true,
+    "title_specific": true,
+    "priced": true
+   }
+  },
+  "content_quality": {
+   "status": "PASS",
+   "score": 100,
+   "checks": {
+    "files_open_cleanly": true,
+    "depth_sufficient": true,
+    "no_placeholders": true,
+    "no_mojibake": true,
+    "instructions_present": true
+   },
+   "detail": {
+    "files": [
+     {
+      "file": "books\\batch13\\B13-002_grant_endgame_nce_unspent_funds.xlsx",
+      "status": "PASS",
+      "problems": []
+     },
+     {
+      "file": "books\\batch13\\B13-002_grant_endgame_nce_unspent_funds_guide.pdf",
+      "status": "PASS",
+      "problems": []
+     }
+    ],
+    "depth": {
+     "words": 12662,
+     "words_required": 1900,
+     "text_depth_ok": true,
+     "sheets": 11,
+     "formulas": 373,
+     "sheet_depth_ok": true
+    },
+    "placeholders_found": [],
+    "mojibake_hits": 0,
+    "unreadable": []
+   }
+  },
+  "market_reality": {
+   "status": "PASS",
+   "score": 70,
+   "checks": {
+    "payment_evidence": false,
+    "three_sourced_competitors": true,
+    "two_sourced_competitors": true,
+    "one_sourced_competitor": true,
+    "price_within_market": true
+   },
+   "detail": {
+    "sourced_competitors": [
+     {
+      "name": "Grant Reporting Tracker for Nonprofits (Etsy listing 4588862950, $22.50 sale from $30.00)",
+      "url": "https://www.etsy.com/listing/4588862950/",
+      "price_usd": 22.5
+     },
+     {
+      "name": "Nonprofit Unrestricted Grant Tracker (Etsy listing 1480924539, $2.99)",
+      "url": "https://www.etsy.com/listing/1480924539/",
+      "price_usd": 2.99
+     },
+     {
+      "name": "Grant Application Tracker (Etsy listing 1799831298, $8.50)",
+      "url": "https://www.etsy.com/listing/1799831298/",
+      "price_usd": 8.5
+     },
+     {
+      "name": "Post-Award Grant Tracker (Etsy market page, $28.70)",
+      "url": "https://www.etsy.com/market/grant_tracker_template",
+      "price_usd": 28.7
+     },
+     {
+      "name": "Grant Tracker Template by NonProfit Life (direct product page, $12.99)",
+      "url": "https://www.nonprofit-life.com/templateshop/p/grant-tracker-template",
+      "price_usd": 12.99
+     },
+     {
+      "name": "Nonprofit Grant-Tracking OS by Ardent Workshop (direct product page, $38.95)",
+      "url": "https://www.ardentworkshop.com/products/nonprofit-grant-tracking-os",
+      "price_usd": 38.95
+     }
+    ],
+    "payment_evidence_count": 0
+   }
+  }
+ },
+ "market_realism": {
+  "gumroad_digital": {
+   "realistic": true,
+   "suggested_price_usd": 19.0
+  },
+  "gumroad_premium": {
+   "realistic": true,
+   "suggested_price_usd": 19.0
+  }
+ },
+ "competitors_note": "Six sourced public listings captured on 2026-10-23: four from Etsy search results and two direct product pages fetched successfully. Etsy direct page loads returned HTTP 403, so those four titles and prices are search-index evidence, not a live re-scrape. The highest comparable is $38.95; $19.00 is below the 1.10 ceiling.",
+ "competitor_sources": [
+  {
+   "name": "Grant Reporting Tracker for Nonprofits (Etsy listing 4588862950, $22.50 sale from $30.00)",
+   "price_usd": 22.5,
+   "url": "https://www.etsy.com/listing/4588862950/",
+   "source_type": "Etsy search index",
+   "captured_at": "2026-10-23"
+  },
+  {
+   "name": "Nonprofit Unrestricted Grant Tracker (Etsy listing 1480924539, $2.99)",
+   "price_usd": 2.99,
+   "url": "https://www.etsy.com/listing/1480924539/",
+   "source_type": "Etsy search index",
+   "captured_at": "2026-10-23"
+  },
+  {
+   "name": "Grant Application Tracker (Etsy listing 1799831298, $8.50)",
+   "price_usd": 8.5,
+   "url": "https://www.etsy.com/listing/1799831298/",
+   "source_type": "Etsy search index",
+   "captured_at": "2026-10-23"
+  },
+  {
+   "name": "Post-Award Grant Tracker (Etsy market page, $28.70)",
+   "price_usd": 28.7,
+   "url": "https://www.etsy.com/market/grant_tracker_template",
+   "source_type": "Etsy search index",
+   "captured_at": "2026-10-23"
+  },
+  {
+   "name": "Grant Tracker Template by NonProfit Life (direct product page, $12.99)",
+   "price_usd": 12.99,
+   "url": "https://www.nonprofit-life.com/templateshop/p/grant-tracker-template",
+   "source_type": "direct page fetch",
+   "captured_at": "2026-10-23"
+  },
+  {
+   "name": "Nonprofit Grant-Tracking OS by Ardent Workshop (direct product page, $38.95)",
+   "price_usd": 38.95,
+   "url": "https://www.ardentworkshop.com/products/nonprofit-grant-tracking-os",
+   "source_type": "direct page fetch",
+   "captured_at": "2026-10-23"
+  }
+ ],
+ "payment_evidence": "none - no sale exists anywhere in this factory",
+ "state": "QA_AT_19_USD_AWAITING_FOUNDER_PRICE_DECISION_AND_LISTING_AUTHORIZATION"
+}

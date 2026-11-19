@@ -1,0 +1,147 @@
+{
+ "product_id": "B13-002",
+ "title": "Grant Endgame: No-Cost Extension and Unspent Funds Kit",
+ "checked_at": "2026-10-23T12:38:37+00:00",
+ "engine": "Microsoft Excel via scripts/excel_recalc_probe.ps1 and an independent Python model from typed inputs only",
+ "artifact": "books\\batch13\\B13-002_grant_endgame_nce_unspent_funds.xlsx",
+ "artifact_sha256": "aeb9ec2e839fe9992c1b827973de4ea6b215e6b77dc65a1852f38c1fb599d8ea",
+ "excel_formula_cells": 373,
+ "excel_error_cells": 0,
+ "fields_compared": 16,
+ "mismatches": [],
+ "comparison": [
+  {
+   "field": "total_award",
+   "cell": "Summary!B4",
+   "excel_displayed": "$120,000",
+   "independent_python": 120000.0,
+   "match": true
+  },
+  {
+   "field": "original_budget",
+   "cell": "Summary!B5",
+   "excel_displayed": "$120,000",
+   "independent_python": 120000.0,
+   "match": true
+  },
+  {
+   "field": "approved_rebudget",
+   "cell": "Summary!B6",
+   "excel_displayed": "$7,500",
+   "independent_python": 7500.0,
+   "match": true
+  },
+  {
+   "field": "revised_budget",
+   "cell": "Summary!B7",
+   "excel_displayed": "$120,000",
+   "independent_python": 120000.0,
+   "match": true
+  },
+  {
+   "field": "spent_to_date",
+   "cell": "Summary!B8",
+   "excel_displayed": "$91,000",
+   "independent_python": 91000.0,
+   "match": true
+  },
+  {
+   "field": "committed_not_paid",
+   "cell": "Summary!B9",
+   "excel_displayed": "$15,500",
+   "independent_python": 15500.0,
+   "match": true
+  },
+  {
+   "field": "available_balance",
+   "cell": "Summary!B10",
+   "excel_displayed": "$13,500",
+   "independent_python": 13500.0,
+   "match": true
+  },
+  {
+   "field": "planned_disposition",
+   "cell": "Summary!B11",
+   "excel_displayed": "$12,500",
+   "independent_python": 12500.0,
+   "match": true
+  },
+  {
+   "field": "unallocated_balance",
+   "cell": "Summary!B12",
+   "excel_displayed": "$1,000",
+   "independent_python": 1000.0,
+   "match": true
+  },
+  {
+   "field": "extension_months",
+   "cell": "Summary!B13",
+   "excel_displayed": "6",
+   "independent_python": 6,
+   "match": true
+  },
+  {
+   "field": "days_to_notice",
+   "cell": "Summary!B14",
+   "excel_displayed": "66",
+   "independent_python": 66,
+   "match": true
+  },
+  {
+   "field": "open_rebudget_approvals",
+   "cell": "Summary!B15",
+   "excel_displayed": "1",
+   "independent_python": 1,
+   "match": true
+  },
+  {
+   "field": "return_to_funder",
+   "cell": "Summary!B16",
+   "excel_displayed": "$1,500",
+   "independent_python": 1500.0,
+   "match": true
+  },
+  {
+   "field": "closeout_tasks_open",
+   "cell": "Summary!B17",
+   "excel_displayed": "22",
+   "independent_python": 22,
+   "match": true
+  },
+  {
+   "field": "nce_tasks_open",
+   "cell": "Summary!B18",
+   "excel_displayed": "12",
+   "independent_python": 12,
+   "match": true
+  },
+  {
+   "field": "final_report_due",
+   "cell": "Summary!B20",
+   "excel_displayed": "2026-10-28",
+   "independent_python": "2026-10-28",
+   "match": true
+  }
+ ],
+ "summary_checks": {
+  "B23": "0",
+  "B24": "2",
+  "B25": "0",
+  "B26": "1",
+  "B27": "YES - $1,000",
+  "B28": "NO",
+  "B29": "2",
+  "B30": "1",
+  "B31": "0",
+  "B32": "0",
+  "B33": "NO - see Unspent Decision",
+  "B34": "OK"
+ },
+ "self_checks_expected": true,
+ "verdict": "PASS",
+ "notes": [
+  "The independent model reads typed inputs only: budget, spent, committed, rebudget requests and approvals, dispositions, dates, and task statuses. It never reads a formula cell.",
+  "Excel recalculated a temporary read-only copy; the release artifact was not opened for write.",
+  "The guide and workbook are one product; the workbook carries the money, the guide carries the method."
+ ]
+}

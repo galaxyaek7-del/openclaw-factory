@@ -1,0 +1,56 @@
+{
+ "product_id": "B13-003",
+ "artifact": "books\\batch13\\B13-003_caregiver_command_kit.xlsx",
+ "artifact_sha256": "37d0f7919340b4ed9855020e60e9d0e2b4eb04766c261243248d72df35031036",
+ "artifact_bytes": 32518,
+ "engine": {
+  "name": "Microsoft Excel",
+  "version": "16.0",
+  "build": "19127"
+ },
+ "calculated_at_utc": "2026-10-24T07:39:53Z",
+ "sheet_count": 14,
+ "sheets": [
+  "Start Here",
+  "Care Profile",
+  "Emergency One-Pager",
+  "Medications",
+  "Appointments",
+  "Care Team",
+  "Daily Log",
+  "Hospital & Discharge",
+  "Documents & Access",
+  "Insurance & Benefits",
+  "Expenses & Mileage",
+  "Respite & Backup",
+  "Questions & Decisions",
+  "Summary"
+ ],
+ "formula_cells_excel": 162,
+ "formula_cells_openpyxl": 162,
+ "data_validations": 6,
+ "excel_error_cells": [],
+ "freeze_panes": {
+  "Start Here": null,
+  "Care Profile": "A4",
+  "Emergency One-Pager": null,
+  "Medications": "C2",
+  "Appointments": "A2",
+  "Care Team": "A2",
+  "Daily Log": "A2",
+  "Hospital & Discharge": "A2",
+  "Documents & Access": "A2",
+  "Insurance & Benefits": "A2",
+  "Expenses & Mileage": "A3",
+  "Respite & Backup": "A2",
+  "Questions & Decisions": "A2",
+  "Summary": null
+ },
+ "verdict": "PASS",
+ "limitations": [
+  "Excel recalculated a temporary copy; the release file was never opened for write.",
+  "Only Excel and openpyxl were exercised. LibreOffice Calc and Google Sheets are untested.",
+  "The workbook contains no macros, so there is no macro inspection.",
+  "TODAY()-relative Summary values naturally change as the calendar advances; the evidence records the date it was checked."
+ ]
+}

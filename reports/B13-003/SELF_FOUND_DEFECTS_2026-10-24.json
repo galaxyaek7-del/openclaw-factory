@@ -1,0 +1,85 @@
+{
+ "product_id": "B13-003",
+ "recorded_at": "2026-10-24T07:39:58+00:00",
+ "found_in_own_draft": [
+  {
+   "id": "D1",
+   "severity": "high",
+   "what": "The first guide build produced 14 pages and 8,218 gate words, far below the 30-page promise carried by the product and its cover.",
+   "found_by": "extracting the built PDF and counting pages with pypdf and words with the gate's own tokenizer before packaging",
+   "fix": "Added a second substantive paragraph to each of the 30 sections and a page break per section; the rebuilt guide is 30 pages and 10,378 gate words, with every page carrying at least 300 words."
+  },
+  {
+   "id": "D2",
+   "severity": "medium",
+   "what": "The workbook builder contained a Python syntax error in a date literal (2026-11-05 written with a leading zero), so the workbook could not be rebuilt.",
+   "found_by": "running the builder and reading the traceback",
+   "fix": "Corrected the literal to date(2026, 11, 5) and rebuilt the workbook from source."
+  },
+  {
+   "id": "D3",
+   "severity": "high",
+   "what": "Four Summary ranges were offset by two rows (+3 instead of +1), so formulas counted blank rows and would have missed real medication, appointment, insurance, and decision entries.",
+   "found_by": "reading every Summary range against each sheet's actual header row and first data row",
+   "fix": "Changed every affected range to start at row 2 and end at the intended last data row; the native Excel probe and the independent model now agree."
+  },
+  {
+   "id": "D4",
+   "severity": "medium",
+   "what": "Data validation and filter ranges covered header rows or stopped short of the last data row.",
+   "found_by": "comparing each validation sqref with its sheet's data block",
+   "fix": "Set every validation and filter to the data rows only (for example Medications I2:I31, Appointments J2:J26, Daily Log F2:F32)."
+  },
+  {
+   "id": "D5",
+   "severity": "high",
+   "what": "The Expenses & Mileage builder wrote a title into row 1 and then used row 1 as the header, so the mileage-rate cell and the header row overwrote each other and the mileage formulas referenced the wrong row.",
+   "found_by": "opening the first rebuilt workbook and seeing formulae with no header above them",
+   "fix": "Rebuilt the sheet with the rate in B1, headers in row 2, data rows 3-32, and the formula =IF(F3=\"\",\"\",F3*$B$1) copied down."
+  },
+  {
+   "id": "D6",
+   "severity": "medium",
+   "what": "The Emergency One-Pager date-of-birth cell had no date number format, so a real date would display as a serial number.",
+   "found_by": "reading cell B5's number format after the first build",
+   "fix": "Applied the yyyy-mm-dd format to B5."
+  },
+  {
+   "id": "D7",
+   "severity": "medium",
+   "what": "The example deed review date was old enough to trigger the 'documents not reviewed in 12 months' warning on the day of delivery, making a clean example look defective.",
+   "found_by": "running the native recalculation and reading Summary!B26",
+   "fix": "Changed the example deed review date to 2026-04-15 so the example file passes its own integrity checks while still demonstrating the review date field."
+  },
+  {
+   "id": "D8",
+   "severity": "low",
+   "what": "The first listing title was 68 characters, so the quality gate's title-specificity check scored it false and the core layer lost 15 points.",
+   "found_by": "running the real gate against the draft product record",
+   "fix": "Shortened the listing title to 57 characters while keeping emergency, medication, and appointments explicit; the rebuilt gate result is APPROVED with no failed checks."
+  },
+  {
+   "id": "D9",
+   "severity": "low",
+   "what": "The first cover set the subtitle at 30px, which crowded the right-hand handoff card.",
+   "found_by": "rendering the cover and inspecting the text bounds against the card edge",
+   "fix": "Reduced the subtitle to 27px and re-rendered the cover at 1280x720."
+  },
+  {
+   "id": "D10",
+   "severity": "medium",
+   "what": "The guide inspection failed because the PDF line-wrapped the exact sheet name Respite & Backup across two lines, even though both words were present.",
+   "found_by": "running the guide inspection after the 30-page rebuild and reading the missing-sheet list",
+   "fix": "Moved Respite & Backup to the start of its own appendix paragraph so the exact name stays on one extracted line; the rebuilt guide passes with all fourteen sheet names found."
+  }
+ ],
+ "not_reverted": [
+  "No release artifact was published, listed, or committed in this round. The workbook and guide exist only as local files under books/batch13 and reports/B13-003."
+ ],
+ "open_unknowns": [
+  "No founder price decision exists yet for B13-003; $16.99 is a planning target, not an approval.",
+  "No live Etsy page was re-read because Etsy returned HTTP 403; those two prices are the captured search-result values.",
+  "No payment proof exists for this niche in this factory, so the market layer relies on six sourced competitors and a price below every direct-page comparable.",
+  "The guide is a planning and organizing tool, not medical, legal, or financial advice; no clinical review is claimed."
+ ]
+}

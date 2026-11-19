@@ -1,0 +1,217 @@
+{
+ "product_id": "B13-003",
+ "title": "Caregiver Command Kit: Emergency, Medication, Appointments",
+ "checked_at": "2026-10-24T07:39:55+00:00",
+ "as_of_local_date": "2026-10-24",
+ "engine": "Microsoft Excel via scripts/excel_recalc_probe.ps1 and an independent Python model from typed inputs only",
+ "artifact": "books\\batch13\\B13-003_caregiver_command_kit.xlsx",
+ "artifact_sha256": "37d0f7919340b4ed9855020e60e9d0e2b4eb04766c261243248d72df35031036",
+ "artifact_bytes": 32518,
+ "excel_formula_cells": 162,
+ "excel_error_cells": 0,
+ "fields_compared": 24,
+ "mismatches": [],
+ "comparison": [
+  {
+   "field": "active_medications",
+   "cell": "Summary!B5",
+   "excel_displayed": "5",
+   "independent_python": 5,
+   "match": true
+  },
+  {
+   "field": "refills_due_14d",
+   "cell": "Summary!B6",
+   "excel_displayed": "1",
+   "independent_python": 1,
+   "match": true
+  },
+  {
+   "field": "appointments_30d",
+   "cell": "Summary!B7",
+   "excel_displayed": "3",
+   "independent_python": 3,
+   "match": true
+  },
+  {
+   "field": "care_team_contacts",
+   "cell": "Summary!B8",
+   "excel_displayed": "6",
+   "independent_python": 6,
+   "match": true
+  },
+  {
+   "field": "daily_log_entries_14d",
+   "cell": "Summary!B9",
+   "excel_displayed": "8",
+   "independent_python": 8,
+   "match": true
+  },
+  {
+   "field": "expenses_total",
+   "cell": "Summary!B10",
+   "excel_displayed": "$241.05",
+   "independent_python": 241.05,
+   "match": true
+  },
+  {
+   "field": "reimbursable_total",
+   "cell": "Summary!B11",
+   "excel_displayed": "$72.90",
+   "independent_python": 72.9,
+   "match": true
+  },
+  {
+   "field": "mileage_value",
+   "cell": "Summary!B12",
+   "excel_displayed": "$29.75",
+   "independent_python": 29.75,
+   "match": true
+  },
+  {
+   "field": "open_or_waiting_decisions",
+   "cell": "Summary!B13",
+   "excel_displayed": "2",
+   "independent_python": 2,
+   "match": true
+  },
+  {
+   "field": "emergency_name",
+   "cell": "Summary!B14",
+   "excel_displayed": "OK",
+   "independent_python": "OK",
+   "match": true
+  },
+  {
+   "field": "missing_dose",
+   "cell": "Summary!B17",
+   "excel_displayed": "0",
+   "independent_python": 0,
+   "match": true
+  },
+  {
+   "field": "missing_prescriber",
+   "cell": "Summary!B18",
+   "excel_displayed": "0",
+   "independent_python": 0,
+   "match": true
+  },
+  {
+   "field": "missing_provider",
+   "cell": "Summary!B19",
+   "excel_displayed": "0",
+   "independent_python": 0,
+   "match": true
+  },
+  {
+   "field": "missing_category",
+   "cell": "Summary!B20",
+   "excel_displayed": "0",
+   "independent_python": 0,
+   "match": true
+  },
+  {
+   "field": "missing_amount",
+   "cell": "Summary!B21",
+   "excel_displayed": "0",
+   "independent_python": 0,
+   "match": true
+  },
+  {
+   "field": "missing_owner",
+   "cell": "Summary!B22",
+   "excel_displayed": "0",
+   "independent_python": 0,
+   "match": true
+  },
+  {
+   "field": "emergency_name_check",
+   "cell": "Summary!B23",
+   "excel_displayed": "OK",
+   "independent_python": "OK",
+   "match": true
+  },
+  {
+   "field": "missing_emergency_contact",
+   "cell": "Summary!B24",
+   "excel_displayed": "OK",
+   "independent_python": "OK",
+   "match": true
+  },
+  {
+   "field": "missing_allergies",
+   "cell": "Summary!B25",
+   "excel_displayed": "OK",
+   "independent_python": "OK",
+   "match": true
+  },
+  {
+   "field": "stale_documents",
+   "cell": "Summary!B26",
+   "excel_displayed": "0",
+   "independent_python": 0,
+   "match": true
+  },
+  {
+   "field": "stale_open_decisions",
+   "cell": "Summary!B27",
+   "excel_displayed": "0",
+   "independent_python": 0,
+   "match": true
+  },
+  {
+   "field": "past_due_refills",
+   "cell": "Summary!B28",
+   "excel_displayed": "0",
+   "independent_python": 0,
+   "match": true
+  },
+  {
+   "field": "latest_log",
+   "cell": "Summary!B31",
+   "excel_displayed": "2026-10-23",
+   "independent_python": "2026-10-23",
+   "match": true
+  },
+  {
+   "field": "latest_expense",
+   "cell": "Summary!B32",
+   "excel_displayed": "2026-10-22",
+   "independent_python": "2026-10-22",
+   "match": true
+  }
+ ],
+ "expected_summary": {
+  "active_medications": 5,
+  "refills_due_14d": 1,
+  "appointments_30d": 3,
+  "care_team_contacts": 6,
+  "daily_log_entries_14d": 8,
+  "expenses_total": 241.05,
+  "reimbursable_total": 72.9,
+  "mileage_value": 29.75,
+  "open_or_waiting_decisions": 2
+ },
+ "integrity_checks": {
+  "missing_dose": 0,
+  "missing_prescriber": 0,
+  "missing_provider": 0,
+  "missing_category": 0,
+  "missing_amount": 0,
+  "missing_owner": 0,
+  "emergency_name_check": "OK",
+  "missing_emergency_contact": "OK",
+  "missing_allergies": "OK",
+  "stale_documents": 0,
+  "stale_open_decisions": 0,
+  "past_due_refills": 0
+ },
+ "all_integrity_checks_clear": true,
+ "verdict": "PASS",
+ "notes": [
+  "The independent model reads typed inputs only: medication rows, appointment dates, team rows, log dates, expense amounts and miles, decision statuses and review dates, and document review dates. It never reads a formula cell.",
+  "Excel recalculated a temporary read-only copy; the release artifact was not opened for write.",
+  "TODAY()-relative checks were evaluated on the machine's real local date and are reported above.",
+  "The guide and workbook are one product; the workbook carries the facts and formulas, the guide carries the method."
+ ]
+}

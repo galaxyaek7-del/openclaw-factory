@@ -1,0 +1,36 @@
+{
+ "product_id": "B13-002",
+ "artifact": "books\\batch13\\B13-002_grant_endgame_nce_unspent_funds.xlsx",
+ "artifact_sha256": "aeb9ec2e839fe9992c1b827973de4ea6b215e6b77dc65a1852f38c1fb599d8ea",
+ "artifact_bytes": 31683,
+ "engine": {
+  "name": "Microsoft Excel",
+  "version": "16.0",
+  "build": "19127"
+ },
+ "calculated_at_utc": "2026-10-23T12:38:37Z",
+ "sheet_count": 11,
+ "sheets": [
+  "Start Here",
+  "Award Profile",
+  "Budget vs Spend",
+  "Unspent Decision",
+  "NCE Planner",
+  "Funder Rules",
+  "Rebudget Log",
+  "Closeout Checklist",
+  "Communication Log",
+  "Assumptions",
+  "Summary"
+ ],
+ "formula_cells_excel": 373,
+ "formula_cells_openpyxl": 373,
+ "data_validations": 17,
+ "excel_error_cells": [],
+ "verdict": "PASS",
+ "limitations": [
+  "Excel recalculated a temporary copy; the release file was never opened for write.",
+  "Only Excel and openpyxl were exercised. LibreOffice Calc and Google Sheets are untested.",
+  "No line coverage or macro inspection exists because the workbook contains no macros."
+ ]
+}

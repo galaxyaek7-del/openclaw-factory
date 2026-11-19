@@ -1,0 +1,225 @@
+{
+ "product_id": "B13-002",
+ "title": "Grant Endgame: No-Cost Extension & Unspent Funds Kit",
+ "state": "LOCAL_READY__AWAITS_FOUNDER_PRICE_DECISION_AND_LISTING_AUTHORIZATION",
+ "published": false,
+ "gumroad_call_made": false,
+ "price_usd": 19.0,
+ "price_status": "PLANNING_TARGET_NOT_FOUNDER_APPROVED",
+ "founder_decision": {
+  "decided_at": null,
+  "preferred_price_usd": null,
+  "scope": "No price or publication decision has been recorded for B13-002.",
+  "publication_authorized": false,
+  "live_price_changed": false
+ },
+ "price_realism": {
+  "finding": "At exactly 30 pages, $19.00 clears both the profit floor and the page ceilings on gumroad_digital. On gumroad_premium the page ceilings also pass, but the $25.00 net floor does not: $19.00 nets $17.10. Digital is therefore the only tier where $19.00 is both realistic and profitable today. This is a computed option, not a founder decision.",
+  "matrix": [
+   {
+    "price_usd": 19.0,
+    "platform": "gumroad_digital",
+    "pages": 30,
+    "role": "planning target at the published 30-page depth",
+    "profit_floor_cleared": true,
+    "net_profit_usd": 17.1,
+    "min_required_usd": 2.5,
+    "market_realistic": true,
+    "suggested_realistic_price_usd": 19.0
+   },
+   {
+    "price_usd": 19.0,
+    "platform": "gumroad_premium",
+    "pages": 30,
+    "role": "same price on the premium tier",
+    "profit_floor_cleared": false,
+    "net_profit_usd": 17.1,
+    "min_required_usd": 25.0,
+    "market_realistic": true,
+    "suggested_realistic_price_usd": 19.0
+   }
+  ],
+  "selected": null,
+  "alternatives_considered": [
+   "Keep $19.00 on gumroad_digital, where it clears every check at 30 pages.",
+   "Use gumroad_premium, which would need a higher price to clear the $25.00 net floor; no such price is proposed here."
+  ]
+ },
+ "files": [
+  {
+   "path": "books/batch13/B13-002_grant_endgame_nce_unspent_funds.xlsx",
+   "bytes": 31683,
+   "sha256": "aeb9ec2e839fe9992c1b827973de4ea6b215e6b77dc65a1852f38c1fb599d8ea"
+  },
+  {
+   "path": "books/batch13/B13-002_grant_endgame_nce_unspent_funds_guide.pdf",
+   "bytes": 69647,
+   "sha256": "3b986c2ddde6bca4e8c3b1ab1921948de122e8f7623db7101611a036b3533992"
+  }
+ ],
+ "cover": {
+  "path": "reports/B13-002/B13-002.png",
+  "exists": true,
+  "dimensions": [
+   1280,
+   720
+  ]
+ },
+ "cover_note": "No price badge: the cover stays accurate whichever price the founder authorizes.",
+ "customer_page": null,
+ "customer_page_note": "No customer-facing page was created. It is a separate reviewable step and is not required for a Gumroad listing.",
+ "listing_copy": {
+  "path": "drafts/b13_002_listing_copy.txt",
+  "text": "Grant Endgame: No-Cost Extension & Unspent Funds Kit\n\nMost grant budgets do not fail because the math is hard. They fail in the last 120 days, when money is spread across lines, commitments are not in the bank balance, and the no-cost-extension notice window is already close.\n\nThis kit keeps the end of the award in one place.\n\nInside the 11-sheet Excel workbook (373 live formulas, no macros):\n\n- Award Profile - award number, funder, period, as-of date, notice deadline, and closeout reporting window\n- Budget vs Spend - room for 40 budget lines with original budget, approved transfers, spent, committed, available, percent spent, and an over / on plan / under read on every line\n- Unspent Decision - every line needs a named disposition: carry forward, rebudget, return to funder, spend down, or still unallocated\n- NCE Planner - a dated task list for the one-time extension, including the notice deadline and the days remaining\n- Funder Rules - a register for the funder's own terms beside the federal baseline, so a rule is never assumed from memory\n- Rebudget Log - request, approval requirement, from-line, to-line, amount, dates, and status\n- Closeout Checklist - 24 closeout tasks with owners, due offsets, status, and evidence\n- Communication Log - a dated record of what was sent, to whom, and what came back\n- Assumptions - what is excluded, where each number lives, and a note against each item\n- Summary - one page with every total, the unallocated balance, overdue tasks, and twelve checks\n- Start Here - the steps in order, before any number is overwritten\n\nThe workbook ships with a worked example: a $120,000 award, $91,000 spent, $15,500 committed, $13,500 available, and $12,500 of dispositions. It is illustrative, not a real award. Read it, then replace it with your own numbers.\n\nAlso included: a 30-page PDF guide. It covers the difference between a balance and an available balance, how to build a line-by-line unspent schedule, how to decide between carryforward, rebudget, return, and spend-down, how the one-time no-cost extension works under 2 CFR 200.308(g)(2), when prior approval is required, how to document a request, how to run closeout under 2 CFR 200.344, and what to do when the notice window is already tight. Worksheets A through K give you a written agenda, a funder-call script, a line-by-line schedule, a decision memo, an NCE request letter, a closeout calendar, and a final review.\n\nBuilt for Excel. The workbook uses standard formulas only, no macros and no add-ins. LibreOffice Calc and Google Sheets have not been tested by me, so if anything misbehaves, reply to your receipt and I will fix it.\n\nThis is a planning and documentation tool, not legal, tax, or financial advice. Your award terms and your funder govern. A no-cost extension is not automatic and is not guaranteed.\n\nNew product from Galaxy Forge: no sales recorded yet, no reviews. Support: reply to your Gumroad receipt email.\n",
+  "tags": [
+   "grant management",
+   "no cost extension",
+   "grant closeout",
+   "unspent funds",
+   "nonprofit finance",
+   "grant budget",
+   "excel template",
+   "grant tracker"
+  ],
+  "category": "Business & Money > Business Templates / Spreadsheets"
+ },
+ "brand_check": {
+  "passed": true,
+  "failed_checks": [],
+  "results": {
+   "brand_reputation": {
+    "status": "PASS",
+    "evidence": null,
+    "reason": "لا عبارات ادّعاء بنية تحتية غير حقيقية موجودة في نص المحتوى (فحص جزئي)"
+   },
+   "content_neutrality": {
+    "status": "PASS",
+    "evidence": null,
+    "reason": "لا عبارات مخالفة لمبادئ الحياد التنفيذي موجودة في نص المحتوى (فحص جزئي)"
+   },
+   "copyright_trademark": {
+    "status": "PASS",
+    "evidence": null,
+    "reason": "لا عبارات ادّعاء انتماء/ترخيص علامة تجارية موجودة في نص المحتوى (فحص جزئي)"
+   },
+   "fake_urgency": {
+    "status": "PASS",
+    "evidence": null,
+    "reason": "لا عبارات استعجال/ندرة مصطنعة موجودة في نص المحتوى (فحص جزئي)"
+   }
+  },
+  "generated_at": "2026-10-23T12:54:00.631737+00:00"
+ },
+ "price_evidence": {
+  "competitors": [
+   {
+    "name": "Grant Reporting Tracker for Nonprofits (Etsy listing 4588862950, $22.50 sale from $30.00)",
+    "price_usd": 22.5,
+    "url": "https://www.etsy.com/listing/4588862950/",
+    "source_type": "Etsy search index",
+    "captured_at": "2026-10-23"
+   },
+   {
+    "name": "Nonprofit Unrestricted Grant Tracker (Etsy listing 1480924539, $2.99)",
+    "price_usd": 2.99,
+    "url": "https://www.etsy.com/listing/1480924539/",
+    "source_type": "Etsy search index",
+    "captured_at": "2026-10-23"
+   },
+   {
+    "name": "Grant Application Tracker (Etsy listing 1799831298, $8.50)",
+    "price_usd": 8.5,
+    "url": "https://www.etsy.com/listing/1799831298/",
+    "source_type": "Etsy search index",
+    "captured_at": "2026-10-23"
+   },
+   {
+    "name": "Post-Award Grant Tracker (Etsy market page, $28.70)",
+    "price_usd": 28.7,
+    "url": "https://www.etsy.com/market/grant_tracker_template",
+    "source_type": "Etsy search index",
+    "captured_at": "2026-10-23"
+   },
+   {
+    "name": "Grant Tracker Template by NonProfit Life (direct product page, $12.99)",
+    "price_usd": 12.99,
+    "url": "https://www.nonprofit-life.com/templateshop/p/grant-tracker-template",
+    "source_type": "direct page fetch",
+    "captured_at": "2026-10-23"
+   },
+   {
+    "name": "Nonprofit Grant-Tracking OS by Ardent Workshop (direct product page, $38.95)",
+    "price_usd": 38.95,
+    "url": "https://www.ardentworkshop.com/products/nonprofit-grant-tracking-os",
+    "source_type": "direct page fetch",
+    "captured_at": "2026-10-23"
+   }
+  ],
+  "competitors_note": "Six sourced public listings captured on 2026-10-23: four from Etsy search results and two direct product pages fetched successfully. Etsy direct page loads returned HTTP 403, so those four titles and prices are search-index evidence, not a live re-scrape. The highest comparable is $38.95; $19.00 is below the 1.10 ceiling.",
+  "payment_evidence": "none - no sale exists anywhere in this factory",
+  "observed_min_usd": 2.99,
+  "observed_max_usd": 38.95
+ },
+ "listing_asset_audit": {
+  "verdict": "LOCAL_CHECKS_PASS__AWAITING_PRICE_AND_PUBLICATION_DECISION",
+  "problems": [],
+  "counts": {
+   "workbook_formulas": 373,
+   "workbook_sheets": 11,
+   "summary_checks": 12,
+   "closeout_tasks": 24,
+   "budget_line_capacity": 40,
+   "guide_pages": 30
+  },
+  "copy_claims": {
+   "formula_count_claim": true,
+   "sheet_count_claim": true,
+   "summary_check_claim": true,
+   "closeout_task_claim": true,
+   "budget_capacity_claim": true,
+   "guide_page_claim": true
+  },
+  "additional_preview_images": "NOT_CREATED",
+  "preview_note": "Only the 1280x720 cover exists. Additional preview images were not produced in this round; they are optional for a Gumroad listing and remain an explicit gap before a final visual review."
+ },
+ "verification_evidence": {
+  "gate": "reports/B13-002/GATE_FINAL_2026-10-23.json",
+  "gate_verdict": "APPROVED",
+  "gate_layers": {
+   "core_value": {
+    "status": "PASS",
+    "score": 100
+   },
+   "content_quality": {
+    "status": "PASS",
+    "score": 100
+   },
+   "market_reality": {
+    "status": "PASS",
+    "score": 70
+   }
+  },
+  "gate_price_checked_usd": 19.0,
+  "payment_evidence": "none - no sale exists anywhere in this factory",
+  "guide_inspection": "reports/B13-002/GUIDE_INSPECTION_2026-10-23.json",
+  "guide_pages": 30,
+  "guide_words": 12662,
+  "guide_verdict": "PASS",
+  "workbook_qa": "reports/B13-002/WORKBOOK_QA_2026-10-23.json",
+  "workbook_verdict": "PASS",
+  "workbook_formula_cells": 373,
+  "workbook_validations": 17,
+  "value_check": "reports/B13-002/VALUE_INDEPENDENT_CHECK_2026-10-23.json",
+  "value_check_verdict": "PASS",
+  "value_fields_compared": 16,
+  "value_mismatches": []
+ },
+ "authorization_required": {
+  "blocked_by": "No founder price decision and no listing or publication authorization. The read-only gate check on 2026-10-23 returned DENY: the live-publish flag was false in the MCP process and the Gumroad auth state was VERIFIED but stale (recorded 2026-10-19T08:03:23Z). The auth state and live flag seen by other factory processes are not observable from here.",
+  "exact_minimal_action": "Founder records a price/tier decision and explicitly authorizes a listing attempt; a fresh Gumroad auth check is required immediately before any attempt.",
+  "price_decision_required_first": true,
+  "publication_separately_gated": true,
+  "no_call_made": true
+ },
+ "problems": []
+}

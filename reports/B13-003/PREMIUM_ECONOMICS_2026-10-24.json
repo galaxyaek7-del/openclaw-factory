@@ -1,0 +1,106 @@
+{
+  "product_id": "B13-003",
+  "as_of": "2026-10-24",
+  "authority": "COMPUTED_OPTION_NOT_A_PRICE_DECISION",
+  "source": "config/economics.json; economics.py::net_profit/evaluate/market_realism_check",
+  "price_under_review_usd": 16.99,
+  "page_count": 30,
+  "documented_model": {
+    "platform": "Gumroad",
+    "royalty_rate": 0.9,
+    "platform_fee_rate": 0.1,
+    "flat_fee_usd": 0.0,
+    "net_formula": "price * 0.90 - 0.00",
+    "separate_payment_processing_fee_modeled": false,
+    "note": "config/economics.json documents Gumroad as a 10% royalty with a $0 flat fee. It does not separately model card processing, refunds, chargebacks, tax withholding, payout fees, or currency conversion. Those are UNKNOWN and are not deducted below.",
+    "per_unit_delivery_cost_usd": 0.0,
+    "per_unit_cost_note": "Digital workbook plus PDF; no hosting, delivery, or inventory cost is recorded anywhere in this factory's economics model."
+  },
+  "scenarios": [
+    {
+      "tier": "gumroad_digital",
+      "role": "planning target at the published 30-page depth",
+      "price_usd": 16.99,
+      "gross_usd": 16.99,
+      "platform_fee_usd": 1.699,
+      "net_usd": 15.291,
+      "floor_usd": 2.5,
+      "floor_gap_usd": -12.791,
+      "clears_profit_floor": true,
+      "market_realistic": true
+    },
+    {
+      "tier": "gumroad_premium",
+      "role": "same price on the premium tier",
+      "price_usd": 16.99,
+      "gross_usd": 16.99,
+      "platform_fee_usd": 1.699,
+      "net_usd": 15.291,
+      "floor_usd": 25.0,
+      "floor_gap_usd": 9.709,
+      "clears_profit_floor": false,
+      "market_realistic": true
+    },
+    {
+      "tier": "gumroad_premium",
+      "role": "minimum whole-cent price at the documented fee model",
+      "price_usd": 27.78,
+      "gross_usd": 27.78,
+      "platform_fee_usd": 2.778,
+      "net_usd": 25.002,
+      "floor_usd": 25.0,
+      "floor_gap_usd": -0.002,
+      "clears_profit_floor": true,
+      "market_realistic": true
+    }
+  ],
+  "premium_minimum_price_usd": 27.78,
+  "premium_minimum_calculation": "ceil_to_cent(25.00 / 0.90) = 27.78; net = 27.78 * 0.90 - 0.00 = 25.002",
+  "market_realism_at_premium_minimum": {
+    "max_price_per_page_usd": 5.0,
+    "price_per_page_at_27_78_usd": 0.926,
+    "short_book_ceiling_applies": false,
+    "passes": true
+  },
+  "applicable_costs": {
+    "documented_platform_fee_usd_per_unit": 1.699,
+    "documented_flat_fee_usd_per_unit": 0.0,
+    "documented_per_unit_delivery_cost_usd": 0.0,
+    "documented_other_costs_usd": 0.0,
+    "unknown_costs": [
+      "Separate card processing, if any, on top of the 10% Gumroad fee",
+      "Refunds and chargebacks",
+      "Sales tax or VAT treatment and any withholding",
+      "Payout or currency-conversion fees",
+      "Hosting, storage, or delivery cost for the digital files"
+    ]
+  },
+  "illustrative_undocumented_processing_scenario": {
+    "status": "NOT_DOCUMENTED_NOT_USED_FOR_THE_DECISION",
+    "description": "Illustrative sensitivity only. config/economics.json does not model this fee. If a separate 2.9% + $0.30 card-processing fee were charged on top of Gumroad's 10%, the numbers below would apply.",
+    "processor_rate": 0.029,
+    "processor_fixed_usd": 0.3,
+    "net_at_16_99_usd": 14.498,
+    "net_at_27_78_usd": 23.896,
+    "premium_minimum_price_usd": 29.05,
+    "premium_minimum_calculation": "ceil_to_cent((25.00 + 0.30) / (0.90 - 0.029)) = 29.05; net = 29.05 * 0.871 - 0.30 = 25.003"
+  },
+  "founder_decision": {
+    "question": "Choose the B13-003 tier and price, then separately authorize or refuse listing and publication.",
+    "options": [
+      "Keep $16.99 on gumroad_digital. It clears the $2.50 digital floor with $15.291 net.",
+      "Use gumroad_premium at a minimum of $27.78. That is the computed minimum at documented fees and is not a recommendation or an approved price.",
+      "Set another explicit price for either tier.",
+      "Hold B13-003 and publish nothing."
+    ],
+    "publication_authorized": false,
+    "price_approved": false,
+    "tier_approved": false
+  },
+  "not_claimed": [
+    "No premium price is proposed or approved by this file.",
+    "No demand, buyer intent, conversion rate, or revenue is claimed.",
+    "No current external Gumroad fee schedule was fetched; only this factory's documented config is used.",
+    "No listing, publication, purchase, or Gumroad API call was made."
+  ]
+}

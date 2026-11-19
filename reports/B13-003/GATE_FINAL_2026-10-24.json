@@ -1,0 +1,168 @@
+{
+ "product_id": "B13-003",
+ "checked_at": "2026-10-24T07:39:58+00:00",
+ "engine": "src/quality/quality_enforcer.py::inspect(stage='full')",
+ "price_checked_usd": 16.99,
+ "price_basis": "planning target chosen for the $16.99 / 30-page digital tier; no founder price decision recorded yet",
+ "pdf_pages": 30,
+ "verdict": "APPROVED",
+ "blocked": false,
+ "reasons": [],
+ "thresholds": {
+  "core_value": 70,
+  "content_quality": 70,
+  "market_reality": 65
+ },
+ "layers": {
+  "core_value": {
+   "status": "PASS",
+   "score": 100,
+   "checks": {
+    "audience_specific": true,
+    "problem_stated": true,
+    "outcome_stated": true,
+    "title_specific": true,
+    "priced": true
+   }
+  },
+  "content_quality": {
+   "status": "PASS",
+   "score": 100,
+   "checks": {
+    "files_open_cleanly": true,
+    "depth_sufficient": true,
+    "no_placeholders": true,
+    "no_mojibake": true,
+    "instructions_present": true
+   },
+   "detail": {
+    "files": [
+     {
+      "file": "books\\batch13\\B13-003_caregiver_command_kit.xlsx",
+      "status": "PASS",
+      "problems": []
+     },
+     {
+      "file": "books\\batch13\\B13-003_caregiver_command_kit_guide.pdf",
+      "status": "PASS",
+      "problems": []
+     }
+    ],
+    "depth": {
+     "words": 10378,
+     "words_required": 1698,
+     "text_depth_ok": true,
+     "sheets": 14,
+     "formulas": 162,
+     "sheet_depth_ok": true
+    },
+    "placeholders_found": [],
+    "mojibake_hits": 0,
+    "unreadable": []
+   }
+  },
+  "market_reality": {
+   "status": "PASS",
+   "score": 70,
+   "checks": {
+    "payment_evidence": false,
+    "three_sourced_competitors": true,
+    "two_sourced_competitors": true,
+    "one_sourced_competitor": true,
+    "price_within_market": true
+   },
+   "detail": {
+    "sourced_competitors": [
+     {
+      "name": "Caregiver Command Center by AgingSteady (direct page, $27)",
+      "url": "https://www.agingsteady.com/caregiver-command-center",
+      "price_usd": 27.0
+     },
+     {
+      "name": "Caregiver Binder for Aging Parents by Reveri Art Studio (direct page, 111 pages, $19)",
+      "url": "https://www.reveriartstudio.com/caregiver-binder",
+      "price_usd": 19.0
+     },
+     {
+      "name": "The Family Care Binder (direct page, 24 pages, $19)",
+      "url": "https://family-care-binder.vercel.app/guides/caregiver-binder-checklist",
+      "price_usd": 19.0
+     },
+     {
+      "name": "Complete Caregiving Binder by AmeriDisability (direct page, 73 pages, $29)",
+      "url": "https://www.ameridisability.com/product/complete-caregiving-binder",
+      "price_usd": 29.0
+     },
+     {
+      "name": "Caregiver Binder Printable, Family Care Command Center (Etsy listing 4590901212, $16.99)",
+      "url": "https://www.etsy.com/listing/4590901212/",
+      "price_usd": 16.99
+     },
+     {
+      "name": "Medication Tracker Printable, Fillable PDF Caregiver Binder (Etsy market page, $4.99)",
+      "url": "https://www.etsy.com/market/caregiver_medication_tracker_printable",
+      "price_usd": 4.99
+     }
+    ],
+    "payment_evidence_count": 0
+   }
+  }
+ },
+ "market_realism": {
+  "gumroad_digital": {
+   "realistic": true,
+   "suggested_price_usd": 16.99
+  },
+  "gumroad_premium": {
+   "realistic": true,
+   "suggested_price_usd": 16.99
+  }
+ },
+ "competitors_note": "Six sourced public offers captured on 2026-10-24: four direct product pages fetched successfully ($19, $19, $27, $29) and two Etsy search-index entries ($16.99, $4.99). Etsy direct page loads returned HTTP 403, so those two prices are search-index evidence, not a live re-scrape. $16.99 is below all four direct pages and below the highest comparable.",
+ "competitor_sources": [
+  {
+   "name": "Caregiver Command Center by AgingSteady (direct page, $27)",
+   "price_usd": 27.0,
+   "url": "https://www.agingsteady.com/caregiver-command-center",
+   "source_type": "direct page fetch",
+   "captured_at": "2026-10-24"
+  },
+  {
+   "name": "Caregiver Binder for Aging Parents by Reveri Art Studio (direct page, 111 pages, $19)",
+   "price_usd": 19.0,
+   "url": "https://www.reveriartstudio.com/caregiver-binder",
+   "source_type": "direct page fetch",
+   "captured_at": "2026-10-24"
+  },
+  {
+   "name": "The Family Care Binder (direct page, 24 pages, $19)",
+   "price_usd": 19.0,
+   "url": "https://family-care-binder.vercel.app/guides/caregiver-binder-checklist",
+   "source_type": "direct page fetch",
+   "captured_at": "2026-10-24"
+  },
+  {
+   "name": "Complete Caregiving Binder by AmeriDisability (direct page, 73 pages, $29)",
+   "price_usd": 29.0,
+   "url": "https://www.ameridisability.com/product/complete-caregiving-binder",
+   "source_type": "direct page fetch",
+   "captured_at": "2026-10-24"
+  },
+  {
+   "name": "Caregiver Binder Printable, Family Care Command Center (Etsy listing 4590901212, $16.99)",
+   "price_usd": 16.99,
+   "url": "https://www.etsy.com/listing/4590901212/",
+   "source_type": "Etsy search index",
+   "captured_at": "2026-10-24"
+  },
+  {
+   "name": "Medication Tracker Printable, Fillable PDF Caregiver Binder (Etsy market page, $4.99)",
+   "price_usd": 4.99,
+   "url": "https://www.etsy.com/market/caregiver_medication_tracker_printable",
+   "source_type": "Etsy search index",
+   "captured_at": "2026-10-24"
+  }
+ ],
+ "payment_evidence": "none - no sale exists anywhere in this factory",
+ "state": "QA_AT_16_99_USD_AWAITING_FOUNDER_PRICE_DECISION_AND_LISTING_AUTHORIZATION"
+}
