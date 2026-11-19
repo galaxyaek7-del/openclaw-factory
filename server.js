@@ -5177,7 +5177,10 @@ app.post('/chat', requireMissionControlAuth, async (req, res) => {
 // Hardened per the Factory Constitution: defensive read (corrupt JSON -> empty
 // data, never a 500), atomic write (temp file + rename), structured error
 // logging, and input validation on the write endpoints.
-const FINANCE_FILE = path.join(__dirname, 'finance_data.json');
+// FINANCE_DATA_FILE is an explicit test/ops override so a spawned test server
+// can exercise add/delete without ever mutating the protected real ledger.
+// Production behavior is unchanged when the variable is unset.
+const FINANCE_FILE = process.env.FINANCE_DATA_FILE || path.join(__dirname, 'finance_data.json');
 const FINANCE_ERROR_LOG = path.join(__dirname, 'finance_errors.log');
 // ADR-065/MASTER_CHARTER.md: Paddle added alongside the existing three
 // platforms (Step 4's paddle_arm.py) — additive, existing KDP/Etsy/Gumroad
@@ -5433,6 +5436,12 @@ app.post('/webhooks/paddle', (req, res) => {
       // retries on non-2xx) so a transient Node-side issue doesn't
       // trigger Paddle's own retry storm on top of it.
       return res.status(200).json({ status: 'ERROR', detail: `local parse error: ${e.message}${errOut ? ' -- ' + errOut.slice(0, 200) : ''}` });
+    }
+    // A local idempotency-lock timeout is transient and NOT a verdict on the
+    // event. Return 503 so Paddle redelivers instead of the event being
+    // silently accepted-and-lost by this 200-by-default endpoint.
+    if (parsed && parsed.retryable === true) {
+      return res.status(503).json(parsed);
     }
     // CTO+COO audit closure (2026-08-15): a REJECTED event (e.g.
     // MISSING_SECRET because PADDLE_WEBHOOK_SECRET is unset) was previously
@@ -6112,16 +6121,35 @@ async function computeHealthStatus() {
 
   // sensing_engine — is n8n reachable? Not fatal on its own: Scout already
   // degrades gracefully to its Groq-based fallback when n8n is unavailable.
-  try {
-    await withTimeout(fetch('http://localhost:5678'), 3000, 'n8n-health');
+  // 2026-11-13: the probe was hard-coded to :5678 while this host's n8n
+  // listens on :5679 (observed via netstat), so a running n8n was reported
+  // unavailable. Probe the configured URL first, then both conventional
+  // ports; reachability and workflow-evidence failure stay distinct.
+  const n8nCandidates = [process.env.N8N_BASE_URL, 'http://localhost:5678', 'http://localhost:5679'].filter(Boolean);
+  const n8nErrors = [];
+  let n8nReachable = false;
+  for (const url of n8nCandidates) {
+    try {
+      await withTimeout(fetch(url), 3000, 'n8n-health');
+      n8nReachable = true;
+      break;
+    } catch (err) {
+      n8nErrors.push(`${url}: ${err.message}`);
+    }
+  }
+  if (!n8nReachable) {
+    checks.sensing_engine = { ok: false, severity: 'degraded', detail: `n8n غير متاح: ${n8nErrors.join(' | ')}` };
+  } else {
     // 2026-10-22: reachability alone used to report ok, which stayed green
     // while every company workflow run failed (2026-10-10..22). It now also
     // requires real execution evidence (lib/health_checks.js
     // checkN8nWorkflowEvidence: a fresh successful run whose server.js
     // call returned success:true). Missing evidence is never ok.
-    checks.sensing_engine = await healthChecks.checkN8nWorkflowEvidence({ python: detectPython() });
-  } catch (err) {
-    checks.sensing_engine = { ok: false, severity: 'degraded', detail: `n8n غير متاح: ${err.message}` };
+    try {
+      checks.sensing_engine = await healthChecks.checkN8nWorkflowEvidence({ python: detectPython() });
+    } catch (err) {
+      checks.sensing_engine = { ok: false, severity: 'degraded', detail: `n8n متاح لكن فحص الأدلة فشل: ${err.message}` };
+    }
   }
 
   // book_generator — without this file nothing can be produced at all.
@@ -6218,7 +6246,14 @@ async function computeHealthStatus() {
     statusSource = 'reality';
   }
 
-  return { status, status_source: statusSource, timestamp: new Date().toISOString(), checks, reality };
+  return {
+    status, status_source: statusSource, timestamp: new Date().toISOString(), checks, reality,
+    publish_gate: {
+      live_publish_enabled: LIVE_PUBLISH_ENABLED,
+      protected: !LIVE_PUBLISH_ENABLED,
+      source: 'FACTORY_LIVE_PUBLISH',
+    },
+  };
 }
 
 // Resilience & Stress Hardening audit (2026-08-08): a real, safe load
@@ -6538,12 +6573,16 @@ app.get('/awareness', requireMissionControlAuth, async (req, res) => {
 // directly to assessSelfAwareness(), which skips its own fetch entirely
 // when a precomputed health object is given (self_awareness.js's own
 // default behavior is unchanged for factory_loop.js/the CLI).
-app.get('/api/dashboard', async (req, res) => {
+// 2026-11-13 (V22 BLK-02/03): this payload contains real finance, decision,
+// and failure data, so it is no longer readable unauthenticated. The served
+// index.html is same-origin and sends the Mission Control cookie; internal
+// callers may present X-Internal-Token. Availability probes use /health.
+app.get('/api/dashboard', requireMissionControlOrInternalToken, async (req, res) => {
   try {
     const health = await computeHealthStatus().catch(err => ({ status: 'error', error: err.message }));
     const awareness = await selfAwareness.assessSelfAwareness(new Date(), health).catch(err => ({ verdict: null, error: err.message }));
     const priorities = readNextDollarActions();
-    res.json({ success: true, ...dashboardData.computeDashboard({ health, awareness, priorities }) });
+    res.json({ success: true, ...dashboardData.computeDashboard({ health, awareness, priorities, livePublishEnabled: LIVE_PUBLISH_ENABLED }) });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }
@@ -7975,6 +8014,43 @@ app.post('/api/customer/request-product', (req, res) => {
   }
 });
 
+app.post('/api/customer/message', (req, res) => {
+  try {
+    const ip = req.ip || (req.socket && req.socket.remoteAddress) || 'unknown';
+    if (isRateLimited(ip)) {
+      return res.status(429).json({ success: false, error: 'too many requests — please try again later' });
+    }
+    const body = req.body || {};
+    if (body.website) {
+      return res.json({ success: true, action: 'ignored' });
+    }
+    const channel = String(body.channel || 'web').trim().slice(0, 32) || 'web';
+    const contactId = String(body.contact_id || '').trim();
+    const message = String(body.message || '').trim();
+    const name = String(body.name || '').trim().slice(0, CUSTOMER_REQUEST_FIELD_MAX);
+    const facts = body.facts;
+
+    if (!contactId || !message) {
+      return res.status(400).json({ success: false, error: 'contact_id and message are required' });
+    }
+    if (contactId.length > CUSTOMER_REQUEST_FIELD_MAX || message.length > CUSTOMER_REQUEST_FIELD_MAX) {
+      return res.status(400).json({ success: false, error: 'a field exceeds the maximum length' });
+    }
+    if (!facts || typeof facts !== 'object' || Array.isArray(facts)) {
+      return res.status(400).json({ success: false, error: 'facts must be a non-empty object' });
+    }
+
+    const customerResponse = require('./lib/customer_response');
+    const result = customerResponse.respondToInbound({ channel, contactId, message, name, facts });
+    if (result.action === 'error') {
+      return res.status(400).json({ success: false, ...result });
+    }
+    res.json({ success: true, ...result });
+  } catch (err) {
+    res.status(500).json({ success: false, error: 'could not process message — please try again' });
+  }
+});
+
 // ── Support Center (ADR-130, 2026-07-25) ──
 // Real ticket intake -- same validation/honeypot/rate-limit/Telegram-
 // notify shape as request-product above (deliberately not a new pattern),
@@ -8021,7 +8097,14 @@ app.post('/api/customer/support-ticket', (req, res) => {
       `🎫 تذكرة دعم جديدة\nالاسم: ${name}\nالبريد: ${email}\n${requestId ? 'مرتبطة بطلب: ' + requestId + '\n' : ''}الرسالة: ${message.slice(0, 300)}`
     ).catch(() => {});
 
-    res.json({ success: true, ticket_id: ticketId });
+    let response;
+    try {
+      const customerResponse = require('./lib/customer_response');
+      response = customerResponse.classifySupportMessage(message);
+    } catch (_) {
+      response = { action: 'acknowledge', text: 'تم استلام رسالتك. سيراجعها فريق Galaxy Forge البشري ويرد عليك عبر البريد الإلكتروني.', escalation: null };
+    }
+    res.json({ success: true, ticket_id: ticketId, response });
   } catch (err) {
     res.status(500).json({ success: false, error: 'could not submit ticket — please try again' });
   }
@@ -8241,6 +8324,21 @@ app.post('/api/customer/interest', (req, res) => {
   } catch (err) {
     res.status(500).json({ success: false, error: 'could not record interest — please try again' });
   }
+});
+
+// API clients must never receive the SPA fallback: an unknown /api/* path is
+// a real 404 JSON error, not HTTP 200 with index.html. Registered after every
+// real /api route and before the SPA catch-all.
+app.use('/api', (req, res) => {
+  res.status(404).json({ success: false, error: `unknown API route: ${req.method} ${req.originalUrl}` });
+});
+
+// 2026-11-13 (V22 BLK-01): factory_control_center.html was an orphan with no
+// route, yet tests and docs still treated it as a control center. It is now a
+// real, authenticated secondary view. index.html at / remains canonical; the
+// page itself carries a banner saying so. Never expose it unauthenticated.
+app.get('/factory_control_center.html', requireMissionControlAuth, (req, res) => {
+  res.sendFile(path.join(__dirname, 'factory_control_center.html'));
 });
 
 app.get('/{*path}', (req, res) => {
