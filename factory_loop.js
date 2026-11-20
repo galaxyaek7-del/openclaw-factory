@@ -72,6 +72,14 @@ const INTERVAL_MS = 10 * 60 * 1000; // 10 minutes
 // tests/test_factory_loop_tick_overlap.js wrote "simulated tick failure" and
 // tick_skipped_overlap entries into the real production log (found 2026-10-22).
 const LOOP_LOG = process.env.FACTORY_LOOP_LOG_PATH || path.join(FACTORY_DIR, 'factory_loop.log');
+// Log rotation (founder arbitration 2026-11-18). Real finding: factory_loop.log
+// had grown to ~19 MB (~3 months of ticks) with nothing capping it, on a machine
+// with 96 GB free -- not yet fatal, but unbounded on a long-running supervisor.
+// Rotate before an append once the file reaches the cap; keep a bounded number
+// of generations. Best-effort by design: a rotation failure must never block a
+// tick or lose the entry, so the caller still appends to the current file.
+const LOOP_LOG_MAX_BYTES = parseInt(process.env.FACTORY_LOOP_LOG_MAX_BYTES || String(8 * 1024 * 1024), 10);
+const LOOP_LOG_KEEP = parseInt(process.env.FACTORY_LOOP_LOG_KEEP || '3', 10);
 const SCOUT_LOG = path.join(FACTORY_DIR, 'scout_runs.log');
 const FINANCE_FILE = path.join(FACTORY_DIR, 'finance_data.json');
 const BOOKS_DIR = path.join(FACTORY_DIR, 'books');
@@ -469,8 +477,33 @@ function releaseLock(lockFile = LOCK_FILE) {
   }
 }
 
+function rotateLoopLog(logPath = LOOP_LOG, { maxBytes = LOOP_LOG_MAX_BYTES, keep = LOOP_LOG_KEEP } = {}) {
+  try {
+    const size = fs.statSync(logPath).size;
+    if (!(size >= maxBytes)) return false;
+    if (!(keep > 0)) {
+      fs.truncateSync(logPath, 0);
+      return true;
+    }
+    for (let i = keep; i >= 1; i -= 1) {
+      const target = `${logPath}.${i}`;
+      const source = i === 1 ? logPath : `${logPath}.${i - 1}`;
+      try { if (fs.existsSync(target)) fs.unlinkSync(target); } catch { /* retried by the rename below */ }
+      if (fs.existsSync(source)) fs.renameSync(source, target);
+    }
+    return true;
+  } catch (err) {
+    // ENOENT: no log yet, nothing to rotate. Anything else is reported (the
+    // caller still appends) -- rotation must never stand between a tick and
+    // its log line.
+    if (err.code !== 'ENOENT') console.error('[factory_loop] log rotation failed:', err.message);
+    return false;
+  }
+}
+
 function appendLoopLog(entry) {
   try {
+    rotateLoopLog();
     fs.appendFileSync(LOOP_LOG, JSON.stringify({ timestamp: new Date().toISOString(), ...entry }) + '\n');
   } catch (err) {
     // If we can't even log, there's nothing safe left to do but say so on
@@ -5700,6 +5733,13 @@ async function runTick() {
     markStep('product_registry');
     const registryResult = await runOnceScript('registry_daily.py', { timeoutMs: 15 * 60 * 1000 });
     actions.push({ step: 'product_registry', ...registryResult });
+    // 2026-11-20: the two operational failures of this week -- 24 pins scheduled in
+    // the past, and a Gumroad session 11 days old nobody noticed -- were invisible
+    // until someone opened a file by hand. This step reads local state only (no
+    // token, no .env, no listing write) and names the one command that clears each
+    // blocker, so the human decision left is approve/reject, not diagnostics.
+    markStep('publish_readiness');
+    actions.push({ step: 'publish_readiness', ...(await runOnceScript('publish_readiness_daily.py', { timeoutMs: 3 * 60 * 1000 })) });
     // 2026-10-29: daily read-only exposure reading (Telegraph getViews, Gumroad
     // sales). Eight experiments were RUNNING with no reading for 20 days.
     markStep('distribution_metrics');
@@ -6333,6 +6373,7 @@ module.exports = {
   checkPendingAiCeoDecision,
   checkPendingReview, countPendingReviewDrafts, writeNeedsReview, clearNeedsReview,
   acquireLock, releaseLock, isPidAlive, isPidAliveWithIdentity, LOCK_FILE,
+  rotateLoopLog, LOOP_LOG,
   safeTick,
   sendDesktopNotification,
   notifyGoldenHunterAccepted,

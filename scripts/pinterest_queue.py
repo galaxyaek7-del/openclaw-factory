@@ -141,6 +141,10 @@ if __name__ == "__main__":
     ap.add_argument("--start", default="2026-10-27")
     ap.add_argument("--hour", type=int, default=10)
     ap.add_argument("--no-fetch", action="store_true")
+# factory_loop.runOnceScript appends --once to every step; this script is a
+# single pass by design, so the flag is accepted and ignored rather than
+# refusing to run from the loop.
+ap.add_argument("--once", action="store_true", help=argparse.SUPPRESS)
     a = ap.parse_args()
     q = run(start=date.fromisoformat(a.start), hour=a.hour, fetch=not a.no_fetch)
     QUEUE.write_text(json.dumps(q, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
