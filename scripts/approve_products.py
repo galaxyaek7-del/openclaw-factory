@@ -57,7 +57,10 @@ def merge(doc, records):
 def main(argv=None):
     ap = argparse.ArgumentParser()
     ap.add_argument("--batch", required=True)
-    ap.add_argument("--only", nargs="+", required=True, help="product ids, e.g. B16-008")
+    # A president decides on a batch, not on ten product ids. --all turns one
+    # approve/reject decision into the per-product records the publisher requires.
+    ap.add_argument("--only", nargs="*", help="product ids, e.g. B16-008")
+    ap.add_argument("--all", action="store_true", help="every product in the batch")
     ap.add_argument("--reference", required=True, help="where and when the founder approved")
     ap.add_argument("--hours", type=int, default=72, help="validity in hours (default 72)")
     ap.add_argument("--yes", action="store_true", help="write the approvals (otherwise preview)")
@@ -68,6 +71,10 @@ def main(argv=None):
     if args.batch not in pb.BATCHES:
         ap.error(f"unknown batch {args.batch}; known: {sorted(pb.BATCHES)}")
     by_id = {m["id"]: m for m in pb.load_manifests(pb.BATCHES[args.batch][0])}
+    if args.all:
+        args.only = sorted(by_id)
+    if not args.only:
+        ap.error("give --only <ids> or --all")
     missing = [i for i in args.only if i not in by_id]
     if missing:
         ap.error(f"not in {args.batch}: {missing}")
