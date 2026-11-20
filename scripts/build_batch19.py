@@ -992,18 +992,41 @@ def build_bundle(spec, out_dir, xlsx, pdf):
 
 
 def listing_html(spec):
+    """A listing that answers what a buyer asks before paying, and nothing else.
+
+    Batch 18 listings ran about 1,800 characters; the first batch 19 build shipped
+    about 1,000, which reads like a spec sheet rather than an offer. Everything
+    here is drawn from the product itself -- the method, the analyses that ship in
+    the guide, the checklist and one real FAQ -- so nothing is claimed that the
+    buyer cannot verify in the file they receive.
+    """
     values = compute_values(spec)
-    bullets = "".join("<li>%s</li>" % b for b in [
-        "Live Excel workbook: %d named inputs, %d computed outputs, every formula visible"
-        % (len(spec["inputs"]), len(spec["outputs"])),
-        "Guide PDF with the method, a worked example, a pre-use checklist and an FAQ",
-        "Works in Excel 2016+, Excel for Mac, Google Sheets and LibreOffice",
-    ])
-    return ("<p>%s</p><p>%s</p><p><strong>What's included</strong></p><ul>%s</ul>"
-            "<p><strong>Who it's for</strong></p><ul>%s</ul>"
-            "<p><em>%s</em></p>" % (
-                spec["promise"], spec["method"][0], bullets,
-                "".join("<li>%s</li>" % t for t in spec["tags"]), DISCLAIMER))
+    faq_q, faq_a = spec["faq"][0]
+    checks = "".join("<li>%s</li>" % c for c in spec["checklists"][:3])
+    return (
+        "<p>%s</p>"
+        "<p><strong>How it works.</strong> %s</p>"
+        "<p><strong>What's included</strong></p><p>The workbook:</p><ul>"
+        "<li>%d named inputs on one sheet, set once, changeable per scenario</li>"
+        "<li>%d computed outputs on a second sheet, each with the formula shown in the next column</li>"
+        "<li>Default inputs that produce a complete, checkable answer before you change anything</li>"
+        "</ul>"
+        "<p>The guide:</p><ul>"
+        "<li>The method, paragraph by paragraph, with the assumption behind each step</li>"
+        "<li>A worked example at the default inputs, and the same formula with the numbers substituted "
+        "so the arithmetic can be checked by hand</li>"
+        "<li>A downside table at -15%% and -30%% on every money input</li>"
+        "<li>A sensitivity row per input: move it 10%% alone and see the largest change it causes</li>"
+        "<li>A short checklist to run before the number is trusted</li>"
+        "</ul>"
+        "<p><strong>Before you rely on it</strong></p><ul>%s</ul>"
+        "<p><strong>%s</strong><br/>%s</p>"
+        "<p><strong>Who it's for</strong> %s</p>"
+        "<p>Excel 2016 or later, Excel for Mac, Google Sheets and LibreOffice. One workbook, one PDF, "
+        "one zip.</p>"
+        "<p><em>%s</em></p>"
+    ) % (spec["promise"], spec["method"][1], len(spec["inputs"]), len(spec["outputs"]),
+         checks, faq_q, faq_a, ", ".join(spec["tags"]), DISCLAIMER)
 
 
 def main():
