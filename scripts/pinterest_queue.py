@@ -105,7 +105,12 @@ def run(*, start: date, hour=10, fetch=True, board=None, offers_doc=None, pins_d
                           f"no public board named '{pinterest_boards.TARGET_BOARD_NAME}'; boards: {sorted(boards)}")
         except ConnectionError as e:
             board_note = f"UNKNOWN: {e}"
-    created = {a["fingerprint"] for a in metricool.read_attempts(attempts_path) if a.get("created")}
+    attempts = metricool.read_attempts(attempts_path)
+    created = {a["fingerprint"] for a in attempts if a.get("created")}
+    # The fingerprint includes the scheduled time, so a re-plan that moves a pin
+    # changes its fingerprint and a submitted pin would look new -- the exact way
+    # an automated re-plan posts the same pin twice. Offer id is the stable key.
+    created_offers = {a.get("offer_id") for a in attempts if a.get("created")}
     items, day = [], start
     by_id = {o["offer_id"]: o for o in offers_doc["offers"]}
     order = ["B14-001"] + sorted(k for k in pins_doc["pins"] if k != "B14-001")  # the founder's planned first post
@@ -126,7 +131,8 @@ def run(*, start: date, hour=10, fetch=True, board=None, offers_doc=None, pins_d
                     approval_system="any", brand_record=brand_record, now=now,
                     expected_brand_id=brand_record.get("brand_id"))
                 fp = metricool.fingerprint(call)
-                item.update(status="ALREADY_CREATED" if fp in created else "READY", call=call, fingerprint=fp)
+                item.update(status="ALREADY_CREATED" if (fp in created or oid in created_offers) else "READY",
+                            call=call, fingerprint=fp)
             except metricool.PostRejected as e:
                 item.update(status="REJECTED", reason=str(e))
         items.append(item)
@@ -138,14 +144,18 @@ def run(*, start: date, hour=10, fetch=True, board=None, offers_doc=None, pins_d
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
-    ap.add_argument("--start", default="2026-10-27")
+    # Was default="2026-10-27", a fixed date. Every run after that date rebuilt the
+    # schedule in the past, and Metricool rejected 24 pins with "the publication
+    # time is not in the future". A default that rots is not a default; today is.
+    ap.add_argument("--start", default=None)
     ap.add_argument("--hour", type=int, default=10)
     ap.add_argument("--no-fetch", action="store_true")
-# factory_loop.runOnceScript appends --once to every step; this script is a
-# single pass by design, so the flag is accepted and ignored rather than
-# refusing to run from the loop.
-ap.add_argument("--once", action="store_true", help=argparse.SUPPRESS)
+    # factory_loop.runOnceScript appends --once to every step; this script is a
+    # single pass by design, so the flag is accepted and ignored rather than
+    # refusing to run from the loop.
+    ap.add_argument("--once", action="store_true", help=argparse.SUPPRESS)
     a = ap.parse_args()
-    q = run(start=date.fromisoformat(a.start), hour=a.hour, fetch=not a.no_fetch)
+    start = date.fromisoformat(a.start) if a.start else datetime.now(timezone.utc).date()
+    q = run(start=start, hour=a.hour, fetch=not a.no_fetch)
     QUEUE.write_text(json.dumps(q, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
     print(json.dumps({"board_lookup": q["board_lookup"], "summary": q["summary"]}, indent=1, ensure_ascii=False))

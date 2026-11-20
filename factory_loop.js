@@ -5740,6 +5740,12 @@ async function runTick() {
     // blocker, so the human decision left is approve/reject, not diagnostics.
     markStep('publish_readiness');
     actions.push({ step: 'publish_readiness', ...(await runOnceScript('publish_readiness_daily.py', { timeoutMs: 3 * 60 * 1000 })) });
+    // Same reasoning for the pin queue: it is now safe to run unattended. The start
+    // date defaults to today (the fixed past default was what produced 24 rejections),
+    // and a submitted pin is recognised by offer id, so a re-plan cannot post twice.
+    // fetch stays on: without the board lookup every pin would be BLOCKED_NO_BOARD.
+    markStep('pinterest_queue');
+    actions.push({ step: 'pinterest_queue', ...(await runOnceScript('pinterest_queue.py', { timeoutMs: 8 * 60 * 1000 })) });
     // 2026-10-29: daily read-only exposure reading (Telegraph getViews, Gumroad
     // sales). Eight experiments were RUNNING with no reading for 20 days.
     markStep('distribution_metrics');
