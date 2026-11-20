@@ -171,7 +171,8 @@ def main():
         "blocking": verdict["blocking"],
         "approved_products": len(checks[1]["approved"]),
         "pinterest_ready": checks[3]["ready"],
-        "report": str(out.relative_to(ROOT)).replace("\\", "/"),
+        "report": str(out.relative_to(ROOT)).replace("\\", "/") if ROOT in out.parents
+        else str(out).replace("\\", "/"),
     }, ensure_ascii=False))
     return 0
 
