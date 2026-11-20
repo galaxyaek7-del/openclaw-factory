@@ -64,8 +64,12 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent
 REGISTRY = ROOT / "data" / "product_registry.json"
 CATALOG = ROOT / "data" / "catalog.json"
-MANIFEST_GLOBS = ["books/batch13/B13-*.manifest.json", "books/batch14/*/manifest.json", "books/batch15/*/manifest.json",
-                  "books/batch16/*/manifest.json", "books/batch17/*/manifest.json", "books/batch18/*/manifest.json", "books/batch19/*/manifest.json"]
+# Every batch, discovered rather than enumerated. A new batch used to need a
+# code edit here and in publish_batch14.BATCHES before the registry or the
+# publisher could see it, which is how batch 19 shipped ten products the audit
+# called "not in the product registry". Two shapes are supported: one manifest
+# per product directory, and flat <BATCH-###>.manifest.json files.
+MANIFEST_GLOBS = ["books/batch*/[A-Z]*-*.manifest.json", "books/batch*/*/manifest.json"]
 PUBLISH_RESULTS = [ROOT / "data" / "batch13_publish_results.json",
                    ROOT / "data" / "batch14_publish_results.json",
                    ROOT / "data" / "batch15_publish_results.json",

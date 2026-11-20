@@ -42,14 +42,12 @@ sys.path.insert(0, str(ROOT))
 
 BATCH = ROOT / "books" / "batch14"
 RESULTS = ROOT / "data" / "batch14_publish_results.json"
+# Derived from disk. A new batch used to require editing this dict before the
+# publisher would accept it -- batch 19 was invisible until it was added by
+# hand, which is the opposite of an unattended factory.
 BATCHES = {
-    "batch13": (ROOT / "books" / "batch13", ROOT / "data" / "batch13_publish_results.json"),
-    "batch14": (ROOT / "books" / "batch14", ROOT / "data" / "batch14_publish_results.json"),
-    "batch15": (ROOT / "books" / "batch15", ROOT / "data" / "batch15_publish_results.json"),
-    "batch16": (ROOT / "books" / "batch16", ROOT / "data" / "batch16_publish_results.json"),
-    "batch17": (ROOT / "books" / "batch17", ROOT / "data" / "batch17_publish_results.json"),
-    "batch18": (ROOT / "books" / "batch18", ROOT / "data" / "batch18_publish_results.json"),
-    "batch19": (ROOT / "books" / "batch19", ROOT / "data" / "batch19_publish_results.json"),
+    d.name: (d, ROOT / "data" / (d.name + "_publish_results.json"))
+    for d in sorted((ROOT / "books").glob("batch[0-9]*")) if d.is_dir()
 }
 COVER_URL = "https://raw.githubusercontent.com/galaxyaek7-del/openclaw-factory/main/books/covers/{id}.png"
 DEFAULT_APPROVALS = ROOT / "data" / "publication_approvals.json"
