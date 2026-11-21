@@ -106,3 +106,77 @@ test('todaysTrends reads only the given day from OPPORTUNITIES.md', () => {
   fs.writeFileSync(f, '- [2026-10-22T07:00:00Z] old niche — x\n- [2026-10-23T07:41:46Z] new niche — x\n- [2026-10-23T07:41:47Z] new niche — x\n');
   assert.deepEqual(todaysTrends('2026-10-23', f), ['new niche']);
 });
+
+// --- retry behaviour after the 2026-11-20 failures -------------------------
+// 17 of 91 scout tasks failed: 6 rate limits, 3 timeouts, 7 contract misses,
+// 1 empty output. The retry loop fired immediately, so a 429 was retried into
+// the same rate limit. These tests pin the three fixes: wait, classify, and
+// ask differently after a format miss.
+
+function chainState(p) {
+  return fs.readFileSync(p.state, 'utf8').split('\n').filter(Boolean).map((l) => JSON.parse(l));
+}
+
+test('a rate-limited attempt is retried after a wait, and is classified', async () => {
+  const p = tmp();
+  const starts = [];
+  const client = {
+    chat: { completions: { create: async () => {
+      starts.push(Date.now());
+      // invokeAgent falls back to a second model on error, so a rate limit
+      // exhausts the chain attempt only when both calls are refused; that is
+      // exactly what happened in production (same organization limit).
+      if (starts.length <= 2) {
+        throw new Error('429 {"error":{"message":"Rate limit reached for model"}}');
+      }
+      return { choices: [{ message: { content: '##TITLE##\\nT\\n##TOPIC##\\nX\\n##AUDIENCE##\\nA\\n##PRICE##\\n39\\n##CHAPTERS##\\n6' } }] };
+    } } },
+  };
+  const steps = [{
+    id: 'scout', agent: 'scout', config: { system: 'scout', trigger: 'brief me' },
+    buildMessage: () => 'brief me',
+    parse: (text) => (text.includes('##TITLE##') ? { title: 'T' } : null),
+  }];
+  const out = await runChain({ taskId: 'retry-429', steps, client, statePath: p.state, maxAttempts: 2 });
+  assert.equal(out.status, 'done');
+  assert.equal(out.steps[0].attempt, 2);
+  // starts[0] and starts[1] are the two models of chain attempt 1 (the
+  // fallback), so they are milliseconds apart by design. The wait being tested
+  // is between the last call of attempt 1 and the first call of attempt 2.
+  const waited = starts[2] - starts[1];
+  assert.ok(waited >= 300, `retry fired after ${waited}ms; a 429 needs a real wait`);
+  const retrying = chainState(p).find((r) => r.status === 'retrying');
+  assert.ok(retrying && retrying.wait_ms > 0);
+});
+
+test('a failed 429 that never recovers records failure_kind=rate_limited', async () => {
+  const p = tmp();
+  const client = { chat: { completions: { create: async () => {
+    throw new Error('429 rate limit reached');
+  } } } };
+  const steps = [{ id: 'scout', agent: 'scout', config: { system: 'scout', trigger: 'x' },
+    buildMessage: () => 'x', parse: () => null }];
+  const out = await runChain({ taskId: 'retry-429-fail', steps, client, statePath: p.state, maxAttempts: 2 });
+  assert.equal(out.status, 'failed');
+  const row = chainState(p).find((r) => r.status === 'failed');
+  assert.equal(row.failure_kind, 'rate_limited');
+});
+
+test('a format miss is retried with a corrective instruction, not the same words', async () => {
+  const p = tmp();
+  const messages = [];
+  const client = { chat: { completions: { create: async ({ messages: m }) => {
+    messages.push(m[1].content);
+    return { choices: [{ message: { content: messages.length === 1 ? 'sorry, here is prose' : '##TITLE##\\nT\\n##TOPIC##\\nX\\n##AUDIENCE##\\nA\\n##PRICE##\\n39\\n##CHAPTERS##\\n6' } }] };
+  } } } };
+  const steps = [{
+    id: 'scout', agent: 'scout', config: { system: 'scout', trigger: 'brief me' },
+    buildMessage: () => 'brief me',
+    parse: (text) => (text.includes('##TITLE##') ? { title: 'T' } : null),
+  }];
+  const out = await runChain({ taskId: 'retry-contract', steps, client, statePath: p.state, maxAttempts: 2 });
+  assert.equal(out.status, 'done');
+  assert.notEqual(messages[0], messages[1], 'the second attempt must say what was wrong');
+  assert.match(messages[1], /did not satisfy the required format/);
+  assert.equal(out.steps[0].attempt, 2);
+});
