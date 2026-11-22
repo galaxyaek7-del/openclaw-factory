@@ -90,6 +90,30 @@ class TestVerdicts(_DB):
         self.assertEqual(r["business_op"], "OK")
         self.assertEqual(r["freshness"], "FRESH")
 
+    def test_active_version_marker_overrides_legacy_active_zero(self):
+        # Live n8n v2: active=0 but activeVersionId set and schedule triggers run.
+        con = sqlite3.connect(self.db)
+        con.execute("alter table workflow_entity add column activeVersionId text")
+        con.execute("update workflow_entity set active=0, activeVersionId='v-live' where id='w1'")
+        con.commit()
+        con.close()
+        self.run_("success", 1, success_data({"success": True}))
+        r = self.sales()
+        self.assertTrue(r["active"])
+        self.assertEqual(r["active_source"], "activeVersionId")
+        self.assertEqual(r["verdict"], "OK")
+
+    def test_no_active_version_and_active_zero_is_inactive(self):
+        con = sqlite3.connect(self.db)
+        con.execute("update workflow_entity set active=0 where id='w1'")
+        con.commit()
+        con.close()
+        self.run_("success", 1, success_data({"success": True}))
+        r = self.sales()
+        self.assertFalse(r["active"])
+        self.assertEqual(r["active_source"], "none")
+        self.assertNotEqual(r["verdict"], "OK")
+
     def test_latest_error_is_failing_even_with_older_success(self):
         self.run_("success", 8, success_data({"success": True}))
         self.run_("error", 1, error_data("access to env vars denied"))

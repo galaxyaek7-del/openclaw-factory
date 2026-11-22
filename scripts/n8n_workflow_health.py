@@ -27,6 +27,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
 import shutil
 import sqlite3
@@ -37,7 +38,7 @@ from pathlib import Path
 
 N8N_DIR = Path.home() / ".n8n"
 DB_FILES = ("database.sqlite", "database.sqlite-wal", "database.sqlite-shm")
-HEALTHZ_URL = "http://localhost:5678/healthz"
+HEALTHZ_URL = os.environ.get("N8N_HEALTHZ_URL") or "http://localhost:5678/healthz"
 
 # name -> (expected run interval or None for manual-only, node that calls server.js)
 TARGETS = {
@@ -123,18 +124,29 @@ def assess(db_path, now=None, healthz=None, targets=None):
     targets = targets or TARGETS
     con = sqlite3.connect(f"file:{Path(db_path).as_posix()}?mode=ro", uri=True)
     con.row_factory = sqlite3.Row
+    # n8n v2 keeps the live activation marker in `activeVersionId`; the legacy
+    # `active` column can remain 0 while the scheduler still runs the workflow
+    # (observed live 2026-11-15: fresh trigger runs with active=0). Read both
+    # when the column exists, and never call a workflow inactive from `active`
+    # alone if a published version is recorded.
+    wf_cols = {r[1] for r in con.execute("pragma table_info(workflow_entity)")}
+    has_active_version = "activeVersionId" in wf_cols
+    wf_select = "select id, active" + (", activeVersionId" if has_active_version else "") + " from workflow_entity where name=?"
     out = {"generated_at": now.isoformat(timespec="seconds"), "service_up": healthz, "workflows": {}}
     for name, (interval, node) in targets.items():
         rec = {"active": None, "last_status": None, "last_started_at": None,
                "last_success_at": None, "freshness": "UNKNOWN", "business_op": "UNKNOWN",
                "business_detail": None, "last_error": None, "runs_total": 0,
                "errors_total": 0, "verdict": "UNKNOWN", "reasons": []}
-        wf = con.execute("select id, active from workflow_entity where name=?", (name,)).fetchone()
+        wf = con.execute(wf_select, (name,)).fetchone()
         if not wf:
             rec["reasons"].append("workflow not found")
             out["workflows"][name] = rec
             continue
-        rec["active"] = bool(wf["active"])
+        active_column = bool(wf["active"])
+        active_version = bool(wf["activeVersionId"]) if has_active_version else False
+        rec["active"] = active_column or active_version
+        rec["active_source"] = "active" if active_column else ("activeVersionId" if active_version else "none")
         rows = con.execute(
             "select e.id, e.status, e.startedAt, d.data from execution_entity e "
             "left join execution_data d on d.executionId=e.id where e.workflowId=? "
