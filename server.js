@@ -7311,7 +7311,48 @@ app.get('/api/solutions/click/:opportunity_id', async (req, res) => {
     res.redirect(302, result.url);
   } catch (err) {
     res.status(500).json({ success: false, error: 'solutions redirect temporarily unavailable' });
+
   }
+});
+
+
+// Product offer links (2026-11-22). Every pin and listing link pointed straight
+// at Gumroad, whose v2 API exposes sales but not views, so a click on one of the
+// 116 live offers left no trace this factory could read: "did anyone see it?"
+// was unknowable and offers could not be compared. One line per click, then a
+// redirect to the real listing URL. Never publishes, charges or contacts anyone.
+const PRODUCT_CLICKS_PATH = path.join(__dirname, 'data', 'product_clicks.jsonl');
+app.get('/p/:offer_id', (req, res) => {
+  const offerId = String(req.params.offer_id || '').trim();
+  if (!/^[A-Za-z0-9_-]{2,40}$/.test(offerId)) {
+    return res.status(400).json({ success: false, error: 'invalid offer id' });
+  }
+  let product = null;
+  try {
+    const registry = JSON.parse(fs.readFileSync(path.join(__dirname, 'data', 'product_registry.json'), 'utf8'));
+    product = (registry.products || []).find((p) => p.internal_id === offerId && p.url);
+  } catch (_) { /* registry unreadable: fall through to 404 */ }
+  if (!product) {
+    return res.status(404).json({ success: false, error: 'unknown offer' });
+  }
+  const ua = String(req.get('user-agent') || '');
+  const utm = new URLSearchParams({
+    utm_source: String(req.query.utm_source || 'owned'),
+    utm_medium: String(req.query.utm_medium || 'referral'),
+    utm_campaign: String(req.query.utm_campaign || 'gf-' + offerId.toLowerCase()),
+    utm_content: String(req.query.utm_content || offerId.toLowerCase()),
+  });
+  const target = product.url + (product.url.includes('?') ? '&' : '?') + utm.toString();
+  try {
+    fs.mkdirSync(path.dirname(PRODUCT_CLICKS_PATH), { recursive: true });
+    fs.appendFileSync(PRODUCT_CLICKS_PATH, JSON.stringify({
+      offer_id: offerId,
+      at: new Date().toISOString(),
+      referrer: req.get('referer') || null,
+      ua_category: /bot|crawler|spider|preview/i.test(ua) ? 'bot' : 'browser',
+    }) + '\n');
+  } catch (_) { /* a logging failure must never block a real visitor */ }
+  return res.redirect(302, target);
 });
 
 // ── TRIAL INFRASTRUCTURE (Founder Directive — isolated trial) ──
