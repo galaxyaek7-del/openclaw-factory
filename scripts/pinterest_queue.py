@@ -160,4 +160,9 @@ if __name__ == "__main__":
     QUEUE.write_text(json.dumps(q, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
     # Single line: factory_loop.runOnceScript parses the last stdout line as JSON,
     # so an indented dump made every tick report "could not parse ... '}'".
-    print(json.dumps({"board_lookup": q["board_lookup"], "summary": q["summary"]}, ensure_ascii=False))
+    # `action`/`detail` are the fields the loop logs; without them the step shows
+    # as a silent "none" and the queue state is invisible in the tick report.
+    s = q["summary"]
+    print(json.dumps({"action": "reported",
+                      "detail": f"board={q['board_lookup']} ready={s.get('READY', 0)} rejected={s.get('REJECTED', 0)}",
+                      "board_lookup": q["board_lookup"], "summary": s}, ensure_ascii=False))
