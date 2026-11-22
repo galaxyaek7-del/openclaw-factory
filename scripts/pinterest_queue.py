@@ -158,4 +158,6 @@ if __name__ == "__main__":
     start = date.fromisoformat(a.start) if a.start else datetime.now(timezone.utc).date()
     q = run(start=start, hour=a.hour, fetch=not a.no_fetch)
     QUEUE.write_text(json.dumps(q, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
-    print(json.dumps({"board_lookup": q["board_lookup"], "summary": q["summary"]}, indent=1, ensure_ascii=False))
+    # Single line: factory_loop.runOnceScript parses the last stdout line as JSON,
+    # so an indented dump made every tick report "could not parse ... '}'".
+    print(json.dumps({"board_lookup": q["board_lookup"], "summary": q["summary"]}, ensure_ascii=False))
