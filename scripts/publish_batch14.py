@@ -891,6 +891,17 @@ def main():
     }
     prev = json.loads(RESULTS.read_text(encoding="utf-8")) if RESULTS.exists() else []
     RESULTS.write_text(json.dumps(prev + [record], indent=1, ensure_ascii=False), encoding="utf-8")
+    # The registry is the dashboard's only view of what exists, and it used to be
+    # rebuilt once a day: on 2026-11-22 ten products went public at 07:33 and the
+    # registry still called them READY_FOR_AUTHORIZATION hours later. Refresh it
+    # now, best-effort -- a failure here must never alter a publish that already
+    # happened, so it is swallowed rather than raised.
+    if any((r.get("steps") or {}).get("create") == "ok" for r in results):
+        try:
+            import product_registry
+            product_registry.run(write=True)
+        except Exception:
+            pass
     print(json.dumps(record, indent=1, ensure_ascii=False))
     return 0 if results and all(r.get("status") == "PASS" for r in results) else 1
 
