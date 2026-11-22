@@ -902,6 +902,206 @@
    }
   },
   {
+   "internal_id": "B19-001",
+   "external_ids": {
+    "gumroad": "mFGnPpMAblLNJFPsICBfxA=="
+   },
+   "title": "Surety Bonding Capacity & Submission Pack",
+   "price_cents": 4900,
+   "published": true,
+   "url": "https://aekraft.gumroad.com/l/gunwie",
+   "customizable_price": false,
+   "sales_count": 0,
+   "sales_usd_cents": 0,
+   "first_published_at": "2026-11-22T07:35:53.489713+00:00",
+   "manifest": "books/batch19/B19-001/manifest.json",
+   "primary_state": "PUBLIC_LISTING_VERIFIED",
+   "flags": {
+    "published_on_platform": true,
+    "in_catalog": false
+   }
+  },
+  {
+   "internal_id": "B19-002",
+   "external_ids": {
+    "gumroad": "s1BXTxDoqDgDLVBLd4YBdA=="
+   },
+   "title": "Loan Covenant Headroom Dashboard (12 Months)",
+   "price_cents": 4900,
+   "published": true,
+   "url": "https://aekraft.gumroad.com/l/ygpjjr",
+   "customizable_price": false,
+   "sales_count": 0,
+   "sales_usd_cents": 0,
+   "first_published_at": "2026-11-22T07:38:20.658991+00:00",
+   "manifest": "books/batch19/B19-002/manifest.json",
+   "primary_state": "PUBLIC_LISTING_VERIFIED",
+   "flags": {
+    "published_on_platform": true,
+    "in_catalog": false
+   }
+  },
+  {
+   "internal_id": "B19-003",
+   "external_ids": {
+    "gumroad": "NTJ6ikCi-Kt8uxo_LPm8NA=="
+   },
+   "title": "SaaS Renewal Risk & NRR Model",
+   "price_cents": 4900,
+   "published": true,
+   "url": "https://aekraft.gumroad.com/l/trhrw",
+   "customizable_price": false,
+   "sales_count": 0,
+   "sales_usd_cents": 0,
+   "first_published_at": "2026-11-22T07:38:40.696077+00:00",
+   "manifest": "books/batch19/B19-003/manifest.json",
+   "primary_state": "PUBLIC_LISTING_VERIFIED",
+   "flags": {
+    "published_on_platform": true,
+    "in_catalog": false
+   }
+  },
+  {
+   "internal_id": "B19-004",
+   "external_ids": {
+    "gumroad": "WwJC9C0KS5l9cNWNqobu1A=="
+   },
+   "title": "Restaurant Prime Cost & Menu Profit Audit",
+   "price_cents": 4900,
+   "published": true,
+   "url": "https://aekraft.gumroad.com/l/vcwgnv",
+   "customizable_price": false,
+   "sales_count": 0,
+   "sales_usd_cents": 0,
+   "first_published_at": "2026-11-22T07:39:01.181079+00:00",
+   "manifest": "books/batch19/B19-004/manifest.json",
+   "primary_state": "PUBLIC_LISTING_VERIFIED",
+   "flags": {
+    "published_on_platform": true,
+    "in_catalog": false
+   }
+  },
+  {
+   "internal_id": "B19-005",
+   "external_ids": {
+    "gumroad": "aJhbuzYYgDTcyFrDrFuXZA=="
+   },
+   "title": "Medical Practice Payer Mix & Denial Leakage Model",
+   "price_cents": 4900,
+   "published": true,
+   "url": "https://aekraft.gumroad.com/l/jifzsa",
+   "customizable_price": false,
+   "sales_count": 0,
+   "sales_usd_cents": 0,
+   "first_published_at": "2026-11-22T07:39:20.368518+00:00",
+   "manifest": "books/batch19/B19-005/manifest.json",
+   "primary_state": "PUBLIC_LISTING_VERIFIED",
+   "flags": {
+    "published_on_platform": true,
+    "in_catalog": false
+   }
+  },
+  {
+   "internal_id": "B19-006",
+   "external_ids": {
+    "gumroad": "8AjbOQR3MXGFuc506PpRRQ=="
+   },
+   "title": "Freight Broker Margin & Detention Recovery Tracker",
+   "price_cents": 4900,
+   "published": true,
+   "url": "https://aekraft.gumroad.com/l/dmgddj",
+   "customizable_price": false,
+   "sales_count": 0,
+   "sales_usd_cents": 0,
+   "first_published_at": "2026-11-22T07:39:40.062214+00:00",
+   "manifest": "books/batch19/B19-006/manifest.json",
+   "primary_state": "PUBLIC_LISTING_VERIFIED",
+   "flags": {
+    "published_on_platform": true,
+    "in_catalog": false
+   }
+  },
+  {
+   "internal_id": "B19-007",
+   "external_ids": {
+    "gumroad": "7DcEs3WYHEZhgvZmSu82zg=="
+   },
+   "title": "Change Order Profit Recovery Ledger",
+   "price_cents": 4900,
+   "published": true,
+   "url": "https://aekraft.gumroad.com/l/yvvxcg",
+   "customizable_price": false,
+   "sales_count": 0,
+   "sales_usd_cents": 0,
+   "first_published_at": "2026-11-22T07:40:02.533282+00:00",
+   "manifest": "books/batch19/B19-007/manifest.json",
+   "primary_state": "PUBLIC_LISTING_VERIFIED",
+   "flags": {
+    "published_on_platform": true,
+    "in_catalog": false
+   }
+  },
+  {
+   "internal_id": "B19-008",
+   "external_ids": {
+    "gumroad": "_8SDjm7RsdYva36DXyibpw=="
+   },
+   "title": "Equipment Rent vs Buy & Residual Value Model",
+   "price_cents": 4900,
+   "published": true,
+   "url": "https://aekraft.gumroad.com/l/ynwlgf",
+   "customizable_price": false,
+   "sales_count": 0,
+   "sales_usd_cents": 0,
+   "first_published_at": "2026-11-22T07:40:23.331776+00:00",
+   "manifest": "books/batch19/B19-008/manifest.json",
+   "primary_state": "PUBLIC_LISTING_VERIFIED",
+   "flags": {
+    "published_on_platform": true,
+    "in_catalog": false
+   }
+  },
+  {
+   "internal_id": "B19-009",
+   "external_ids": {
+    "gumroad": "8C8CRX-cKATJm4gijmgyAQ=="
+   },
+   "title": "Multi-State Payroll Tax Registration Readiness Pack",
+   "price_cents": 4900,
+   "published": true,
+   "url": "https://aekraft.gumroad.com/l/arquvu",
+   "customizable_price": false,
+   "sales_count": 0,
+   "sales_usd_cents": 0,
+   "first_published_at": "2026-11-22T07:40:44.404160+00:00",
+   "manifest": "books/batch19/B19-009/manifest.json",
+   "primary_state": "PUBLIC_LISTING_VERIFIED",
+   "flags": {
+    "published_on_platform": true,
+    "in_catalog": false
+   }
+  },
+  {
+   "internal_id": "B19-010",
+   "external_ids": {
+    "gumroad": "sKlMUhBQMh85z904QLn9sQ=="
+   },
+   "title": "Franchise Unit Economics & Break-Even Model",
+   "price_cents": 4900,
+   "published": true,
+   "url": "https://aekraft.gumroad.com/l/dkkkcq",
+   "customizable_price": false,
+   "sales_count": 0,
+   "sales_usd_cents": 0,
+   "first_published_at": "2026-11-22T07:41:05.439112+00:00",
+   "manifest": "books/batch19/B19-010/manifest.json",
+   "primary_state": "PUBLIC_LISTING_VERIFIED",
+   "flags": {
+    "published_on_platform": true,
+    "in_catalog": false
+   }
+  },
+  {
    "internal_id": "GR-003d8ce46f",
    "external_ids": {
     "gumroad": "KMNGNgO5gS85H_JppnygIg=="
@@ -928,16 +1128,16 @@
    },
    "title": "EU AI Act Transparency & AI Literacy Quickstart Checklist",
    "price_cents": 900,
-   "published": true,
+   "published": false,
    "url": "https://aekraft.gumroad.com/l/tmhlb",
    "customizable_price": false,
    "sales_count": 0,
    "sales_usd_cents": 0,
    "first_published_at": null,
    "manifest": null,
-   "primary_state": "PUBLIC_LISTING_VERIFIED",
+   "primary_state": "UPLOAD_COMPLETED",
    "flags": {
-    "published_on_platform": true,
+    "published_on_platform": false,
     "in_catalog": true
    }
   },
@@ -948,16 +1148,16 @@
    },
    "title": "Gulf Job-Landing ATS CV System",
    "price_cents": 2900,
-   "published": true,
+   "published": false,
    "url": "https://aekraft.gumroad.com/l/fccqk",
    "customizable_price": false,
    "sales_count": 0,
    "sales_usd_cents": 0,
    "first_published_at": null,
    "manifest": null,
-   "primary_state": "PUBLIC_LISTING_VERIFIED",
+   "primary_state": "UPLOAD_COMPLETED",
    "flags": {
-    "published_on_platform": true,
+    "published_on_platform": false,
     "in_catalog": true
    }
   },
@@ -1008,16 +1208,16 @@
    },
    "title": "Freelancer Payment Protection & Scope-Control Toolkit",
    "price_cents": 4900,
-   "published": true,
+   "published": false,
    "url": "https://aekraft.gumroad.com/l/fwrjot",
    "customizable_price": false,
    "sales_count": 0,
    "sales_usd_cents": 0,
    "first_published_at": null,
    "manifest": null,
-   "primary_state": "PUBLIC_LISTING_VERIFIED",
+   "primary_state": "UPLOAD_COMPLETED",
    "flags": {
-    "published_on_platform": true,
+    "published_on_platform": false,
     "in_catalog": true
    }
   },
@@ -1248,16 +1448,16 @@
    },
    "title": "Freelancer Scope-Creep Contract Kit",
    "price_cents": 2900,
-   "published": true,
+   "published": false,
    "url": "https://aekraft.gumroad.com/l/zjwpx",
    "customizable_price": false,
    "sales_count": 0,
    "sales_usd_cents": 0,
    "first_published_at": null,
    "manifest": null,
-   "primary_state": "PUBLIC_LISTING_VERIFIED",
+   "primary_state": "UPLOAD_COMPLETED",
    "flags": {
-    "published_on_platform": true,
+    "published_on_platform": false,
     "in_catalog": true
    }
   },
@@ -1348,16 +1548,16 @@
    },
    "title": "Suspended Seller First-Appeal POA System",
    "price_cents": 3900,
-   "published": true,
+   "published": false,
    "url": "https://aekraft.gumroad.com/l/zfnagp",
    "customizable_price": false,
    "sales_count": 0,
    "sales_usd_cents": 0,
    "first_published_at": null,
    "manifest": null,
-   "primary_state": "PUBLIC_LISTING_VERIFIED",
+   "primary_state": "UPLOAD_COMPLETED",
    "flags": {
-    "published_on_platform": true,
+    "published_on_platform": false,
     "in_catalog": true
    }
   },
@@ -1528,16 +1728,16 @@
    },
    "title": "ADA Demand-Letter Response & Triage Kit",
    "price_cents": 6900,
-   "published": true,
+   "published": false,
    "url": "https://aekraft.gumroad.com/l/palmdr",
    "customizable_price": false,
    "sales_count": 0,
    "sales_usd_cents": 0,
    "first_published_at": "2026-09-20T09:07:49.358203+00:00",
    "manifest": null,
-   "primary_state": "PUBLIC_LISTING_VERIFIED",
+   "primary_state": "UPLOAD_COMPLETED",
    "flags": {
-    "published_on_platform": true,
+    "published_on_platform": false,
     "in_catalog": true
    }
   },
@@ -1608,16 +1808,16 @@
    },
    "title": "Food-Contact Materials Starter",
    "price_cents": 3900,
-   "published": true,
+   "published": false,
    "url": "https://aekraft.gumroad.com/l/ldrdm",
    "customizable_price": false,
    "sales_count": 0,
    "sales_usd_cents": 0,
    "first_published_at": null,
    "manifest": null,
-   "primary_state": "PUBLIC_LISTING_VERIFIED",
+   "primary_state": "UPLOAD_COMPLETED",
    "flags": {
-    "published_on_platform": true,
+    "published_on_platform": false,
     "in_catalog": true
    }
   },
@@ -1648,16 +1848,16 @@
    },
    "title": "SaaS Churn Email Pack",
    "price_cents": 3900,
-   "published": true,
+   "published": false,
    "url": "https://aekraft.gumroad.com/l/roxdbe",
    "customizable_price": false,
    "sales_count": 0,
    "sales_usd_cents": 0,
    "first_published_at": null,
    "manifest": null,
-   "primary_state": "PUBLIC_LISTING_VERIFIED",
+   "primary_state": "UPLOAD_COMPLETED",
    "flags": {
-    "published_on_platform": true,
+    "published_on_platform": false,
     "in_catalog": true
    }
   },
@@ -1748,16 +1948,16 @@
    },
    "title": "Digital-Product Refund Policy Pack",
    "price_cents": 2900,
-   "published": true,
+   "published": false,
    "url": "https://aekraft.gumroad.com/l/yhnyn",
    "customizable_price": false,
    "sales_count": 0,
    "sales_usd_cents": 0,
    "first_published_at": null,
    "manifest": null,
-   "primary_state": "PUBLIC_LISTING_VERIFIED",
+   "primary_state": "UPLOAD_COMPLETED",
    "flags": {
-    "published_on_platform": true,
+    "published_on_platform": false,
     "in_catalog": true
    }
   },
@@ -2348,16 +2548,16 @@
    },
    "title": "GCC Contractor Payment Command System",
    "price_cents": 4900,
-   "published": true,
+   "published": false,
    "url": "https://aekraft.gumroad.com/l/uwyfje",
    "customizable_price": false,
    "sales_count": 0,
    "sales_usd_cents": 0,
    "first_published_at": null,
    "manifest": null,
-   "primary_state": "PUBLIC_LISTING_VERIFIED",
+   "primary_state": "UPLOAD_COMPLETED",
    "flags": {
-    "published_on_platform": true,
+    "published_on_platform": false,
     "in_catalog": true
    }
   },
@@ -2448,16 +2648,16 @@
    },
    "title": "EU AI Act Compliance Quickstart Checklist",
    "price_cents": 1900,
-   "published": true,
+   "published": false,
    "url": "https://aekraft.gumroad.com/l/engiwk",
    "customizable_price": false,
    "sales_count": 0,
    "sales_usd_cents": 0,
    "first_published_at": null,
    "manifest": null,
-   "primary_state": "PUBLIC_LISTING_VERIFIED",
+   "primary_state": "UPLOAD_COMPLETED",
    "flags": {
-    "published_on_platform": true,
+    "published_on_platform": false,
     "in_catalog": true
    }
   },
@@ -2468,16 +2668,16 @@
    },
    "title": "Battery & WEEE Mini-Guide for Sellers",
    "price_cents": 2900,
-   "published": true,
+   "published": false,
    "url": "https://aekraft.gumroad.com/l/eiebdt",
    "customizable_price": false,
    "sales_count": 0,
    "sales_usd_cents": 0,
    "first_published_at": null,
    "manifest": null,
-   "primary_state": "PUBLIC_LISTING_VERIFIED",
+   "primary_state": "UPLOAD_COMPLETED",
    "flags": {
-    "published_on_platform": true,
+    "published_on_platform": false,
     "in_catalog": true
    }
   },
@@ -2488,16 +2688,16 @@
    },
    "title": "Toy Safety File Starter (EN 71 Lens)",
    "price_cents": 2900,
-   "published": true,
+   "published": false,
    "url": "https://aekraft.gumroad.com/l/vyitxf",
    "customizable_price": false,
    "sales_count": 0,
    "sales_usd_cents": 0,
    "first_published_at": null,
    "manifest": null,
-   "primary_state": "PUBLIC_LISTING_VERIFIED",
+   "primary_state": "UPLOAD_COMPLETED",
    "flags": {
-    "published_on_platform": true,
+    "published_on_platform": false,
     "in_catalog": true
    }
   },
@@ -2528,36 +2728,61 @@
    },
    "title": "EU Cosmetics Responsible Person Guide",
    "price_cents": 6900,
-   "published": true,
+   "published": false,
    "url": "https://aekraft.gumroad.com/l/bfdgx",
    "customizable_price": false,
    "sales_count": 0,
    "sales_usd_cents": 0,
    "first_published_at": null,
    "manifest": null,
-   "primary_state": "PUBLIC_LISTING_VERIFIED",
+   "primary_state": "UPLOAD_COMPLETED",
    "flags": {
-    "published_on_platform": true,
+    "published_on_platform": false,
     "in_catalog": true
    }
   }
  ],
- "generated_at": "2026-11-07T09:46:19.547638+00:00",
+ "generated_at": "2026-11-22T07:55:25.863127+00:00",
  "source": "Gumroad GET /v2/products (read-only) + data/catalog.json + batch manifests + publish results",
  "drift": {
-  "live_missing_from_catalog": [],
+  "live_missing_from_catalog": [
+   "B19-001",
+   "B19-002",
+   "B19-003",
+   "B19-004",
+   "B19-005",
+   "B19-006",
+   "B19-007",
+   "B19-008",
+   "B19-009",
+   "B19-010"
+  ],
   "catalog_rows_not_live": [],
   "manifest_live_mismatch": [],
   "duplicate_live_titles": [],
   "qa_passed_not_listed": [],
   "unpublished_on_platform": [
+   "GR-04864e2091",
+   "GR-05cd19f99c",
+   "GR-0c1ef5afd5",
    "GR-0fa92aeb1a",
+   "GR-3228cc6b63",
    "GR-34985d0556",
    "GR-3deb208315",
+   "GR-3e9d6d26a6",
+   "GR-4b3f22e75e",
+   "GR-59f3f65424",
+   "GR-6275a223a6",
+   "GR-78692be074",
    "GR-7a569c5ee4",
    "GR-95417e1ab2",
    "GR-aa45b7486a",
-   "GR-e1d845e3c9"
+   "GR-ddb44115c3",
+   "GR-e1d845e3c9",
+   "GR-eb5f48c3aa",
+   "GR-ed2a731cba",
+   "GR-f32a573dfb",
+   "GR-f7ddf33a9f"
   ],
   "published_zero_sales_past_threshold": [
    "GR-003d8ce46f",
@@ -2579,7 +2804,6 @@
    "GR-465bb926a7",
    "GR-49bd37f875",
    "GR-4ad7472b8c",
-   "GR-4b3f22e75e",
    "GR-52aa3d878c",
    "GR-541c7ced0a",
    "GR-57ef021040",
