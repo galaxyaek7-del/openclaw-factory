@@ -128,7 +128,22 @@ class TestQueue(unittest.TestCase):
         with mock.patch.object(pq, "fetch_profile", side_effect=ConnectionError("timeout")):
             q = self.run_q(html=None)
         self.assertTrue(q["board_lookup"].startswith("UNKNOWN"))
-        self.assertEqual(q["summary"], {"BLOCKED_NO_BOARD": 2})
+        self.assertEqual(q["summary"], {"UNKNOWN_BOARD_UNREACHABLE": 2})
+        self.assertFalse(q["checks_complete"])            # a degraded run must not overwrite the queue
+
+    def test_unknown_image_is_not_reported_missing(self):
+        q = self.run_q(image_ok=None, image_check=lambda u: "UNKNOWN")
+        self.assertEqual(q["summary"], {"UNKNOWN_IMAGE_UNREACHABLE": 2})
+        self.assertFalse(q["checks_complete"])
+
+    def test_complete_run_marks_checks_complete(self):
+        self.assertTrue(self.run_q()["checks_complete"])
+
+    def test_board_found_with_some_unknown_images_is_still_written(self):
+        q = self.run_q(image_ok=None,
+                       image_check=lambda u: "PUBLIC" if u.endswith("b14-001.jpg") else "UNKNOWN")
+        self.assertTrue(q["checks_complete"])          # a resolved board with partial blips is usable
+        self.assertEqual(q["summary"], {"UNKNOWN_IMAGE_UNREACHABLE": 1, "READY": 1})
 
     def test_past_start_is_rejected_by_the_builder(self):
         q = self.run_q(start=date(2026, 10, 1))
@@ -142,6 +157,29 @@ class TestPinImage(unittest.TestCase):
         o = dict(offers_doc()["offers"][0])
         img = bpi.render(o, Image.new("RGB", (1280, 720), (200, 200, 200)))
         self.assertEqual(img.size, (1000, 1500))
+
+    def test_image_status_separates_missing_from_unknown(self):
+        import urllib.error
+
+        class R:
+            def __init__(self, status):
+                self.status = status
+            def __enter__(self):
+                return self
+            def __exit__(self, *a):
+                return False
+
+        self.assertEqual(pq.image_status("https://e/x.jpg", opener=lambda req, timeout=0: R(200)), "PUBLIC")
+        self.assertEqual(pq.image_status("https://e/x.jpg", opener=lambda req, timeout=0: R(404)), "NOT_PUBLIC")
+
+        def raise_404(req, timeout=0):
+            raise urllib.error.HTTPError("u", 404, "not found", None, None)
+
+        def raise_dns(req, timeout=0):
+            raise urllib.error.URLError("getaddrinfo failed")
+
+        self.assertEqual(pq.image_status("https://e/x.jpg", opener=raise_404), "NOT_PUBLIC")
+        self.assertEqual(pq.image_status("https://e/x.jpg", opener=raise_dns), "UNKNOWN")
 
 
 if __name__ == "__main__":
