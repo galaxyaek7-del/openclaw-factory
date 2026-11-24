@@ -53,7 +53,7 @@ GATES = {
     "GATE_B": ("SIGNAL_ONLY", "DEEPER_DISCOVERY"),
     "GATE_C": ("COMMERCIAL_SIGNAL", "TEST_OFFER"),
     "GATE_D": ("QUALIFIED_DEMAND", "DELIVER_OFFER"),
-    "GATE_E": ("TRANSACTION", "DELIVER ��' FEEDBACK ��' REPEATABILITY"),
+    "GATE_E": ("TRANSACTION", "DELIVER -> FEEDBACK -> REPEATABILITY"),
 }
 
 # ---------------------------------------------------------------------------
