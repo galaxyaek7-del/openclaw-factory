@@ -224,3 +224,21 @@ data/telegram_pairing.json
 
 # 6 MB ffmpeg archive used locally by tools/video; not source
 tools/ffmpeg/
+
+# Repo hygiene (2026-11-24 review): append-only operational telemetry and
+# rotated logs that were untracked but NOT ignored, so a careless `git add .`
+# could commit 100+ MB. Same reasoning as data/attribution_log.jsonl above.
+# commission_attribution_log.jsonl is written per request by the affiliate
+# modules (lib/commission_attribution.py) and observed at 108 MB; it is
+# telemetry, never source.
+data/commission_attribution_log.jsonl
+# factory_loop rotates to factory_loop.log.1/.2 and gzips old runs; the
+# plain `*.log` rule never matched those, leaving ~27 MB of logs addable.
+*.log.1
+*.log.2
+*.log.3
+*.log.[0-9]*
+*.log.*.gz
+*.log.gz
+# Generated single-file bundle of the whole repo (repomix); rebuildable, never source.
+repomix-output.xml
