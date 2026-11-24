@@ -1,6 +1,6 @@
 # OpenClaw Factory — Status Report
 
-**Last updated:** 2026-07-09
+**Last hand-updated:** 2026-07-09. This header is historical and no longer maintained; live status lives in `PROGRESS.md`, `/health`, and the weekly rows `factory_loop.js` appends below.
 **Governed by:** [CONSTITUTION.md](./CONSTITUTION.md), supreme law: [OPENCLAW_OS_CONSTITUTION.md](./OPENCLAW_OS_CONSTITUTION.md)
 
 ## Day 09 — Niche Safety Filter v1
@@ -233,6 +233,25 @@ A second, independent intake path (Task [11]): n8n → `POST /api/trends` → Qu
 
 | التاريخ | كتب | إيرادات | إصلاحات ذاتية | التقرير |
 |---|---|---|---|---|
+| 2026-11-22 | 0 | $0.00 | 0 | [WEEK_2026-11-22.md](./reports/WEEK_2026-11-22.md) |
+| 2026-11-21 | 0 | $0.00 | 0 | [WEEK_2026-11-21.md](./reports/WEEK_2026-11-21.md) |
+| 2026-11-15 | 0 | $0.00 | 0 | [WEEK_2026-11-15.md](./reports/WEEK_2026-11-15.md) |
+| 2026-11-08 | 0 | $0.00 | 0 | [WEEK_2026-11-08.md](./reports/WEEK_2026-11-08.md) |
+| 2026-11-07 | 0 | $0.00 | 0 | [WEEK_2026-11-07.md](./reports/WEEK_2026-11-07.md) |
+| 2026-11-01 | 2 | $0.00 | 0 | [WEEK_2026-11-01.md](./reports/WEEK_2026-11-01.md) |
+| 2026-10-31 | 2 | $0.00 | 0 | [WEEK_2026-10-31.md](./reports/WEEK_2026-10-31.md) |
+| 2026-10-25 | 3 | $0.00 | 0 | [WEEK_2026-10-25.md](./reports/WEEK_2026-10-25.md) |
+| 2026-10-24 | 3 | $0.00 | 0 | [WEEK_2026-10-24.md](./reports/WEEK_2026-10-24.md) |
+| 2026-10-18 | 32 | $0.00 | 0 | [WEEK_2026-10-18.md](./reports/WEEK_2026-10-18.md) |
+| 2026-10-17 | 32 | $0.00 | 0 | [WEEK_2026-10-17.md](./reports/WEEK_2026-10-17.md) |
+| 2026-10-11 | 1 | $0.00 | 0 | [WEEK_2026-10-11.md](./reports/WEEK_2026-10-11.md) |
+| 2026-10-10 | 1 | $0.00 | 0 | [WEEK_2026-10-10.md](./reports/WEEK_2026-10-10.md) |
+| 2026-10-04 | 2 | $0.00 | 0 | [WEEK_2026-10-04.md](./reports/WEEK_2026-10-04.md) |
+| 2026-10-03 | 2 | $0.00 | 0 | [WEEK_2026-10-03.md](./reports/WEEK_2026-10-03.md) |
+| 2026-09-27 | 73 | $0.00 | 0 | [WEEK_2026-09-27.md](./reports/WEEK_2026-09-27.md) |
+| 2026-09-26 | 73 | $0.00 | 0 | [WEEK_2026-09-26.md](./reports/WEEK_2026-09-26.md) |
+| 2026-09-20 | 55 | $0.00 | 0 | [WEEK_2026-09-20.md](./reports/WEEK_2026-09-20.md) |
+| 2026-09-19 | 55 | $0.00 | 0 | [WEEK_2026-09-19.md](./reports/WEEK_2026-09-19.md) |
 | 2026-07-12 | 10 | $0.00 | 25 | [WEEK_2026-07-12.md](./reports/WEEK_2026-07-12.md) |
 | 2026-07-05 | 3 | $0.00 | 0 | [WEEK_2026-07-05.md](./reports/WEEK_2026-07-05.md) |
 
