@@ -80,6 +80,12 @@ const LOOP_LOG = process.env.FACTORY_LOOP_LOG_PATH || path.join(FACTORY_DIR, 'fa
 // tick or lose the entry, so the caller still appends to the current file.
 const LOOP_LOG_MAX_BYTES = parseInt(process.env.FACTORY_LOOP_LOG_MAX_BYTES || String(8 * 1024 * 1024), 10);
 const LOOP_LOG_KEEP = parseInt(process.env.FACTORY_LOOP_LOG_KEEP || '3', 10);
+// Kill switch + heartbeat (TASKS.md items 4-5, 2026-11-18). STOP is an
+// emergency, human-owned switch: while it exists no new tick starts and the
+// loop exits 0, so a supervisor treats it as a clean stop rather than a crash
+// to restart. heartbeat.json is real liveness evidence written every cycle.
+const STOP_FILE = process.env.FACTORY_STOP_PATH || path.join(FACTORY_DIR, 'STOP');
+const HEARTBEAT_FILE = process.env.FACTORY_HEARTBEAT_PATH || path.join(FACTORY_DIR, 'data', 'heartbeat.json');
 const SCOUT_LOG = path.join(FACTORY_DIR, 'scout_runs.log');
 const FINANCE_FILE = path.join(FACTORY_DIR, 'finance_data.json');
 const BOOKS_DIR = path.join(FACTORY_DIR, 'books');
@@ -6196,7 +6202,34 @@ let tickRunning = false;
 // acquireLock's lockFile/exitFn) purely so a test can inject a slow fake
 // tick and verify the overlap guard without ever running a real tick's
 // actual Groq/network calls.
-async function safeTick(tickFn = runTick) {
+function stopRequested(stopPath = STOP_FILE) {
+  try { return fs.existsSync(stopPath); } catch { return false; }
+}
+
+function writeHeartbeat(now = new Date(), extra = {}, file = HEARTBEAT_FILE) {
+  try {
+    fs.mkdirSync(path.dirname(file), { recursive: true });
+    fs.writeFileSync(file, JSON.stringify({
+      at: now.toISOString(),
+      pid: process.pid,
+      interval_ms: INTERVAL_MS,
+      ...extra,
+    }) + '\n', 'utf8');
+    return true;
+  } catch (err) {
+    console.error('[factory_loop] heartbeat write failed:', err.message);
+    return false;
+  }
+}
+
+async function safeTick(tickFn = runTick, { stopPath = STOP_FILE } = {}) {
+  if (stopRequested(stopPath)) {
+    appendLoopLog({
+      diagnosis: { status: 'loop_stopped' },
+      actions: [{ step: 'stop', action: 'requested', detail: 'STOP file present — no new tick started' }],
+    });
+    return { stopped: true };
+  }
   if (tickRunning) {
     appendLoopLog({
       diagnosis: { status: 'tick_skipped_overlap' },
@@ -6205,6 +6238,7 @@ async function safeTick(tickFn = runTick) {
     return;
   }
   tickRunning = true;
+  writeHeartbeat(new Date(), { phase: 'start' });
   try {
     await tickFn();
   } catch (err) {
@@ -6213,8 +6247,18 @@ async function safeTick(tickFn = runTick) {
       actions: [{ step: 'tick', action: 'error', detail: err && err.message ? err.message : String(err) }],
     });
   } finally {
+    writeHeartbeat(new Date(), { phase: 'end' });
     tickRunning = false;
   }
+}
+
+function haltForStop() {
+  appendLoopLog({
+    diagnosis: { status: 'loop_stopped' },
+    actions: [{ step: 'stop', action: 'halted', detail: 'STOP file present — exiting cleanly (supervisor sees code 0)' }],
+  });
+  try { releaseLock(); } catch { /* lock already gone is fine */ }
+  process.exit(0);
 }
 
 // Manual/testing entry point: force a weekly report right now regardless of
@@ -6267,12 +6311,22 @@ function main() {
 
   console.log(`[factory_loop] starting — dashboard=${DASHBOARD_URL}, interval=${INTERVAL_MS / 60000}min${once ? ' (--once)' : ''}`);
 
-  safeTick().then(() => {
+  safeTick().then((first) => {
+    if (first && first.stopped) {
+      haltForStop();
+      return;
+    }
     if (once) {
       console.log('[factory_loop] --once tick complete, exiting.');
       return;
     }
-    setInterval(safeTick, INTERVAL_MS);
+    const timer = setInterval(async () => {
+      const result = await safeTick();
+      if (result && result.stopped) {
+        clearInterval(timer);
+        haltForStop();
+      }
+    }, INTERVAL_MS);
     console.log('[factory_loop] running — a tick will fire every 10 minutes.');
   });
 }
@@ -6380,6 +6434,7 @@ module.exports = {
   checkPendingReview, countPendingReviewDrafts, writeNeedsReview, clearNeedsReview,
   acquireLock, releaseLock, isPidAlive, isPidAliveWithIdentity, LOCK_FILE,
   rotateLoopLog, LOOP_LOG,
+  stopRequested, writeHeartbeat, STOP_FILE, HEARTBEAT_FILE,
   safeTick,
   sendDesktopNotification,
   notifyGoldenHunterAccepted,
