@@ -261,6 +261,14 @@ was `Disabled`. Item 3 (autopilot) is left BLOCKED on ADR-157.
 **Verified.** CI PASS 36/36 on `2d01c569`; `factory_regression.py --now` 448
 Python / 0 failed, 9/9 Node; `check_doctrine.py` clean.
 
+**The same deploy gap in the covers.** All ten
+`customer_site/assets/covers/B19-001..010.png` were valid (1280x720) and
+untracked, while `catalog.json` and every `b19-*.html` page (og:image,
+twitter:image, JSON-LD, and the visible preview `<img>`) pointed at them, so the
+newest ten published listings showed a broken image. Committed only those ten
+(`7dbbf081`); all ten now return 200, CI PASS 36/36. All 116 published products
+now have a tracked cover (106 tracked before + these 10).
+
 **Not live yet.** The running loop is the 2026-11-22 process, so STOP and the
 heartbeat only take effect on the next restart (a logon reboot also tests
 autostart). Nothing was published to Gumroad or Metricool: the Gumroad auth
