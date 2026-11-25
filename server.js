@@ -349,6 +349,13 @@ app.get('/founder_command_center.html', requireMissionControlAuth, (req, res) =>
   res.sendFile(path.join(__dirname, 'founder_command_center.html'));
 });
 
+// Local founder controls: STOP/resume and production pause, nothing that
+// publishes, spends or contacts anyone. The page's only data binding is the
+// gated /api/v1/founder/control* routes added below.
+app.get('/founder_controls.html', requireMissionControlAuth, (req, res) => {
+  res.sendFile(path.join(__dirname, 'founder_controls.html'));
+});
+
 // ── UNIFIED SERVICE LAYER (Phase 8 — Unified Service Layer) ──
 // Every core capability exposed through one stable, versioned internal
 // API: GET /api/v1/<service> (data) + GET /api/v1/<service>/health
@@ -3227,6 +3234,7 @@ async function runActionSync(action, fn, req) {
 // triggered start-production-pipeline action below. Toggling it back is
 // the exact reverse operation — fully reversible by design.
 const PRODUCTION_CONTROL_PATH = path.join(__dirname, 'data', 'production_control.json');
+const founderControls = require('./lib/founder_controls.js');
 
 function readProductionControl() {
   try {
@@ -4578,6 +4586,43 @@ v1Router.post('/actions/:name', async (req, res) => {
     logServiceCall({ service: 'actions', action: action.name, event: 'request_failed', error: err.message });
     res.status(500).json({ success: false, version: 'v1', error: { code: 'action_dispatch_failed', message: err.message } });
   }
+});
+
+// ── Founder controls (2026-11-25) ──
+// Local-only kill switch and production pause. Publishing, money and new
+// channels are deliberately NOT here: those remain founder gates. Every POST
+// needs { "confirmed": true } and the mission-control session this router is
+// already mounted behind.
+v1Router.get('/founder/control', (req, res) => {
+  res.json({ success: true, version: 'v1', data: founderControls.status() });
+});
+
+function rejectUnconfirmedControl(res) {
+  return res.status(400).json({
+    success: false, version: 'v1',
+    error: { code: 'confirmation_required', message: 'this action requires { "confirmed": true } in the request body' },
+  });
+}
+
+v1Router.post('/founder/control/stop', (req, res) => {
+  if (!req.body || req.body.confirmed !== true) return rejectUnconfirmedControl(res);
+  res.json({ success: true, version: 'v1', data: founderControls.requestStop() });
+});
+
+v1Router.post('/founder/control/resume', (req, res) => {
+  if (!req.body || req.body.confirmed !== true) return rejectUnconfirmedControl(res);
+  res.json({ success: true, version: 'v1', data: founderControls.clearStop() });
+});
+
+v1Router.post('/founder/control/pause-production', (req, res) => {
+  if (!req.body || req.body.confirmed !== true) return rejectUnconfirmedControl(res);
+  const reason = typeof req.body.reason === 'string' && req.body.reason.trim() ? req.body.reason.trim() : 'paused via founder controls';
+  res.json({ success: true, version: 'v1', data: founderControls.setProductionPaused(true, reason) });
+});
+
+v1Router.post('/founder/control/resume-production', (req, res) => {
+  if (!req.body || req.body.confirmed !== true) return rejectUnconfirmedControl(res);
+  res.json({ success: true, version: 'v1', data: founderControls.setProductionPaused(false) });
 });
 
 // Any /api/v1/* path that matched none of the registered services above

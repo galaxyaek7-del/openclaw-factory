@@ -313,3 +313,17 @@ What the onboarding form does **not** solve: a public chat link, a storage and
 customer-data policy, and real delivery to the agency owner (WhatsApp or
 Telegram) remain **NOT BUILT** and need the founder (hosting/privacy/payment
 decisions). Stop/heartbeat still wait for the next Windows restart.
+
+### Founder control buttons, without opening a gate
+
+Added a local control page, `founder_controls.html`, behind the existing
+mission-control session: STOP / resume the factory, and pause / resume the
+manual production path, plus live STOP/production/heartbeat state. The four
+POST routes (`/api/v1/founder/control/{stop,resume,pause-production,resume-production}`)
+require `{ "confirmed": true }` and are mounted behind
+`requireMissionControlAuth`. The file logic lives in `lib/founder_controls.js`
+so it is tested without booting the server: `tests/test_founder_controls.js`
+is **10/10**. No publishing, money, channel-creation or outbound-message
+button was added: those remain the founder's gates. `STOP`,
+`data/production_control.json` and `data/heartbeat.json` are now gitignored as
+runtime state. The routes only go live after `server.js` is restarted once.

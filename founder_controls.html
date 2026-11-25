@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>لوحة تحكم المؤسس — المصنع</title>
+<style>
+  :root { --ink:#17211f; --muted:#5b6b66; --line:#d7e0dc; --bg:#f4f7f5; --card:#fff; --accent:#0f5c4a; --bad:#a11; --warn:#8a5a00; }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:system-ui,"Segoe UI",Tahoma,sans-serif; background:var(--bg); color:var(--ink); line-height:1.5; }
+  header { background:var(--accent); color:#fff; padding:16px; }
+  header h1 { margin:0 0 4px; font-size:1.15rem; }
+  header p { margin:0; font-size:.85rem; opacity:.95; }
+  main { max-width:820px; margin:0 auto; padding:16px; }
+  .grid { display:grid; grid-template-columns:repeat(2,1fr); gap:12px; }
+  @media (max-width:560px) { .grid { grid-template-columns:1fr; } }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:14px; }
+  .card h2 { margin:0 0 8px; font-size:.95rem; color:var(--muted); font-weight:600; }
+  .big { font-size:1.05rem; font-weight:700; }
+  .ok { color:var(--accent); } .bad { color:var(--bad); } .warn { color:var(--warn); }
+  .hint { color:var(--muted); font-size:.8rem; }
+  button { font:inherit; padding:12px 14px; border-radius:10px; border:1px solid var(--accent); background:#fff; color:var(--accent); cursor:pointer; width:100%; font-weight:600; }
+  button:hover:enabled { background:#eef6f2; }
+  button:disabled { opacity:.5; cursor:not-allowed; }
+  button.danger { border-color:var(--bad); color:var(--bad); }
+  button.danger:hover:enabled { background:#fbecec; }
+  button.primary { background:var(--accent); color:#fff; }
+  button.primary:hover:enabled { background:#0b4638; }
+  .locked { background:#fff8e6; border-color:#e8d7a8; }
+  .row { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+  input { padding:9px; border:1px solid var(--line); border-radius:8px; font:inherit; flex:1; min-width:160px; }
+  #msg { margin:10px 0 0; white-space:pre-wrap; font-size:.85rem; }
+  #msg .e { color:var(--bad); } #msg .s { color:var(--accent); }
+  nav { margin:14px 0; display:flex; gap:12px; flex-wrap:wrap; font-size:.85rem; }
+  nav a { color:var(--accent); }
+</style>
+</head>
+<body>
+<header>
+  <h1>لوحة تحكم المؤسس — المصنع</h1>
+  <p>أزرار محلية فقط: إيقاف/استئناف المصنع وإيقاف/استئناف الإنتاج. لا تنشر، لا تدفع، ولا تراسل أحداً.</p>
+</header>
+<main>
+  <nav>
+    <a href="/founder_command_center.html">مركز أوامر المؤسس</a>
+    <a href="/factory_control_center.html">خريطة المصنع</a>
+    <a href="/mission_control.html">Mission Control</a>
+  </nav>
+
+  <section class="card" style="margin-bottom:12px">
+    <h2>الحالة الآن</h2>
+    <div class="grid">
+      <div><span class="hint">STOP</span><div id="stStop" class="big">—</div></div>
+      <div><span class="hint">الإنتاج</span><div id="stProd" class="big">—</div></div>
+      <div><span class="hint">آخر نبضة (heartbeat)</span><div id="stBeat" class="big">—</div></div>
+      <div><span class="hint">النشر الحي</span><div id="stLive" class="big">—</div></div>
+    </div>
+    <p class="hint" id="stMeta"></p>
+    <div class="row" style="margin-top:10px">
+      <button type="button" id="btnRefresh">تحديث الحالة</button>
+    </div>
+  </section>
+
+  <section class="grid">
+    <div class="card">
+      <h2>المصنع (factory_loop + supervisor)</h2>
+      <button type="button" class="danger" id="btnStop">إيقاف المصنع فوراً (STOP)</button>
+      <p class="hint">ينشئ ملف STOP: الدورة الحالية تنتهي، ولا تبدأ دورة جديدة، والمراقب يتوقف.</p>
+      <button type="button" class="primary" id="btnResume" style="margin-top:8px">استئناف المصنع</button>
+      <p class="hint">يحذف STOP فقط. لا يغيّر أي علم نشر أو دفع.</p>
+    </div>
+
+    <div class="card">
+      <h2>الإنتاج اليدوي</h2>
+      <button type="button" class="danger" id="btnPause">إيقاف الإنتاج مؤقتاً</button>
+      <div class="row" style="margin-top:8px">
+        <input id="pauseReason" placeholder="السبب (اختياري)">
+      </div>
+      <button type="button" class="primary" id="btnUnpause" style="margin-top:8px">استئناف الإنتاج</button>
+      <p class="hint">يوقف/يستأنف مسار start-production-pipeline فقط، لا factory_loop.</p>
+    </div>
+  </section>
+
+  <section class="card locked" style="margin-top:12px">
+    <h2>بوابات مقفلة بقرار (ليست أزراراً)</h2>
+    <p class="hint">
+      النشر الحي، الدفع/المال، إنشاء قناة جديدة، وإرسال رسائل خارجية: كلها بوابات بشرية دائمة.
+      لا يوجد هنا زر يتجاوزها. تُنفَّذ من حساباتك أو عبر مسار الموافقة المعتمد فقط.
+    </p>
+  </section>
+
+  <p id="msg"></p>
+  <p class="hint">ملاحظة: هذه المسارات أُضيفت حديثاً؛ لا تعمل حتى تُعيد تشغيل <code>server.js</code> مرة واحدة.</p>
+</main>
+<script>
+(function () {
+  'use strict';
+  var busy = false;
+  function $(id) { return document.getElementById(id); }
+
+  function msg(text, cls) {
+    var p = $('msg');
+    p.textContent = text || '';
+    p.className = '';
+    if (cls) p.innerHTML = '<span class="' + cls + '">' + String(text).replace(/</g, '&lt;') + '</span>';
+  }
+
+  function api(path, method, body) {
+    var opts = { method: method || 'GET', credentials: 'same-origin', headers: {} };
+    if (body) { opts.headers['Content-Type'] = 'application/json'; opts.body = JSON.stringify(body); }
+    return fetch(path, opts).then(function (r) {
+      if (r.status === 401) { location.href = '/mission_control_login.html'; throw new Error('unauthenticated'); }
+      return r.json().catch(function () { return {}; }).then(function (j) {
+        if (!r.ok || j.success === false) {
+          throw new Error((j.error && j.error.message) || ('HTTP ' + r.status));
+        }
+        return j.data;
+      });
+    });
+  }
+
+  function age(s) {
+    if (s === null || s === undefined) return '—';
+    if (s < 90) return s + ' ثانية';
+    if (s < 5400) return Math.round(s / 60) + ' دقيقة';
+    return Math.round(s / 3600) + ' ساعة';
+  }
+
+  function render(d) {
+    if (!d) return;
+    $('stStop').textContent = d.stop && d.stop.requested ? 'STOP مفعّل — متوقف' : 'لا STOP — يعمل';
+    $('stStop').className = 'big ' + (d.stop && d.stop.requested ? 'bad' : 'ok');
+    $('stProd').textContent = d.production && d.production.paused ? 'موقوف مؤقتاً' : 'غير موقوف';
+    $('stProd').className = 'big ' + (d.production && d.production.paused ? 'warn' : 'ok');
+    $('stBeat').textContent = d.heartbeat && d.heartbeat.present ? ('منذ ' + age(d.heartbeat.age_seconds)) : 'لا نبضة';
+    $('stBeat').className = 'big ' + (d.heartbeat && d.heartbeat.present ? '' : 'warn');
+    $('stLive').textContent = d.gates && d.gates.live_publish ? 'مفعّل' : 'مقفل';
+    $('stLive').className = 'big ' + (d.gates && d.gates.live_publish ? 'warn' : 'ok');
+    var meta = [];
+    if (d.heartbeat && d.heartbeat.pid) meta.push('pid ' + d.heartbeat.pid);
+    if (d.heartbeat && d.heartbeat.at) meta.push('at ' + d.heartbeat.at);
+    if (d.production && d.production.reason) meta.push('سبب الإيقاف: ' + d.production.reason);
+    if (d.production && d.production.changed_at) meta.push('تغيّر ' + d.production.changed_at);
+    $('stMeta').textContent = meta.join(' · ');
+  }
+
+  function refresh() {
+    return api('/api/v1/founder/control').then(render);
+  }
+
+  function act(label, fn) {
+    if (busy) return;
+    busy = true;
+    document.querySelectorAll('button').forEach(function (b) { b.disabled = true; });
+    msg(label + '…');
+    Promise.resolve().then(fn).then(function () {
+      msg(label + ': تم.', 's');
+      return refresh();
+    }).catch(function (e) {
+      msg(label + ': فشل — ' + e.message, 'e');
+    }).then(function () {
+      busy = false;
+      document.querySelectorAll('button').forEach(function (b) { b.disabled = false; });
+    });
+  }
+
+  $('btnRefresh').addEventListener('click', function () { act('تحديث الحالة', function () {}); });
+
+  $('btnStop').addEventListener('click', function () {
+    if (!confirm('إيقاف المصنع فوراً؟ لن تبدأ دورة جديدة حتى تضغط «استئناف المصنع».')) return;
+    act('إيقاف المصنع', function () { return api('/api/v1/founder/control/stop', 'POST', { confirmed: true }); });
+  });
+
+  $('btnResume').addEventListener('click', function () {
+    if (!confirm('استئناف المصنع (حذف STOP)؟')) return;
+    act('استئناف المصنع', function () { return api('/api/v1/founder/control/resume', 'POST', { confirmed: true }); });
+  });
+
+  $('btnPause').addEventListener('click', function () {
+    if (!confirm('إيقاف الإنتاج اليدوي مؤقتاً؟')) return;
+    var reason = ($('pauseReason').value || '').trim();
+    act('إيقاف الإنتاج', function () {
+      return api('/api/v1/founder/control/pause-production', 'POST', { confirmed: true, reason: reason || 'paused via founder controls' });
+    });
+  });
+
+  $('btnUnpause').addEventListener('click', function () {
+    if (!confirm('استئناف الإنتاج اليدوي؟')) return;
+    act('استئناف الإنتاج', function () { return api('/api/v1/founder/control/resume-production', 'POST', { confirmed: true }); });
+  });
+
+  refresh().catch(function (e) {
+    msg('تعذّر جلب الحالة: ' + e.message + ' — قد يحتاج الخادم إلى إعادة تشغيل.', 'e');
+  });
+})();
+</script>
+</body>
+</html>

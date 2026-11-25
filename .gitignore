@@ -242,3 +242,10 @@ data/commission_attribution_log.jsonl
 *.log.gz
 # Generated single-file bundle of the whole repo (repomix); rebuildable, never source.
 repomix-output.xml
+
+# Local runtime control/state (2026-11-25 founder controls): /STOP is the kill
+# switch, production_control.json the manual pause flag, heartbeat.json the
+# loop's last tick. All runtime state, never source.
+/STOP
+data/production_control.json
+data/heartbeat.json
