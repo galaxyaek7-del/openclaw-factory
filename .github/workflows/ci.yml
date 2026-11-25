@@ -229,7 +229,7 @@ jobs:
         run: node scripts/run_js_group.js tests/test_factory_loop_daily_growth_stage_snapshot.js tests/test_factory_loop_daily_knowledge_graph.js tests/test_factory_loop_evidence_recording_audit.js tests/test_factory_loop_freelancer_grant_resume.js tests/test_factory_loop_freelancer_state_monitor.js tests/test_factory_loop_golden.js tests/test_factory_loop_internal_token.js tests/test_factory_loop_lock.js tests/test_factory_loop_lock_identity.js tests/test_factory_loop_monthly_galaxy_evolution_report.js
 
       - name: JS batch 7 of 19
-        run: node scripts/run_js_group.js tests/test_factory_loop_notification.js tests/test_factory_loop_payment_status_check_tick.js tests/test_factory_loop_pricing_review.js tests/test_factory_loop_quarterly_annual_reviews.js tests/test_factory_loop_reality_integrity_check.js tests/test_factory_loop_resilience_monitor_tick.js tests/test_factory_loop_seo_distribution.js tests/test_factory_loop_tick_overlap.js tests/test_factory_loop_step_timing.js tests/test_factory_loop_weekly_executive_report.js tests/test_factory_loop_x_queued_post.js
+        run: node scripts/run_js_group.js tests/test_factory_loop_notification.js tests/test_factory_loop_payment_status_check_tick.js tests/test_factory_loop_pricing_review.js tests/test_factory_loop_quarterly_annual_reviews.js tests/test_factory_loop_reality_integrity_check.js tests/test_factory_loop_resilience_monitor_tick.js tests/test_factory_loop_seo_distribution.js tests/test_factory_loop_tick_overlap.js tests/test_factory_loop_step_timing.js tests/test_factory_loop_weekly_executive_report.js tests/test_factory_loop_x_queued_post.js tests/test_factory_heartbeat_stop.js
 
       - name: JS batch 8 of 19
         run: node scripts/run_js_group.js tests/test_factory_state.js
@@ -262,7 +262,7 @@ jobs:
         run: node scripts/run_js_group.js tests/test_recovery_log.js tests/test_restore_file_from_git.js
 
       - name: JS batch 18 of 19
-        run: node scripts/run_js_group.js tests/test_security_p1.js tests/test_self_awareness_precomputed_health.js tests/test_server_crash_handlers.js tests/test_supervisor.js
+        run: node scripts/run_js_group.js tests/test_security_p1.js tests/test_self_awareness_precomputed_health.js tests/test_server_crash_handlers.js tests/test_supervisor.js tests/test_supervisor_stop_rotation.js
 
       - name: JS batch 19 of 19
         run: node scripts/run_js_group.js tests/test_telegram_commands.js tests/test_telegram_direct.js tests/test_trust_center.js
