@@ -269,6 +269,17 @@ newest ten published listings showed a broken image. Committed only those ten
 (`7dbbf081`); all ten now return 200, CI PASS 36/36. All 116 published products
 now have a tracked cover (106 tracked before + these 10).
 
+**Forensic repair of tracked damage.** A scan of 6,516 text/data files found the
+only tracked corruption: one fully garbled `sensing_engine` line in
+`FACTORY_WEEKLY_REPORT.md` (48 U+FFFD, restored from the corrected
+`lib/health_checks.js` OK detail), and two JSON snapshots
+(`data/cycle81_gumroad_catalog_truth.json`, `data/cycle83_sales_forensics.json`)
+carrying a UTF-8 BOM, now stripped; both parse with plain UTF-8 and
+`test_cycle83b.py` is 25/25. No tracked text file failed strict UTF-8 decode; the
+empty `data/realbiz0*_contacts.jsonl` were committed empty (placeholders, not
+damage); the remaining malformed JSON/JSONL are untracked archival or temporary
+fixtures.
+
 **Not live yet.** The running loop is the 2026-11-22 process, so STOP and the
 heartbeat only take effect on the next restart (a logon reboot also tests
 autostart). Nothing was published to Gumroad or Metricool: the Gumroad auth

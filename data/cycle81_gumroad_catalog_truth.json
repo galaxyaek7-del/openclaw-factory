@@ -1,4 +1,4 @@
-﻿{
+{
   "probe": "gumroad_catalog_truth",
   "read_only": true,
   "method": "cursor pagination via next_page_url (NOT ?page=N)",
