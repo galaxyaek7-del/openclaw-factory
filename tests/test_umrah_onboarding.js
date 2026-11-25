@@ -101,3 +101,18 @@ test('REAL data whose name still says example is refused', () => {
   assert.equal(r.ok, false);
   assert.ok(r.errors.some((e) => /fictional|example/i.test(e)));
 });
+
+test('the form offers a one-click example', () => {
+  assert.match(HTML, /__fillExample/);
+  assert.match(HTML, /املأ بمثال/);
+});
+
+test('the built-in example is itself a valid SIMULATION agency', () => {
+  const m = HTML.match(/<script type="application\/json" id="example-agency">([\s\S]*?)<\/script>/);
+  assert.ok(m, 'example JSON block missing');
+  const ex = JSON.parse(m[1]);
+  const r = validate(ex);
+  assert.equal(r.ok, true, r.errors.join('; '));
+  assert.equal(r.status, 'SIMULATION');
+  assert.ok(r.warnings.some((w) => /SIMULATION/.test(w)));
+});

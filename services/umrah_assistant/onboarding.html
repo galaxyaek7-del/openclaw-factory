@@ -117,6 +117,7 @@
 
   <div class="actions">
     <button type="button" class="primary" onclick="window.__check()">تحقّق</button>
+    <button type="button" onclick="window.__fillExample()">املأ بمثال</button>
     <button type="button" onclick="window.__download()">تنزيل ملف الوكالة JSON</button>
   </div>
 
@@ -129,12 +130,51 @@
     <p><code>node services/umrah_assistant/build_demo.js --agency &lt;file&gt; --out services/umrah_assistant/agencies/&lt;slug&gt;_demo</code></p>
   </fieldset>
 </main>
+<script type="application/json" id="example-agency">
+{
+  "_status": "SIMULATION",
+  "name": { "ar": "وكالة المثال للعمرة", "fr": "Agence Exemple Omra" },
+  "city": { "ar": "الجزائر", "fr": "Alger" },
+  "phone": "0550 00 00 00",
+  "hours": { "ar": "9 صباحاً - 5 مساءً", "fr": "9h - 17h" },
+  "currency": { "ar": "دج", "fr": "DA" },
+  "packages": [{
+    "id": "eco",
+    "names": { "ar": "اقتصادية", "fr": "Économique" },
+    "aliases": [],
+    "days": 10,
+    "price_dzd": 285000,
+    "room": { "ar": "ثلاثية", "fr": "Triple" },
+    "makkah": { "stars": 3, "distance_m": 800 },
+    "madinah": { "stars": 3, "distance_m": 500 },
+    "meals": { "ar": "فطور وعشاء", "fr": "Petit-déjeuner et dîner" }
+  }],
+  "departures": [{ "date": "2027-01-15", "packages": ["eco"] }],
+  "flight": { "ar": "خطوط المثال", "fr": "Vol exemple" },
+  "includes": { "ar": ["تذكرة الطيران", "الإقامة"], "fr": ["Billet", "Hébergement"] },
+  "excludes": { "ar": ["تأشيرة"], "fr": ["Visa"] },
+  "documents": { "ar": ["جواز السفر"], "fr": ["Passeport"] },
+  "documents_note": {
+    "ar": "الشروط تحددها الجهات الرسمية وقد تتغير، والوكالة تؤكدها لك عند الحجز.",
+    "fr": "Les conditions sont fixées par les autorités et peuvent changer, l'agence vous les confirme à la réservation."
+  },
+  "deposit_dzd": 50000,
+  "balance_days_before": 20,
+  "payment_methods": { "ar": ["نقداً"], "fr": ["Espèces"] },
+  "booking_steps": { "ar": ["اتصل بالوكالة"], "fr": ["Appelez l'agence"] },
+  "seats_note": {
+    "ar": "عدد المقاعد المتبقية يؤكده لك صاحب الوكالة وقت الحجز.",
+    "fr": "Le nombre de places restantes vous est confirmé par le responsable au moment de la réservation."
+  }
+}
+</script>
 <script>
 (function () {
   'use strict';
   const $ = (id) => document.getElementById(id);
   const num = (v) => { const n = Number(String(v || '').trim()); return Number.isFinite(n) ? n : NaN; };
   const lines = (v) => String(v || '').split('\n').map((s) => s.trim()).filter(Boolean);
+  const set = (id, v) => { const el = $(id); if (el) el.value = v; };
   const PLACEHOLDER = /REMPLIR|FILL ME|TODO|XXXX|\bXX\b|\.\.\.|…/i;
 
   function pkgCard() {
@@ -168,6 +208,52 @@
 
   window.__addPkg = function () { $('packages').appendChild(pkgCard()); };
   window.__addDep = function () { $('departures').appendChild(depCard()); };
+
+  window.__fillExample = function () {
+    const d = JSON.parse(document.getElementById('example-agency').textContent);
+    set('status', d._status);
+    set('name_ar', d.name.ar); set('name_fr', d.name.fr);
+    set('city_ar', d.city.ar); set('city_fr', d.city.fr);
+    set('phone', d.phone);
+    set('hours_ar', d.hours.ar); set('hours_fr', d.hours.fr);
+    set('currency_ar', d.currency.ar); set('currency_fr', d.currency.fr);
+    set('flight_ar', d.flight.ar); set('flight_fr', d.flight.fr);
+    const pkgs = $('packages'); pkgs.innerHTML = '';
+    d.packages.forEach(function (p) {
+      window.__addPkg();
+      const c = pkgs.lastElementChild;
+      c.querySelector('.pid').value = p.id;
+      c.querySelector('.pn_ar').value = p.names.ar;
+      c.querySelector('.pn_fr').value = p.names.fr;
+      c.querySelector('.paliases').value = (p.aliases || []).join(', ');
+      c.querySelector('.pdays').value = p.days;
+      c.querySelector('.pprice').value = p.price_dzd;
+      c.querySelector('.proom_ar').value = p.room.ar;
+      c.querySelector('.proom_fr').value = p.room.fr;
+      c.querySelector('.pmk_stars').value = p.makkah.stars;
+      c.querySelector('.pmk_dist').value = p.makkah.distance_m;
+      c.querySelector('.pmd_stars').value = p.madinah.stars;
+      c.querySelector('.pmd_dist').value = p.madinah.distance_m;
+      c.querySelector('.pmeals_ar').value = p.meals.ar;
+      c.querySelector('.pmeals_fr').value = p.meals.fr;
+    });
+    const deps = $('departures'); deps.innerHTML = '';
+    d.departures.forEach(function (dp) {
+      window.__addDep();
+      const c = deps.lastElementChild;
+      c.querySelector('.ddate').value = dp.date;
+      c.querySelector('.dpkgs').value = dp.packages.join(', ');
+    });
+    set('includes_ar', d.includes.ar.join('\n')); set('includes_fr', d.includes.fr.join('\n'));
+    set('excludes_ar', d.excludes.ar.join('\n')); set('excludes_fr', d.excludes.fr.join('\n'));
+    set('documents_ar', d.documents.ar.join('\n')); set('documents_fr', d.documents.fr.join('\n'));
+    set('payment_methods_ar', d.payment_methods.ar.join('\n')); set('payment_methods_fr', d.payment_methods.fr.join('\n'));
+    set('booking_steps_ar', d.booking_steps.ar.join('\n')); set('booking_steps_fr', d.booking_steps.fr.join('\n'));
+    set('documents_note_ar', d.documents_note.ar); set('documents_note_fr', d.documents_note.fr);
+    set('seats_note_ar', d.seats_note.ar); set('seats_note_fr', d.seats_note.fr);
+    set('deposit_dzd', d.deposit_dzd); set('balance_days_before', d.balance_days_before);
+    window.__check();
+  };
 
   function val(root, sel) { const el = root.querySelector(sel); return el ? String(el.value || '').trim() : ''; }
 

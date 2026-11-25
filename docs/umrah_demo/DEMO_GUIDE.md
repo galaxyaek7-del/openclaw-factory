@@ -12,9 +12,9 @@
 | `docs/umrah_demo/ONE_PAGER.pdf` (و`.html`) | ورقة العرض، صفحة واحدة عربي + فرنسي. المربعات الصفراء تملؤها أنت (اسمك، هاتفك، مدة التجربة والسعر) |
 | `docs/umrah_demo/PRICING_PROPOSALS.md` | ثلاثة اقتراحات أسعار بالدينار. القرار لك |
 | `docs/umrah_demo/OBJECTIONS.md` | أهم 10 اعتراضات من أصحاب الوكالات مع الأجوبة |
-| `services/umrah_assistant/onboarding.html` | نموذج محلي (بلا شبكة) لتعبئة بيانات وكالة حقيقية، يتحقق منها ثم ينزّل ملف JSON |
+| `services/umrah_assistant/onboarding.html` | نموذج محلي (بلا شبكة) لتعبئة بيانات وكالة حقيقية، يتحقق منها ثم ينزّل ملف JSON. فيه زر «املأ بمثال» (SIMULATION) للتجربة السريعة |
 | `tests/test_umrah_assistant.js` | 23 اختباراً (`node --test tests/test_umrah_assistant.js`) |
-| `tests/test_umrah_onboarding.js` | 7 اختبارات للنموذج ومخطط البيانات (`node --test tests/test_umrah_onboarding.js`) |
+| `tests/test_umrah_onboarding.js` | 9 اختبارات للنموذج ومخطط البيانات (`node --test tests/test_umrah_onboarding.js`) |
 
 بعد أي تعديل على المحرك أو البيانات: `node services/umrah_assistant/build_demo.js` يعيد بناء `demo/index.html`.
 

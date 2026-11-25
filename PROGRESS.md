@@ -302,9 +302,11 @@ the same rules as the CLI (missing bilingual fields, non-integer prices, unknown
 package ids, deposit >= price, `REMPLIR`/`TODO` placeholders, REAL data whose
 name still says "example"), and downloads `agency.<slug>.json`. The
 **authoritative** check is still `validate_agency.js`; the page prints both that
-command and the `build_demo.js` command. New test
-`tests/test_umrah_onboarding.js` is **7/7** (form is offline/RTL, embedded
-script parses, a form-shaped REAL object passes the real validator, incomplete
+command and the `build_demo.js` command. A "fill with example" button loads a
+built-in SIMULATION agency (stored as JSON in the page) so the flow can be
+tried in one click. New test `tests/test_umrah_onboarding.js` is **9/9** (form
+is offline/RTL, embedded script parses, a form-shaped REAL object passes the
+real validator, the built-in example is a valid SIMULATION agency, incomplete
 and "example"-named objects are refused) and is wired into JS batch 4 of CI.
 
 What the onboarding form does **not** solve: a public chat link, a storage and
