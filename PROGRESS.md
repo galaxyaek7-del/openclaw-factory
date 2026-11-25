@@ -241,7 +241,10 @@ blip replaced 100+ READY pins with BLOCKED. A failed check is now
 `UNKNOWN_IMAGE_UNREACHABLE` / `UNKNOWN_BOARD_UNREACHABLE` (never a missing
 image), an all-unknown run keeps the previous queue (`kept_previous`), and
 images are checked concurrently (12 workers) to stay inside the tick budget
-(`d151829b`, 16 tests).
+(`d151829b`, 16 tests). Measured live on 2026-11-25: the step fell from the
+480 s timeout to 6-9 s per tick (stable 115 READY), and during a real
+board-unreachable blip at 06:02/06:13 UTC the guard kept the previous queue
+instead of wiping it.
 
 **Corruption, again.** 82 U+FFFD in `lib/health_checks.js` (the n8n detail that
 also poisoned the weekly report) restored to Arabic, and the GATE_E label in
