@@ -58,11 +58,36 @@ const COOLDOWN_MS = parseInt(process.env.SUPERVISOR_COOLDOWN_MS === undefined ? 
 const HEARTBEAT_FILE = process.env.SUPERVISOR_HEARTBEAT_FILE || '';
 const STALE_MS = parseInt(process.env.SUPERVISOR_STALE_MS || String(45 * 60 * 1000), 10);
 const BACKOFF_MS = parseInt(process.env.SUPERVISOR_BACKOFF_MS || '2000', 10);
+// Log rotation: an unbounded supervisor.log on a long-running process is the
+// same real defect rotateLoopLog() fixed for factory_loop.log (2026-11-18).
+const SUPERVISOR_LOG_MAX_BYTES = parseInt(process.env.SUPERVISOR_LOG_MAX_BYTES || String(8 * 1024 * 1024), 10);
+const SUPERVISOR_LOG_KEEP = parseInt(process.env.SUPERVISOR_LOG_KEEP || '3', 10);
+// Kill switch (TASKS.md item 5): a STOP file in the repo root stops supervision.
+const STOP_FILE = process.env.SUPERVISOR_STOP_FILE || path.join(REPO_ROOT, 'STOP');
+
+function rotateLog(file, { maxBytes = SUPERVISOR_LOG_MAX_BYTES, keep = SUPERVISOR_LOG_KEEP } = {}) {
+  try {
+    if (fs.statSync(file).size < maxBytes) return false;
+  } catch { return false; }
+  try {
+    if (keep <= 0) {
+      fs.writeFileSync(file, '');
+      return true;
+    }
+    for (let i = keep; i >= 1; i -= 1) {
+      const from = i === 1 ? file : `${file}.${i - 1}`;
+      const to = `${file}.${i}`;
+      try { fs.renameSync(from, to); } catch { /* an absent older generation is fine */ }
+    }
+    return true;
+  } catch { return false; }
+}
 
 function log(entry) {
   const line = JSON.stringify({ at: new Date().toISOString(), ...entry });
   console.log(`[supervisor] ${line}`);
   try {
+    rotateLog(SUPERVISOR_LOG_PATH);
     fs.appendFileSync(SUPERVISOR_LOG_PATH, line + '\n');
   } catch { /* a failing supervisor-log write must never block supervision itself */ }
 }
@@ -171,6 +196,22 @@ function startHangWatchdog() {
   return t;
 }
 
+function stopFilePresent(file = STOP_FILE) {
+  try { return fs.existsSync(file); } catch { return false; }
+}
+
+function startStopWatch() {
+  const t = setInterval(() => {
+    if (stopping) return;
+    if (stopFilePresent()) {
+      log({ event: 'stop_file_detected', file: STOP_FILE });
+      forwardSignal('SIGTERM');
+    }
+  }, 5000);
+  t.unref();
+  return t;
+}
+
 function forwardSignal(signal) {
   if (stopping) return;
   stopping = true;
@@ -182,12 +223,15 @@ function forwardSignal(signal) {
   }
 }
 
-process.on('SIGINT', () => forwardSignal('SIGINT'));
-process.on('SIGTERM', () => forwardSignal('SIGTERM'));
-
 if (require.main === module) {
+  // Signal handlers only attach in the supervisor's own process — never as a
+  // side effect of another module requiring this file (same real bug fixed in
+  // factory_loop.js on 2026-07-23).
+  process.on('SIGINT', () => forwardSignal('SIGINT'));
+  process.on('SIGTERM', () => forwardSignal('SIGTERM'));
   spawnChild();
   startHangWatchdog();
+  startStopWatch();
 }
 
-module.exports = { heartbeatAgeMs, startHangWatchdog, spawnChild, withinCrashLoopLimit, restartTimestamps, MAX_RESTARTS, WINDOW_MS, alertCrashRestart, alertGivingUp };
+module.exports = { heartbeatAgeMs, startHangWatchdog, startStopWatch, stopFilePresent, rotateLog, spawnChild, withinCrashLoopLimit, restartTimestamps, MAX_RESTARTS, WINDOW_MS, alertCrashRestart, alertGivingUp };
