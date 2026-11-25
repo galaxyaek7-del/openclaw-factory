@@ -224,3 +224,42 @@ published. No Metricool call was made.
 `first_published_at: null`. They are drafts on Gumroad that were never
 published. The factory does not lack products (137) or pins (105); it lacks one
 authenticated publish cycle.
+
+## 2026-11-25 — Ten missing pin images published, queue made honest, and a real STOP switch
+
+**The deploy gap, found by reading the queue.** Nine pins were
+`BLOCKED_IMAGE_NOT_PUBLIC`; the tenth was `UNKNOWN`. The cause was not the
+images: all ten `customer_site/assets/pins/b19-*.jpg` were valid JPEGs
+(1000x1500) sitting untracked, never committed, so GitHub Pages answered 404.
+Committed only those ten files (`f1dc84a8`), verified all ten return 200, and
+the re-planned queue went `BLOCKED 0 / READY 115 / REJECTED 16`
+(`generated_at 2026-11-25T06:31:24Z`).
+
+**The queue could wipe itself.** `scripts/pinterest_queue.py` treated any
+network failure as `NOT_PUBLIC` and wrote a fresh queue regardless, so one DNS
+blip replaced 100+ READY pins with BLOCKED. A failed check is now
+`UNKNOWN_IMAGE_UNREACHABLE` / `UNKNOWN_BOARD_UNREACHABLE` (never a missing
+image), an all-unknown run keeps the previous queue (`kept_previous`), and
+images are checked concurrently (12 workers) to stay inside the tick budget
+(`d151829b`, 16 tests).
+
+**Corruption, again.** 82 U+FFFD in `lib/health_checks.js` (the n8n detail that
+also poisoned the weekly report) restored to Arabic, and the GATE_E label in
+`market_discovery_engine.py` restored (`a35a5d73`). The stale
+`FACTORY_STATUS.md` header now points at live sources (`b647e4a1`).
+
+**Autonomy, within the constitution.** Added a real STOP kill switch
+(`factory_loop.js` starts no tick and exits 0; `scripts/supervisor.js` watches
+STOP every 5s), a per-cycle `data/heartbeat.json`, and supervisor log rotation
+beside the loop's existing rotation (`fcbbe6c8`, `7fb4c35a`, `ff772ac2`, CI
+sharding `2d01c569`). Enabled the `GalaxyForge-Factory-Autostart` task, which
+was `Disabled`. Item 3 (autopilot) is left BLOCKED on ADR-157.
+
+**Verified.** CI PASS 36/36 on `2d01c569`; `factory_regression.py --now` 448
+Python / 0 failed, 9/9 Node; `check_doctrine.py` clean.
+
+**Not live yet.** The running loop is the 2026-11-22 process, so STOP and the
+heartbeat only take effect on the next restart (a logon reboot also tests
+autostart). Nothing was published to Gumroad or Metricool: the Gumroad auth
+state remains stale (`write_gate` DENY) and the 21 drafts still need one
+authenticated publish cycle.
