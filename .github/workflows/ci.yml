@@ -220,7 +220,7 @@ jobs:
         run: node scripts/run_js_group.js tests/test_ceo_command_center.js tests/test_commercial_funnel.js tests/test_check_jsonl_duplication.js tests/test_click_origin_fields.js tests/test_n8n_watchdog.js tests/test_low_disk_mode.js tests/test_customer_auth.js tests/test_customer_front_door.js tests/test_gf_pageview.js tests/test_public_catalog.js tests/test_hold_policy_catalog.js tests/test_site_reachability.js tests/test_customer_site_static_fallback.js tests/test_solutions_static_fallback.js tests/test_attribution_filter.js tests/test_factory_loop_demand_gate.js tests/test_gf_outbound_utm.js tests/test_ops_retry.js
 
       - name: JS batch 4 of 19
-        run: node scripts/run_js_group.js tests/test_department_events.js tests/test_deploy_production.js tests/test_qa_engine.js tests/test_scout_brief_v2.js tests/test_umrah_agency.js tests/test_umrah_assistant.js
+        run: node scripts/run_js_group.js tests/test_department_events.js tests/test_deploy_production.js tests/test_qa_engine.js tests/test_scout_brief_v2.js tests/test_umrah_agency.js tests/test_umrah_assistant.js tests/test_umrah_onboarding.js
 
       - name: JS batch 5 of 19
         run: node scripts/run_js_group.js tests/test_factory_loop_arm_status_watch.js tests/test_factory_loop_autonomous_loop_closures.js tests/test_factory_loop_business_blueprint_generation.js tests/test_factory_loop_commission_opportunity_scan.js tests/test_factory_loop_daily_ai_doctor_report.js tests/test_factory_loop_daily_commercial_readiness_snapshot.js tests/test_factory_loop_daily_department_health_report.js tests/test_factory_loop_daily_evolution_queue_intake.js tests/test_factory_loop_daily_evolution_report.js tests/test_factory_loop_daily_executive_brief.js

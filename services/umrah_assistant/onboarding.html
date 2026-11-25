@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>نموذج بيانات وكالة العمرة — أداة محلية</title>
+<style>
+  :root { --ink:#1a1a1a; --muted:#666; --line:#d9d9d9; --bg:#faf9f6; --accent:#0f5c4a; --warn:#8a5a00; --err:#a11; }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family: system-ui, "Segoe UI", Tahoma, sans-serif; background:var(--bg); color:var(--ink); line-height:1.55; }
+  header { background:var(--accent); color:#fff; padding:14px 16px; }
+  header h1 { font-size:1.1rem; margin:0 0 4px; }
+  header p { margin:0; font-size:.85rem; opacity:.95; }
+  main { max-width:760px; margin:0 auto; padding:16px; }
+  fieldset { border:1px solid var(--line); border-radius:10px; background:#fff; margin:0 0 14px; padding:12px; }
+  legend { font-weight:700; padding:0 6px; }
+  label { display:block; font-size:.85rem; margin:8px 0 3px; color:#333; }
+  input, select, textarea { width:100%; padding:8px; border:1px solid var(--line); border-radius:8px; font:inherit; background:#fff; }
+  textarea { min-height:70px; resize:vertical; }
+  .row { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .row3 { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+  .card { border:1px dashed var(--line); border-radius:10px; padding:10px; margin:10px 0; background:#fdfdfb; }
+  .card h4 { margin:0 0 6px; font-size:.9rem; }
+  button { font:inherit; padding:9px 14px; border-radius:9px; border:1px solid var(--accent); background:#fff; color:var(--accent); cursor:pointer; }
+  button.primary { background:var(--accent); color:#fff; }
+  button.small { padding:5px 10px; font-size:.8rem; }
+  .actions { display:flex; gap:10px; flex-wrap:wrap; margin:12px 0; position:sticky; bottom:0; background:var(--bg); padding:10px 0; }
+  #out { white-space:pre-wrap; font-size:.85rem; border-radius:8px; padding:10px; }
+  #out .e { color:var(--err); } #out .w { color:var(--warn); } #out .ok { color:var(--accent); font-weight:700; }
+  code { background:#eee; padding:1px 5px; border-radius:5px; font-size:.85em; direction:ltr; display:inline-block; }
+  .hint { color:var(--muted); font-size:.8rem; }
+</style>
+</head>
+<body>
+<header>
+  <h1>نموذج بيانات وكالة العمرة</h1>
+  <p>أداة محلية: لا ترسل شيئاً إلى أي خادم. تملأ البيانات، تنزّل ملف JSON، ثم تتحقّق منه بأمر واحد. المساعد لا يجيب إلا من هذا الملف.</p>
+</header>
+<main>
+  <fieldset>
+    <legend>حالة البيانات</legend>
+    <label for="status">نوع البيانات</label>
+    <select id="status">
+      <option value="REAL">REAL — أرقام صاحب الوكالة الحقيقية</option>
+      <option value="SIMULATION">SIMULATION — بيانات وهمية للتجربة فقط</option>
+    </select>
+    <p class="hint">لا تستعمل SIMULATION أمام وكالة حقيقية. والنموذج يرفض REAL إذا كان الاسم ما زال «مثال/وهمي».</p>
+  </fieldset>
+
+  <fieldset>
+    <legend>الوكالة</legend>
+    <div class="row">
+      <div><label for="name_ar">اسم الوكالة (عربي)</label><input id="name_ar"></div>
+      <div><label for="name_fr">Nom de l'agence (FR)</label><input id="name_fr"></div>
+    </div>
+    <div class="row">
+      <div><label for="city_ar">المدينة (عربي)</label><input id="city_ar"></div>
+      <div><label for="city_fr">Ville (FR)</label><input id="city_fr"></div>
+    </div>
+    <label for="phone">هاتف الوكالة (يراه الزبون)</label><input id="phone" inputmode="tel" placeholder="05XXXXXXXX">
+    <div class="row">
+      <div><label for="hours_ar">ساعات العمل (عربي)</label><input id="hours_ar"></div>
+      <div><label for="hours_fr">Horaires (FR)</label><input id="hours_fr"></div>
+    </div>
+    <div class="row">
+      <div><label for="currency_ar">العملة (عربي)</label><input id="currency_ar" value="دج"></div>
+      <div><label for="currency_fr">Devise (FR)</label><input id="currency_fr" value="DA"></div>
+    </div>
+    <div class="row">
+      <div><label for="flight_ar">الطيران (عربي)</label><input id="flight_ar"></div>
+      <div><label for="flight_fr">Vol (FR)</label><input id="flight_fr"></div>
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>الباقات</legend>
+    <div id="packages"></div>
+    <button type="button" class="small" onclick="window.__addPkg()">+ أضف باقة</button>
+  </fieldset>
+
+  <fieldset>
+    <legend>مواعيد السفر</legend>
+    <p class="hint">التاريخ بصيغة AAAA-MM-JJ، ومعرّفات الباقات مفصولة بفاصلة (نفس <code>id</code> في الباقات).</p>
+    <div id="departures"></div>
+    <button type="button" class="small" onclick="window.__addDep()">+ أضف موعداً</button>
+  </fieldset>
+
+  <fieldset>
+    <legend>القوائم (سطر لكل عنصر)</legend>
+    <label>ما يشمله السعر</label>
+    <div class="row"><textarea id="includes_ar" placeholder="عربي"></textarea><textarea id="includes_fr" placeholder="FR"></textarea></div>
+    <label>ما لا يشمله</label>
+    <div class="row"><textarea id="excludes_ar"></textarea><textarea id="excludes_fr"></textarea></div>
+    <label>الوثائق المطلوبة</label>
+    <div class="row"><textarea id="documents_ar"></textarea><textarea id="documents_fr"></textarea></div>
+    <label>طرق الدفع</label>
+    <div class="row"><textarea id="payment_methods_ar"></textarea><textarea id="payment_methods_fr"></textarea></div>
+    <label>خطوات الحجز</label>
+    <div class="row"><textarea id="booking_steps_ar"></textarea><textarea id="booking_steps_fr"></textarea></div>
+  </fieldset>
+
+  <fieldset>
+    <legend>ملاحظات ومال</legend>
+    <div class="row">
+      <div><label for="documents_note_ar">ملاحظة الوثائق (عربي)</label><input id="documents_note_ar" value="الشروط تحددها الجهات الرسمية وقد تتغير، والوكالة تؤكدها لك عند الحجز."></div>
+      <div><label for="documents_note_fr">Note documents (FR)</label><input id="documents_note_fr" value="Les conditions sont fixées par les autorités et peuvent changer, l'agence vous les confirme à la réservation."></div>
+    </div>
+    <div class="row">
+      <div><label for="seats_note_ar">ملاحظة المقاعد (عربي)</label><input id="seats_note_ar" value="عدد المقاعد المتبقية يؤكده لك صاحب الوكالة وقت الحجز."></div>
+      <div><label for="seats_note_fr">Note places (FR)</label><input id="seats_note_fr" value="Le nombre de places restantes vous est confirmé par le responsable au moment de la réservation."></div>
+    </div>
+    <div class="row">
+      <div><label for="deposit_dzd">التسبيق للشخص (دج)</label><input id="deposit_dzd" inputmode="numeric" value="0"></div>
+      <div><label for="balance_days_before">باقي المبلغ قبل السفر (أيام)</label><input id="balance_days_before" inputmode="numeric" value="0"></div>
+    </div>
+  </fieldset>
+
+  <div class="actions">
+    <button type="button" class="primary" onclick="window.__check()">تحقّق</button>
+    <button type="button" onclick="window.__download()">تنزيل ملف الوكالة JSON</button>
+  </div>
+
+  <fieldset>
+    <legend>النتيجة</legend>
+    <div id="out">لم يتم التحقّق بعد.</div>
+    <p class="hint">الفحص هنا مساعد فقط. الفحص المرجعي:</p>
+    <p><code>node services/umrah_assistant/validate_agency.js &lt;file&gt;</code></p>
+    <p class="hint">ثم ابنِ ديمو الوكالة:</p>
+    <p><code>node services/umrah_assistant/build_demo.js --agency &lt;file&gt; --out services/umrah_assistant/agencies/&lt;slug&gt;_demo</code></p>
+  </fieldset>
+</main>
+<script>
+(function () {
+  'use strict';
+  const $ = (id) => document.getElementById(id);
+  const num = (v) => { const n = Number(String(v || '').trim()); return Number.isFinite(n) ? n : NaN; };
+  const lines = (v) => String(v || '').split('\n').map((s) => s.trim()).filter(Boolean);
+  const PLACEHOLDER = /REMPLIR|FILL ME|TODO|XXXX|\bXX\b|\.\.\.|…/i;
+
+  function pkgCard() {
+    const d = document.createElement('div');
+    d.className = 'card pkg';
+    d.innerHTML =
+      '<h4>باقة</h4>' +
+      '<div class="row"><div><label>id (بلا مسافات)</label><input class="pid"></div>' +
+      '<div><label>أيام</label><input class="pdays" inputmode="numeric"></div></div>' +
+      '<div class="row"><div><label>الاسم (عربي)</label><input class="pn_ar"></div><div><label>Nom (FR)</label><input class="pn_fr"></div></div>' +
+      '<div class="row"><div><label>أسماء بديلة (بفاصلة)</label><input class="paliases"></div><div><label>السعر للشخص (دج)</label><input class="pprice" inputmode="numeric"></div></div>' +
+      '<div class="row"><div><label>الغرفة (عربي)</label><input class="proom_ar"></div><div><label>Chambre (FR)</label><input class="proom_fr"></div></div>' +
+      '<div class="row3"><div><label>مكة نجوم 1-5</label><input class="pmk_stars" inputmode="numeric"></div>' +
+      '<div><label>مكة مسافة (م)</label><input class="pmk_dist" inputmode="numeric"></div>' +
+      '<div><label>المدينة نجوم 1-5</label><input class="pmd_stars" inputmode="numeric"></div></div>' +
+      '<div class="row3"><div><label>المدينة مسافة (م)</label><input class="pmd_dist" inputmode="numeric"></div>' +
+      '<div><label>الوجبات (عربي)</label><input class="pmeals_ar"></div><div><label>Repas (FR)</label><input class="pmeals_fr"></div></div>' +
+      '<button type="button" class="small" onclick="this.closest(\'.pkg\').remove()">حذف الباقة</button>';
+    return d;
+  }
+
+  function depCard() {
+    const d = document.createElement('div');
+    d.className = 'card dep';
+    d.innerHTML =
+      '<div class="row"><div><label>التاريخ (AAAA-MM-JJ)</label><input class="ddate" placeholder="2026-12-20"></div>' +
+      '<div><label>معرّفات الباقات (بفاصلة)</label><input class="dpkgs"></div></div>' +
+      '<button type="button" class="small" onclick="this.closest(\'.dep\').remove()">حذف الموعد</button>';
+    return d;
+  }
+
+  window.__addPkg = function () { $('packages').appendChild(pkgCard()); };
+  window.__addDep = function () { $('departures').appendChild(depCard()); };
+
+  function val(root, sel) { const el = root.querySelector(sel); return el ? String(el.value || '').trim() : ''; }
+
+  function collect() {
+    const packages = Array.prototype.map.call(document.querySelectorAll('.pkg'), (c) => ({
+      id: val(c, '.pid'),
+      names: { ar: val(c, '.pn_ar'), fr: val(c, '.pn_fr') },
+      aliases: val(c, '.paliases') ? val(c, '.paliases').split(',').map((s) => s.trim()).filter(Boolean) : [],
+      days: num(val(c, '.pdays')),
+      price_dzd: num(val(c, '.pprice')),
+      room: { ar: val(c, '.proom_ar'), fr: val(c, '.proom_fr') },
+      makkah: { stars: num(val(c, '.pmk_stars')), distance_m: num(val(c, '.pmk_dist')) },
+      madinah: { stars: num(val(c, '.pmd_stars')), distance_m: num(val(c, '.pmd_dist')) },
+      meals: { ar: val(c, '.pmeals_ar'), fr: val(c, '.pmeals_fr') }
+    }));
+    const departures = Array.prototype.map.call(document.querySelectorAll('.dep'), (c) => ({
+      date: val(c, '.ddate'),
+      packages: val(c, '.dpkgs') ? val(c, '.dpkgs').split(',').map((s) => s.trim()).filter(Boolean) : []
+    }));
+    return {
+      _status: $('status').value,
+      name: { ar: $('name_ar').value.trim(), fr: $('name_fr').value.trim() },
+      city: { ar: $('city_ar').value.trim(), fr: $('city_fr').value.trim() },
+      phone: $('phone').value.trim(),
+      hours: { ar: $('hours_ar').value.trim(), fr: $('hours_fr').value.trim() },
+      currency: { ar: $('currency_ar').value.trim(), fr: $('currency_fr').value.trim() },
+      packages: packages,
+      departures: departures,
+      flight: { ar: $('flight_ar').value.trim(), fr: $('flight_fr').value.trim() },
+      includes: { ar: lines($('includes_ar').value), fr: lines($('includes_fr').value) },
+      excludes: { ar: lines($('excludes_ar').value), fr: lines($('excludes_fr').value) },
+      documents: { ar: lines($('documents_ar').value), fr: lines($('documents_fr').value) },
+      documents_note: { ar: $('documents_note_ar').value.trim(), fr: $('documents_note_fr').value.trim() },
+      deposit_dzd: num($('deposit_dzd').value),
+      balance_days_before: num($('balance_days_before').value),
+      payment_methods: { ar: lines($('payment_methods_ar').value), fr: lines($('payment_methods_fr').value) },
+      booking_steps: { ar: lines($('booking_steps_ar').value), fr: lines($('booking_steps_fr').value) },
+      seats_note: { ar: $('seats_note_ar').value.trim(), fr: $('seats_note_fr').value.trim() }
+    };
+  }
+
+  const isStr = (v) => typeof v === 'string' && v.trim().length > 0;
+  const isPosInt = (v) => Number.isInteger(v) && v > 0;
+  const bil = (o) => o && isStr(o.ar) && isStr(o.fr);
+  const bilArr = (o) => o && Array.isArray(o.ar) && Array.isArray(o.fr) && o.ar.length > 0 && o.fr.length > 0 && o.ar.every(isStr) && o.fr.every(isStr);
+
+  function validateLocal(a) {
+    const errors = [], warnings = [];
+    const err = (m) => errors.push(m), warn = (m) => warnings.push(m);
+    if (!['REAL', 'SIMULATION'].includes(a._status)) err('_status must be REAL or SIMULATION');
+    if (a._status === 'SIMULATION') warn('SIMULATION data: fine for a generic demo, never for a real prospect');
+    if (!bil(a.name)) err('name.ar and name.fr are required');
+    if (!isStr(a.phone)) err('phone is required');
+    if (!bil(a.hours)) err('hours.ar and hours.fr are required');
+    if (!bil(a.currency)) err('currency.ar and currency.fr are required');
+    if (!bil(a.city)) warn('city.ar / city.fr missing');
+    if (!bil(a.flight)) warn('flight.ar / flight.fr missing');
+    const ids = new Set();
+    if (!Array.isArray(a.packages) || a.packages.length === 0) err('at least one package is required');
+    (a.packages || []).forEach((p, i) => {
+      const t = 'packages[' + i + ']';
+      if (!isStr(p.id)) err(t + '.id required');
+      else if (ids.has(p.id)) err(t + '.id "' + p.id + '" is duplicated');
+      else ids.add(p.id);
+      if (!bil(p.names)) err(t + '.names.ar/fr required');
+      if (!isPosInt(p.days)) err(t + '.days must be a positive integer');
+      if (!isPosInt(p.price_dzd)) err(t + '.price_dzd must be a positive integer');
+      if (!bil(p.room)) err(t + '.room.ar/fr required');
+      if (!bil(p.meals)) err(t + '.meals.ar/fr required');
+      ['makkah', 'madinah'].forEach((city) => {
+        const h = p[city];
+        if (!h || !Number.isInteger(h.stars) || h.stars < 1 || h.stars > 5) err(t + '.' + city + '.stars must be 1..5');
+        if (!h || !Number.isInteger(h.distance_m) || h.distance_m < 0) err(t + '.' + city + '.distance_m must be >= 0');
+      });
+    });
+    if (!Array.isArray(a.departures) || a.departures.length === 0) err('at least one departure is required');
+    (a.departures || []).forEach((d, i) => {
+      const t = 'departures[' + i + ']';
+      if (!isStr(d.date) || !/^\d{4}-\d{2}-\d{2}$/.test(d.date) || Number.isNaN(Date.parse(d.date))) err(t + '.date must be YYYY-MM-DD');
+      if (!Array.isArray(d.packages) || d.packages.length === 0) err(t + '.packages must list package ids');
+      else d.packages.forEach((id) => { if (!ids.has(id)) err(t + '.packages: unknown package id "' + id + '"'); });
+    });
+    ['includes', 'excludes', 'documents', 'booking_steps', 'payment_methods'].forEach((k) => {
+      if (!bilArr(a[k])) err(k + '.ar and ' + k + '.fr must be non-empty lists');
+      else if (a[k].ar.length !== a[k].fr.length) warn(k + ': Arabic has ' + a[k].ar.length + ', French ' + a[k].fr.length);
+    });
+    if (!bil(a.documents_note)) err('documents_note.ar/fr required');
+    if (!bil(a.seats_note)) err('seats_note.ar/fr required');
+    if (!isPosInt(a.deposit_dzd)) err('deposit_dzd must be a positive integer');
+    else if (Array.isArray(a.packages) && a.packages.some((p) => isPosInt(p.price_dzd) && a.deposit_dzd >= p.price_dzd)) err('deposit_dzd must be lower than every package price');
+    if (!isPosInt(a.balance_days_before)) err('balance_days_before must be a positive integer');
+    (function scan(o, path) {
+      if (typeof o === 'string') { if (PLACEHOLDER.test(o)) (a._status === 'REAL' ? err : warn)('unfilled placeholder at ' + path + ': "' + o.slice(0, 40) + '"'); return; }
+      if (Array.isArray(o)) { o.forEach((v, i) => scan(v, path + '[' + i + ']')); return; }
+      if (o && typeof o === 'object') Object.keys(o).forEach((k) => { if (k !== '_note') scan(o[k], path ? path + '.' + k : k); });
+    })(a, '');
+    if (a._status === 'REAL' && /SIMULATION|fictive|exemple|example|وهمي|مثال/i.test(JSON.stringify(a.name))) err('status is REAL but the agency name still says fictional/example');
+    return { ok: errors.length === 0, errors: errors, warnings: warnings };
+  }
+
+  let last = null;
+  window.__check = function () {
+    const a = collect();
+    last = validateLocal(a);
+    const out = $('out');
+    out.innerHTML = '';
+    last.errors.forEach((m) => { const p = document.createElement('div'); p.className = 'e'; p.textContent = 'ERROR: ' + m; out.appendChild(p); });
+    last.warnings.forEach((m) => { const p = document.createElement('div'); p.className = 'w'; p.textContent = 'WARNING: ' + m; out.appendChild(p); });
+    const s = document.createElement('div');
+    s.className = last.ok ? 'ok' : 'e';
+    s.textContent = last.ok ? 'OK (فحص محلي): يمكن التنزيل، ثم شغّل الفحص المرجعي بالأمر أدناه.' : 'FAIL: ' + last.errors.length + ' خطأ';
+    out.appendChild(s);
+    return last;
+  };
+
+  window.__download = function () {
+    const a = collect();
+    const r = validateLocal(a);
+    if (!r.ok) { window.__check(); return; }
+    const slug = (a.name.fr || a.name.ar || 'agency').toLowerCase().replace(/[^a-z0-9\u0600-\u06ff]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 40) || 'agency';
+    const blob = new Blob([JSON.stringify(a, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'agency.' + slug + '.json';
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  };
+
+  window.__addPkg();
+  window.__addDep();
+})();
+</script>
+</body>
+</html>

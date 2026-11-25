@@ -286,3 +286,28 @@ heartbeat only take effect on the next restart (a logon reboot also tests
 autostart). Nothing was published to Gumroad or Metricool: the Gumroad auth
 state remains stale (`write_gate` DENY) and the 21 drafts still need one
 authenticated publish cycle.
+
+### Phase 2 closed, and the first Phase-3 building block
+
+The Umrah demo was re-checked end to end this session: `build_demo.js`
+reproduces the committed `demo/index.html` **byte for byte** (60,628 B), the
+page makes **0 external requests**, `tests/test_umrah_assistant.js` is **23/23**,
+and `DEMO_GUIDE.md` was carrying a stale test count (**21**, now 23) that is
+fixed. The demo is therefore current, offline and complete.
+
+The one "نموذج إدخال بيانات وكالة" item marked **NOT BUILT** is now built as a
+local tool: `services/umrah_assistant/onboarding.html`. It is a static RTL page
+(no server, no network, nothing uploaded) that fills the agency schema, warns on
+the same rules as the CLI (missing bilingual fields, non-integer prices, unknown
+package ids, deposit >= price, `REMPLIR`/`TODO` placeholders, REAL data whose
+name still says "example"), and downloads `agency.<slug>.json`. The
+**authoritative** check is still `validate_agency.js`; the page prints both that
+command and the `build_demo.js` command. New test
+`tests/test_umrah_onboarding.js` is **7/7** (form is offline/RTL, embedded
+script parses, a form-shaped REAL object passes the real validator, incomplete
+and "example"-named objects are refused) and is wired into JS batch 4 of CI.
+
+What the onboarding form does **not** solve: a public chat link, a storage and
+customer-data policy, and real delivery to the agency owner (WhatsApp or
+Telegram) remain **NOT BUILT** and need the founder (hosting/privacy/payment
+decisions). Stop/heartbeat still wait for the next Windows restart.
