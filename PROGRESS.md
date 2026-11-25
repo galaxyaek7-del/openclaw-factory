@@ -327,3 +327,20 @@ is **10/10**. No publishing, money, channel-creation or outbound-message
 button was added: those remain the founder's gates. `STOP`,
 `data/production_control.json` and `data/heartbeat.json` are now gitignored as
 runtime state. The routes only go live after `server.js` is restarted once.
+
+**Verified live on 2026-11-25 (14:00Z).** CI PASS 36/36 on `5d34b8c4`.
+`server.js` was restarted through the supervisor by killing only its exact
+PID (6344; never `taskkill /IM node.exe`), so the new routes are live
+(new PID 15288, `/health` 200). Authenticated checks against the real
+instance: unauthenticated `/api/v1/founder/control` → 401; login OK;
+status `stop=false, paused=false, heartbeat=true, live_publish=false`;
+`pause-production` → `paused=true` with the reason, then
+`resume-production` → `paused=false` (state restored); `founder_controls.html`
+→ 200 with the STOP button; unconfirmed STOP → 400 and **no STOP file** was
+created. The real STOP switch was deliberately not pulled: it would stop the
+supervisor, and a second isolated server (for an end-to-end STOP test) was
+aborted because its log showed it also starts a Telegram poller, which risks
+conflicting with the live bot; the STOP file write/remove path stays covered
+by `tests/test_founder_controls.js` (10/10). Gates re-checked: Gumroad write
+gate `DENY` (live flag false; auth state stale 3.3 days), verified revenue
+`$0`, zero sales.
