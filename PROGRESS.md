@@ -344,3 +344,34 @@ conflicting with the live bot; the STOP file write/remove path stays covered
 by `tests/test_founder_controls.js` (10/10). Gates re-checked: Gumroad write
 gate `DENY` (live flag false; auth state stale 3.3 days), verified revenue
 `$0`, zero sales.
+
+### Gumroad review and storefront link fix (2026-11-26)
+
+Read-only live audit of the Gumroad account (GET only): 137 products =
+116 published + 21 unpublished, 0 archived; 0 sales, $0 gross, 0 refunds;
+0 published zero-price listings, 0 published pay-what-you-want, 0 duplicate
+published titles, 0 listing-health findings; registry cross-check 0 drift.
+Delivery audit (`scripts/gumroad_delivery_audit.py`): 0 published without a
+file; 18 THIN_DELIVERABLE (<10 KB), of which 2 are published (`blayvb`
+$14.99 xlsx 8,922 B, `edgiq` $29 zip 9,198 B); 69 ZIP contents unverified by
+the API (the 2026-10-14 probe covers 79 attachments, all PASS, and is stale);
+2 drafts promise a spreadsheet that is not attached (`drtaj`, `wteork`);
+1 draft delivers a preview file (`iaiyt`). `jlxmez` ($399) delivers 4 files,
+21,304 B uncompressed (xlsx 10,764; manual 4,410; templates 3,640;
+checklist 2,490): a pricing/value question, not a missing file. The two live
+"thin" listings are the real workbooks the 2026-11-07 unpublish script
+deliberately excluded; the 14 one-page drafts it targeted are already
+unpublished, so it is a no-op today.
+
+Storefront defect, found by the official check: `customer_site/products.html`
+carried 14 active "Get it" links to unpublished drafts (bfdgx, eiebdt, engiwk,
+fccqk, fwrjot, ldrdm, palmdr, roxdbe, tmhlb, uwyfje, vyitxf, yhnyn, zfnagp,
+zjwpx), and `guide-freelancer-scope-creep.html` linked fwrjot. Fixed to
+`<a class="buy held" ...>On hold</a>` (and a plain on-hold notice in the
+guide); dates updated to 26 November 2026. `scripts/storefront_commercial_check.py
+--json` now PASS (cards 84, active 65, held 17, distinct 62, 0 ERROR).
+New `tests/test_storefront_links.js` (4/4) runs that check and scans every
+`customer_site/*.html` for links to unpublished/held/undeliverable listings;
+wired into CI JS group 4. The 10 untracked `customer_site/b19-*.html` files
+are local artifacts and are not committed; `test_site_reachability.js` fails
+locally only because of them.
