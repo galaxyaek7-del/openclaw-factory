@@ -3,9 +3,9 @@
   "read_only": true,
   "cost_usd": 0,
   "method": "attachment bytes fetched from the public CDN, hashed, parsed, size-compared",
-  "checked": 79,
+  "checked": 137,
   "verdict_counts": {
-    "PASS": 79
+    "PASS": 137
   },
   "results": [
     {
@@ -92,8 +92,8 @@
       "short_id": "iaiyt",
       "meta_http": 200,
       "title": "EU AI Act Compliance Toolkit — Practical Templates & Implementation Guide for SMEs",
-      "price_cents": 15500,
-      "published": true,
+      "price_cents": 0,
+      "published": false,
       "url": "https://aekraft.gumroad.com/l/iaiyt",
       "sales_count": 0,
       "file_count": 2,
@@ -139,7 +139,7 @@
       "meta_http": 200,
       "title": "Verified B2B Lead Lists (200-lead batch)",
       "price_cents": 9900,
-      "published": true,
+      "published": false,
       "url": "https://aekraft.gumroad.com/l/drtaj",
       "sales_count": 0,
       "file_count": 1,
@@ -205,12 +205,12 @@
       "file_count": 1,
       "files": [
         {
-          "declared_bytes": 173373,
+          "declared_bytes": 176766,
           "declared_type": "zip",
           "name": null,
           "fetch_http": 200,
-          "actual_bytes": 173373,
-          "sha256": "6d873ac2e598d3b911c86bcbd0968cd48400aadbb0549b88fbfcd2aef5d8a219",
+          "actual_bytes": 176766,
+          "sha256": "65730ed0f563dce9294f56e55ff01d5912834df652a95c9c18b3c2fde6e518f4",
           "size_matches_declared": true,
           "magic": "504b0304",
           "type": "zip",
@@ -222,12 +222,12 @@
             },
             {
               "name": "etsy_suspension_appeal_kit.pdf",
-              "bytes": 122465,
+              "bytes": 138923,
               "readable": true
             },
             {
               "name": "etsy_appeal_evidence_tracker.xlsx",
-              "bytes": 6397,
+              "bytes": 15011,
               "readable": true
             },
             {
@@ -247,7 +247,7 @@
             }
           ],
           "entry_count": 6,
-          "uncompressed_bytes": 212340,
+          "uncompressed_bytes": 237412,
           "verdict": "PASS"
         }
       ],
@@ -325,19 +325,29 @@
       "file_count": 1,
       "files": [
         {
-          "declared_bytes": 18208,
-          "declared_type": "pdf",
+          "declared_bytes": 20209,
+          "declared_type": "zip",
           "name": null,
           "fetch_http": 200,
-          "actual_bytes": 18208,
-          "sha256": "3afe91da94e0dc8cb7b6c191f412c7e29c36ad1b0ac88798c56a633aa2c088e9",
+          "actual_bytes": 20209,
+          "sha256": "36fa0de1a2c32523934bbf7a8d59f89529fdf4b041a952d86167da927247b021",
           "size_matches_declared": true,
-          "magic": "25504446",
-          "type": "pdf",
-          "pages": 6,
-          "words": 2592,
-          "first_text": "GPSR EU Seller Action Kit Keep your EU listings live: Responsible Person route, technical file, risk assessment, labels, and Etsy/Amazon field guides for non-EU sellers Practical implementation guide. Not legal advice. GPSR = Regulation (EU) 2023/988, mandatory since 13 December 2024. Rules, fees, a",
-          "encrypted": false,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "gpsr_eu_seller_action_kit.pdf",
+              "bytes": 18208,
+              "readable": true
+            },
+            {
+              "name": "gpsr_eu_seller_cost_planner.xlsx",
+              "bytes": 7663,
+              "readable": true
+            }
+          ],
+          "entry_count": 2,
+          "uncompressed_bytes": 25871,
           "verdict": "PASS"
         }
       ],
@@ -539,7 +549,7 @@
       "meta_http": 200,
       "title": "EU Cosmetics Responsible Person Guide",
       "price_cents": 6900,
-      "published": true,
+      "published": false,
       "url": "https://aekraft.gumroad.com/l/bfdgx",
       "sales_count": 0,
       "file_count": 1,
@@ -569,7 +579,7 @@
       "meta_http": 200,
       "title": "ADA Demand-Letter Response & Triage Kit",
       "price_cents": 6900,
-      "published": true,
+      "published": false,
       "url": "https://aekraft.gumroad.com/l/palmdr",
       "sales_count": 0,
       "file_count": 1,
@@ -635,19 +645,29 @@
       "file_count": 1,
       "files": [
         {
-          "declared_bytes": 12383,
-          "declared_type": "pdf",
+          "declared_bytes": 17728,
+          "declared_type": "zip",
           "name": null,
           "fetch_http": 200,
-          "actual_bytes": 12383,
-          "sha256": "54d13adc33734810f9bdaed90b8832910652ce1758fd0e2398a654c1ac724ae3",
+          "actual_bytes": 17728,
+          "sha256": "1d5c05304d105b3510f7cdb52be9cd05bf8f024b10f071f4d378180e4f525c67",
           "size_matches_declared": true,
-          "magic": "25504446",
-          "type": "pdf",
-          "pages": 4,
-          "words": 1705,
-          "first_text": "Trademark DIY Filing Action Kit Clear it, classify it, file it, defend it — a founder's end-to-end path through the USPTO without a $2,500 legal bill Practical filing guide. Not legal advice and not a law firm. USPTO fees, forms (TEAS/Trademark Center), and examination practice change — the January ",
-          "encrypted": false,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "trademark_diy_filing_kit.pdf",
+              "bytes": 14210,
+              "readable": true
+            },
+            {
+              "name": "trademark_filing_tracker.xlsx",
+              "bytes": 8134,
+              "readable": true
+            }
+          ],
+          "entry_count": 2,
+          "uncompressed_bytes": 22344,
           "verdict": "PASS"
         }
       ],
@@ -753,19 +773,19 @@
       "short_id": "vwlmeo",
       "meta_http": 200,
       "title": "Real Estate Transaction Deadline Kit",
-      "price_cents": 5900,
+      "price_cents": 2900,
       "published": true,
       "url": "https://aekraft.gumroad.com/l/vwlmeo",
       "sales_count": 0,
       "file_count": 1,
       "files": [
         {
-          "declared_bytes": 133785,
+          "declared_bytes": 155012,
           "declared_type": "zip",
           "name": null,
           "fetch_http": 200,
-          "actual_bytes": 133785,
-          "sha256": "ebac01b3f65ca2d2dfb079b8a50743e842eb433e0da1b5d557f9a6ab67c4823e",
+          "actual_bytes": 155012,
+          "sha256": "95e5910bd2c899ea57e65c88214596e7ffd65e8558baba29d4ba1801c6a04982",
           "size_matches_declared": true,
           "magic": "504b0304",
           "type": "zip",
@@ -797,12 +817,12 @@
             },
             {
               "name": "realestate_tc_deadline_kit/realestate_tc_deadline_kit_workbook.xlsx",
-              "bytes": 8908,
+              "bytes": 49209,
               "readable": true
             }
           ],
           "entry_count": 6,
-          "uncompressed_bytes": 149607,
+          "uncompressed_bytes": 189908,
           "verdict": "PASS"
         }
       ],
@@ -1285,19 +1305,29 @@
       "file_count": 1,
       "files": [
         {
-          "declared_bytes": 3863,
-          "declared_type": "pdf",
+          "declared_bytes": 21276,
+          "declared_type": "zip",
           "name": null,
           "fetch_http": 200,
-          "actual_bytes": 3863,
-          "sha256": "26984a5bc1c405fa4f87af61493d1a156f54c7272f556459f3da845ba8dfa972",
+          "actual_bytes": 21276,
+          "sha256": "941103da6b38d12781ef8d9f5cf0696ebb151360a7749faee805c0c5dacad854",
           "size_matches_declared": true,
-          "magic": "25504446",
-          "type": "pdf",
-          "pages": 1,
-          "words": 392,
-          "first_text": "EU Late Payment Recovery Kit Get B2B invoices paid: statutory rights, reminder ladder, and fee math. Practical guide — not legal advice. Checked 2026-09-22. Your statutory position (EU Directive 2011/7/EU, established law) Business-to-business: absent other terms, payment is due within 30 calendar d",
-          "encrypted": false,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "eu_late_payment_recovery_kit.pdf",
+              "bytes": 3863,
+              "readable": true
+            },
+            {
+              "name": "eu_late_payment_calculator.xlsx",
+              "bytes": 33818,
+              "readable": true
+            }
+          ],
+          "entry_count": 2,
+          "uncompressed_bytes": 37681,
           "verdict": "PASS"
         }
       ],
@@ -1315,19 +1345,29 @@
       "file_count": 1,
       "files": [
         {
-          "declared_bytes": 9630,
-          "declared_type": "pdf",
+          "declared_bytes": 22034,
+          "declared_type": "zip",
           "name": null,
           "fetch_http": 200,
-          "actual_bytes": 9630,
-          "sha256": "fda7daf9ec0d3b87e795ee546ebc046d4e41853b39d88cfd601cc40c31944cc5",
+          "actual_bytes": 22034,
+          "sha256": "432a26c01a388637da67e38bf11f8fae684103f9ab6393d4a33dfe66c4a53c2c",
           "size_matches_declared": true,
-          "magic": "25504446",
-          "type": "pdf",
-          "pages": 3,
-          "words": 1274,
-          "first_text": "Diminished Value Claim Kit Recover your car's lost resale value after a not-at-fault accident — eligibility, evidence, demand letter, negotiation, escalation Practical claims guide. Not legal advice and not an appraisal service. Diminished-value law varies by state (Georgia's first-party rule is the",
-          "encrypted": false,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "diminished_value_claim_kit.pdf",
+              "bytes": 9630,
+              "readable": true
+            },
+            {
+              "name": "diminished_value_claim_pack.xlsx",
+              "bytes": 17631,
+              "readable": true
+            }
+          ],
+          "entry_count": 2,
+          "uncompressed_bytes": 27261,
           "verdict": "PASS"
         }
       ],
@@ -2075,12 +2115,12 @@
       "file_count": 1,
       "files": [
         {
-          "declared_bytes": 170404,
+          "declared_bytes": 187656,
           "declared_type": "zip",
           "name": null,
           "fetch_http": 200,
-          "actual_bytes": 170404,
-          "sha256": "3df9260fea4bce8aa5ab5814a3a31a381f2fea3420689d5dec1471cb765c3418",
+          "actual_bytes": 187656,
+          "sha256": "101f87323169086f3fc6bc720d69da1c6bfec002eb53b80f25d1c31edc24c70c",
           "size_matches_declared": true,
           "magic": "504b0304",
           "type": "zip",
@@ -2112,7 +2152,7 @@
             },
             {
               "name": "creator_brand_deal/creator_brand_deal_workbook.xlsx",
-              "bytes": 9255,
+              "bytes": 36743,
               "readable": true
             },
             {
@@ -2122,7 +2162,7 @@
             }
           ],
           "entry_count": 7,
-          "uncompressed_bytes": 189145,
+          "uncompressed_bytes": 216633,
           "verdict": "PASS"
         }
       ],
@@ -2338,8 +2378,8 @@
       "short_id": "wteork",
       "meta_http": 200,
       "title": "Amazon FBA Reconciliation Workbook",
-      "price_cents": 4900,
-      "published": true,
+      "price_cents": 0,
+      "published": false,
       "url": "https://aekraft.gumroad.com/l/wteork",
       "sales_count": 0,
       "file_count": 1,
@@ -2399,7 +2439,7 @@
       "meta_http": 200,
       "title": "GCC Contractor Payment Command System",
       "price_cents": 4900,
-      "published": true,
+      "published": false,
       "url": "https://aekraft.gumroad.com/l/uwyfje",
       "sales_count": 0,
       "file_count": 1,
@@ -2429,7 +2469,7 @@
       "meta_http": 200,
       "title": "Freelancer Payment Protection & Scope-Control Toolkit",
       "price_cents": 4900,
-      "published": true,
+      "published": false,
       "url": "https://aekraft.gumroad.com/l/fwrjot",
       "sales_count": 0,
       "file_count": 1,
@@ -2519,7 +2559,7 @@
       "meta_http": 200,
       "title": "SaaS Churn Email Pack",
       "price_cents": 3900,
-      "published": true,
+      "published": false,
       "url": "https://aekraft.gumroad.com/l/roxdbe",
       "sales_count": 0,
       "file_count": 1,
@@ -2549,7 +2589,7 @@
       "meta_http": 200,
       "title": "Food-Contact Materials Starter",
       "price_cents": 3900,
-      "published": true,
+      "published": false,
       "url": "https://aekraft.gumroad.com/l/ldrdm",
       "sales_count": 0,
       "file_count": 1,
@@ -2585,19 +2625,29 @@
       "file_count": 1,
       "files": [
         {
-          "declared_bytes": 3480,
-          "declared_type": "pdf",
+          "declared_bytes": 21925,
+          "declared_type": "zip",
           "name": null,
           "fetch_http": 200,
-          "actual_bytes": 3480,
-          "sha256": "e5768f1879c8868e32a232fb7da326e0991eef9f7329851cd0291f3826431103",
+          "actual_bytes": 21925,
+          "sha256": "f7b10ee5f9803004e61646b8f556a8fe3873104a9303b61797767e609a54572b",
           "size_matches_declared": true,
-          "magic": "25504446",
-          "type": "pdf",
-          "pages": 1,
-          "words": 300,
-          "first_text": "Etsy Ads ROI Playbook + Calculator Decide in numbers whether Etsy Ads earns its keep for your shop. Verify current Ads mechanics in Etsy's handbook. Checked 2026-09-22. The only math that matters Revenue attributed to ads minus ad spend, divided by ad spend — computed per listing, not shop-wide. Win",
-          "encrypted": false,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "etsy_ads_roi_playbook.pdf",
+              "bytes": 3480,
+              "readable": true
+            },
+            {
+              "name": "etsy_ads_roi_calculator.xlsx",
+              "bytes": 35341,
+              "readable": true
+            }
+          ],
+          "entry_count": 2,
+          "uncompressed_bytes": 38821,
           "verdict": "PASS"
         }
       ],
@@ -2609,7 +2659,7 @@
       "meta_http": 200,
       "title": "Suspended Seller First-Appeal POA System",
       "price_cents": 3900,
-      "published": true,
+      "published": false,
       "url": "https://aekraft.gumroad.com/l/zfnagp",
       "sales_count": 0,
       "file_count": 1,
@@ -2945,19 +2995,19 @@
       "file_count": 1,
       "files": [
         {
-          "declared_bytes": 166634,
+          "declared_bytes": 170027,
           "declared_type": "zip",
           "name": null,
           "fetch_http": 200,
-          "actual_bytes": 166634,
-          "sha256": "b05f3f4ccb8cf66b1ad1985afab60d783d4d896f35b908495012f2987dbfda54",
+          "actual_bytes": 170027,
+          "sha256": "306590599434aa38be93c7d594fc67a938cc46ad086134d40bf625c4bf76612e",
           "size_matches_declared": true,
           "magic": "504b0304",
           "type": "zip",
           "entries": [
             {
               "name": "etsy_suspension_appeal_kit.pdf",
-              "bytes": 122465,
+              "bytes": 138923,
               "readable": true
             },
             {
@@ -2967,7 +3017,7 @@
             },
             {
               "name": "etsy_appeal_evidence_tracker.xlsx",
-              "bytes": 6397,
+              "bytes": 15011,
               "readable": true
             },
             {
@@ -2982,7 +3032,7 @@
             }
           ],
           "entry_count": 5,
-          "uncompressed_bytes": 202289,
+          "uncompressed_bytes": 227361,
           "verdict": "PASS"
         }
       ],
@@ -3024,7 +3074,7 @@
       "meta_http": 200,
       "title": "Digital-Product Refund Policy Pack",
       "price_cents": 2900,
-      "published": true,
+      "published": false,
       "url": "https://aekraft.gumroad.com/l/yhnyn",
       "sales_count": 0,
       "file_count": 1,
@@ -3054,7 +3104,7 @@
       "meta_http": 200,
       "title": "Freelancer Scope-Creep Contract Kit",
       "price_cents": 2900,
-      "published": true,
+      "published": false,
       "url": "https://aekraft.gumroad.com/l/zjwpx",
       "sales_count": 0,
       "file_count": 1,
@@ -3084,7 +3134,7 @@
       "meta_http": 200,
       "title": "Battery & WEEE Mini-Guide for Sellers",
       "price_cents": 2900,
-      "published": true,
+      "published": false,
       "url": "https://aekraft.gumroad.com/l/eiebdt",
       "sales_count": 0,
       "file_count": 1,
@@ -3114,7 +3164,7 @@
       "meta_http": 200,
       "title": "Toy Safety File Starter (EN 71 Lens)",
       "price_cents": 2900,
-      "published": true,
+      "published": false,
       "url": "https://aekraft.gumroad.com/l/vyitxf",
       "sales_count": 0,
       "file_count": 1,
@@ -3214,7 +3264,7 @@
       "meta_http": 200,
       "title": "Gulf Job-Landing ATS CV System",
       "price_cents": 2900,
-      "published": true,
+      "published": false,
       "url": "https://aekraft.gumroad.com/l/fccqk",
       "sales_count": 0,
       "file_count": 1,
@@ -3250,12 +3300,12 @@
       "file_count": 1,
       "files": [
         {
-          "declared_bytes": 167522,
+          "declared_bytes": 179216,
           "declared_type": "zip",
           "name": null,
           "fetch_http": 200,
-          "actual_bytes": 167522,
-          "sha256": "eef4627bc6b890ccada541bb0841bb42fb915c08a89bc8c92440e04b9fa412be",
+          "actual_bytes": 179216,
+          "sha256": "348cfeb66edfc900e3f3544b8ff65c664b9de4a5d03a6c5b3b68df834ecfaffc",
           "size_matches_declared": true,
           "magic": "504b0304",
           "type": "zip",
@@ -3272,7 +3322,7 @@
             },
             {
               "name": "freelancer_scope_control/freelancer_scope_control_workbook.xlsx",
-              "bytes": 9290,
+              "bytes": 24626,
               "readable": true
             },
             {
@@ -3297,7 +3347,7 @@
             }
           ],
           "entry_count": 7,
-          "uncompressed_bytes": 185315,
+          "uncompressed_bytes": 200651,
           "verdict": "PASS"
         }
       ],
@@ -3309,7 +3359,7 @@
       "meta_http": 200,
       "title": "EU AI Act Compliance Quickstart Checklist",
       "price_cents": 1900,
-      "published": true,
+      "published": false,
       "url": "https://aekraft.gumroad.com/l/engiwk",
       "sales_count": 0,
       "file_count": 1,
@@ -3369,7 +3419,7 @@
       "meta_http": 200,
       "title": "The 5-Minute Context Reset Playbook",
       "price_cents": 1500,
-      "published": true,
+      "published": false,
       "url": "https://aekraft.gumroad.com/l/vhofn",
       "sales_count": 0,
       "file_count": 1,
@@ -3399,7 +3449,7 @@
       "meta_http": 200,
       "title": "EU AI Act Transparency & AI Literacy Quickstart Checklist",
       "price_cents": 900,
-      "published": true,
+      "published": false,
       "url": "https://aekraft.gumroad.com/l/tmhlb",
       "sales_count": 0,
       "file_count": 1,
@@ -3459,7 +3509,7 @@
       "meta_http": 200,
       "title": "GALAXY FORGE API TEST — DO NOT BUY — DELETE ME",
       "price_cents": 100,
-      "published": true,
+      "published": false,
       "url": "https://aekraft.gumroad.com/l/dxfwlu",
       "sales_count": 0,
       "file_count": 1,
@@ -3485,12 +3535,2929 @@
       "meta_http": 200,
       "title": "[Unavailable] AI Workflow QA & Stress Test - one agent, reviewed before you demo it to a client",
       "price_cents": 0,
-      "published": true,
+      "published": false,
       "url": "https://aekraft.gumroad.com/l/owtmpe",
       "sales_count": 0,
       "file_count": 0,
       "verdict": "PASS",
       "reason": "free listing, no attachment"
+    },
+    {
+      "short_id": "blayvb",
+      "meta_http": 200,
+      "title": "Freelancer Rate & Raise Calculator",
+      "price_cents": 1499,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/blayvb",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 8922,
+          "declared_type": "xlsx",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 8922,
+          "sha256": "aee8fc0b100345e7abc6e8a41487ddf551b5b7f235c6f4324827d1c6ab8a092d",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "docProps/app.xml",
+              "bytes": 205,
+              "readable": true
+            },
+            {
+              "name": "docProps/core.xml",
+              "bytes": 555,
+              "readable": true
+            },
+            {
+              "name": "xl/theme/theme1.xml",
+              "bytes": 10140,
+              "readable": true
+            },
+            {
+              "name": "xl/worksheets/sheet1.xml",
+              "bytes": 5617,
+              "readable": true
+            },
+            {
+              "name": "xl/worksheets/sheet2.xml",
+              "bytes": 1776,
+              "readable": true
+            },
+            {
+              "name": "xl/worksheets/sheet3.xml",
+              "bytes": 1808,
+              "readable": true
+            },
+            {
+              "name": "xl/worksheets/sheet4.xml",
+              "bytes": 1578,
+              "readable": true
+            },
+            {
+              "name": "xl/styles.xml",
+              "bytes": 5225,
+              "readable": true
+            },
+            {
+              "name": "_rels/.rels",
+              "bytes": 531,
+              "readable": true
+            },
+            {
+              "name": "xl/workbook.xml",
+              "bytes": 976,
+              "readable": true
+            },
+            {
+              "name": "xl/_rels/workbook.xml.rels",
+              "bytes": 939,
+              "readable": true
+            },
+            {
+              "name": "[Content_Types].xml",
+              "bytes": 1383,
+              "readable": true
+            }
+          ],
+          "entry_count": 12,
+          "uncompressed_bytes": 30733,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "arquvu",
+      "meta_http": 200,
+      "title": "Multi-State Payroll Tax Registration Readiness Pack",
+      "price_cents": 4900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/arquvu",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 13662,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 13662,
+          "sha256": "3a4afbf7fefd3d19c821c4af3871602ab7c1c3380ba2a700878b22674710720b",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "payroll-tax-registration-readiness/README.txt",
+              "bytes": 623,
+              "readable": true
+            },
+            {
+              "name": "payroll-tax-registration-readiness/payroll-tax-registration-readiness.xlsx",
+              "bytes": 7111,
+              "readable": true
+            },
+            {
+              "name": "payroll-tax-registration-readiness/payroll-tax-registration-readiness_guide.pdf",
+              "bytes": 9373,
+              "readable": true
+            }
+          ],
+          "entry_count": 3,
+          "uncompressed_bytes": 17107,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "atynt",
+      "meta_http": 200,
+      "title": "Agency Utilization & Capacity Planner (Billable Hours, Bench Cost, Hiring Trigger)",
+      "price_cents": 3900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/atynt",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 23596,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 23596,
+          "sha256": "1435819cfb82f8c5b79c205f6becce15991f06aa81d44b3af790ed0a0c4f6dc8",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "agency-utilization-capacity-planner/agency_utilization_capacity_planner.xlsx",
+              "bytes": 15371,
+              "readable": true
+            },
+            {
+              "name": "agency-utilization-capacity-planner/agency_utilization_capacity_planner_guide.pdf",
+              "bytes": 13553,
+              "readable": true
+            },
+            {
+              "name": "agency-utilization-capacity-planner/README.txt",
+              "bytes": 627,
+              "readable": true
+            }
+          ],
+          "entry_count": 3,
+          "uncompressed_bytes": 29551,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "bqnvfq",
+      "meta_http": 200,
+      "title": "Car Buy vs Lease Calculator: Total Cost Over the Same Period",
+      "price_cents": 1200,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/bqnvfq",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 14117,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 14117,
+          "sha256": "4c5bfe8bef062a62994c874b9453147c72ad042fdbb54c0557558bdcf35bdb27",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "car-buy-vs-lease-calculator/car_buy_vs_lease_calculator.xlsx",
+              "bytes": 8364,
+              "readable": true
+            },
+            {
+              "name": "car-buy-vs-lease-calculator/car_buy_vs_lease_calculator_guide.pdf",
+              "bytes": 8138,
+              "readable": true
+            },
+            {
+              "name": "car-buy-vs-lease-calculator/README.txt",
+              "bytes": 612,
+              "readable": true
+            }
+          ],
+          "entry_count": 3,
+          "uncompressed_bytes": 17114,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "ckwqjc",
+      "meta_http": 200,
+      "title": "Refinance Break-Even & Loan Comparison Calculator",
+      "price_cents": 1500,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/ckwqjc",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 15876,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 15876,
+          "sha256": "74b816081683398839a6ce9d8742a5b16c55e23a682f6113315c263c59ef12b3",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "refinance-break-even-calculator/refinance_break_even_calculator.xlsx",
+              "bytes": 9937,
+              "readable": true
+            },
+            {
+              "name": "refinance-break-even-calculator/refinance_break_even_calculator_guide.pdf",
+              "bytes": 8465,
+              "readable": true
+            },
+            {
+              "name": "refinance-break-even-calculator/README.txt",
+              "bytes": 594,
+              "readable": true
+            }
+          ],
+          "entry_count": 3,
+          "uncompressed_bytes": 18996,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "czhxhu",
+      "meta_http": 200,
+      "title": "Service Business Pricing & Break-Even Calculator",
+      "price_cents": 1500,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/czhxhu",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 18796,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 18796,
+          "sha256": "a89cfa55c4d80ef18b104b4fe91ce25966c771afa884f1a4df72a9cecbd82d47",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "service-pricing-break-even-calculator/service_pricing_break_even_calculator.xlsx",
+              "bytes": 14743,
+              "readable": true
+            },
+            {
+              "name": "service-pricing-break-even-calculator/service_pricing_break_even_calculator_guide.pdf",
+              "bytes": 8946,
+              "readable": true
+            },
+            {
+              "name": "service-pricing-break-even-calculator/README.txt",
+              "bytes": 538,
+              "readable": true
+            }
+          ],
+          "entry_count": 3,
+          "uncompressed_bytes": 24227,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "dhtppr",
+      "meta_http": 200,
+      "title": "PTO Accrual & Leave Balance Tracker for Small Teams",
+      "price_cents": 1200,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/dhtppr",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 17858,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 17858,
+          "sha256": "a5f1097a1f42769210cc4bbed06ce3981d8ae85370b99cc457f5a3e687109695",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "pto-accrual-leave-balance-tracker/pto_accrual_leave_balance_tracker.xlsx",
+              "bytes": 14029,
+              "readable": true
+            },
+            {
+              "name": "pto-accrual-leave-balance-tracker/pto_accrual_leave_balance_tracker_guide.pdf",
+              "bytes": 7825,
+              "readable": true
+            },
+            {
+              "name": "pto-accrual-leave-balance-tracker/README.txt",
+              "bytes": 594,
+              "readable": true
+            }
+          ],
+          "entry_count": 3,
+          "uncompressed_bytes": 22448,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "dkkkcq",
+      "meta_http": 200,
+      "title": "Franchise Unit Economics & Break-Even Model",
+      "price_cents": 4900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/dkkkcq",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 14439,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 14439,
+          "sha256": "9a3557881f90a8dff163a887cc5f489f121a3da9f5df9e2085594fb5cc1dd51a",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "franchise-unit-economics-break-even/README.txt",
+              "bytes": 609,
+              "readable": true
+            },
+            {
+              "name": "franchise-unit-economics-break-even/franchise-unit-economics-break-even.xlsx",
+              "bytes": 7341,
+              "readable": true
+            },
+            {
+              "name": "franchise-unit-economics-break-even/franchise-unit-economics-break-even_guide.pdf",
+              "bytes": 10041,
+              "readable": true
+            }
+          ],
+          "entry_count": 3,
+          "uncompressed_bytes": 17991,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "dliccs",
+      "meta_http": 200,
+      "title": "13-Week Cash Flow Forecast for Small Business",
+      "price_cents": 1900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/dliccs",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 17313,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 17313,
+          "sha256": "73d0d79a2af590c4dfe9068206a86022432048fc12ae43fb12c17273e44386d4",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "13-week-cash-flow-forecast/13_week_cash_flow_forecast.xlsx",
+              "bytes": 11499,
+              "readable": true
+            },
+            {
+              "name": "13-week-cash-flow-forecast/13_week_cash_flow_forecast_guide.pdf",
+              "bytes": 8506,
+              "readable": true
+            },
+            {
+              "name": "13-week-cash-flow-forecast/README.txt",
+              "bytes": 537,
+              "readable": true
+            }
+          ],
+          "entry_count": 3,
+          "uncompressed_bytes": 20542,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "dmgddj",
+      "meta_http": 200,
+      "title": "Freight Broker Margin & Detention Recovery Tracker",
+      "price_cents": 4900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/dmgddj",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 13702,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 13702,
+          "sha256": "5354e5750ceef3f3cbde18aa83279389b3879a264b7c5ac4ae2f4a8847900111",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "freight-broker-margin-detention-recovery/README.txt",
+              "bytes": 633,
+              "readable": true
+            },
+            {
+              "name": "freight-broker-margin-detention-recovery/freight-broker-margin-detention-recovery.xlsx",
+              "bytes": 7117,
+              "readable": true
+            },
+            {
+              "name": "freight-broker-margin-detention-recovery/freight-broker-margin-detention-recovery_guide.pdf",
+              "bytes": 9352,
+              "readable": true
+            }
+          ],
+          "entry_count": 3,
+          "uncompressed_bytes": 17102,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "duzghq",
+      "meta_http": 200,
+      "title": "Small Business Valuation & Offer Price Model (SDE, DCF, Assets)",
+      "price_cents": 4900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/duzghq",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 20566,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 20566,
+          "sha256": "c8caaa1023fa91662404944f9a89d8116e1756e8f34adcc56e42e6743d5f3ad8",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "small-business-valuation-offer-model/small_business_valuation_offer_model.xlsx",
+              "bytes": 9126,
+              "readable": true
+            },
+            {
+              "name": "small-business-valuation-offer-model/small_business_valuation_offer_model_guide.pdf",
+              "bytes": 15829,
+              "readable": true
+            },
+            {
+              "name": "small-business-valuation-offer-model/README.txt",
+              "bytes": 717,
+              "readable": true
+            }
+          ],
+          "entry_count": 3,
+          "uncompressed_bytes": 25672,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "ebuszz",
+      "meta_http": 200,
+      "title": "Debt Payoff Planner (Avalanche or Snowball)",
+      "price_cents": 1200,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/ebuszz",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 34027,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 34027,
+          "sha256": "5cc4b6c4221d5c4f04c0ed35d94b5e7a93e5a2c576fa6308232b8671e45b4a34",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "debt-payoff-planner/debt_payoff_planner.xlsx",
+              "bytes": 50097,
+              "readable": true
+            },
+            {
+              "name": "debt-payoff-planner/debt_payoff_planner_guide.pdf",
+              "bytes": 8318,
+              "readable": true
+            },
+            {
+              "name": "debt-payoff-planner/README.txt",
+              "bytes": 559,
+              "readable": true
+            }
+          ],
+          "entry_count": 3,
+          "uncompressed_bytes": 58974,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "fdjqyp",
+      "meta_http": 200,
+      "title": "Employee True Cost Calculator (US Small Business)",
+      "price_cents": 1500,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/fdjqyp",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 16030,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 16030,
+          "sha256": "df0a26fce288af03cfbba68cbb05b268100af542079f80d43a03ef700c98c70c",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "employee-true-cost-calculator/employee_true_cost_calculator.xlsx",
+              "bytes": 10096,
+              "readable": true
+            },
+            {
+              "name": "employee-true-cost-calculator/employee_true_cost_calculator_guide.pdf",
+              "bytes": 8433,
+              "readable": true
+            },
+            {
+              "name": "employee-true-cost-calculator/README.txt",
+              "bytes": 638,
+              "readable": true
+            }
+          ],
+          "entry_count": 3,
+          "uncompressed_bytes": 19167,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "ffsehk",
+      "meta_http": 200,
+      "title": "SAFE Conversion & Dilution Calculator (Post-Money SAFEs)",
+      "price_cents": 1900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/ffsehk",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 15063,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 15063,
+          "sha256": "7bf29b909626f4e560ae8e8431cb8de66ad5cf772d8f009d0c3378edad565504",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "safe-conversion-dilution-calculator/safe_conversion_dilution_calculator.xlsx",
+              "bytes": 9472,
+              "readable": true
+            },
+            {
+              "name": "safe-conversion-dilution-calculator/safe_conversion_dilution_calculator_guide.pdf",
+              "bytes": 7967,
+              "readable": true
+            },
+            {
+              "name": "safe-conversion-dilution-calculator/README.txt",
+              "bytes": 603,
+              "readable": true
+            }
+          ],
+          "entry_count": 3,
+          "uncompressed_bytes": 18042,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "ghszog",
+      "meta_http": 200,
+      "title": "Home Renovation Budget & Contractor Quote Comparison",
+      "price_cents": 1400,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/ghszog",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 16177,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 16177,
+          "sha256": "4ee9ea9c984d371b02a7deaca1c54c93aeb813017245c379823bee617ae4941c",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "renovation-budget-quote-comparison/renovation_budget_quote_comparison.xlsx",
+              "bytes": 10812,
+              "readable": true
+            },
+            {
+              "name": "renovation-budget-quote-comparison/renovation_budget_quote_comparison_guide.pdf",
+              "bytes": 7861,
+              "readable": true
+            },
+            {
+              "name": "renovation-budget-quote-comparison/README.txt",
+              "bytes": 581,
+              "readable": true
+            }
+          ],
+          "entry_count": 3,
+          "uncompressed_bytes": 19254,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "gunwie",
+      "meta_http": 200,
+      "title": "Surety Bonding Capacity & Submission Pack",
+      "price_cents": 4900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/gunwie",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 13891,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 13891,
+          "sha256": "6bf304e6de4412b028228e357fbf315657b09422c80d0c385acfa9cc40137f93",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "surety-bonding-capacity-pack/README.txt",
+              "bytes": 591,
+              "readable": true
+            },
+            {
+              "name": "surety-bonding-capacity-pack/surety-bonding-capacity-pack.xlsx",
+              "bytes": 7180,
+              "readable": true
+            },
+            {
+              "name": "surety-bonding-capacity-pack/surety-bonding-capacity-pack_guide.pdf",
+              "bytes": 9647,
+              "readable": true
+            }
+          ],
+          "entry_count": 3,
+          "uncompressed_bytes": 17418,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "gwwpri",
+      "meta_http": 200,
+      "title": "Rent vs Buy Home Calculator: Net Worth Year by Year",
+      "price_cents": 1200,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/gwwpri",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 17339,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 17339,
+          "sha256": "7c776a1fb903d6b7e1e69c092d78565571beb1d96b7a83c203bbe843fdeabd1b",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "rent-vs-buy-home-calculator/rent_vs_buy_home_calculator.xlsx",
+              "bytes": 12237,
+              "readable": true
+            },
+            {
+              "name": "rent-vs-buy-home-calculator/rent_vs_buy_home_calculator_guide.pdf",
+              "bytes": 8068,
+              "readable": true
+            },
+            {
+              "name": "rent-vs-buy-home-calculator/README.txt",
+              "bytes": 560,
+              "readable": true
+            }
+          ],
+          "entry_count": 3,
+          "uncompressed_bytes": 20865,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "hpnrjs",
+      "meta_http": 200,
+      "title": "US Trademark Ten-Year Cost Calculator (USPTO Fees per Class)",
+      "price_cents": 1200,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/hpnrjs",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 16105,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 16105,
+          "sha256": "63111b31d0f957d56232af77a14c763786f73ea9f6f7f7365a44e5f12130601b",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "uspto-trademark-ten-year-cost-calculator/uspto_trademark_ten_year_cost_calculator.xlsx",
+              "bytes": 9885,
+              "readable": true
+            },
+            {
+              "name": "uspto-trademark-ten-year-cost-calculator/uspto_trademark_ten_year_cost_calculator_guide.pdf",
+              "bytes": 8561,
+              "readable": true
+            },
+            {
+              "name": "uspto-trademark-ten-year-cost-calculator/README.txt",
+              "bytes": 787,
+              "readable": true
+            }
+          ],
+          "entry_count": 3,
+          "uncompressed_bytes": 19233,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "ieashv",
+      "meta_http": 200,
+      "title": "Meeting Cost & ROI Calculator",
+      "price_cents": 1199,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/ieashv",
+      "sales_count": 0,
+      "file_count": 2,
+      "files": [
+        {
+          "declared_bytes": 12865,
+          "declared_type": "xlsx",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 12865,
+          "sha256": "87ecb1cd223ebf615c46bf49a74c1feb70ea5131a1da9c14dcedff470ccac820",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "docProps/app.xml",
+              "bytes": 205,
+              "readable": true
+            },
+            {
+              "name": "docProps/core.xml",
+              "bytes": 555,
+              "readable": true
+            },
+            {
+              "name": "xl/theme/theme1.xml",
+              "bytes": 10140,
+              "readable": true
+            },
+            {
+              "name": "xl/worksheets/sheet1.xml",
+              "bytes": 4882,
+              "readable": true
+            },
+            {
+              "name": "xl/worksheets/sheet2.xml",
+              "bytes": 20220,
+              "readable": true
+            },
+            {
+              "name": "xl/worksheets/sheet3.xml",
+              "bytes": 3437,
+              "readable": true
+            },
+            {
+              "name": "xl/worksheets/sheet4.xml",
+              "bytes": 2168,
+              "readable": true
+            },
+            {
+              "name": "xl/worksheets/sheet5.xml",
+              "bytes": 1994,
+              "readable": true
+            },
+            {
+              "name": "xl/styles.xml",
+              "bytes": 5378,
+              "readable": true
+            },
+            {
+              "name": "_rels/.rels",
+              "bytes": 531,
+              "readable": true
+            },
+            {
+              "name": "xl/workbook.xml",
+              "bytes": 1112,
+              "readable": true
+            },
+            {
+              "name": "xl/_rels/workbook.xml.rels",
+              "bytes": 1084,
+              "readable": true
+            },
+            {
+              "name": "[Content_Types].xml",
+              "bytes": 1519,
+              "readable": true
+            }
+          ],
+          "entry_count": 13,
+          "uncompressed_bytes": 53225,
+          "verdict": "PASS"
+        },
+        {
+          "declared_bytes": 9639,
+          "declared_type": "pdf",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 9639,
+          "sha256": "2c964edcfc8a9dcfb45d6bfcde23da85871ec6b3deacc39a10c71cf227972a46",
+          "size_matches_declared": true,
+          "magic": "25504446",
+          "type": "pdf",
+          "pages": 4,
+          "words": 1442,
+          "first_text": "B12-004 Page 1 Meeting Cost & ROI Method Guide Price every recurring meeting, rank them by real annual cost, and cancel the ones that produce no decision. 1. What this guide is for This guide turns meeting time into a visible annual cost and, more importantly, into a decision. It is the companion to",
+          "encrypted": false,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "jifzsa",
+      "meta_http": 200,
+      "title": "Medical Practice Payer Mix & Denial Leakage Model",
+      "price_cents": 4900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/jifzsa",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 13830,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 13830,
+          "sha256": "ad34e40ab16a921a369c9fa1aae75033ab03b8735ffc5bac5cfb54dd26e7a5ae",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "payer-mix-denial-leakage-model/README.txt",
+              "bytes": 611,
+              "readable": true
+            },
+            {
+              "name": "payer-mix-denial-leakage-model/payer-mix-denial-leakage-model.xlsx",
+              "bytes": 7138,
+              "readable": true
+            },
+            {
+              "name": "payer-mix-denial-leakage-model/payer-mix-denial-leakage-model_guide.pdf",
+              "bytes": 9590,
+              "readable": true
+            }
+          ],
+          "entry_count": 3,
+          "uncompressed_bytes": 17339,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "jorsyy",
+      "meta_http": 200,
+      "title": "Event Budget & Ticket Break-Even Planner",
+      "price_cents": 1200,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/jorsyy",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 15583,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 15583,
+          "sha256": "fb89e6db6477e45a711e27a9a6b8de2792575dd35c0b296330235ba1ea2a3c7c",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "event-budget-ticket-breakeven-planner/event_budget_ticket_breakeven_planner.xlsx",
+              "bytes": 10741,
+              "readable": true
+            },
+            {
+              "name": "event-budget-ticket-breakeven-planner/event_budget_ticket_breakeven_planner_guide.pdf",
+              "bytes": 7494,
+              "readable": true
+            },
+            {
+              "name": "event-budget-ticket-breakeven-planner/README.txt",
+              "bytes": 564,
+              "readable": true
+            }
+          ],
+          "entry_count": 3,
+          "uncompressed_bytes": 18799,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "joytjk",
+      "meta_http": 200,
+      "title": "Digital Course Launch Break-Even Model (Pessimistic, Base, Optimistic)",
+      "price_cents": 2900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/joytjk",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 19090,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 19090,
+          "sha256": "fc77f5e897a00390f518ebddd1ae307d718818b84896c1e98f90f9031d452dd9",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "digital-course-launch-break-even-model/digital_course_launch_break_even_model.xlsx",
+              "bytes": 9455,
+              "readable": true
+            },
+            {
+              "name": "digital-course-launch-break-even-model/digital_course_launch_break_even_model_guide.pdf",
+              "bytes": 13446,
+              "readable": true
+            },
+            {
+              "name": "digital-course-launch-break-even-model/README.txt",
+              "bytes": 659,
+              "readable": true
+            }
+          ],
+          "entry_count": 3,
+          "uncompressed_bytes": 23560,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "jydqg",
+      "meta_http": 200,
+      "title": "Inventory Reorder Point & Stock Tracker",
+      "price_cents": 1500,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/jydqg",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 23971,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 23971,
+          "sha256": "a33b76e8b43bd256dcbe525d6e27d9e6c74834be4fbe91a49b32898e16268fe0",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "inventory-reorder-point-tracker/inventory_reorder_point_tracker.xlsx",
+              "bytes": 33124,
+              "readable": true
+            },
+            {
+              "name": "inventory-reorder-point-tracker/inventory_reorder_point_tracker_guide.pdf",
+              "bytes": 8313,
+              "readable": true
+            },
+            {
+              "name": "inventory-reorder-point-tracker/README.txt",
+              "bytes": 571,
+              "readable": true
+            }
+          ],
+          "entry_count": 3,
+          "uncompressed_bytes": 42008,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "kftdyp",
+      "meta_http": 200,
+      "title": "Restaurant Menu Engineering Worksheet (Stars, Plowhorses, Puzzles, Dogs)",
+      "price_cents": 1900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/kftdyp",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 16577,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 16577,
+          "sha256": "d79fae899693ae7dedfe00412c4fc2fec435e4fd996ef48d12b399ac23200d4f",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "restaurant-menu-engineering-worksheet/restaurant_menu_engineering_worksheet.xlsx",
+              "bytes": 13126,
+              "readable": true
+            },
+            {
+              "name": "restaurant-menu-engineering-worksheet/restaurant_menu_engineering_worksheet_guide.pdf",
+              "bytes": 7542,
+              "readable": true
+            },
+            {
+              "name": "restaurant-menu-engineering-worksheet/README.txt",
+              "bytes": 549,
+              "readable": true
+            }
+          ],
+          "entry_count": 3,
+          "uncompressed_bytes": 21217,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "khqbui",
+      "meta_http": 200,
+      "title": "Tiered Sales Commission Calculator for Small Sales Teams",
+      "price_cents": 1200,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/khqbui",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 17137,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 17137,
+          "sha256": "666f3c90b9d6ef27fe2fd0ec6650a6d37addba8d2e67dd49407c316cf95ee187",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "tiered-sales-commission-calculator/tiered_sales_commission_calculator.xlsx",
+              "bytes": 13519,
+              "readable": true
+            },
+            {
+              "name": "tiered-sales-commission-calculator/tiered_sales_commission_calculator_guide.pdf",
+              "bytes": 7544,
+              "readable": true
+            },
+            {
+              "name": "tiered-sales-commission-calculator/README.txt",
+              "bytes": 567,
+              "readable": true
+            }
+          ],
+          "entry_count": 3,
+          "uncompressed_bytes": 21630,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "kidohv",
+      "meta_http": 200,
+      "title": "Wedding Budget & Vendor Payment Planner",
+      "price_cents": 1200,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/kidohv",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 15778,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 15778,
+          "sha256": "2bd0775a0b0cffc66b2c409d681d4d917fb834a4d9fa21b9b19b85dfd6b0152f",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "wedding-budget-vendor-payment-planner/wedding_budget_vendor_payment_planner.xlsx",
+              "bytes": 10308,
+              "readable": true
+            },
+            {
+              "name": "wedding-budget-vendor-payment-planner/wedding_budget_vendor_payment_planner_guide.pdf",
+              "bytes": 7862,
+              "readable": true
+            },
+            {
+              "name": "wedding-budget-vendor-payment-planner/README.txt",
+              "bytes": 590,
+              "readable": true
+            }
+          ],
+          "entry_count": 3,
+          "uncompressed_bytes": 18760,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "krrtdf",
+      "meta_http": 200,
+      "title": "Sinking Funds & Emergency Fund Planner",
+      "price_cents": 900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/krrtdf",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 14824,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 14824,
+          "sha256": "6f25a75884dba405e3bf2327b6c7cbaed590ecf792e9a2cf3ae2b58458d28516",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "sinking-funds-emergency-fund-planner/sinking_funds_emergency_fund_planner.xlsx",
+              "bytes": 9425,
+              "readable": true
+            },
+            {
+              "name": "sinking-funds-emergency-fund-planner/sinking_funds_emergency_fund_planner_guide.pdf",
+              "bytes": 7767,
+              "readable": true
+            },
+            {
+              "name": "sinking-funds-emergency-fund-planner/README.txt",
+              "bytes": 539,
+              "readable": true
+            }
+          ],
+          "entry_count": 3,
+          "uncompressed_bytes": 17731,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "mcwusn",
+      "meta_http": 200,
+      "title": "Startup Runway & Burn Planner",
+      "price_cents": 1500,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/mcwusn",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 18586,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 18586,
+          "sha256": "96384d647ad6699bdf0e2444dca071983a53ef156b1ac154055d93aa10a986ef",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "startup-runway-burn-planner/startup_runway_burn_planner.xlsx",
+              "bytes": 14840,
+              "readable": true
+            },
+            {
+              "name": "startup-runway-burn-planner/startup_runway_burn_planner_guide.pdf",
+              "bytes": 7903,
+              "readable": true
+            },
+            {
+              "name": "startup-runway-burn-planner/README.txt",
+              "bytes": 513,
+              "readable": true
+            }
+          ],
+          "entry_count": 3,
+          "uncompressed_bytes": 23256,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "mfpqin",
+      "meta_http": 200,
+      "title": "Rental Property Deal Analyzer",
+      "price_cents": 2400,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/mfpqin",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 20308,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 20308,
+          "sha256": "cdbb5be65160c495fa383011ad6fb74848365ce132278eb7d882c49ff88e8c1f",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "rental-property-deal-analyzer/rental_property_deal_analyzer.xlsx",
+              "bytes": 14755,
+              "readable": true
+            },
+            {
+              "name": "rental-property-deal-analyzer/rental_property_deal_analyzer_guide.pdf",
+              "bytes": 9175,
+              "readable": true
+            },
+            {
+              "name": "rental-property-deal-analyzer/README.txt",
+              "bytes": 554,
+              "readable": true
+            }
+          ],
+          "entry_count": 3,
+          "uncompressed_bytes": 24484,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "mmpoh",
+      "meta_http": 200,
+      "title": "European Accessibility Act Penalty Exposure Checker (11 EU Countries)",
+      "price_cents": 1900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/mmpoh",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 20386,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 20386,
+          "sha256": "7208326ebf462b290031444293da18d6c322ce57df3b5192b8dd9da270589f56",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "eaa-penalty-exposure-checker/eaa_penalty_exposure_checker.xlsx",
+              "bytes": 13738,
+              "readable": true
+            },
+            {
+              "name": "eaa-penalty-exposure-checker/eaa_penalty_exposure_checker_guide.pdf",
+              "bytes": 9278,
+              "readable": true
+            },
+            {
+              "name": "eaa-penalty-exposure-checker/README.txt",
+              "bytes": 649,
+              "readable": true
+            }
+          ],
+          "entry_count": 3,
+          "uncompressed_bytes": 23665,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "ntbvq",
+      "meta_http": 200,
+      "title": "Etsy & Shopify Product Profit Calculator",
+      "price_cents": 1200,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/ntbvq",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 22694,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 22694,
+          "sha256": "c538fdae30311b9ff05d81a3a7f786264874275212ae26a64e2bbc85fef84417",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "etsy-shopify-product-profit-calculator/etsy_shopify_product_profit_calculator.xlsx",
+              "bytes": 25002,
+              "readable": true
+            },
+            {
+              "name": "etsy-shopify-product-profit-calculator/etsy_shopify_product_profit_calculator_guide.pdf",
+              "bytes": 8504,
+              "readable": true
+            },
+            {
+              "name": "etsy-shopify-product-profit-calculator/README.txt",
+              "bytes": 852,
+              "readable": true
+            }
+          ],
+          "entry_count": 3,
+          "uncompressed_bytes": 34358,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "ogypx",
+      "meta_http": 200,
+      "title": "Brick-and-Mortar Store Opening Feasibility & Break-Even Model",
+      "price_cents": 3900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/ogypx",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 21738,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 21738,
+          "sha256": "68517172720dbd701b982bb10f650a90df2751f021f90afea02ad842bdac8352",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "store-opening-feasibility-break-even-model/store_opening_feasibility_break_even_model.xlsx",
+              "bytes": 11341,
+              "readable": true
+            },
+            {
+              "name": "store-opening-feasibility-break-even-model/store_opening_feasibility_break_even_model_guide.pdf",
+              "bytes": 14812,
+              "readable": true
+            },
+            {
+              "name": "store-opening-feasibility-break-even-model/README.txt",
+              "bytes": 694,
+              "readable": true
+            }
+          ],
+          "entry_count": 3,
+          "uncompressed_bytes": 26847,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "pgoxt",
+      "meta_http": 200,
+      "title": "Equipment Lease vs Buy Model with MACRS Depreciation & Tax Shield (US)",
+      "price_cents": 3900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/pgoxt",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 20916,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 20916,
+          "sha256": "36f9a5f86a3f58113127f76e050858e803f3d2c50c09e59332c661148c36851a",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "equipment-lease-vs-buy-macrs-model/equipment_lease_vs_buy_macrs_model.xlsx",
+              "bytes": 10548,
+              "readable": true
+            },
+            {
+              "name": "equipment-lease-vs-buy-macrs-model/equipment_lease_vs_buy_macrs_model_guide.pdf",
+              "bytes": 14389,
+              "readable": true
+            },
+            {
+              "name": "equipment-lease-vs-buy-macrs-model/README.txt",
+              "bytes": 725,
+              "readable": true
+            }
+          ],
+          "entry_count": 3,
+          "uncompressed_bytes": 25662,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "plvoxx",
+      "meta_http": 200,
+      "title": "Grant Endgame: No-Cost Extension & Unspent Funds Kit",
+      "price_cents": 1900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/plvoxx",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 78578,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 78578,
+          "sha256": "f645841b6c96aba86eee57e8471f51e8d9a2c5d1d7e1f8e9d971442c85cc6b66",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "grant-endgame-no-cost-extension-unspent-funds-kit/B13-002_grant_endgame_nce_unspent_funds.xlsx",
+              "bytes": 31683,
+              "readable": true
+            },
+            {
+              "name": "grant-endgame-no-cost-extension-unspent-funds-kit/B13-002_grant_endgame_nce_unspent_funds_guide.pdf",
+              "bytes": 69647,
+              "readable": true
+            }
+          ],
+          "entry_count": 2,
+          "uncompressed_bytes": 101330,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "qevzns",
+      "meta_http": 200,
+      "title": "Client Pipeline & Proposal Tracker",
+      "price_cents": 1400,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/qevzns",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 24906,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 24906,
+          "sha256": "ec3e6f6a4ed9304bda4a696c6a70733775bae861704f76a7a1ae8e9af717972b",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "client-pipeline-proposal-tracker/client_pipeline_proposal_tracker.xlsx",
+              "bytes": 34755,
+              "readable": true
+            },
+            {
+              "name": "client-pipeline-proposal-tracker/client_pipeline_proposal_tracker_guide.pdf",
+              "bytes": 7989,
+              "readable": true
+            },
+            {
+              "name": "client-pipeline-proposal-tracker/README.txt",
+              "bytes": 491,
+              "readable": true
+            }
+          ],
+          "entry_count": 3,
+          "uncompressed_bytes": 43235,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "qhmtd",
+      "meta_http": 200,
+      "title": "Membership & Subscription MRR and Churn Forecaster",
+      "price_cents": 1500,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/qhmtd",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 15216,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 15216,
+          "sha256": "5e4443e81ba0532b8cbf757d186674599ae86dace078977caae1660bfdaac595",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "membership-subscription-mrr-churn-forecaster/membership_subscription_mrr_churn_forecaster.xlsx",
+              "bytes": 9963,
+              "readable": true
+            },
+            {
+              "name": "membership-subscription-mrr-churn-forecaster/membership_subscription_mrr_churn_forecaster_guide.pdf",
+              "bytes": 7600,
+              "readable": true
+            },
+            {
+              "name": "membership-subscription-mrr-churn-forecaster/README.txt",
+              "bytes": 563,
+              "readable": true
+            }
+          ],
+          "entry_count": 3,
+          "uncompressed_bytes": 18126,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "rlgdc",
+      "meta_http": 200,
+      "title": "Business Mileage Log & Deduction Tracker (US)",
+      "price_cents": 900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/rlgdc",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 21108,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 21108,
+          "sha256": "1c085b0f9972dbce29366af5e846e96e813cf4758311ad8ad9ccc1e33a04cc53",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "business-mileage-log-deduction-tracker/business_mileage_log_deduction_tracker.xlsx",
+              "bytes": 32028,
+              "readable": true
+            },
+            {
+              "name": "business-mileage-log-deduction-tracker/business_mileage_log_deduction_tracker_guide.pdf",
+              "bytes": 7866,
+              "readable": true
+            },
+            {
+              "name": "business-mileage-log-deduction-tracker/README.txt",
+              "bytes": 626,
+              "readable": true
+            }
+          ],
+          "entry_count": 3,
+          "uncompressed_bytes": 40520,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "rwrcw",
+      "meta_http": 200,
+      "title": "Retirement Drawdown Stress Test: Sequence-of-Returns Scenarios",
+      "price_cents": 3900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/rwrcw",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 21311,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 21311,
+          "sha256": "9e006b2681d49b9c80e175e219ae4fe3c7b750f9f25402148089f3488424d0f2",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "retirement-drawdown-stress-test/retirement_drawdown_stress_test.xlsx",
+              "bytes": 12704,
+              "readable": true
+            },
+            {
+              "name": "retirement-drawdown-stress-test/retirement_drawdown_stress_test_guide.pdf",
+              "bytes": 13415,
+              "readable": true
+            },
+            {
+              "name": "retirement-drawdown-stress-test/README.txt",
+              "bytes": 673,
+              "readable": true
+            }
+          ],
+          "entry_count": 3,
+          "uncompressed_bytes": 26792,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "ryzoro",
+      "meta_http": 200,
+      "title": "Owner-Operator Cost per Mile & Load Profitability Model",
+      "price_cents": 3900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/ryzoro",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 23370,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 23370,
+          "sha256": "a69921f47730ce534813f81f77b7948aacb6bb26bbefacb5035eeebbc95274d8",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "owner-operator-cost-per-mile-load-profit/owner_operator_cost_per_mile_load_profit.xlsx",
+              "bytes": 14971,
+              "readable": true
+            },
+            {
+              "name": "owner-operator-cost-per-mile-load-profit/owner_operator_cost_per_mile_load_profit_guide.pdf",
+              "bytes": 14125,
+              "readable": true
+            },
+            {
+              "name": "owner-operator-cost-per-mile-load-profit/README.txt",
+              "bytes": 636,
+              "readable": true
+            }
+          ],
+          "entry_count": 3,
+          "uncompressed_bytes": 29732,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "sfcpyb",
+      "meta_http": 200,
+      "title": "Price Increase Impact Calculator",
+      "price_cents": 1200,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/sfcpyb",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 13661,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 13661,
+          "sha256": "d15b853f0103149b44753d4007e81845a6448d32af6d1da17fd3c9a3c8fe1442",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "price-increase-impact-calculator/price_increase_impact_calculator.xlsx",
+              "bytes": 8425,
+              "readable": true
+            },
+            {
+              "name": "price-increase-impact-calculator/price_increase_impact_calculator_guide.pdf",
+              "bytes": 7505,
+              "readable": true
+            },
+            {
+              "name": "price-increase-impact-calculator/README.txt",
+              "bytes": 542,
+              "readable": true
+            }
+          ],
+          "entry_count": 3,
+          "uncompressed_bytes": 16472,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "svlky",
+      "meta_http": 200,
+      "title": "Founder Access Continuity Organizer",
+      "price_cents": 800,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/svlky",
+      "sales_count": 0,
+      "file_count": 2,
+      "files": [
+        {
+          "declared_bytes": 13594,
+          "declared_type": "xlsx",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 13594,
+          "sha256": "7cf3e46fa8c2470e1a14c91ff983bf186542fb92f005a0305ff3cacdf9d5edd5",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "docProps/app.xml",
+              "bytes": 205,
+              "readable": true
+            },
+            {
+              "name": "docProps/core.xml",
+              "bytes": 555,
+              "readable": true
+            },
+            {
+              "name": "xl/theme/theme1.xml",
+              "bytes": 10140,
+              "readable": true
+            },
+            {
+              "name": "xl/worksheets/sheet1.xml",
+              "bytes": 12438,
+              "readable": true
+            },
+            {
+              "name": "xl/worksheets/sheet2.xml",
+              "bytes": 6184,
+              "readable": true
+            },
+            {
+              "name": "xl/worksheets/sheet3.xml",
+              "bytes": 2678,
+              "readable": true
+            },
+            {
+              "name": "xl/worksheets/sheet4.xml",
+              "bytes": 5896,
+              "readable": true
+            },
+            {
+              "name": "xl/worksheets/sheet5.xml",
+              "bytes": 3756,
+              "readable": true
+            },
+            {
+              "name": "xl/worksheets/sheet6.xml",
+              "bytes": 2507,
+              "readable": true
+            },
+            {
+              "name": "xl/styles.xml",
+              "bytes": 5284,
+              "readable": true
+            },
+            {
+              "name": "_rels/.rels",
+              "bytes": 531,
+              "readable": true
+            },
+            {
+              "name": "xl/workbook.xml",
+              "bytes": 1257,
+              "readable": true
+            },
+            {
+              "name": "xl/_rels/workbook.xml.rels",
+              "bytes": 1229,
+              "readable": true
+            },
+            {
+              "name": "[Content_Types].xml",
+              "bytes": 1655,
+              "readable": true
+            }
+          ],
+          "entry_count": 14,
+          "uncompressed_bytes": 54315,
+          "verdict": "PASS"
+        },
+        {
+          "declared_bytes": 19095,
+          "declared_type": "pdf",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 19095,
+          "sha256": "c9c18a4b0505828a1eabaf6a72a2aba8cc6ef5024c8ebe543e47f971889000fb",
+          "size_matches_declared": true,
+          "magic": "25504446",
+          "type": "pdf",
+          "pages": 8,
+          "words": 3269,
+          "first_text": "B12-003 Page 1 Founder Access Continuity Organizer If you are unreachable tomorrow, someone you trust can keep the business alive — without you ever writing a password in this kit. 1. How to use this kit (read this first) Read this guide once, then work the companion workbook sheet by sheet. The wor",
+          "encrypted": false,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "swscqu",
+      "meta_http": 200,
+      "title": "Caregiver Command Kit: Emergency, Medication, and Appointment Organizer",
+      "price_cents": 1699,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/swscqu",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 67613,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 67613,
+          "sha256": "e24a9435b74fd7e8f80e22ab99793e30df82b7abb5764e2d9e614c8ea1fb033a",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "caregiver-command-kit/B13-003_caregiver_command_kit.xlsx",
+              "bytes": 32518,
+              "readable": true
+            },
+            {
+              "name": "caregiver-command-kit/B13-003_caregiver_command_kit_guide.pdf",
+              "bytes": 55506,
+              "readable": true
+            }
+          ],
+          "entry_count": 2,
+          "uncompressed_bytes": 88024,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "trhrw",
+      "meta_http": 200,
+      "title": "SaaS Renewal Risk & NRR Model",
+      "price_cents": 4900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/trhrw",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 13500,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 13500,
+          "sha256": "15f50927729b3183103f8f5b9a7a17a9462022612d8d040b231d095aa338f9e6",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "saas-renewal-risk-nrr-model/README.txt",
+              "bytes": 565,
+              "readable": true
+            },
+            {
+              "name": "saas-renewal-risk-nrr-model/saas-renewal-risk-nrr-model.xlsx",
+              "bytes": 7108,
+              "readable": true
+            },
+            {
+              "name": "saas-renewal-risk-nrr-model/saas-renewal-risk-nrr-model_guide.pdf",
+              "bytes": 9291,
+              "readable": true
+            }
+          ],
+          "entry_count": 3,
+          "uncompressed_bytes": 16964,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "ucgjwf",
+      "meta_http": 200,
+      "title": "Shift Schedule & Labor Cost Planner",
+      "price_cents": 1400,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/ucgjwf",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 15816,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 15816,
+          "sha256": "bcfc16ae1258f507431e638669526fe2d2bf97b46b675281c062ff56e0c6ad93",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "shift-schedule-labor-cost-planner/shift_schedule_labor_cost_planner.xlsx",
+              "bytes": 10654,
+              "readable": true
+            },
+            {
+              "name": "shift-schedule-labor-cost-planner/shift_schedule_labor_cost_planner_guide.pdf",
+              "bytes": 7676,
+              "readable": true
+            },
+            {
+              "name": "shift-schedule-labor-cost-planner/README.txt",
+              "bytes": 602,
+              "readable": true
+            }
+          ],
+          "entry_count": 3,
+          "uncompressed_bytes": 18932,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "uubnbi",
+      "meta_http": 200,
+      "title": "Zero-Based Monthly Budget Planner",
+      "price_cents": 900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/uubnbi",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 21463,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 21463,
+          "sha256": "3a3297285fd73ce69df2fb5f5a4ef55c79b1a9c1057a069ab5e0bd7cb42992ba",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "zero-based-monthly-budget-planner/zero_based_monthly_budget_planner.xlsx",
+              "bytes": 19399,
+              "readable": true
+            },
+            {
+              "name": "zero-based-monthly-budget-planner/zero_based_monthly_budget_planner_guide.pdf",
+              "bytes": 7982,
+              "readable": true
+            },
+            {
+              "name": "zero-based-monthly-budget-planner/README.txt",
+              "bytes": 479,
+              "readable": true
+            }
+          ],
+          "entry_count": 3,
+          "uncompressed_bytes": 27860,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "vcwgnv",
+      "meta_http": 200,
+      "title": "Restaurant Prime Cost & Menu Profit Audit",
+      "price_cents": 4900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/vcwgnv",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 13542,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 13542,
+          "sha256": "c0911b2fc0c6081fb9f469d46043448effe7fa154489f60a7625436624f465ee",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "restaurant-prime-cost-audit/README.txt",
+              "bytes": 589,
+              "readable": true
+            },
+            {
+              "name": "restaurant-prime-cost-audit/restaurant-prime-cost-audit.xlsx",
+              "bytes": 7052,
+              "readable": true
+            },
+            {
+              "name": "restaurant-prime-cost-audit/restaurant-prime-cost-audit_guide.pdf",
+              "bytes": 9393,
+              "readable": true
+            }
+          ],
+          "entry_count": 3,
+          "uncompressed_bytes": 17034,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "wsfwvz",
+      "meta_http": 200,
+      "title": "Renovation Allowance & Change-Order Control",
+      "price_cents": 1500,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/wsfwvz",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 51564,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 51564,
+          "sha256": "26ccfe242722a7aa8c20e0d67b938172844b891a2bcf16b5818abf1bb8864300",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "renovation-allowance-change-order-control/B13-001_renovation_allowance_control.xlsx",
+              "bytes": 23894,
+              "readable": true
+            },
+            {
+              "name": "renovation-allowance-change-order-control/B13-001_renovation_allowance_control_guide.pdf",
+              "bytes": 41858,
+              "readable": true
+            }
+          ],
+          "entry_count": 2,
+          "uncompressed_bytes": 65752,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "xiimbr",
+      "meta_http": 200,
+      "title": "Freelance Project Profitability & Effective Hourly Rate Tracker",
+      "price_cents": 1200,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/xiimbr",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 18002,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 18002,
+          "sha256": "889298065ed5465e0cae1117f40a9267ef0266b841713b7ee011ff2156a90e08",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "freelance-project-profitability-tracker/freelance_project_profitability_tracker.xlsx",
+              "bytes": 15717,
+              "readable": true
+            },
+            {
+              "name": "freelance-project-profitability-tracker/freelance_project_profitability_tracker_guide.pdf",
+              "bytes": 7832,
+              "readable": true
+            },
+            {
+              "name": "freelance-project-profitability-tracker/README.txt",
+              "bytes": 519,
+              "readable": true
+            }
+          ],
+          "entry_count": 3,
+          "uncompressed_bytes": 24068,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "xmbbls",
+      "meta_http": 200,
+      "title": "Customer Lifetime Value & CAC Payback Calculator",
+      "price_cents": 1500,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/xmbbls",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 15828,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 15828,
+          "sha256": "3e5842b8492e67a960450a688b11037ff96cc8e6107089886452401f87d00520",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "customer-lifetime-value-cac-calculator/customer_lifetime_value_cac_calculator.xlsx",
+              "bytes": 10112,
+              "readable": true
+            },
+            {
+              "name": "customer-lifetime-value-cac-calculator/customer_lifetime_value_cac_calculator_guide.pdf",
+              "bytes": 8132,
+              "readable": true
+            },
+            {
+              "name": "customer-lifetime-value-cac-calculator/README.txt",
+              "bytes": 558,
+              "readable": true
+            }
+          ],
+          "entry_count": 3,
+          "uncompressed_bytes": 18802,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "ydgbnh",
+      "meta_http": 200,
+      "title": "Self-Employed Quarterly Tax Set-Aside Planner (US, 2026)",
+      "price_cents": 1200,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/ydgbnh",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 25022,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 25022,
+          "sha256": "23d68f27d52126020e88760f813d9a15db6131102dcfa7a98ebc3dc1ac1f81e2",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "quarterly-tax-set-aside-planner/quarterly_tax_set_aside_planner.xlsx",
+              "bytes": 28489,
+              "readable": true
+            },
+            {
+              "name": "quarterly-tax-set-aside-planner/quarterly_tax_set_aside_planner_guide.pdf",
+              "bytes": 8832,
+              "readable": true
+            },
+            {
+              "name": "quarterly-tax-set-aside-planner/README.txt",
+              "bytes": 628,
+              "readable": true
+            }
+          ],
+          "entry_count": 3,
+          "uncompressed_bytes": 37949,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "ygpjjr",
+      "meta_http": 200,
+      "title": "Loan Covenant Headroom Dashboard (12 Months)",
+      "price_cents": 4900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/ygpjjr",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 14694,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 14694,
+          "sha256": "a92bee534230ad29eb66461691d439d25a5cd3fae6255aa3e343729e7056eed8",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "loan-covenant-headroom-dashboard/README.txt",
+              "bytes": 605,
+              "readable": true
+            },
+            {
+              "name": "loan-covenant-headroom-dashboard/loan-covenant-headroom-dashboard.xlsx",
+              "bytes": 7297,
+              "readable": true
+            },
+            {
+              "name": "loan-covenant-headroom-dashboard/loan-covenant-headroom-dashboard_guide.pdf",
+              "bytes": 10742,
+              "readable": true
+            }
+          ],
+          "entry_count": 3,
+          "uncompressed_bytes": 18644,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "ynwlgf",
+      "meta_http": 200,
+      "title": "Equipment Rent vs Buy & Residual Value Model",
+      "price_cents": 4900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/ynwlgf",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 14021,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 14021,
+          "sha256": "751da3336a9a2998c8ce58de98373508135f175a7413d1d81e9afa3b24a78fe3",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "equipment-rent-vs-buy-residual-model/README.txt",
+              "bytes": 613,
+              "readable": true
+            },
+            {
+              "name": "equipment-rent-vs-buy-residual-model/equipment-rent-vs-buy-residual-model.xlsx",
+              "bytes": 7187,
+              "readable": true
+            },
+            {
+              "name": "equipment-rent-vs-buy-residual-model/equipment-rent-vs-buy-residual-model_guide.pdf",
+              "bytes": 9700,
+              "readable": true
+            }
+          ],
+          "entry_count": 3,
+          "uncompressed_bytes": 17500,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "ytaqjk",
+      "meta_http": 200,
+      "title": "Contractor Job Costing & WIP Schedule (Over/Under Billing)",
+      "price_cents": 4900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/ytaqjk",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 23531,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 23531,
+          "sha256": "ff502b30cba54af65c9d282e62cb1c2308ec06e6e6ca1d90563e07e9ed58cc71",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "contractor-job-costing-wip-schedule/contractor_job_costing_wip_schedule.xlsx",
+              "bytes": 14829,
+              "readable": true
+            },
+            {
+              "name": "contractor-job-costing-wip-schedule/contractor_job_costing_wip_schedule_guide.pdf",
+              "bytes": 14964,
+              "readable": true
+            },
+            {
+              "name": "contractor-job-costing-wip-schedule/README.txt",
+              "bytes": 658,
+              "readable": true
+            }
+          ],
+          "entry_count": 3,
+          "uncompressed_bytes": 30451,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "yvvxcg",
+      "meta_http": 200,
+      "title": "Change Order Profit Recovery Ledger",
+      "price_cents": 4900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/yvvxcg",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 13607,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 13607,
+          "sha256": "ec533c1a6861f565d3c3f75c0efe3f95e9dcfd62b5ffc33497420d87fa0de086",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "change-order-profit-recovery-ledger/README.txt",
+              "bytes": 593,
+              "readable": true
+            },
+            {
+              "name": "change-order-profit-recovery-ledger/change-order-profit-recovery-ledger.xlsx",
+              "bytes": 7086,
+              "readable": true
+            },
+            {
+              "name": "change-order-profit-recovery-ledger/change-order-profit-recovery-ledger_guide.pdf",
+              "bytes": 9353,
+              "readable": true
+            }
+          ],
+          "entry_count": 3,
+          "uncompressed_bytes": 17032,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "yzmmz",
+      "meta_http": 200,
+      "title": "Wholesale Price Waterfall & Channel Margin Stack Calculator",
+      "price_cents": 2900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/yzmmz",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 22190,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 22190,
+          "sha256": "fb8d0bc1e5a21ca253c112db35ef4603904e80f525a245a59b6fcb4f62f812c3",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "wholesale-price-waterfall-channel-margin/wholesale_price_waterfall_channel_margin.xlsx",
+              "bytes": 14034,
+              "readable": true
+            },
+            {
+              "name": "wholesale-price-waterfall-channel-margin/wholesale_price_waterfall_channel_margin_guide.pdf",
+              "bytes": 13117,
+              "readable": true
+            },
+            {
+              "name": "wholesale-price-waterfall-channel-margin/README.txt",
+              "bytes": 645,
+              "readable": true
+            }
+          ],
+          "entry_count": 3,
+          "uncompressed_bytes": 27796,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "zbvxmr",
+      "meta_http": 200,
+      "title": "Solar Panel Payback & 25-Year Savings Calculator",
+      "price_cents": 1200,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/zbvxmr",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 15764,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 15764,
+          "sha256": "44edb66ecfb955b0307dd49c2f4c7870e481d34fef10f58681b7515944ab7d14",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "solar-panel-payback-savings-calculator/solar_panel_payback_savings_calculator.xlsx",
+              "bytes": 10379,
+              "readable": true
+            },
+            {
+              "name": "solar-panel-payback-savings-calculator/solar_panel_payback_savings_calculator_guide.pdf",
+              "bytes": 7797,
+              "readable": true
+            },
+            {
+              "name": "solar-panel-payback-savings-calculator/README.txt",
+              "bytes": 604,
+              "readable": true
+            }
+          ],
+          "entry_count": 3,
+          "uncompressed_bytes": 18780,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "zhgrkk",
+      "meta_http": 200,
+      "title": "Roommate & Shared House Bill Splitter (Equal, Income or Room Size)",
+      "price_cents": 700,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/zhgrkk",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 16982,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 16982,
+          "sha256": "00a018a12e2ed38c53e51388aa0b324f6b26e3547f186ad1d5ac33ff01ff5742",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "roommate-shared-bill-splitter/roommate_shared_bill_splitter.xlsx",
+              "bytes": 15842,
+              "readable": true
+            },
+            {
+              "name": "roommate-shared-bill-splitter/roommate_shared_bill_splitter_guide.pdf",
+              "bytes": 7329,
+              "readable": true
+            },
+            {
+              "name": "roommate-shared-bill-splitter/README.txt",
+              "bytes": 505,
+              "readable": true
+            }
+          ],
+          "entry_count": 3,
+          "uncompressed_bytes": 23676,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
+    },
+    {
+      "short_id": "zzudjn",
+      "meta_http": 200,
+      "title": "Small Farm Crop Enterprise Budget & Break-Even Planner",
+      "price_cents": 2900,
+      "published": true,
+      "url": "https://aekraft.gumroad.com/l/zzudjn",
+      "sales_count": 0,
+      "file_count": 1,
+      "files": [
+        {
+          "declared_bytes": 20769,
+          "declared_type": "zip",
+          "name": null,
+          "fetch_http": 200,
+          "actual_bytes": 20769,
+          "sha256": "a23d86c5d6d81c7f197d6ffbac15ed0740e47e7fbbd6c4dc7ef08056f61dd286",
+          "size_matches_declared": true,
+          "magic": "504b0304",
+          "type": "zip",
+          "entries": [
+            {
+              "name": "small-farm-crop-enterprise-budget/small_farm_crop_enterprise_budget.xlsx",
+              "bytes": 11406,
+              "readable": true
+            },
+            {
+              "name": "small-farm-crop-enterprise-budget/small_farm_crop_enterprise_budget_guide.pdf",
+              "bytes": 13372,
+              "readable": true
+            },
+            {
+              "name": "small-farm-crop-enterprise-budget/README.txt",
+              "bytes": 614,
+              "readable": true
+            }
+          ],
+          "entry_count": 3,
+          "uncompressed_bytes": 25392,
+          "verdict": "PASS"
+        }
+      ],
+      "verdict": "PASS",
+      "reason": "every attachment fetched, hashed, parsed and size-matched"
     }
+  ],
+  "refreshed_at": "2026-11-26T19:15:51.138551+00:00",
+  "refreshed_ids": [
+    "adyvd",
+    "akxaae",
+    "arquvu",
+    "atynt",
+    "behmhy",
+    "bfdgx",
+    "bfhpzl",
+    "blayvb",
+    "bqnvfq",
+    "brwrta",
+    "cdfdcy",
+    "ceiwk",
+    "ciowwm",
+    "ckwqjc",
+    "czhxhu",
+    "dhtppr",
+    "diboaf",
+    "dkkkcq",
+    "dliccs",
+    "dmgddj",
+    "drtaj",
+    "duzghq",
+    "dvfvm",
+    "dxfwlu",
+    "dyjavs",
+    "ebuszz",
+    "edgiq",
+    "eiebdt",
+    "eiztlg",
+    "ekhza",
+    "engiwk",
+    "esnpki",
+    "fccqk",
+    "fdjqyp",
+    "fetmu",
+    "ffsehk",
+    "fgruzn",
+    "fwrjot",
+    "fwxmms",
+    "fydjid",
+    "gfsvu",
+    "ghszog",
+    "gunwie",
+    "gwwpri",
+    "gzbdaz",
+    "hasjmp",
+    "hpnrjs",
+    "iaiyt",
+    "ieashv",
+    "iwbcmi",
+    "jibnyt",
+    "jifzsa",
+    "jlxmez",
+    "jorsyy",
+    "joytjk",
+    "jvuelq",
+    "jydqg",
+    "kaooj",
+    "kftdyp",
+    "khqbui",
+    "kidohv",
+    "krrtdf",
+    "ldrdm",
+    "lrmgml",
+    "mcwusn",
+    "mfpqin",
+    "mmpoh",
+    "mrecoe",
+    "nmasnb",
+    "ntbvq",
+    "odqlk",
+    "oerot",
+    "ogypx",
+    "owtmpe",
+    "pahxdv",
+    "palmdr",
+    "pgoxt",
+    "plvoxx",
+    "ppsluq",
+    "pyzqa",
+    "qevzns",
+    "qezxe",
+    "qhmtd",
+    "qpuagh",
+    "rlgdc",
+    "roxdbe",
+    "rwrcw",
+    "ryzoro",
+    "sfcpyb",
+    "sjmbrp",
+    "sjrjxq",
+    "svlky",
+    "swkgd",
+    "swscqu",
+    "tjbly",
+    "tmhlb",
+    "trhrw",
+    "ucgjwf",
+    "uldlwa",
+    "uqmqnu",
+    "ursxh",
+    "uubnbi",
+    "uucxer",
+    "uwyfje",
+    "uyzuu",
+    "vcwgnv",
+    "vhofn",
+    "vkqogv",
+    "volqjv",
+    "vunrqm",
+    "vwlmeo",
+    "vyitxf",
+    "vzmswo",
+    "wsbqr",
+    "wsfwvz",
+    "wteork",
+    "xiimbr",
+    "xmbbls",
+    "xmbxpz",
+    "xouyjy",
+    "xwacbo",
+    "xwbbb",
+    "ydgbnh",
+    "ygpjjr",
+    "yhnyn",
+    "yiqba",
+    "ykwdfc",
+    "ynwlgf",
+    "ytaqjk",
+    "yvvxcg",
+    "yzmmz",
+    "zbvxmr",
+    "zfnagp",
+    "zhgrkk",
+    "ziiur",
+    "zjwpx",
+    "zzudjn"
   ]
 }

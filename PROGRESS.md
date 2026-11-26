@@ -352,15 +352,17 @@ Read-only live audit of the Gumroad account (GET only): 137 products =
 0 published zero-price listings, 0 published pay-what-you-want, 0 duplicate
 published titles, 0 listing-health findings; registry cross-check 0 drift.
 Delivery audit (`scripts/gumroad_delivery_audit.py`): 0 published without a
-file; 18 THIN_DELIVERABLE (<10 KB), of which 2 are published (`blayvb`
-$14.99 xlsx 8,922 B, `edgiq` $29 zip 9,198 B); 69 ZIP contents unverified by
-the API (the 2026-10-14 probe covers 79 attachments, all PASS, and is stale);
-2 drafts promise a spreadsheet that is not attached (`drtaj`, `wteork`);
-1 draft delivers a preview file (`iaiyt`). `jlxmez` ($399) delivers 4 files,
-21,304 B uncompressed (xlsx 10,764; manual 4,410; templates 3,640;
-checklist 2,490): a pricing/value question, not a missing file. The two live
-"thin" listings are the real workbooks the 2026-11-07 unpublish script
-deliberately excluded; the 14 one-page drafts it targeted are already
+file; 18 THIN_DELIVERABLE (<10 KB by attached bytes), of which 2 are published
+(`blayvb` $14.99 xlsx 8,922 B; `edgiq` $29 zip 9,198 B, 10,674 B uncompressed
+as xlsx 7,731 + guide PDF 2,943). Both are real workbook/guide packages, not
+empty files. A fresh `scripts/verify_delivery_integrity.py` run on 2026-11-26
+fetched, hashed, parsed and size-matched **all 137 attachments: 137/137 PASS**,
+every ZIP entry decompressed, 0 missing, 0 corrupt; the earlier 69-ZIP
+uncertainty is closed. 2 drafts promise a spreadsheet that is not attached
+(`drtaj`, `wteork`); 1 draft delivers a preview file (`iaiyt`). `jlxmez` ($399)
+delivers 4 files, 21,304 B uncompressed (xlsx 10,764; manual 4,410; templates
+3,640; checklist 2,490): a pricing/value question, not a missing file. The 14
+one-page drafts the 2026-11-07 unpublish script targeted are already
 unpublished, so it is a no-op today.
 
 Storefront defect, found by the official check: `customer_site/products.html`
