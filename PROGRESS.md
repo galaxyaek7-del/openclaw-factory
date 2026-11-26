@@ -377,3 +377,15 @@ New `tests/test_storefront_links.js` (4/4) runs that check and scans every
 wired into CI JS group 4. The 10 untracked `customer_site/b19-*.html` files
 are local artifacts and are not committed; `test_site_reachability.js` fails
 locally only because of them.
+
+CI repair (2026-11-26): the new storefront gate runs the official
+`scripts/storefront_commercial_check.py` on CI, and that check reads
+`data/catalog.json`. The committed catalog still marked 14 thin drafts as
+published and lacked the 10 B19 listings the live API already reports published
+at $49, so CI would flag the B19 cards as unknown. The catalog is now synced to
+the live state (14 drafts -> published:false; 10 B19 added) and
+`data/playbook_listing_conflict.json` records the resolution: the founder
+unpublished `vhofn`, `akxaae` is the only live listing, and the `vhofn` card is
+gone from the storefront. The stale untracked
+`tests/test_playbook_listing_conflict.py` was updated locally to the same truth
+but is not added (its `books/` deliverables are not in CI).

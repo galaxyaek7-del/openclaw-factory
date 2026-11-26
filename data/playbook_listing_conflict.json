@@ -1,0 +1,48 @@
+{
+  "product_title": "The 5-Minute Context Reset Playbook",
+  "investigated_at": "2026-10-17",
+  "observed_at": "2026-11-26",
+  "finding": "Two Gumroad listings carried the same title and the same $15 price under different product ids and slugs. On 2026-11-26 the live catalog reports vhofn unpublished and akxaae still published, so only one live listing remains. The storefront links only akxaae.",
+  "live_listings": [
+    {
+      "slug": "akxaae",
+      "gumroad_product_id": "rMOopS7Q7LHxwaPTY462uw==",
+      "url": "https://aekraft.gumroad.com/l/akxaae",
+      "price_usd": 15.0,
+      "published": true,
+      "observed_at": "2026-11-26",
+      "sales_count": 0,
+      "description_chars": 858,
+      "products_html_line": null
+    },
+    {
+      "slug": "vhofn",
+      "gumroad_product_id": "9Zq9SGkALI0tjd7A97Pc_A==",
+      "url": "https://aekraft.gumroad.com/l/vhofn",
+      "price_usd": 15.0,
+      "published": false,
+      "observed_at": "2026-11-26",
+      "sales_count": 0,
+      "description_chars": 846,
+      "products_html_line": null
+    }
+  ],
+  "local_files": [
+    {
+      "path": "books/five_minute_context_reset_playbook.pdf",
+      "bytes": 119824,
+      "mtime": "2026-10-12"
+    },
+    {
+      "path": "books/the_5_minute_context_reset_playbook.pdf",
+      "bytes": 172346,
+      "mtime": "2026-09-21"
+    }
+  ],
+  "which_file_is_on_which_listing": "UNKNOWN - Gumroad exposes no seller-side file read endpoint; the file-to-listing association cannot be proven from this environment.",
+  "api_can_fix": false,
+  "api_reason": "GET /v2/products exposes published/deleted but no visibility, featured, listed, or storefront field. Duplicate resolution requires the founder dashboard; Gumroad offers no public unpublish/delete API used by this factory.",
+  "recommendation": "Done on 2026-11-26: vhofn is unpublished (founder dashboard) and its card is gone from customer_site/products.html; akxaae is the only live listing. The factory did not unpublish either listing.",
+  "status": "RESOLVED - vhofn unpublished by the founder (observed 2026-11-26); akxaae remains the only live listing; the vhofn card was removed from the storefront.",
+  "evidence_source": "data/catalog.json (live sync 2026-11-26); data/cycle81_gumroad_catalog_truth.json; data/portfolio_10/gumroad_inventory_2026-10-14.json; customer_site/products.html; local filesystem"
+}
